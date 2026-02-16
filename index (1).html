@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="theme-color" content="#FFF5F0"/>
+<title>よるのことば</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#FFF5F0;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+::selection{background:rgba(255,150,170,0.25)}
+:root{--bg1:#FFF5F0;--rose:#E8627C;--pink:#D4506A;--blush:#F2A0B0;--lavender:#B08ACF;--gold:#D4A853;--card:rgba(255,255,255,0.65);--border:rgba(180,140,140,0.12);--t1:#3A2830;--t2:rgba(58,40,48,0.72);--t3:rgba(58,40,48,0.45);--t4:rgba(58,40,48,0.28);--grad:linear-gradient(135deg,#E8627C,#D4506A);--grad2:linear-gradient(135deg,#E8627C,#B08ACF);--shadow:0 2px 16px rgba(180,100,120,0.08)}
+textarea:focus,input:focus{outline:none}
+.fade-in{animation:fadeIn .5s ease both}.slide-up{animation:slideUp .45s ease both}.slide-up-1{animation:slideUp .45s .05s ease both;opacity:0}.slide-up-2{animation:slideUp .45s .1s ease both;opacity:0}.slide-up-3{animation:slideUp .45s .15s ease both;opacity:0}.slide-up-4{animation:slideUp .45s .2s ease both;opacity:0}.slide-up-5{animation:slideUp .45s .25s ease both;opacity:0}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes twinkle{0%,100%{opacity:.08}50%{opacity:.35}}
+.hover-lift{transition:all .2s}.hover-lift:active{transform:scale(0.98)}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+
+/* ─── SVG Character Avatars ─── */
+function CharaAvatar({id,size=64,animate=false}){
+  const s=size;
+  // Each character: body color, ear/feature style, accent
+  const defs={
+    tsuki_neko:{body:"#DCC8F0",ear:"cat",accent:"#B08ACF",cheek:"#F0C0D0",eye:"#4A3050",deco:"moon"},
+    hoshi_usagi:{body:"#F5E8B0",ear:"bunny",accent:"#F5D88A",cheek:"#FFBEC8",eye:"#4A3050",deco:"star"},
+    hana_kitsune:{body:"#F5CDB8",ear:"fox",accent:"#E8927C",cheek:"#FFB8A8",eye:"#4A3050",deco:"flower"},
+    yuki_hitsuji:{body:"#D0E4F0",ear:"sheep",accent:"#88BCD8",cheek:"#D0E8F0",eye:"#4A3050",deco:"snow"},
+    yoru_fukurou:{body:"#D0C0E8",ear:"owl",accent:"#9B6DB5",cheek:"#E0D0F0",eye:"#4A3050",deco:"stars"},
+    asa_kotori:{body:"#FFD8C8",ear:"bird",accent:"#E88A6A",cheek:"#FFB8A8",eye:"#4A3050",deco:"note"},
+    kaze_shika:{body:"#E0DCC0",ear:"deer",accent:"#A8B060",cheek:"#E8E0C8",eye:"#4A3050",deco:"leaf"},
+    umi_iruka:{body:"#B8D8F0",ear:"fin",accent:"#60A8D0",cheek:"#C8E0F0",eye:"#4A3050",deco:"wave"},
+    hoshi_kuma:{body:"#F0DCC0",ear:"bear",accent:"#C8A878",cheek:"#FFD0B8",eye:"#4A3050",deco:"heart"},
+    yume_chou:{body:"#E8D0F0",ear:"butterfly",accent:"#C084D0",cheek:"#F0D8F0",eye:"#4A3050",deco:"sparkle"},
+    mori_tanuki:{body:"#D8D0B8",ear:"tanuki",accent:"#A89870",cheek:"#E0D8C8",eye:"#4A3050",deco:"leaf2"},
+    sora_ryu:{body:"#C0E8D8",ear:"dragon",accent:"#60B898",cheek:"#D0F0E0",eye:"#4A3050",deco:"cloud"}
+  };
+  const d=defs[id]||defs.tsuki_neko;
+
+  // Ears/features based on type
+  function Ears(){
+    switch(d.ear){
+      case"cat":return<><polygon points="20,22 16,4 32,18" fill={d.accent}/><polygon points="60,22 64,4 48,18" fill={d.accent}/></>;
+      case"bunny":return<><ellipse cx="30" cy="12" rx="6" ry="18" fill={d.accent} transform="rotate(-8,30,12)"/><ellipse cx="50" cy="12" rx="6" ry="18" fill={d.accent} transform="rotate(8,50,12)"/><ellipse cx="30" cy="11" rx="3.5" ry="14" fill={d.cheek} opacity="0.6"/><ellipse cx="50" cy="11" rx="3.5" ry="14" fill={d.cheek} opacity="0.6"/></>;
+      case"fox":return<><polygon points="18,26 6,4 32,20" fill={d.accent}/><polygon points="62,26 74,4 48,20" fill={d.accent}/><polygon points="18,26 10,8 28,20" fill="#fff" opacity="0.4"/><polygon points="62,26 70,8 52,20" fill="#fff" opacity="0.4"/></>;
+      case"sheep":return<><circle cx="22" cy="24" r="10" fill="#fff" opacity="0.8"/><circle cx="58" cy="24" r="10" fill="#fff" opacity="0.8"/><circle cx="30" cy="18" r="8" fill="#fff" opacity="0.7"/><circle cx="50" cy="18" r="8" fill="#fff" opacity="0.7"/><circle cx="40" cy="16" r="9" fill="#fff" opacity="0.8"/></>;
+      case"owl":return<><polygon points="20,22 14,8 30,20" fill={d.accent}/><polygon points="60,22 66,8 50,20" fill={d.accent}/></>;
+      case"bird":return<><polygon points="38,16 40,8 42,16" fill={d.accent} opacity="0.8"/></>;
+      case"deer":return<><path d="M26,20 Q24,10 20,4 Q22,10 18,2" fill="none" stroke={d.accent} strokeWidth="2.5" strokeLinecap="round"/><path d="M54,20 Q56,10 60,4 Q58,10 62,2" fill="none" stroke={d.accent} strokeWidth="2.5" strokeLinecap="round"/></>;
+      case"fin":return<><path d="M40,20 Q44,10 40,4 Q36,10 40,20" fill={d.accent}/></>;
+      case"bear":return<><circle cx="22" cy="26" r="9" fill={d.accent}/><circle cx="58" cy="26" r="9" fill={d.accent}/><circle cx="22" cy="26" r="5" fill={d.cheek} opacity="0.5"/><circle cx="58" cy="26" r="5" fill={d.cheek} opacity="0.5"/></>;
+      case"butterfly":return<><ellipse cx="24" cy="30" rx="14" ry="14" fill={d.accent} opacity="0.35" transform="rotate(-15,24,30)"/><ellipse cx="56" cy="30" rx="14" ry="14" fill="#FFD0E0" opacity="0.35" transform="rotate(15,56,30)"/></>;
+      case"tanuki":return<><ellipse cx="22" cy="26" rx="8" ry="7" fill={d.accent}/><ellipse cx="58" cy="26" rx="8" ry="7" fill={d.accent}/></>;
+      case"dragon":return<><path d="M26,20 Q24,12 20,16 Q26,14 26,20" fill={d.accent}/><path d="M32,16 Q32,8 28,12 Q32,10 32,16" fill={d.accent}/><path d="M54,20 Q56,12 60,16 Q54,14 54,20" fill={d.accent}/><path d="M48,16 Q48,8 52,12 Q48,10 48,16" fill={d.accent}/></>;
+      default:return null;
+    }
+  }
+
+  // Eyes: owl gets big round eyes, others get standard
+  function Eyes(){
+    if(d.ear==="owl"){return<><circle cx="32" cy="44" r="8" fill="#fff" opacity="0.9"/><circle cx="48" cy="44" r="8" fill="#fff" opacity="0.9"/><circle cx="32" cy="44" r="4" fill={d.eye}/><circle cx="48" cy="44" r="4" fill={d.eye}/><circle cx="33.5" cy="43" r="1.5" fill="#fff"/><circle cx="49.5" cy="43" r="1.5" fill="#fff"/><polygon points="38,52 40,56 42,52" fill="#D4A853"/></>;}
+    if(d.ear==="tanuki"){return<><ellipse cx="32" cy="46" rx="6" ry="5" fill="#4A3050" opacity="0.6"/><ellipse cx="48" cy="46" rx="6" ry="5" fill="#4A3050" opacity="0.6"/><ellipse cx="32" cy="46" rx="3" ry="3.5" fill="#fff"/><ellipse cx="48" cy="46" rx="3" ry="3.5" fill="#fff"/><circle cx="32" cy="45.5" r="2" fill={d.eye}/><circle cx="48" cy="45.5" r="2" fill={d.eye}/><circle cx="33" cy="44.8" r="0.8" fill="#fff"/><circle cx="49" cy="44.8" r="0.8" fill="#fff"/><ellipse cx="40" cy="54" rx="2" ry="1.2" fill="#4A3050"/></>;}
+    return<><ellipse cx="33" cy="46" rx="2.5" ry="3" fill={d.eye}/><ellipse cx="47" cy="46" rx="2.5" ry="3" fill={d.eye}/><ellipse cx="33" cy="45.2" rx="1" ry="1.3" fill="#fff"/><ellipse cx="47" cy="45.2" rx="1" ry="1.3" fill="#fff"/><ellipse cx="40" cy="52" rx="1.8" ry="1" fill="#D4506A"/><path d="M33,55 Q40,59 47,55" fill="none" stroke="#D4506A" strokeWidth="1" strokeLinecap="round"/></>;
+  }
+
+  const bodyShape=d.ear==="fin"
+    ?<ellipse cx="40" cy="48" rx="26" ry="20" fill={d.body}/>
+    :<circle cx="40" cy="48" r="24" fill={d.body}/>;
+
+  return <div style={{width:s,height:s,display:"inline-flex",alignItems:"center",justifyContent:"center",animation:animate?"float 3s ease infinite":"none",flexShrink:0}}>
+    <svg viewBox="0 0 80 80" width={s} height={s} style={{display:"block"}}>
+      {bodyShape}
+      <Ears/>
+      <Eyes/>
+      <circle cx="28" cy="52" r="4" fill={d.cheek} opacity="0.35"/>
+      <circle cx="52" cy="52" r="4" fill={d.cheek} opacity="0.35"/>
+    </svg>
+  </div>;
+}
+
+/* ─── 12 Dream Types ─── */
+const DREAM_TYPES=[
+  {id:"tsuki_neko",name:"つきのねこ",sub:"直感するどい甘えん坊",desc:"言葉にされてないことまで読み取っちゃう。好きな人の夢ばかり見がち。",love:"好きになったら一途。感じ取りすぎて疲れることも",share:"#つきのねこ 🌙全人口の8%のレアタイプ",bestMatch:"yuki_hitsuji",bestWhy:"ゆきのひつじの不器用な優しさに直感が応える",color:"#B08ACF",pct:"8%",keywords:["月","涙","雨","想"]},
+  {id:"hoshi_usagi",name:"ほしのうさぎ",sub:"理想高め猪突猛進",desc:"夢の中でも冒険してる。飛ぶ夢や走る夢が多い行動力おばけ。",love:"追いかけるの好き。手に入ると興味なくなりがち…",share:"#ほしのうさぎ ⭐全人口の6%、超レア",bestMatch:"hana_kitsune",bestWhy:"はなのきつねの柔らかさが突っ走るあなたを受け止める",color:"#D4A853",pct:"6%",keywords:["飛","空","走","光"]},
+  {id:"hana_kitsune",name:"はなのきつね",sub:"天性の人たらし",desc:"夢に誰かが出てくる率No.1。何を求めてるか言葉なしで分かる。",love:"モテるけど本命決められない。心開ける相手が見つかれば最強",share:"#はなのきつね 🌹天性の人たらしタイプ",bestMatch:"yoru_fukurou",bestWhy:"「この人だけは読めない」が恋のはじまり",color:"#E8627C",pct:"12%",keywords:["人","話","友","恋"]},
+  {id:"yuki_hitsuji",name:"ゆきのひつじ",sub:"ガード固め×中身あったかい",desc:"不安な夢が多いけど自分を大切にしてる証拠。繊細で芯が強い。",love:"信頼するまで時間かかるけど、一度信じたら誰より深い",share:"#ゆきのひつじ 💎繊細×芯の強さ最強",bestMatch:"tsuki_neko",bestWhy:"つきのねこの直感があなたの本音を察してくれる",color:"#6BA3BE",pct:"10%",keywords:["歯","落","逃","怖"]},
+  {id:"yoru_fukurou",name:"よるのふくろう",sub:"ミステリアスなカリスマ",desc:"不思議な夢しか見ない。独自の感性で人を惹きつける天性のカリスマ。",love:"ミステリアスに惹きつけるけど、分かってくれる人は宝物",share:"#よるのふくろう 🔮全人口の4%、最レア",bestMatch:"hoshi_usagi",bestWhy:"ほしのうさぎの真っ直ぐさが複雑な内面をシンプルにする",color:"#9B6DB5",pct:"4%",keywords:["蛇","変","不思議","色"]},
+  {id:"asa_kotori",name:"あさのことり",sub:"ポジティブの天才",desc:"明るい夢が多い楽天家。起きた瞬間から元気な最強メンタル。",love:"好きになるとストレートに伝えちゃう。裏表のなさがモテる",share:"#あさのことり 🐦全人口の11%",bestMatch:"mori_tanuki",bestWhy:"もりのたぬきの穏やかさが安心できる居場所になる",color:"#E88A6A",pct:"11%",keywords:["朝","花","明","笑"]},
+  {id:"kaze_shika",name:"かぜのしか",sub:"自由を愛する一匹狼",desc:"広い場所や自然の夢が多い。束縛が苦手で、自分のペースが大事。",love:"距離感のバランスが命。近すぎると逃げたくなる",share:"#かぜのしか 🦌自由を愛する全人口の7%",bestMatch:"umi_iruka",bestWhy:"うみのいるかの自由さがお互いを縛らない理想の関係",color:"#A8B060",pct:"7%",keywords:["山","森","道","風"]},
+  {id:"umi_iruka",name:"うみのいるか",sub:"みんなの太陽ムードメーカー",desc:"水や海の夢が多い感情豊かなタイプ。場の空気を明るくする天才。",love:"誰にでも優しいから「特別」が伝わりにくい。本気の時は不器用",share:"#うみのいるか 🐬ムードメーカー、全人口の9%",bestMatch:"kaze_shika",bestWhy:"かぜのしかのクールさに惹かれて、自分も素に戻れる",color:"#60A8D0",pct:"9%",keywords:["水","海","泳","波"]},
+  {id:"hoshi_kuma",name:"ほしのくま",sub:"包容力No.1の癒し系",desc:"守る夢や誰かを助ける夢が多い。頼られると嬉しい面倒見のいいタイプ。",love:"尽くしすぎ注意。自分のことも大事にして",share:"#ほしのくま 🧸包容力No.1タイプ",bestMatch:"yume_chou",bestWhy:"ゆめのちょうの繊細さを守りたくなる。相思相愛になりやすい",color:"#C8A878",pct:"10%",keywords:["家","守","助","抱"]},
+  {id:"yume_chou",name:"ゆめのちょう",sub:"感性するどいアーティスト",desc:"色彩豊かで美しい夢が多い。芸術的センスが光るクリエイタータイプ。",love:"理想が高いロマンチスト。現実とのギャップに悩みがち",share:"#ゆめのちょう 🦋全人口の5%のアーティスト",bestMatch:"hoshi_kuma",bestWhy:"ほしのくまの安定感がフワフワしがちなあなたを支える",color:"#C084D0",pct:"5%",keywords:["色","美","絵","歌"]},
+  {id:"mori_tanuki",name:"もりのたぬき",sub:"愛され上手なマイペース",desc:"のんびりした夢が多い。自然体でいるだけで人が集まってくる不思議な人。",love:"一緒にいて楽な人を選ぶ天才。でも自分から動かなさすぎ注意",share:"#もりのたぬき 🍃愛されマイペース、全人口の11%",bestMatch:"asa_kotori",bestWhy:"あさのことりのエネルギーに引っ張ってもらえる相性",color:"#A89870",pct:"11%",keywords:["食","休","眠","穏"]},
+  {id:"sora_ryu",name:"そらのりゅう",sub:"野心家のリーダー気質",desc:"壮大な夢やスケールの大きい夢が多い。周りを引っ張るカリスマ性。",love:"対等に渡り合える相手じゃないと物足りない",share:"#そらのりゅう 🐉全人口の7%のリーダー",bestMatch:"hana_kitsune",bestWhy:"はなのきつねの社交力とあなたのビジョンで最強タッグ",color:"#60B898",pct:"7%",keywords:["大","上","強","戦"]}
+];
+
+function diagnoseDreamType(text){
+  let scores={};DREAM_TYPES.forEach(t=>{scores[t.id]=0;t.keywords.forEach(k=>{if(text.includes(k))scores[t.id]+=2})});
+  DREAM_TYPES.forEach(t=>{scores[t.id]+=Math.random()*3});
+  let best=DREAM_TYPES[0];DREAM_TYPES.forEach(t=>{if(scores[t.id]>scores[best.id])best=t});return best;
+}
+
+/* ─── Fortune Logic ─── */
+const SIGNS=[{k:"おひつじ座",icon:"♈"},{k:"おうし座",icon:"♉"},{k:"ふたご座",icon:"♊"},{k:"かに座",icon:"♋"},{k:"しし座",icon:"♌"},{k:"おとめ座",icon:"♍"},{k:"てんびん座",icon:"♎"},{k:"さそり座",icon:"♏"},{k:"いて座",icon:"♐"},{k:"やぎ座",icon:"♑"},{k:"みずがめ座",icon:"♒"},{k:"うお座",icon:"♓"}];
+const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+
+function generateLucky(){
+  const colors=[{v:"ローズピンク",hex:"#E8627C",reason:"恋愛運UP。リップに使って"},{v:"ラベンダー",hex:"#B08ACF",reason:"直感力UP。大事な判断がある日に"},{v:"シャンパンゴールド",hex:"#D4A853",reason:"金運の色。お財布やアクセに"},{v:"ベビーブルー",hex:"#6BA3BE",reason:"コミュ力UP。人と話す日に"},{v:"コーラル",hex:"#E07070",reason:"行動力の色。チークに仕込んで"}];
+  const items=[{v:"リップ",reason:"言葉に力が宿る日",e:"💋"},{v:"香水",reason:"嗅覚から運気UP",e:"🌸"},{v:"ミラー",reason:"自分を見つめ直すと気づき",e:"🪞"},{v:"ネイルオイル",reason:"指先ケアが開運のコツ",e:"💅"}];
+  const nums=[{v:"7",reason:"直感が冴える数字"},{v:"11",reason:"11:11に願い事してみて"},{v:"22",reason:"夢を叶えるナンバー"},{v:"33",reason:"愛と癒しの数字"}];
+  const matchType=pick(DREAM_TYPES);
+  const matchHints=["今日はこのタイプの人と気が合いそう","このタイプの人との距離が縮まる日","意外な共通点が見つかるかも","このタイプの人があなたのキーパーソン"];
+  return{color:pick(colors),item:pick(items),num:pick(nums),matchType,matchHint:pick(matchHints)};
+}
+
+function generateFortune(name,sign,gender){
+  const ranks=["大吉","中吉","小吉","吉","末吉"];const weights=[10,25,30,25,10];
+  let r=Math.random()*100,acc=0,rank=ranks[2];
+  for(let i=0;i<ranks.length;i++){acc+=weights[i];if(r<acc){rank=ranks[i];break}}
+  const g=gender==="male";
+  const msgs={"大吉":{good:name+"、今日の星回りちょっとすごい。直感で「あ、これ」って思ったこと、全部正解。"+(g?"午後に入る連絡が鍵。即レスが吉。":"14時以降に出会い運が跳ねる。ネイルとリップ、整えてから出かけて。"),watch:"テンション上がりすぎて余計なひと言に注意。特にLINEの深夜送信、今日はやめておいて。"},"中吉":{good:name+"、人から声がかかりやすい日。「ちょっといい？」から始まる話、全部乗ってOK。"+(g?"上の人からの評価が上がるタイミング。":"友達の紹介、今日は断らないで。当たりの予感。"),watch:"胃腸がちょっと弱い日。食べすぎると午後だるくなるから、ランチは軽めに。"},"小吉":{good:name+"、派手さはないけど「あ、なんかいい日だった」って夜に思える日。小さな親切が自分に返ってくる。",watch:"SNS見すぎると比較モードに入りやすい日。通知オフにしてリアルの時間を大事に。"},"吉":{good:name+"、今日まいた種が2週間後に芽を出す。気になってた本・場所・人、今日アクションしておいて。",watch:"「なんか違うな」って感じた直感、合ってる。無理に合わせなくて大丈夫。"},"末吉":{good:name+"、お風呂にゆっくり浸かって、好きなもの食べて、22時に寝る。それが今日の最強ムーブ。",watch:"頑張りたい気持ちはわかるけど、今日は充電日。無理して動くと来週にツケがくるよ。"}};
+  return{rank,...msgs[rank],lucky:generateLucky()};
+}
+
+function analyzeDream(text){
+  const symbols=[];const map={蛇:"変容",歯:"不安",水:"感情",飛:"自由",追:"回避",落:"不安定",火:"情熱",海:"潜在意識",花:"成長",月:"直感",猫:"自立",犬:"信頼",魚:"幸運",鳥:"希望",雨:"浄化"};
+  Object.entries(map).forEach(([k,v])=>{if(text.includes(k))symbols.push({word:k,meaning:v})});
+  if(!symbols.length)symbols.push({word:"夢全体",meaning:"メッセージ"});
+  const type=diagnoseDreamType(text);
+  const views={spiritual:{label:"スピリチュアル",title:"宇宙があなたに伝えたいこと",good:"この夢は波動が変わり始めてるサイン。直感が冴えるタイミング。ふと浮かんだことを信じて動いてみて。",watch:"エネルギーが高まってる分、周りの影響も受けやすいよ。ネガティブな人からは距離をとって。"},psychology:{label:"深層心理",title:"あなたの心が本当に求めてるもの",good:"潜在意識が変わりたいって叫んでる。日常の違和感、この夢はそれを映し出してるよ。",watch:"一気に変えようとしないでね。感情に引っ張られやすい時期だから。"},love:{label:"恋愛・対人",title:"人間関係と恋愛のヒント",good:"対人関係に変化が起きるサイン。素直になることで新しい展開が生まれそう。",watch:"違和感を感じたら直感を無視しないで。惰性の関係は見直す時期。"},eastern:{label:"東洋占術",title:"運気の流れが変わる前兆",good:"運気の転換期。対人運と金運に動きあり。部屋の掃除で運気UP。",watch:"古い縁にしがみつかないで。生活リズムを整えると流れがよくなるよ。"}};
+  const actions={should:["夢の内容をスマホにメモする","なんとなくを信じて動く","信頼できる人に夢の話をする"],aware:["偶然の一致に注目する","人間関係の小さな変化","自分の体調とエネルギー"],avoid:["夢の意味を考えすぎること","大きなお金の決断を今日すること","エネルギーを奪う人と長時間過ごすこと"]};
+  return{symbols,type,views,actions,lucky:generateLucky()};
+}
+
+/* ─── UI Components ─── */
+function Particles(){const dots=Array.from({length:12},(_,i)=>({x:Math.random()*100,y:Math.random()*100,s:Math.random()*3+1,d:Math.random()*5+3,delay:Math.random()*4,color:["var(--rose)","var(--lavender)","var(--blush)","var(--gold)"][i%4]}));return<div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none"}}>{dots.map((s,i)=><div key={i} style={{position:"absolute",left:s.x+"%",top:s.y+"%",width:s.s*2,height:s.s*2,borderRadius:"50%",background:s.color,opacity:0.25,animation:`twinkle ${s.d}s ease infinite`,animationDelay:s.delay+"s"}}/>)}</div>}
+function Tag({text,color}){return<span style={{padding:"4px 10px",borderRadius:6,background:color+"18",color,fontSize:10,fontWeight:700,fontFamily:"Cormorant, serif",letterSpacing:1,textTransform:"uppercase"}}>{text}</span>}
+function Card({children,className="",style={}}){return<div className={className} style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:18,padding:22,boxShadow:"var(--shadow)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",...style}}>{children}</div>}
+
+function PremiumCTA({style={}}){return<div className="slide-up-4" style={{background:"linear-gradient(135deg,rgba(232,98,124,0.06),rgba(176,138,207,0.06))",border:"1px solid rgba(232,98,124,0.12)",borderRadius:18,padding:"20px 22px",textAlign:"center",...style}}>
+  <p style={{fontSize:14,fontWeight:700,color:"var(--t1)",marginBottom:6}}>✨ もっと深く読み解きたい？</p>
+  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8,marginBottom:16}}>プレミアムで毎朝のお守りメッセージや<br/>相性占い、夢日記AIが使えるよ</p>
+  <div style={{display:"flex",gap:8}}>
+    <button className="hover-lift" style={{flex:1,padding:"13px 0",borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>月額 ¥980</button>
+    <button className="hover-lift" style={{flex:1,padding:"13px 0",borderRadius:14,border:"1px solid rgba(232,98,124,0.25)",background:"transparent",color:"var(--rose)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>1回 ¥500</button>
+  </div>
+  <p style={{fontSize:10,color:"var(--t4)",marginTop:10}}>初回7日間無料 / いつでも解約OK</p>
+</div>}
+
+function LuckySection({lucky,className=""}){
+  const items=[{label:"COLOR",value:lucky.color.v,reason:lucky.color.reason,bg:lucky.color.hex+"20",dot:lucky.color.hex},{label:"ITEM",value:lucky.item.v,reason:lucky.item.reason,bg:"rgba(176,138,207,0.08)",emoji:lucky.item.e},{label:"NUMBER",value:lucky.num.v,reason:lucky.num.reason,bg:"rgba(212,168,83,0.08)",emoji:"✨"}];
+  return<div className={className} style={{marginBottom:24}}>
+    <p style={{fontSize:14,fontWeight:700,marginBottom:14,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Today's Lucky</p>
+    {items.map((item,i)=><Card key={i} style={{marginBottom:8,display:"flex",alignItems:"center",gap:16}}>
+      <div style={{width:50,height:50,borderRadius:14,background:item.bg,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:item.emoji?20:14}}>
+        {item.emoji||<div style={{width:20,height:20,borderRadius:"50%",background:item.dot}}/>}
+      </div>
+      <div style={{flex:1}}>
+        <p style={{fontSize:9,color:"var(--t4)",letterSpacing:2,textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:3}}>{item.label}</p>
+        <p style={{fontSize:15,fontWeight:700,color:"var(--t1)",marginBottom:2}}>{item.value}</p>
+        <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>{item.reason}</p>
+      </div>
+    </Card>)}
+    {lucky.matchType&&<Card style={{marginTop:4,background:"linear-gradient(135deg,rgba(232,98,124,0.05),rgba(176,138,207,0.05))"}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+        <span style={{fontSize:18}}>💫</span>
+        <p style={{fontSize:9,color:"var(--t4)",letterSpacing:2,textTransform:"uppercase",fontFamily:"Cormorant, serif"}}>today's match type</p>
+      </div>
+      <div style={{display:"flex",alignItems:"center",gap:14}}>
+        <CharaAvatar id={lucky.matchType.id} size={56}/>
+        <div>
+          <p style={{fontSize:15,fontWeight:700,color:"var(--t1)"}}>{lucky.matchType.name}</p>
+          <p style={{fontSize:11,color:"var(--t3)",marginTop:2}}>{lucky.matchType.sub}</p>
+          <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8,marginTop:6}}>{lucky.matchHint}</p>
+        </div>
+      </div>
+    </Card>}
+  </div>;
+}
+
+function DreamTypeCard({type,className=""}){
+  const bestType=DREAM_TYPES.find(t=>t.id===type.bestMatch);
+  return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
+    <div style={{display:"inline-block",padding:"24px 32px",borderRadius:24,background:`linear-gradient(135deg,${type.color}12,${type.color}06)`,border:`1px solid ${type.color}20`,marginBottom:16,boxShadow:`0 4px 24px ${type.color}08`}}>
+      <CharaAvatar id={type.id} size={80} animate={true}/>
+      <p style={{fontSize:9,letterSpacing:4,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6,marginTop:8}}>your dream type</p>
+      <p style={{fontSize:24,fontWeight:700,marginBottom:2,background:`linear-gradient(135deg,${type.color},var(--rose))`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+      <p style={{fontSize:12,color:"var(--t2)"}}>{type.sub}</p>
+      <p style={{fontSize:11,color:"var(--t3)",marginTop:4}}>全人口の{type.pct}</p>
+    </div>
+    <Card style={{textAlign:"left",marginBottom:10}}>
+      <p style={{fontSize:13,fontWeight:700,marginBottom:8,color:type.color}}>あなたの特徴</p>
+      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.desc}</p>
+    </Card>
+    <Card style={{textAlign:"left",marginBottom:10}}>
+      <p style={{fontSize:13,fontWeight:700,marginBottom:8,color:"var(--rose)"}}>恋愛傾向</p>
+      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.love}</p>
+    </Card>
+    {bestType&&<Card style={{textAlign:"left",marginBottom:10}}>
+      <p style={{fontSize:9,letterSpacing:3,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:12}}>best match</p>
+      <div style={{display:"flex",alignItems:"center",gap:12}}>
+        <CharaAvatar id={bestType.id} size={48}/>
+        <div><p style={{fontSize:14,fontWeight:700,color:"var(--t1)"}}>{bestType.name}</p>
+          <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8,marginTop:4}}>{type.bestWhy}</p></div>
+      </div>
+    </Card>}
+    <button className="hover-lift" style={{width:"100%",padding:"14px",borderRadius:14,border:"1px solid rgba(232,98,124,0.18)",background:"rgba(232,98,124,0.05)",color:"var(--rose)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:8}}>📱 ストーリーにシェア</button>
+  </div>;
+}
+
+/* ─── Character Carousel ─── */
+function CharacterCarousel(){
+  const scrollRef=useRef(null);const [active,setActive]=useState(0);
+  useEffect(()=>{const iv=setInterval(()=>{setActive(p=>{const n=(p+1)%DREAM_TYPES.length;if(scrollRef.current){const c=scrollRef.current.children[n];if(c)c.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}return n})},2500);return()=>clearInterval(iv)},[]);
+  function handleScroll(){if(!scrollRef.current)return;const el=scrollRef.current;const w=el.children[0]?.offsetWidth||90;const idx=Math.round(el.scrollLeft/(w+10));setActive(Math.min(Math.max(idx,0),DREAM_TYPES.length-1))}
+  return<div className="slide-up-1" style={{marginTop:16,marginBottom:8}}>
+    <p style={{fontSize:11,color:"var(--t3)",marginBottom:10,textAlign:"center",letterSpacing:1}}>あなたはどのタイプ？ — 全12種</p>
+    <div ref={scrollRef} onScroll={handleScroll} className="no-scrollbar" style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:10,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch"}}>
+      {DREAM_TYPES.map((t,i)=><div key={t.id} className="hover-lift" style={{minWidth:86,maxWidth:86,scrollSnapAlign:"center",cursor:"pointer",background:active===i?`linear-gradient(135deg,${t.color}15,${t.color}08)`:"rgba(255,255,255,0.6)",border:active===i?`1.5px solid ${t.color}35`:"1px solid var(--border)",borderRadius:16,padding:"12px 4px 10px",textAlign:"center",boxShadow:active===i?`0 4px 20px ${t.color}12`:"var(--shadow)",transition:"all 0.3s ease",transform:active===i?"scale(1.06)":"scale(1)"}}>
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:52,marginBottom:4}}><CharaAvatar id={t.id} size={48} animate={active===i}/></div>
+        <p style={{fontSize:10,fontWeight:700,color:"var(--t1)",lineHeight:1.3}}>{t.name}</p>
+      </div>)}
+    </div>
+    <div style={{display:"flex",justifyContent:"center",gap:3,marginTop:6}}>
+      {DREAM_TYPES.map((_,i)=><div key={i} style={{width:active===i?12:4,height:4,borderRadius:4,background:active===i?"var(--rose)":"var(--border)",transition:"all 0.3s"}}/>)}
+    </div>
+  </div>;
+}
+
+/* ─── Main App ─── */
+function App(){
+  const [mode,setMode]=useState("dream");const [page,setPage]=useState("home");
+  const [dreamText,setDreamText]=useState("");const [dreamResult,setDreamResult]=useState(null);
+  const [fortuneResult,setFortuneResult]=useState(null);const [loadingMsg,setLoadingMsg]=useState("");
+  const [viewTab,setViewTab]=useState("spiritual");const [name,setName]=useState("");
+  const [sign,setSign]=useState("");const [gender,setGender]=useState("");
+  const [userCount]=useState(1847+Math.floor(Math.random()*800));
+  const canFortune=name.trim()&&sign&&gender;
+  const quickDreams=["追いかけられる夢","歯が抜ける夢","空を飛ぶ夢","海にいる夢","蛇が出てくる夢","落ちる夢","遅刻する夢","好きな人が出てくる夢","知らない場所にいる夢","元カレ/元カノの夢","試験に落ちる夢","火事の夢"];
+
+  function startDream(){if(!dreamText.trim())return;setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);setDreamResult(analyzeDream(dreamText));setViewTab("spiritual");setPage("dreamResult")}},900)}
+  function startFortune(){if(!canFortune)return;setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);setFortuneResult(generateFortune(name,sign,gender));setPage("fortuneResult")}},900)}
+  function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null)}
+
+  const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
+  const btnOff={...btnStyle,background:"rgba(58,40,48,0.06)",color:"rgba(58,40,48,0.18)",cursor:"default"};
+
+  return<div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FFF5F0 0%,#FFF0EB 25%,#FFE8E0 50%,#FFF0EB 75%,#FFF5F0 100%)",fontFamily:"Zen Maru Gothic, sans-serif",color:"var(--t1)",WebkitFontSmoothing:"antialiased"}}>
+    <div style={{maxWidth:440,margin:"0 auto",padding:"0 20px"}}>
+
+      <header className="fade-in" style={{textAlign:"center",paddingTop:36,paddingBottom:8,position:"relative"}}>
+        <Particles/><div style={{position:"relative",zIndex:1}}>
+          <div style={{marginBottom:4,animation:"float 4s ease infinite"}}>{mode==="dream"
+            ?<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="moonH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F0D8FF"/><stop offset="100%" stopColor="#B08ACF"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonH)"/><circle cx="52" cy="34" r="22" fill="#FFF5F0"/><circle cx="22" cy="18" r="2" fill="#F5E6A8" opacity="0.6"/><circle cx="60" cy="58" r="1.5" fill="#F5E6A8" opacity="0.5"/><circle cx="16" cy="52" r="1" fill="#F5E6A8" opacity="0.4"/></svg>
+            :<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="starH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starH)"/><polygon points="40,14 46,28 60,30 50,40 52,55 40,48 28,55 30,40 20,30 34,28" fill="#fff" opacity="0.2"/></svg>
+          }</div>
+          <h1 style={{fontSize:28,fontWeight:700,letterSpacing:4}}><span style={{background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>よるのことば</span></h1>
+          <p style={{fontSize:13,color:"var(--t2)",marginTop:8,lineHeight:1.7}}>夢占い × ホロスコープで、あなたの今を読み解く</p>
+        </div>
+      </header>
+
+      {page==="home"&&<CharacterCarousel/>}
+
+      {page==="home"&&<div className="slide-up" style={{display:"flex",gap:4,margin:"20px 0 24px",background:"rgba(232,98,124,0.04)",borderRadius:14,padding:4}}>
+        {[{k:"dream",l:"夢占い"},{k:"fortune",l:"ホロスコープ"}].map(t=><button key={t.k} onClick={()=>setMode(t.k)} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?"rgba(232,98,124,0.1)":"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{t.l}</button>)}
+      </div>}
+
+      {page==="home"&&mode==="dream"&&<><Card className="slide-up">
+        <p style={{fontSize:13,color:"var(--t2)",marginBottom:14,fontWeight:500}}>今朝の夢を教えて</p>
+        <textarea value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder={"例：知らない街を歩いてたら\n急に空が紫色に変わって..."} style={{width:"100%",minHeight:120,background:"rgba(58,40,48,0.02)",border:"1px solid var(--border)",borderRadius:14,padding:16,fontSize:15,lineHeight:2,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",resize:"vertical"}}/>
+        <button onClick={startDream} disabled={!dreamText.trim()} style={{width:"100%",marginTop:16,padding:"16px 0",...(dreamText.trim()?btnStyle:btnOff)}}>夢タイプを診断する</button>
+      </Card>
+      <div className="slide-up-1" style={{margin:"20px 0 24px"}}>
+        <p style={{fontSize:12,color:"var(--t3)",marginBottom:10}}>よく見る夢</p>
+        <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{quickDreams.map((d,i)=><button key={i} className="hover-lift" onClick={()=>setDreamText(d)} style={{padding:"9px 16px",borderRadius:20,border:"1px solid var(--border)",background:"rgba(255,255,255,0.5)",color:"var(--t2)",fontSize:12,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{d}</button>)}</div>
+      </div></>}
+
+      {page==="home"&&mode==="fortune"&&<Card className="slide-up" style={{padding:24}}>
+        <div style={{textAlign:"center",marginBottom:12}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
+        <p style={{fontSize:14,color:"var(--t2)",textAlign:"center",marginBottom:20,lineHeight:1.7}}>星座を選んでサクッと占おう</p>
+        <p style={{fontSize:11,color:"var(--t3)",marginBottom:6}}>ニックネーム</p>
+        <input value={name} onChange={e=>setName(e.target.value)} placeholder="例：みく" style={{width:"100%",background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 16px",fontSize:15,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",marginBottom:16}}/>
+        <p style={{fontSize:11,color:"var(--t3)",marginBottom:8}}>性別</p>
+        <div style={{display:"flex",gap:8,marginBottom:20}}>
+          {[{k:"female",l:"女性"},{k:"male",l:"男性"},{k:"other",l:"その他"}].map(g=>{const sel=gender===g.k;return<button key={g.k} onClick={()=>setGender(g.k)} style={{padding:"8px 16px",borderRadius:20,border:sel?"1px solid rgba(232,98,124,0.4)":"1px solid var(--border)",background:sel?"rgba(232,98,124,0.08)":"rgba(255,255,255,0.5)",color:sel?"var(--rose)":"var(--t2)",fontSize:13,fontWeight:sel?700:400,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{g.l}</button>})}
+        </div>
+        <p style={{fontSize:11,color:"var(--t3)",marginBottom:10}}>あなたの星座</p>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8,marginBottom:20}}>
+          {SIGNS.map(s=>{const sel=sign===s.k;return<button key={s.k} onClick={()=>setSign(s.k)} style={{padding:"12px 4px",borderRadius:12,border:sel?"1px solid rgba(232,98,124,0.5)":"1px solid var(--border)",background:sel?"rgba(232,98,124,0.08)":"rgba(255,255,255,0.5)",cursor:"pointer",textAlign:"center",transition:"all .15s"}}><div style={{fontSize:20,lineHeight:1,marginBottom:4}}>{s.icon}</div><div style={{fontSize:10,color:sel?"var(--rose)":"var(--t2)",fontWeight:sel?700:400,fontFamily:"Zen Maru Gothic, sans-serif"}}>{s.k.replace("座","")}</div></button>})}
+        </div>
+        <button onClick={startFortune} disabled={!canFortune} style={{width:"100%",padding:"16px 0",...(canFortune?btnStyle:btnOff)}}>ホロスコープを見る</button>
+      </Card>}
+
+      {page==="home"&&<div className="slide-up-2" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:14,borderRadius:12,background:"rgba(255,255,255,0.5)",border:"1px solid var(--border)",marginTop:24,marginBottom:12}}>
+        <span style={{width:6,height:6,borderRadius:"50%",background:"#6BBF8A",animation:"pulse 2s infinite"}}/><span style={{fontSize:12,color:"var(--t3)"}}>今日 <span style={{color:"var(--rose)",fontWeight:700}}>{userCount.toLocaleString()}</span> 人が占ったよ</span>
+      </div>}
+      {page==="home"&&<PremiumCTA style={{marginBottom:32}}/>}
+
+      {page==="loading"&&<div className="fade-in" style={{textAlign:"center",padding:"60px 0"}}>
+        <div style={{marginBottom:20,animation:"float 2s ease infinite"}}>{mode==="dream"
+          ?<svg viewBox="0 0 80 80" width={80} height={80}><defs><linearGradient id="moonL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F0D8FF"/><stop offset="100%" stopColor="#B08ACF"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonL)"/><circle cx="52" cy="34" r="22" fill="#FFF5F0"/></svg>
+          :<svg viewBox="0 0 80 80" width={80} height={80}><defs><linearGradient id="starL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starL)"/></svg>
+        }</div>
+        <div style={{width:40,height:40,margin:"0 auto 24px",borderRadius:"50%",border:"2px solid var(--border)",borderTopColor:"var(--rose)",animation:"spin 1s linear infinite"}}/>
+        <p style={{fontSize:14,color:"var(--t3)",animation:"breathe 1.8s infinite"}}>{loadingMsg}</p>
+      </div>}
+
+      {page==="fortuneResult"&&fortuneResult&&<>
+        <div className="slide-up" style={{textAlign:"center",marginBottom:24}}>
+          <svg viewBox="0 0 100 100" width={80} height={80} style={{animation:"float 3s ease infinite"}}><defs><linearGradient id="starG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starG)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg>
+          <p style={{fontSize:10,color:"var(--t4)",letterSpacing:3,textTransform:"uppercase",marginTop:8,fontFamily:"Cormorant, serif"}}>{name} の {sign}</p>
+          <div style={{fontSize:48,fontWeight:700,marginTop:8,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{fortuneResult.rank}</div>
+        </div>
+        <Card className="slide-up-1" style={{marginBottom:12}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}><Tag text="good" color="#5BA87C"/><span style={{fontSize:14,fontWeight:700}}>いいこと</span></div><p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.good}</p></Card>
+        <Card className="slide-up-2" style={{marginBottom:24}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}><Tag text="watch" color="#D47070"/><span style={{fontSize:14,fontWeight:700}}>気をつけること</span></div><p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.watch}</p></Card>
+        <LuckySection lucky={fortuneResult.lucky} className="slide-up-3"/>
+        <PremiumCTA style={{marginBottom:20}}/>
+        <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
+          <button className="hover-lift" style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"rgba(255,255,255,0.5)",color:"var(--t2)",fontSize:13,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>ストーリーにシェア</button>
+          <button className="hover-lift" onClick={goHome} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
+        </div>
+      </>}
+
+      {page==="dreamResult"&&dreamResult&&<>
+        <Card className="slide-up" style={{marginBottom:16}}>
+          <p style={{fontSize:12,color:"var(--t3)",marginBottom:8}}>あなたの夢</p>
+          <p style={{fontSize:14,color:"var(--t1)",lineHeight:1.9}}>{dreamText}</p>
+          <div style={{display:"flex",gap:6,marginTop:12,flexWrap:"wrap"}}>{dreamResult.symbols.map((s,i)=><span key={i} style={{padding:"5px 14px",borderRadius:20,background:"rgba(232,98,124,0.07)",border:"1px solid rgba(232,98,124,0.15)",fontSize:12,color:"var(--rose)"}}>{s.word} — {s.meaning}</span>)}</div>
+        </Card>
+
+        {/* Interpretation tabs - PRIMARY content */}
+        <div className="slide-up-1" style={{display:"flex",gap:6,marginBottom:16,overflowX:"auto",paddingBottom:2}}>
+          {Object.entries(dreamResult.views).map(([k,v])=><button key={k} className="hover-lift" onClick={()=>setViewTab(k)} style={{padding:"10px 16px",borderRadius:20,border:viewTab===k?"1px solid rgba(232,98,124,0.3)":"1px solid var(--border)",background:viewTab===k?"rgba(232,98,124,0.08)":"rgba(255,255,255,0.5)",color:viewTab===k?"var(--rose)":"var(--t3)",fontSize:12,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",whiteSpace:"nowrap",flexShrink:0}}>{v.label}</button>)}
+        </div>
+        {(()=>{const v=dreamResult.views[viewTab];return<div key={viewTab} className="slide-up">
+          <Card style={{marginBottom:12}}><h3 style={{fontSize:17,fontWeight:700,marginBottom:14,lineHeight:1.5,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{v.title}</h3><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="good" color="#5BA87C"/><span style={{fontSize:13,fontWeight:700}}>いいこと</span></div><p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{v.good}</p></Card>
+          <Card style={{marginBottom:24}}><div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="watch" color="#D47070"/><span style={{fontSize:13,fontWeight:700}}>気をつけること</span></div><p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{v.watch}</p></Card>
+        </div>})()}
+
+        {/* Advice */}
+        <div className="slide-up-2" style={{marginBottom:24}}>
+          <p style={{fontSize:16,fontWeight:700,marginBottom:16,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>夢からのアドバイス</p>
+          {[{mark:"do",title:"したほうがいいこと",items:dreamResult.actions.should,accent:"#5BA87C"},{mark:"notice",title:"気にしておくこと",items:dreamResult.actions.aware,accent:"#6BA3BE"},{mark:"avoid",title:"やめておくこと",items:dreamResult.actions.avoid,accent:"#D47070"}].map((sec,i)=><Card key={i} style={{marginBottom:10}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}><Tag text={sec.mark} color={sec.accent}/><span style={{fontSize:14,fontWeight:700}}>{sec.title}</span></div>
+            {sec.items.map((item,j)=><div key={j} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"10px 0",borderTop:j>0?"1px solid rgba(58,40,48,0.06)":"none"}}><span style={{width:5,height:5,borderRadius:"50%",background:sec.accent+"40",marginTop:9,flexShrink:0}}/><span style={{fontSize:14,color:"var(--t2)",lineHeight:1.8}}>{item}</span></div>)}
+          </Card>)}
+        </div>
+
+        <LuckySection lucky={dreamResult.lucky} className="slide-up-3"/>
+
+        {/* Dream Type - secondary, at bottom */}
+        <DreamTypeCard type={dreamResult.type} className="slide-up-4"/>
+
+        <PremiumCTA style={{marginBottom:20}}/>
+        <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
+          <button className="hover-lift" style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"rgba(255,255,255,0.5)",color:"var(--t2)",fontSize:13,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>ストーリーにシェア</button>
+          <button className="hover-lift" onClick={goHome} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>もう一度占う</button>
+        </div>
+      </>}
+
+      <footer style={{textAlign:"center",padding:"20px 0 52px",borderTop:"1px solid rgba(58,40,48,0.06)"}}>
+        <p style={{fontFamily:"Cormorant, serif",fontSize:14,color:"var(--t4)",letterSpacing:4,fontWeight:300}}>よるのことば</p>
+        <p style={{fontSize:9,color:"var(--t4)",marginTop:6,opacity:0.5}}>© 2026</p>
+      </footer>
+    </div>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
