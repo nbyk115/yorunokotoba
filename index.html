@@ -321,11 +321,15 @@ function FortuneTypeCard({type,className=""}){
   const shareText=`${type.name}（${type.sub}）\n${type.share}\n\n夢占い×ホロスコープ「よるのことば」`;
   const shareUrl="https://yorunokotoba.vercel.app";
   const fullText=shareText+"\n"+shareUrl;
+  const [shareMsg,setShareMsg]=useState("");
   function doShare(platform){
     if(platform==="x"){window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,"_blank");return}
     if(platform==="line"){window.open(`https://line.me/R/share?text=${encodeURIComponent(fullText)}`,"_blank");return}
-    if(navigator.share){navigator.share({title:"よるのことば",text:shareText,url:shareUrl}).catch(()=>{});return}
-    const ta=document.createElement("textarea");ta.value=fullText;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");setCopied(true);setTimeout(()=>setCopied(false),2000)}catch(e){}document.body.removeChild(ta);
+    const ta=document.createElement("textarea");ta.value=fullText;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta);
+    setCopied(true);
+    if(platform==="ig"){setShareMsg("Instagramを開いてストーリーにペーストしてね")}
+    else if(platform==="tt"){setShareMsg("TikTokを開いて投稿にペーストしてね")}
+    setTimeout(()=>{setCopied(false);setShareMsg("")},4000);
   }
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
     <div style={{display:"inline-block",padding:"24px 32px",borderRadius:24,background:isSSR?"linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))":`linear-gradient(135deg,${type.color}12,${type.color}06)`,border:isSSR?`2px solid ${r.border}`:`1px solid ${type.color}20`,marginBottom:16,boxShadow:isSSR?r.glow:`0 4px 24px ${type.color}08`,animation:isSSR?"rarityGlow 3s ease infinite":"none"}}>
@@ -395,7 +399,10 @@ function FortuneTypeCard({type,className=""}){
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.95 1.95 5.55 4.87 7.03-.19.67-.68 2.5-.78 2.89-.13.5.18.49.38.36.16-.1 2.53-1.72 3.56-2.42.62.09 1.27.14 1.97.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/></svg>
         </button>
       </div>
-      {copied&&<p className="fade-in" style={{textAlign:"center",fontSize:11,color:"var(--rose)",fontWeight:600}}>✓ コピーしました！アプリに貼り付けてね</p>}
+      {copied&&<div className="fade-in" style={{textAlign:"center",padding:"10px 14px",borderRadius:10,background:"rgba(232,98,124,0.06)",border:"1px solid rgba(232,98,124,0.12)"}}>
+        <p style={{fontSize:12,color:"var(--rose)",fontWeight:700,marginBottom:2}}>✓ コピーしました</p>
+        <p style={{fontSize:11,color:"var(--t2)"}}>{shareMsg}</p>
+      </div>}
     </div>}
   </div>;
 }
