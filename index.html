@@ -642,11 +642,40 @@ function App(){
       </>}
 
       <footer style={{textAlign:"center",padding:"20px 0 52px",borderTop:"1px solid rgba(58,40,48,0.06)"}}>
-        {!window.matchMedia("(display-mode: standalone)").matches&&<div style={{marginBottom:16,padding:"14px 18px",borderRadius:14,background:"rgba(232,98,124,0.04)",border:"1px solid rgba(232,98,124,0.1)"}}>
-          <p style={{fontSize:11,color:"var(--t2)",lineHeight:1.7}}>📌 ホーム画面に追加すると、いつでもサクッと占えるよ</p>
-          <p style={{fontSize:9,color:"var(--t3)",marginTop:4}}>iPhone: シェアボタン →「ホーム画面に追加」</p>
-          <p style={{fontSize:9,color:"var(--t3)"}}>Android: メニュー →「ホーム画面に追加」</p>
-        </div>}
+        {!window.matchMedia("(display-mode: standalone)").matches&&(()=>{
+          const [showInstall,setShowInstall]=useState(false);
+          const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+          const isAndroid=/Android/.test(navigator.userAgent);
+          return<div style={{marginBottom:16}}>
+            <button onClick={()=>setShowInstall(!showInstall)} className="hover-lift" style={{width:"100%",padding:"14px",borderRadius:14,border:"1px solid rgba(232,98,124,0.18)",background:"rgba(232,98,124,0.05)",color:"var(--rose)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>📌 ホーム画面に追加する</button>
+            {showInstall&&<div className="fade-in" style={{marginTop:10,padding:"16px 18px",borderRadius:14,background:"var(--card)",border:"1px solid var(--border)",textAlign:"left"}}>
+              {isIOS?<>
+                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:10}}>iPhoneの場合</p>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                  <span style={{fontSize:18}}>①</span>
+                  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>画面下の <span style={{display:"inline-flex",verticalAlign:"middle"}}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" strokeWidth="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span> シェアボタンをタップ</p>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:18}}>②</span>
+                  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>「<span style={{fontWeight:700,color:"var(--rose)"}}>ホーム画面に追加</span>」をタップ</p>
+                </div>
+              </>:isAndroid?<>
+                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:10}}>Androidの場合</p>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                  <span style={{fontSize:18}}>①</span>
+                  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>右上の <span style={{fontWeight:700}}>⋮</span> メニューをタップ</p>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:18}}>②</span>
+                  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>「<span style={{fontWeight:700,color:"var(--rose)"}}>ホーム画面に追加</span>」をタップ</p>
+                </div>
+              </>:<>
+                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:10}}>ホーム画面に追加する方法</p>
+                <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>ブラウザのメニューから「ホーム画面に追加」を選んでね</p>
+              </>}
+            </div>}
+          </div>;
+        })()}
         <p style={{fontFamily:"Cormorant, serif",fontSize:14,color:"var(--t4)",letterSpacing:4,fontWeight:300}}>よるのことば</p>
         <p style={{fontSize:9,color:"var(--t4)",marginTop:6,opacity:0.5}}>© 2026</p>
       </footer>
