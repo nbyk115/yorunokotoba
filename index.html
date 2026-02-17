@@ -374,9 +374,17 @@ function App(){
   const [fortuneResult,setFortuneResult]=useState(null);const [loadingMsg,setLoadingMsg]=useState("");
   const [name,setName]=useState("");
   const [sign,setSign]=useState("");const [gender,setGender]=useState("");
+  const [birthYear,setBirthYear]=useState("");const [birthMonth,setBirthMonth]=useState("");const [birthDay,setBirthDay]=useState("");
+  const [prefecture,setPrefecture]=useState("");
+  function autoSetSign(y,m,d){
+    m=parseInt(m);d=parseInt(d);if(!m||!d){setSign("");return}
+    const zodiac=[[1,20,"やぎ座"],[2,19,"みずがめ座"],[3,21,"うお座"],[4,20,"おひつじ座"],[5,21,"おうし座"],[6,21,"ふたご座"],[7,23,"かに座"],[8,23,"しし座"],[9,23,"おとめ座"],[10,23,"てんびん座"],[11,22,"さそり座"],[12,22,"いて座"],[12,32,"やぎ座"]];
+    let result="やぎ座";for(let i=0;i<zodiac.length-1;i++){if(m<zodiac[i+1][0]||(m===zodiac[i+1][0]&&d<zodiac[i+1][1])){result=zodiac[i][2];break}}
+    setSign(result);
+  }
   const [streak,setStreak]=useState(()=>getStreak());
   const [collection,setCollection]=useState(()=>getStreak().collection);
-  const canFortune=name.trim()&&sign&&gender;
+  const canFortune=name.trim()&&sign&&gender&&birthMonth&&birthDay;
   const quickDreams=["追いかけられる夢","歯が抜ける夢","空を飛ぶ夢","海にいる夢","蛇が出てくる夢","落ちる夢","遅刻する夢","好きな人が出てくる夢","知らない場所にいる夢","元カレ/元カノの夢","試験に落ちる夢","火事の夢"];
 
   function validateDreamInput(text){
@@ -394,10 +402,10 @@ function App(){
     const v=validateDreamInput(dreamText);
     if(!v.ok){
       if(v.type==="noDream"){
-        setPage("loading");const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],reading:"夢を覚えていない日が続いてるなら、心が「今は内側を見なくていい」って判断してる可能性がある。\n\nただし「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。",type,actions:{should:"寝る前に「夢を覚えていたい」と3回唱える",aware:"感情を感じにくくなってないか自分に聞いてみて",avoid:"寝る直前のスマホ。夢の記憶を邪魔する"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
+        setPage("loading");const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],mainReading:{intro:"あなたは今、心が「休息モード」に入ってるはず。夢を覚えていないのは、深い安定か、感情を無意識にブロックしてるサイン。",deep:"「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。"},type,actions:{should:"寝る前に「夢を覚えていたい」と3回唱える",aware:"感情を感じにくくなってないか自分に聞いてみて",avoid:"寝る直前のスマホ。夢の記憶を邪魔する"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
       }
       if(v.type==="sexual"){
-        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的な夢",meaning:"自己承認欲求・エネルギーの高まり",detail:"性的な夢は「エッチなことを考えてる」じゃなくて、心理学的には「自分の魅力を確認したい」「もっと自由に自分を表現したい」という欲求の表れ。創造性やエネルギーが高まってるサイン。"}],reading:"性的な夢を見るのは、あなたのエネルギーが今すごく高まってる証拠。\n\n心理学では性的な夢は「自己表現の欲求」「承認欲求」「創造性の爆発」と解釈される。つまりあなたは今、もっと自分を出したい、もっと認められたい、もっとクリエイティブでいたいと感じてる。\n\nこのエネルギーを恋愛に使ってもいいし、仕事や趣味に向けてもいい。大事なのは溜め込まないこと。",type,actions:{should:"クリエイティブなことに没頭する。エネルギーの使い道を作って",aware:"「もっと自分を認めてほしい」という気持ちに素直になって",avoid:"エネルギーを持て余して衝動的な行動に走ること"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
+        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的なシンボル",meaning:"生命力・創造エネルギー",detail:"夢占いでは最も強いエネルギーの象徴。「何かを生み出したい」「もっと深くつながりたい」という根源的な欲求が表面化してる状態。"},{word:"肌の接触",meaning:"承認・一体化の欲求",detail:"「自分を丸ごと受け入れてほしい」という気持ちの投影。今、孤独や不安を感じてない？"}],mainReading:{intro:"あなたは今、誰かと深くつながりたい欲求がピークに達してるはず。それは体の話じゃなくて、心の話。「丸ごと受け入れてほしい」「本当の自分を見てほしい」——その叫びが夢に出てる。",deep:"夢占いでは性的な夢は生命エネルギーの爆発。あなたの中に「何かを生み出したい」「もっと本気で生きたい」っていう衝動が渦巻いてる。\n\nこの夢を見る人は、現実で自分を抑え込んでることが多い。仕事でも恋愛でも「本当はもっとこうしたい」があるのに、理性でブレーキかけてない？\n\nこのエネルギーは溜め込むと暴走する。今日、自分の欲求に素直になれる小さな行動を1つだけやってみて。"},type,actions:{should:"自分の欲求を紙に書き出す。言語化するだけでエネルギーが整理される",aware:"現実で「本当はこうしたい」を我慢してないか振り返って",avoid:"この夢を「恥ずかしいもの」として蓋をすること。大事なメッセージだから"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
       }
       alert(v.msg);return;
     }
@@ -440,17 +448,34 @@ function App(){
 
       {page==="home"&&mode==="fortune"&&<Card className="slide-up" style={{padding:24}}>
         <div style={{textAlign:"center",marginBottom:12}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
-        <p style={{fontSize:14,color:"var(--t2)",textAlign:"center",marginBottom:20,lineHeight:1.7}}>星座を選んでサクッと占おう</p>
+        <p style={{fontSize:14,color:"var(--t2)",textAlign:"center",marginBottom:20,lineHeight:1.7}}>あなたの情報を教えて</p>
         <p style={{fontSize:11,color:"var(--t3)",marginBottom:6}}>ニックネーム</p>
         <input value={name} onChange={e=>setName(e.target.value)} placeholder="例：みく" style={{width:"100%",background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 16px",fontSize:15,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",marginBottom:16}}/>
         <p style={{fontSize:11,color:"var(--t3)",marginBottom:8}}>性別</p>
         <div style={{display:"flex",gap:8,marginBottom:20}}>
           {[{k:"female",l:"女性"},{k:"male",l:"男性"},{k:"other",l:"その他"}].map(g=>{const sel=gender===g.k;return<button key={g.k} onClick={()=>setGender(g.k)} style={{padding:"8px 16px",borderRadius:20,border:sel?"1px solid rgba(232,98,124,0.4)":"1px solid var(--border)",background:sel?"rgba(232,98,124,0.08)":"rgba(255,255,255,0.5)",color:sel?"var(--rose)":"var(--t2)",fontSize:13,fontWeight:sel?700:400,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{g.l}</button>})}
         </div>
-        <p style={{fontSize:11,color:"var(--t3)",marginBottom:10}}>あなたの星座</p>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:8,marginBottom:20}}>
-          {SIGNS.map(s=>{const sel=sign===s.k;return<button key={s.k} onClick={()=>setSign(s.k)} style={{padding:"12px 4px",borderRadius:12,border:sel?"1px solid rgba(232,98,124,0.5)":"1px solid var(--border)",background:sel?"rgba(232,98,124,0.08)":"rgba(255,255,255,0.5)",cursor:"pointer",textAlign:"center",transition:"all .15s"}}><div style={{fontSize:20,lineHeight:1,marginBottom:4}}>{s.icon}</div><div style={{fontSize:10,color:sel?"var(--rose)":"var(--t2)",fontWeight:sel?700:400,fontFamily:"Zen Maru Gothic, sans-serif"}}>{s.k.replace("座","")}</div></button>})}
+        <p style={{fontSize:11,color:"var(--t3)",marginBottom:8}}>生年月日</p>
+        <div style={{display:"flex",gap:8,marginBottom:6}}>
+          <select value={birthYear} onChange={e=>{setBirthYear(e.target.value);autoSetSign(e.target.value,birthMonth,birthDay)}} style={{flex:1,background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 8px",fontSize:14,color:birthYear?"var(--t1)":"var(--t3)",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+            <option value="">年</option>
+            {Array.from({length:80},(_,i)=>2025-i).map(y=><option key={y} value={y}>{y}</option>)}
+          </select>
+          <select value={birthMonth} onChange={e=>{setBirthMonth(e.target.value);autoSetSign(birthYear,e.target.value,birthDay)}} style={{flex:0.7,background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 8px",fontSize:14,color:birthMonth?"var(--t1)":"var(--t3)",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+            <option value="">月</option>
+            {Array.from({length:12},(_,i)=>i+1).map(m=><option key={m} value={m}>{m}</option>)}
+          </select>
+          <select value={birthDay} onChange={e=>{setBirthDay(e.target.value);autoSetSign(birthYear,birthMonth,e.target.value)}} style={{flex:0.7,background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 8px",fontSize:14,color:birthDay?"var(--t1)":"var(--t3)",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+            <option value="">日</option>
+            {Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={d}>{d}</option>)}
+          </select>
         </div>
+        {sign?<p style={{fontSize:12,color:"var(--rose)",fontWeight:600,marginBottom:16,textAlign:"center"}}>{SIGNS.find(s=>s.k===sign)?.icon} {sign}</p>:<div style={{height:28,marginBottom:4}}/>}
+        <p style={{fontSize:11,color:"var(--t3)",marginBottom:8}}>住んでる地域</p>
+        <select value={prefecture} onChange={e=>setPrefecture(e.target.value)} style={{width:"100%",background:"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 16px",fontSize:14,color:prefecture?"var(--t1)":"var(--t3)",fontFamily:"Zen Maru Gothic, sans-serif",marginBottom:20}}>
+          <option value="">選択してね（任意）</option>
+          {["北海道","青森","岩手","宮城","秋田","山形","福島","茨城","栃木","群馬","埼玉","千葉","東京","神奈川","新潟","富山","石川","福井","山梨","長野","岐阜","静岡","愛知","三重","滋賀","京都","大阪","兵庫","奈良","和歌山","鳥取","島根","岡山","広島","山口","徳島","香川","愛媛","高知","福岡","佐賀","長崎","熊本","大分","宮崎","鹿児島","沖縄"].map(p=><option key={p} value={p}>{p}</option>)}
+        </select>
         <button onClick={startFortune} disabled={!canFortune} style={{width:"100%",padding:"16px 0",...(canFortune?btnStyle:btnOff)}}>ホロスコープを見る</button>
       </Card>}
 
