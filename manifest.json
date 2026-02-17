@@ -1,0 +1,9 @@
+{
+  "name": "よるのことば",
+  "short_name": "よること",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFF5F0",
+  "theme_color": "#FFF5F0",
+  "icons": []
+}
