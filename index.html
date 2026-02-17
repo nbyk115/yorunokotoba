@@ -239,7 +239,7 @@ function Card({children,className="",style={}}){return<div className={className}
 
 function PremiumCTA({style={}}){return<div className="slide-up-4" style={{background:"linear-gradient(135deg,rgba(232,98,124,0.04),rgba(176,138,207,0.04))",border:"1px solid rgba(232,98,124,0.1)",borderRadius:18,padding:"20px 22px",textAlign:"center",...style}}>
   <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:6}}>もっと深く知りたい？</p>
-  <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:14}}>毎朝のパーソナルメッセージ・詳細相性診断・夢日記AI</p>
+  <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:14}}>恋愛深掘り・東洋占術・認知パターン分析が解放</p>
   <button className="hover-lift" style={{width:"100%",padding:"13px 0",borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",opacity:0.9}}>プレミアムを見る</button>
   <p style={{fontSize:9,color:"var(--t4)",marginTop:8}}>準備中 — 先行登録で初月無料</p>
 </div>}
@@ -294,7 +294,7 @@ function CollectionGrid({collection,className=""}){
   </Card>;
 }
 
-function FortuneTypeCard({type,className="",streak,collection}){
+function FortuneTypeCard({type,className=""}){
   const bestType=DREAM_TYPES.find(t=>t.id===type.bestMatch);
   const r=RARITY_INFO[type.rarity];
   const isSSR=type.rarity==="SSR";
@@ -305,7 +305,7 @@ function FortuneTypeCard({type,className="",streak,collection}){
         <CharaAvatar id={type.id} size={80} animate={true}/>
       </div>
       <div style={{marginTop:8,marginBottom:8}}><RarityBadge rarity={type.rarity}/></div>
-      <p style={{fontSize:9,letterSpacing:4,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>today's character</p>
+      <p style={{fontSize:9,letterSpacing:4,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>today's guide</p>
       <p style={{fontSize:24,fontWeight:700,marginBottom:2,background:isSSR?"linear-gradient(135deg,#E8627C,#D4A853,#B08ACF)":`linear-gradient(135deg,${type.color},var(--rose))`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
       <p style={{fontSize:12,color:"var(--t2)"}}>{type.sub}</p>
       <p style={{fontSize:11,color:r.color,fontWeight:600,marginTop:4}}>出現率 {type.pct}</p>
@@ -322,18 +322,12 @@ function FortuneTypeCard({type,className="",streak,collection}){
       <p style={{fontSize:14,color:"var(--t1)",lineHeight:2,fontWeight:500}}>{todayMsg}</p>
     </Card>
 
-    {/* Streak */}
-    {streak&&streak.count>0&&<Card style={{textAlign:"center",marginBottom:10}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-        <span style={{fontSize:24}}>{streak.count>=7?"🔥":streak.count>=3?"⭐":"🌙"}</span>
-        <div><p style={{fontSize:22,fontWeight:700,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{streak.count}日連続</p>
-        <p style={{fontSize:11,color:"var(--t3)"}}>{streak.count>=7?"すごい！習慣になってるね":streak.count>=3?"いい感じ！続けてみて":"毎日占うとコレクションが増えるよ"}</p></div>
-      </div>
-    </Card>}
+
 
     <Card style={{textAlign:"left",marginBottom:10}}>
-      <p style={{fontSize:13,fontWeight:700,marginBottom:8,color:type.color}}>あなたの特徴</p>
-      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.desc}</p>
+      <p style={{fontSize:13,fontWeight:700,marginBottom:10,color:type.color}}>あなたの性格タイプ</p>
+      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2,marginBottom:10}}>{type.desc}</p>
+      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.love}</p>
     </Card>
     {bestType&&<Card style={{textAlign:"left",marginBottom:10}}>
       <p style={{fontSize:9,letterSpacing:3,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:12}}>best match</p>
@@ -344,8 +338,7 @@ function FortuneTypeCard({type,className="",streak,collection}){
       </div>
     </Card>}
 
-    {/* Collection */}
-    {collection&&<CollectionGrid collection={collection}/>}
+
 
     <button className="hover-lift" style={{width:"100%",padding:"14px",borderRadius:14,border:"1px solid rgba(232,98,124,0.18)",background:"rgba(232,98,124,0.05)",color:"var(--rose)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:8}}>{isSSR?"🌟 伝説タイプをシェア":"📱 タイプをシェア"}</button>
   </div>;
@@ -357,7 +350,7 @@ function CharacterCarousel(){
   useEffect(()=>{const iv=setInterval(()=>{setActive(p=>{const n=(p+1)%DREAM_TYPES.length;if(scrollRef.current){const c=scrollRef.current.children[n];if(c){const left=c.offsetLeft-scrollRef.current.offsetWidth/2+c.offsetWidth/2;scrollRef.current.scrollTo({left,behavior:"smooth"})}}return n})},2500);return()=>clearInterval(iv)},[]);
   function handleScroll(){if(!scrollRef.current)return;const el=scrollRef.current;const w=el.children[0]?.offsetWidth||90;const idx=Math.round(el.scrollLeft/(w+10));setActive(Math.min(Math.max(idx,0),DREAM_TYPES.length-1))}
   return<div className="slide-up-1" style={{marginTop:16,marginBottom:8}}>
-    <p style={{fontSize:11,color:"var(--t3)",marginBottom:10,textAlign:"center",letterSpacing:1}}>今日のキャラは？ — 全12種コンプを目指そう</p>
+    <p style={{fontSize:11,color:"var(--t3)",marginBottom:10,textAlign:"center",letterSpacing:1}}>全12タイプ</p>
     <div ref={scrollRef} onScroll={handleScroll} className="no-scrollbar" style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:10,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch"}}>
       {DREAM_TYPES.map((t,i)=>{const ri=RARITY_INFO[t.rarity];return<div key={t.id} className="hover-lift" style={{minWidth:86,maxWidth:86,scrollSnapAlign:"center",cursor:"pointer",background:active===i?`linear-gradient(135deg,${t.color}15,${t.color}08)`:"rgba(255,255,255,0.6)",border:active===i?`1.5px solid ${t.color}35`:"1px solid var(--border)",borderRadius:16,padding:"12px 4px 10px",textAlign:"center",boxShadow:active===i?`0 4px 20px ${t.color}12`:"var(--shadow)",transition:"all 0.3s ease",transform:active===i?"scale(1.06)":"scale(1)",position:"relative"}}>
         {t.rarity!=="N"&&<div style={{position:"absolute",top:-4,right:-4,zIndex:1}}><RarityBadge rarity={t.rarity} size="small"/></div>}
@@ -384,7 +377,7 @@ function App(){
   const quickDreams=["追いかけられる夢","歯が抜ける夢","空を飛ぶ夢","海にいる夢","蛇が出てくる夢","落ちる夢","遅刻する夢","好きな人が出てくる夢","知らない場所にいる夢","元カレ/元カノの夢","試験に落ちる夢","火事の夢"];
 
   function startDream(){if(!dreamText.trim())return;setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText);setDreamResult(result);setPage("dreamResult")}},900)}
-  function startFortune(){if(!canFortune)return;setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日のキャラタイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender);setFortuneResult(result);const s=getStreak();const newCol=saveStreak(s.count,result.type.id,s.collection);setStreak({...s,count:s.isNew?s.count:s.count});setCollection(newCol);setPage("fortuneResult")}},900)}
+  function startFortune(){if(!canFortune)return;setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","アドバイスをまとめ中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender);setFortuneResult(result);setPage("fortuneResult")}},900)}
   function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null)}
 
   const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
@@ -404,7 +397,7 @@ function App(){
         </div>
       </header>
 
-      {page==="home"&&mode==="fortune"&&<CharacterCarousel/>}
+      
 
       {page==="home"&&<div className="slide-up" style={{display:"flex",gap:4,margin:"20px 0 24px",background:"rgba(232,98,124,0.04)",borderRadius:14,padding:4}}>
         {[{k:"dream",l:"夢占い"},{k:"fortune",l:"ホロスコープ"}].map(t=><button key={t.k} onClick={()=>setMode(t.k)} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?"rgba(232,98,124,0.1)":"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{t.l}</button>)}
@@ -437,7 +430,7 @@ function App(){
       </Card>}
 
       {page==="home"&&<div className="slide-up-3" style={{textAlign:"center",padding:"12px 16px",borderRadius:12,background:"rgba(255,255,255,0.4)",marginTop:24,marginBottom:12}}>
-        <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.6}}>ホロスコープで毎日キャラ診断。全12種コンプしよう</p>
+        <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.6}}></p>
       </div>}
       {page==="home"&&<PremiumCTA style={{marginBottom:32}}/>}
 
@@ -451,17 +444,8 @@ function App(){
       </div>}
 
       {page==="fortuneResult"&&fortuneResult&&<>
-        <div className="slide-up" style={{textAlign:"center",marginBottom:24}}>
-          <svg viewBox="0 0 100 100" width={80} height={80} style={{animation:"float 3s ease infinite"}}><defs><linearGradient id="starG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starG)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg>
-          <p style={{fontSize:10,color:"var(--t4)",letterSpacing:3,textTransform:"uppercase",marginTop:8,fontFamily:"Cormorant, serif"}}>{name} の {fortuneResult.sign}</p>
-          <div style={{fontSize:48,fontWeight:700,marginTop:8,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{fortuneResult.rank}</div>
-        </div>
-
-        {/* Today's summary */}
-        <Card className="slide-up-1" style={{marginBottom:12,borderLeft:"3px solid var(--gold)"}}>
-          <p style={{fontSize:14,color:"var(--t1)",lineHeight:2.1,fontWeight:500}}>{fortuneResult.summary}</p>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2,marginTop:8}}>{fortuneResult.time}</p>
-        </Card>
+        {/* Character Type - HERO */}
+        {fortuneResult.type&&<FortuneTypeCard type={fortuneResult.type} className="slide-up"/>}
 
         {/* Personality reading - "言い当て" */}
         <Card className="slide-up-1" style={{marginBottom:12}}>
@@ -494,8 +478,15 @@ function App(){
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
 
-        {/* Character Type from horoscope */}
-        {fortuneResult.type&&<FortuneTypeCard type={fortuneResult.type} className="slide-up-5" streak={streak} collection={collection}/>}
+        {/* Premium locked */}
+        <div className="slide-up-5" style={{marginBottom:20}}>
+          <p style={{fontSize:13,fontWeight:700,marginBottom:10,color:"var(--t3)"}}>もっと深く知る</p>
+          {[{icon:"💕",title:"相性診断",desc:"気になるあの人との星座別マッチ度"},{icon:"🏮",title:"東洋占術・五行",desc:"五行バランスと吉方位の開運アクション"},{icon:"📅",title:"月間運勢",desc:"今月の転機・チャンス・注意日カレンダー"}].map((sec,i)=><div key={i} className="hover-lift" style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:14,background:"rgba(255,255,255,0.5)",border:"1px solid var(--border)",marginBottom:6,cursor:"pointer"}}>
+            <span style={{fontSize:18}}>{sec.icon}</span>
+            <div style={{flex:1}}><p style={{fontSize:12,fontWeight:700,color:"var(--t1)"}}>{sec.title}</p><p style={{fontSize:10,color:"var(--t3)",marginTop:1}}>{sec.desc}</p></div>
+            <span style={{fontSize:9,padding:"3px 8px",borderRadius:6,background:"rgba(232,98,124,0.06)",color:"var(--rose)",fontWeight:700}}>🔒</span>
+          </div>)}
+        </div>
 
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
