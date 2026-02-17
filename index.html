@@ -327,7 +327,7 @@ function DreamTypeCard({type,className="",streak,collection}){
 /* ─── Character Carousel ─── */
 function CharacterCarousel(){
   const scrollRef=useRef(null);const [active,setActive]=useState(0);
-  useEffect(()=>{const iv=setInterval(()=>{setActive(p=>{const n=(p+1)%DREAM_TYPES.length;if(scrollRef.current){const c=scrollRef.current.children[n];if(c)c.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}return n})},2500);return()=>clearInterval(iv)},[]);
+  useEffect(()=>{const iv=setInterval(()=>{setActive(p=>{const n=(p+1)%DREAM_TYPES.length;if(scrollRef.current){const c=scrollRef.current.children[n];if(c){const left=c.offsetLeft-scrollRef.current.offsetWidth/2+c.offsetWidth/2;scrollRef.current.scrollTo({left,behavior:"smooth"})}}return n})},2500);return()=>clearInterval(iv)},[]);
   function handleScroll(){if(!scrollRef.current)return;const el=scrollRef.current;const w=el.children[0]?.offsetWidth||90;const idx=Math.round(el.scrollLeft/(w+10));setActive(Math.min(Math.max(idx,0),DREAM_TYPES.length-1))}
   return<div className="slide-up-1" style={{marginTop:16,marginBottom:8}}>
     <p style={{fontSize:11,color:"var(--t3)",marginBottom:10,textAlign:"center",letterSpacing:1}}>あなたはどのタイプ？ — 全12種</p>
