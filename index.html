@@ -457,7 +457,6 @@ function App(){
   const [showInstall,setShowInstall]=useState(false);
   const [pushEnabled,setPushEnabled]=useState(()=>!!localStorage.getItem('ynk_push_token'));
   function requestPush(){
-    if(!('Notification' in window)||!('serviceWorker' in navigator)){alert('このブラウザは通知に対応していません');return}
     Notification.requestPermission().then(p=>{if(p==='granted'){initPush().then(()=>setPushEnabled(true))}});
   }
   const [editProfile,setEditProfile]=useState(false);
@@ -589,7 +588,7 @@ function App(){
         <button onClick={startFortune} disabled={!canFortune} style={{width:"100%",padding:"16px 0",...(canFortune?btnStyle:btnOff)}}>ホロスコープを見る</button>
       </Card>}
 
-      {page==="home"&&!pushEnabled&&<div className="slide-up-3" style={{marginTop:20,marginBottom:12}}>
+      {page==="home"&&!pushEnabled&&('Notification' in window)&&('serviceWorker' in navigator)&&<div className="slide-up-3" style={{marginTop:20,marginBottom:12}}>
         <Card style={{textAlign:"center",padding:20,background:"linear-gradient(135deg,rgba(232,98,124,0.04),rgba(176,138,207,0.04))"}}>
           <p style={{fontSize:14,marginBottom:4}}>🔔</p>
           <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:6}}>毎朝、今日の運勢をお届け</p>
