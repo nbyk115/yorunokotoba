@@ -353,14 +353,61 @@ function FortuneTypeCard({type,className=""}){
   const shareUrl="https://yorunokotoba.vercel.app";
   const fullText=shareText+"\n"+shareUrl;
   const [shareMsg,setShareMsg]=useState("");
-  const storyRef=useRef(null);
   async function saveImage(){
-    if(!storyRef.current)return;
     try{
       setShareMsg("画像を作成中...");
-      storyRef.current.style.display="flex";
-      const canvas=await html2canvas(storyRef.current,{backgroundColor:null,scale:2,useCORS:true,logging:false,width:360,height:640});
-      storyRef.current.style.display="none";
+      const isS=isSSR,isSR2=type.rarity==="SR",isR=type.rarity==="R";
+      // Create story card DOM dynamically
+      const wrap=document.createElement("div");
+      wrap.style.cssText="position:fixed;left:-9999px;top:0;width:360px;height:640px;overflow:hidden;font-family:'Zen Maru Gothic',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;";
+      // Background
+      wrap.style.background=isS?"linear-gradient(135deg,#FFF8F0,#FFF0E8,#FFF5F0)":isSR2?"linear-gradient(135deg,#F5F0FF,#EEF0FF,#F8F5FF)":isR?"linear-gradient(135deg,#FFF5F5,#FFF0F3,#FFF5F5)":"linear-gradient(135deg,#FFF8F5,#FFF5F0,#FFF8F5)";
+      // Holo overlay for SSR/SR
+      if(isS||isSR2){
+        const holo=document.createElement("div");
+        holo.style.cssText="position:absolute;inset:0;";
+        holo.style.background=isS?"conic-gradient(from 0deg at 50% 50%,rgba(255,215,0,0.15),rgba(255,107,157,0.1),rgba(192,132,252,0.1),rgba(100,200,255,0.08),rgba(255,215,0,0.15))":"conic-gradient(from 0deg at 50% 50%,rgba(123,140,222,0.1),rgba(167,139,250,0.08),rgba(100,180,255,0.06),rgba(123,140,222,0.1))";
+        wrap.appendChild(holo);
+        const shim=document.createElement("div");
+        shim.style.cssText="position:absolute;inset:0;background:linear-gradient(135deg,transparent 20%,rgba(255,255,255,0.5) 45%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,0.5) 55%,transparent 80%);";
+        wrap.appendChild(shim);
+      }
+      // Sparkle stars
+      const stars=isS?[[30,50,10],[290,80,14],[55,340,8],[310,400,12],[160,490,6],[270,160,9],[45,470,11],[320,40,7],[185,90,13],[80,540,8]]:isSR2?[[40,70,10],[285,140,12],[65,430,8],[275,360,11]]:[];
+      const sc=isS?"#D4A853":isSR2?"#7B8CDE":"";
+      stars.forEach(([x,y,sz])=>{const s=document.createElement("div");s.textContent="✦";s.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${sz}px;color:${sc};opacity:0.25;`;wrap.appendChild(s)});
+      // Content
+      const accentColor=isS?"#D4A853":isSR2?"#7B8CDE":isR?"#E8627C":"#E8627C";
+      const borderStyle=isS?"3px solid #D4A853":isSR2?"3px solid #7B8CDE":isR?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)";
+      const labelBg=isS?"linear-gradient(90deg,#D4A853,#FFD700,#D4A853)":isSR2?"linear-gradient(90deg,#7B8CDE,#A78BFA)":isR?"#E8627C":"rgba(232,98,124,0.08)";
+      const labelColor=isS?"#5a3800":isSR2?"#fff":isR?"#fff":"#E8627C";
+      const glowStyle=isS?"0 0 20px rgba(212,168,83,0.35)":isSR2?"0 0 15px rgba(123,140,222,0.25)":isR?"0 0 10px rgba(232,98,124,0.15)":"0 4px 20px rgba(0,0,0,0.04)";
+      const starsText=isS?"✦ ✦ ✦ ":isSR2?"✦ ✦ ":"✦ ";
+      const content=document.createElement("div");
+      content.style.cssText="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:0 30px;text-align:center;";
+      content.innerHTML=`
+        <p style="font-size:10px;letter-spacing:6px;color:#bbb;text-transform:uppercase;font-family:Cormorant,serif;margin:0 0 14px">your character</p>
+        <div style="width:160px;height:160px;border-radius:50%;overflow:hidden;border:${borderStyle};box-shadow:${glowStyle}">
+          <img src="${CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta}" width="160" height="160" style="display:block;object-fit:cover"/>
+        </div>
+        <div style="margin:16px 0 6px"><span style="padding:5px 20px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:2px;background:${labelBg};color:${labelColor};display:inline-block">${type.rarity!=="N"?starsText:""}${r.label}</span></div>
+        <p style="font-size:32px;font-weight:700;margin:10px 0 6px;color:${accentColor}">${type.name}</p>
+        <p style="font-size:15px;color:#888;margin:0 0 4px">${type.sub}</p>
+        <p style="font-size:14px;color:${accentColor};font-weight:700;margin:6px 0 0">出現率 ${type.pct}</p>
+        <div style="margin:20px auto;width:200px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.06),transparent)"></div>
+        <p style="font-size:12px;color:#999;line-height:1.8;padding:0 8px;margin:0">${type.desc.slice(0,60)}...</p>
+        <div style="margin-top:24px">
+          <p style="font-size:11px;letter-spacing:4px;color:#ccc;font-family:Cormorant,serif;margin:0">よるのことば</p>
+          <p style="font-size:9px;color:#ddd;margin:4px 0 0">yorunokotoba.vercel.app</p>
+        </div>`;
+      wrap.appendChild(content);
+      document.body.appendChild(wrap);
+      // Wait for image load
+      const img=wrap.querySelector("img");
+      if(img&&!img.complete)await new Promise(r=>{img.onload=r;img.onerror=r;setTimeout(r,2000)});
+      await new Promise(r=>setTimeout(r,100));
+      const canvas=await html2canvas(wrap,{backgroundColor:null,scale:2,useCORS:true,logging:false,width:360,height:640});
+      document.body.removeChild(wrap);
       const dataUrl=canvas.toDataURL("image/png");
       if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
         const blob=await(await fetch(dataUrl)).blob();
@@ -399,35 +446,7 @@ function FortuneTypeCard({type,className=""}){
     N: {bg:"linear-gradient(135deg,#FFF8F5,#FFF5F0,#FFF8F5)",border:"1px solid rgba(200,160,180,0.25)",accent:"#E8627C",nameGrad:`linear-gradient(135deg,${tc},#E8627C)`,stars:"",labelBg:"rgba(232,98,124,0.08)",labelColor:"#E8627C",glow:"0 4px 20px rgba(0,0,0,0.04)",holoBg:"none",shimmer:false}
   };
   const cd = cardDesigns[type.rarity] || cardDesigns.N;
-  // Story card colors (no CSS vars, no WebkitBackgroundClip - html2canvas safe)
-  const stBorder = isSSR ? "3px solid #D4A853" : type.rarity==="SR" ? "3px solid #7B8CDE" : type.rarity==="R" ? "2px solid #E8627C" : "2px solid rgba(200,160,180,0.3)";
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
-    {/* Hidden story card for DL (9:16 = 360x640) */}
-    <div ref={storyRef} style={{display:"none",position:"absolute",left:"-9999px",width:360,height:640,background:cd.bg,overflow:"hidden",fontFamily:"Zen Maru Gothic, sans-serif",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
-      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg}}></div>}
-      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,transparent 20%,rgba(255,255,255,0.5) 45%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,0.5) 55%,transparent 80%)"}}></div>}
-      {isSSR&&<>{[[30,50,10],[290,80,14],[55,340,8],[310,400,12],[160,490,6],[270,160,9],[45,470,11],[320,40,7],[185,90,13],[80,540,8]].map(([x,y,sz],i)=><div key={i} style={{position:"absolute",left:x,top:y,fontSize:sz,color:"#D4A853",opacity:0.25}}>✦</div>)}</>}
-      {type.rarity==="SR"&&<>{[[40,70,10],[285,140,12],[65,430,8],[275,360,11]].map(([x,y,sz],i)=><div key={i} style={{position:"absolute",left:x,top:y,fontSize:sz,color:"#7B8CDE",opacity:0.2}}>✦</div>)}</>}
-      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",padding:"0 30px",textAlign:"center"}}>
-        <p style={{fontSize:10,letterSpacing:6,color:"#bbb",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:14}}>your character</p>
-        <div style={{width:160,height:160,borderRadius:"50%",overflow:"hidden",border:stBorder,boxShadow:cd.glow}}>
-          <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={160} height={160} style={{display:"block",objectFit:"cover"}}/>
-        </div>
-        <div style={{marginTop:16,marginBottom:6}}>
-          <span style={{padding:"5px 20px",borderRadius:20,fontSize:13,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor,display:"inline-block"}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
-        </div>
-        <p style={{fontSize:32,fontWeight:700,marginTop:10,marginBottom:6,color:cd.accent}}>{type.name}</p>
-        <p style={{fontSize:15,color:"#888"}}>{type.sub}</p>
-        <p style={{fontSize:14,color:cd.accent,fontWeight:700,marginTop:6}}>出現率 {type.pct}</p>
-        <div style={{margin:"20px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(0,0,0,0.06),transparent)"}}></div>
-        <p style={{fontSize:12,color:"#999",lineHeight:1.8,padding:"0 8px"}}>{type.desc.slice(0,60)}...</p>
-        <div style={{marginTop:24}}>
-          <p style={{fontSize:11,letterSpacing:4,color:"#ccc",fontFamily:"Cormorant, serif"}}>よるのことば</p>
-          <p style={{fontSize:9,color:"#ddd",marginTop:4}}>yorunokotoba.vercel.app</p>
-        </div>
-      </div>
-    </div>
-
     {/* Visible card on page */}
     <div style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cd.bg,border:cd.border,boxShadow:cd.glow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center",position:"relative",overflow:"hidden"}}>
       {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg,borderRadius:24}}></div>}
