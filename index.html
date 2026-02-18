@@ -524,7 +524,17 @@ function App(){
   const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
   const btnOff={...btnStyle,background:"rgba(58,40,48,0.06)",color:"rgba(58,40,48,0.18)",cursor:"default"};
 
+  const isInAppBrowser=/Line|FBAN|FBAV|Instagram|Twitter/i.test(navigator.userAgent);
+  const [dismissInApp,setDismissInApp]=useState(false);
   return<div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FFF5F0 0%,#FFF0EB 25%,#FFE8E0 50%,#FFF0EB 75%,#FFF5F0 100%)",fontFamily:"Zen Maru Gothic, sans-serif",color:"var(--t1)",WebkitFontSmoothing:"antialiased"}}>
+    {isInAppBrowser&&!dismissInApp&&<div style={{background:"linear-gradient(135deg,#E8627C,#B08ACF)",padding:"14px 20px",textAlign:"center",position:"sticky",top:0,zIndex:9999}}>
+      <p style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:6}}>⚠️ アプリ内ブラウザでは一部機能が使えません</p>
+      <p style={{fontSize:11,color:"rgba(255,255,255,0.9)",marginBottom:10,lineHeight:1.6}}>Safari / Chrome で開くとプロフィール保存・通知が使えるよ</p>
+      <div style={{display:"flex",gap:8,justifyContent:"center"}}>
+        <button onClick={()=>{const url='https://yorunokotoba.vercel.app';if(/iPhone|iPad/.test(navigator.userAgent)){window.location.href=url}else{window.open(url)}}} style={{padding:"8px 20px",borderRadius:20,border:"none",background:"#fff",color:"#E8627C",fontSize:12,fontWeight:700,cursor:"pointer"}}>Safariで開く</button>
+        <button onClick={()=>setDismissInApp(true)} style={{padding:"8px 16px",borderRadius:20,border:"1px solid rgba(255,255,255,0.5)",background:"transparent",color:"#fff",fontSize:11,cursor:"pointer"}}>このまま使う</button>
+      </div>
+    </div>}
     <div style={{maxWidth:440,margin:"0 auto",padding:"0 20px"}}>
 
       <header className="fade-in" style={{textAlign:"center",paddingTop:36,paddingBottom:8,position:"relative"}}>
@@ -533,7 +543,7 @@ function App(){
             ?<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="moonH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F0D8FF"/><stop offset="100%" stopColor="#B08ACF"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonH)"/><circle cx="52" cy="34" r="22" fill="#FFF5F0"/><circle cx="22" cy="18" r="2" fill="#F5E6A8" opacity="0.6"/><circle cx="60" cy="58" r="1.5" fill="#F5E6A8" opacity="0.5"/><circle cx="16" cy="52" r="1" fill="#F5E6A8" opacity="0.4"/></svg>
             :<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="starH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starH)"/><polygon points="40,14 46,28 60,30 50,40 52,55 40,48 28,55 30,40 20,30 34,28" fill="#fff" opacity="0.2"/></svg>
           }</div>
-          <h1 style={{fontSize:28,fontWeight:700,letterSpacing:4}}><span style={{background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>よるのことば</span></h1>
+          <h1 onClick={goHome} style={{fontSize:28,fontWeight:700,letterSpacing:4,cursor:"pointer"}}><span style={{background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>よるのことば</span></h1>
           <p style={{fontSize:13,color:"var(--t2)",marginTop:8,lineHeight:1.7}}>夢占い × ホロスコープで、あなたの今を読み解く</p>
         </div>
       </header>
@@ -661,7 +671,7 @@ function App(){
 
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
-          <button className="hover-lift" onClick={goHome} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
+          <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
         </div>
       </>}
 
@@ -711,7 +721,7 @@ function App(){
 
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
-          <button className="hover-lift" onClick={goHome} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>もう一度占う</button>
+          <button className="hover-lift" onClick={()=>{goHome();setMode("fortune");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>ホロスコープもやる</button>
         </div>
       </>}
 
@@ -795,6 +805,11 @@ function App(){
         <p style={{fontFamily:"Cormorant, serif",fontSize:14,color:"var(--t4)",letterSpacing:4,fontWeight:300}}>よるのことば</p>
         <p style={{fontSize:9,color:"var(--t4)",marginTop:6,opacity:0.5}}>© 2026</p>
       </footer>
+      {(page==="fortuneResult"||page==="dreamResult")&&<div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:999}}>
+        <button onClick={()=>{goHome();window.scrollTo(0,0)}} className="hover-lift" style={{padding:"12px 28px",borderRadius:24,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 20px rgba(232,98,124,0.3)",display:"flex",alignItems:"center",gap:6}}>
+          <span style={{fontSize:15}}>🏠</span> ホームに戻る
+        </button>
+      </div>}
     </div>
   </div>;
 }
