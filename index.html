@@ -24,6 +24,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-W6JL87BZFX')</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyAMSAW3ez0Hir2Guv4ibbuxUgzRTuS14PI",
@@ -33,13 +34,18 @@ firebase.initializeApp({
   messagingSenderId:"133287391957",
   appId:"1:133287391957:web:aafda69540c7359ba1a85c"
 });
+const db=firebase.firestore();
 window.fbMessaging=null;
 async function initPush(){
   try{
     const reg=await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     const messaging=firebase.messaging();
     const token=await messaging.getToken({vapidKey:"BMaXF44Ya4nZg-zfpfHKp6wr2gPRBlf3nkoCJ9z3CQxWmOGyOZFxLoSHYNCYrtHi0R0_mxW7u-mjTq5HpEaqDcw",serviceWorkerRegistration:reg});
-    if(token){localStorage.setItem('ynk_push_token',token);window.fbMessaging=messaging}
+    if(token){
+      localStorage.setItem('ynk_push_token',token);
+      window.fbMessaging=messaging;
+      await db.collection('tokens').doc(token).set({token:token,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),ua:navigator.userAgent.slice(0,100)},{merge:true});
+    }
   }catch(e){console.log('Push setup error:',e)}
 }
 </script>
@@ -60,6 +66,7 @@ textarea:focus,input:focus{outline:none}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef}=React;
 
@@ -89,15 +96,15 @@ function CharaAvatar({id,size=64,animate=false}){
 
 /* ─── 12 Dream Types ─── */
 const DREAM_TYPES=[
-  {id:"yume_kobuta",name:"ゆめのこぶた",sub:"天真爛漫な愛されキャラ",desc:"裏表がなくて、思ったことがすぐ顔に出ちゃう。でもその素直さが最大の魅力。一緒にいるだけで周りが笑顔になる、天性のムードメーカー。ちょっと抜けてるところもあるけど、それすら「かわいい」に変えちゃう才能の持ち主。嘘がつけないから、信頼される人。",love:"好きになったら隠せない。バレバレ。でもその真っ直ぐさが相手の心をちゃんと動かすよ",share:"#ゆめのこぶた 天真爛漫タイプ",bestMatch:"hoshi_kuma",bestWhy:"クマの包容力がこぶたの自由さを受け止める最高の相性",color:"#F5A0B0",pct:"18%",keywords:["笑","食","楽","幸"],rarity:"N",weight:20,work:"人を楽しませる才能がピカイチ。接客、企画、SNS発信、保育など「人の笑顔に関わる仕事」がぴったり。楽しい！って思える環境にいると、びっくりするくらい力を発揮できるよ。好きなことを仕事にできたら最強タイプ。",weak:"ノリで「いいよ〜」って引き受けちゃいがち。あと楽しいこと優先で大事なことを後回しにしちゃうところ、あるよね？笑　でも気づいた時にちゃんとやれば大丈夫。あなたの明るさは周りの人をちゃんと救ってるから、自信持って。"},
+  {id:"yume_kobuta",name:"ゆめのこぶた",sub:"天真爛漫な愛されキャラ",desc:"裏表がなくて、思ったことがすぐ顔に出ちゃう。でもその素直さが最大の魅力。一緒にいるだけで周りが笑顔になる、みんなの太陽みたいな人。ちょっと抜けてるところもあるけど、それすら「かわいい」に変えちゃう才能の持ち主。嘘がつけないから、信頼される人。",love:"好きになったら隠せない。バレバレ。でもその真っ直ぐさが相手の心をちゃんと動かすよ",share:"#ゆめのこぶた 天真爛漫タイプ",bestMatch:"hoshi_kuma",bestWhy:"クマの包容力がこぶたの自由さを受け止める最高の相性",color:"#F5A0B0",pct:"18%",keywords:["笑","食","楽","幸"],rarity:"N",weight:20,work:"人を楽しませる才能がピカイチ。接客、企画、SNS発信、保育など「人の笑顔に関わる仕事」がぴったり。楽しい！って思える環境にいると、びっくりするくらい力を発揮できるよ。好きなことを仕事にできたら最強タイプ。",weak:"ノリで「いいよ〜」って引き受けちゃいがち。あと楽しいこと優先で大事なことを後回しにしちゃうところ、あるよね？笑　でも気づいた時にちゃんとやれば大丈夫。あなたの明るさは周りの人をちゃんと救ってるから、自信持って。"},
   {id:"umi_rakko",name:"うみのラッコ",sub:"癒し系マイペース",desc:"自分のペースを大切にできる穏やかな人。急かされてもブレない芯の強さがある。ひとりの時間も好きだけど、実はさみしがり屋な一面も。手先が器用で、何かを作ったり整えたりするのが得意。聞き上手で、つい相談したくなる安心感がある。",love:"一緒にいて疲れない人を自然と選べる天才。穏やかな恋が一番長続きするよ",share:"#うみのラッコ 癒しマイペース",bestMatch:"kaze_ookami",bestWhy:"オオカミの行動力がラッコを新しい世界に連れ出してくれる",color:"#A0785A",pct:"5%",keywords:["海","水","穏","眠"],rarity:"R",weight:6,work:"ていねいにコツコツ積み上げるのが得意。ものづくり、料理、デザイン、事務系など「質を大切にする仕事」で輝くタイプ。急かされない環境で自分のペースを守れると、すごくいいものを生み出せるよ。",weak:"居心地いい場所から動きたくなくて、新しいことに腰が重くなりがち。「めんどくさい」って最近よく言ってない？笑　あと怒ってるのに「別にいいよ」って言っちゃうところ、周りにはバレてるかも。思ったこと、もう少し出してみて。"},
   {id:"mori_risu",name:"もりのリス",sub:"好奇心旺盛な情報通",desc:"アンテナが広くて、おもしろいことを誰より先に見つけてくる。気になることにはものすごい集中力を発揮する。話し上手で友達も多い。新しいものが大好きで、流行りには常に敏感。「それどこで知ったの？」って聞かれるのがちょっと嬉しい。",love:"「おもしろい人」に惹かれるタイプ。一緒にいて退屈しない人が運命の相手",share:"#もりのリス 好奇心おばけ",bestMatch:"sora_unicorn",bestWhy:"ユニコーンの不思議な魅力に飽きることがない。ずっとワクワクできる相手",color:"#D4883A",pct:"16%",keywords:["走","探","好","新"],rarity:"N",weight:18,work:"情報を集めて伝えるのが天職。発信、企画、広報、接客など「知ってること」が武器になる場面で才能が開花するよ。いろんなことに手を出せるのも強み。好奇心をそのまま活かせる環境を選んで。",weak:"始めたことの8割は最後までやれてない、心当たりあるでしょ？笑　あと「知ってる〜」って言いがちだけど、深く知ってるかはまた別の話。でもその好奇心はあなただけの才能。もう少しだけ「続ける」を意識したら、化けるよ。"},
   {id:"hana_panda",name:"はなのパンダ",sub:"平和主義のバランサー",desc:"みんなが仲良くしてるのが一番幸せ。空気を読んで、自然とその場のバランスを取れる人。実は芯が強くて、本当に大事なことには意外と譲らない。やさしいだけじゃなくて、ちゃんと自分を持ってる。そのギャップが魅力的。",love:"相手に合わせるのが上手だけど、好きな人の前でもっと「自分」を出していいよ。そのままのあなたが一番かわいいから",share:"#はなのパンダ 平和主義者",bestMatch:"hi_no_tora",bestWhy:"トラのまっすぐさが、パンダに「自分を出していいよ」って教えてくれる",color:"#2A2A2A",pct:"14%",keywords:["友","守","優","穏"],rarity:"N",weight:16,work:"人と人をつなぐ仕事が天職。チームの調整役、相談窓口、教育、福祉など「誰かの間に立てる仕事」で力を発揮するよ。対立してる人たちの間をうまくまとめられるのは、12タイプの中でもあなただけ。",weak:"「いいよいいよ」って引き受けすぎて、気づいたらパンクしてない？断ることは悪いことじゃないよ。あとメニュー選びにめっちゃ時間かかるでしょ？笑　でもその優しさは本物だから、たまには自分にも優しくしてあげてね。"},
   {id:"sora_unicorn",name:"そらのユニコーン",sub:"理想主義のカリスマ",desc:"「こうなりたい」っていう理想がはっきりしてて、そこに向かって進める人。周りを自然と引きつける不思議な魅力がある。平凡じゃいられない、特別な存在感の持ち主。理想が高い分、自分にも厳しいけど、それがあなたの輝きの源。",love:"対等に向き合える相手じゃないと物足りない。妥協した恋はすぐ冷めちゃう。本気の恋ができたら、誰よりも深く愛せる人",share:"#そらのユニコーン 出現率1%の伝説タイプ",bestMatch:"yuki_hakucho",bestWhy:"白鳥の美意識とユニコーンの理想が響き合う、運命の組み合わせ",color:"#C8A0E8",pct:"1%",keywords:["空","光","夢","星"],rarity:"SSR",weight:1,work:"大きな目標を掲げて周りを動かす力がある。企画、ものづくり、表現活動など「自分の世界観を形にする仕事」で才能が爆発するよ。あなたの理想に共感してくれる仲間が見つかると、一気に道が開ける。",weak:"全部ひとりで頑張ろうとしちゃうところ、あるよね。理想通りにいかないと凹みやすいけど、完璧じゃなくても大丈夫。周りに頼ることも強さだよ。あなたの「こうなりたい」っていう気持ちは、ちゃんとすごい才能だから。"},
-  {id:"yuki_hakucho",name:"ゆきの白鳥",sub:"孤高のエレガンス",desc:"自分の世界観を大切にしていて、美意識が高い。大勢でワイワイより、少人数の深い関係が心地いい。近寄りがたく見えるけど、心を許した人にはびっくりするくらい甘えん坊。本物にこだわるのは、中途半端が嫌いなだけ。",love:"簡単に人を好きにならないけど、一度好きになったら誰よりも深い愛情を注ぐ人。あなたの愛は本物",share:"#ゆきの白鳥 孤高のエレガンス",bestMatch:"umi_rakko",bestWhy:"ラッコのおだやかさが、白鳥の張り詰めた心をふわっとほどいてくれる",color:"#E8E8F0",pct:"3%",keywords:["白","美","静","冷"],rarity:"SR",weight:3,work:"センスと感性を活かせる仕事が天職。アート、音楽、ファッション、文章など「美しさを生み出す仕事」で輝くよ。人の気持ちを読み取る力も高いから、相談に乗る仕事もぴったり。",weak:"理想通りにいかないと「もう全部やめたい」ってなりがち。0か100じゃなくて、60点でもいいんだよ。あと「私のこと分かってくれない」って思う前に、自分から気持ちを伝えてみて。伝えたら、意外と伝わるよ。"},
+  {id:"yuki_hakucho",name:"ゆきの白鳥",sub:"孤高のエレガンス",desc:"自分の世界観を大切にしていて、美意識が高い。大勢でワイワイより、少人数の深い関係が心地いい。近寄りがたく見えるけど、心を許した人にはびっくりするくらい甘えん坊。本物にこだわるのは、中途半端が嫌いなだけ。",love:"簡単に人を好きにならないけど、一度好きになったら誰よりも深い愛情を注ぐ人。あなたの愛は本物",share:"#ゆきの白鳥 孤高のエレガンス",bestMatch:"umi_rakko",bestWhy:"ラッコのおだやかさが、白鳥の張り詰めた心をふわっとほどいてくれる",color:"#E8E8F0",pct:"3%",keywords:["白","美","静","冷"],rarity:"SR",weight:3,work:"感性を活かせる仕事が天職。絵、音楽、おしゃれ、文章など「美しさを生み出す仕事」で輝くよ。人の気持ちを読み取る力も高いから、相談に乗る仕事もぴったり。",weak:"理想通りにいかないと「もう全部やめたい」ってなりがち。0か100じゃなくて、60点でもいいんだよ。あと「私のこと分かってくれない」って思う前に、自分から気持ちを伝えてみて。伝えたら、意外と伝わるよ。"},
   {id:"niji_koala",name:"にじのコアラ",sub:"のんびり哲学者",desc:"見た目はのんびりしてるけど、実は深いことを考えてる。ふとした一言がめちゃくちゃ核心をついてて、周りをドキッとさせることも。無理をしない生き方の達人で、「頑張りすぎない」ことの大切さを知ってる。一緒にいると不思議と落ち着く人。",love:"無言でも気まずくない人が運命の相手。言葉がなくても通じ合える関係を大切にして",share:"#にじのコアラ のんびり哲学者",bestMatch:"mori_risu",bestWhy:"リスの好奇心がコアラの静かな世界に楽しい刺激をくれる",color:"#A0A8B8",pct:"12%",keywords:["眠","休","考","夢"],rarity:"N",weight:14,work:"じっくり考える仕事が合ってる。調べもの、分析、企画、ものづくりなど「深く考えることに価値がある仕事」で力を発揮するよ。自分のペースで取り組める環境だと、すごい成果が出せる。",weak:"「もうちょっと考えてから…」って先延ばしにしちゃうこと、多くない？笑　頭の中では完璧な計画があるのに、動き出すまでが長い。でも一歩踏み出したらちゃんとできるから大丈夫。あとたまには外に出よう！笑"},
-  {id:"hi_no_tora",name:"ひのトラ",sub:"情熱のチャレンジャー",desc:"負けず嫌いで、やると決めたことには全力。自分の信念をしっかり持ってて、ブレない強さがある。クールに見えるけど内側はすごく熱い人。大切な人のためなら何でもやる覚悟がある。不器用だけど、その真っ直ぐさがかっこいい。",love:"好きになったら全力で向き合う人。駆け引きはしない。ストレートな気持ちが一番伝わるよ",share:"#ひのトラ 情熱の一匹狼",bestMatch:"tsuki_hyou",bestWhy:"ヒョウの冷静さがトラの熱さをいい方向に導く、最強コンビ",color:"#E88A30",pct:"4%",keywords:["戦","強","走","火"],rarity:"R",weight:5,work:"スピードと決断力が武器。新しいことを始める、人を引っ張る、結果を出す。そういう「挑戦できる場所」であなたの才能は爆発するよ。目標が明確なほど燃えるタイプだから、大きな夢を持って。",weak:"うまくいかないとイライラが顔に出ちゃうところ、自覚ある？笑　あと「大丈夫、ひとりでやれる」って無理しがち。頼ることは弱さじゃないよ。たまには休んでね。休むのもトレーニングのうち。"},
-  {id:"tsuki_hyou",name:"つきのヒョウ",sub:"冷静な戦略家",desc:"いつも冷静で、一歩引いて全体を見渡せる。観察力が鋭くて、人の気持ちの変化にすぐ気づく。頭の回転が速くて、困った時に頼りになる存在。ちょっとミステリアスなところが、周りを惹きつける魅力。",love:"心を開くまでに時間がかかるけど、それだけあなたの愛は本物。信じられる人と出会えたら、最高のパートナーになれるよ",share:"#つきのヒョウ 冷静な戦略家",bestMatch:"yume_kobuta",bestWhy:"こぶたの素直さが、ヒョウの緊張をスッとほどいてくれる唯一の存在",color:"#8898B0",pct:"3%",keywords:["月","夜","静","目"],rarity:"SR",weight:3,work:"分析力と正確さを活かせる仕事が天職。計画を立てたり、問題を解決したり、細かいところに気づける力が求められる場面で頼りにされるよ。冷静な判断力は12タイプの中でもトップクラス。",weak:"考えすぎて動けなくなること、あるよね。完璧を目指しすぎなくて大丈夫。あと人の好意を素直に受け取れないところ、もったいないよ。あなたのことを大切に思ってる人、ちゃんといるから。心のガード、少しだけ下げてみて。"},
+  {id:"hi_no_tora",name:"ひのトラ",sub:"情熱のチャレンジャー",desc:"負けず嫌いで、やると決めたことには全力。自分の信念をしっかり持ってて、ブレない強さがある。クールに見えるけど内側はすごく熱い人。大切な人のためなら何でもやる覚悟がある。不器用だけど、その真っ直ぐさがかっこいい。",love:"好きになったら全力で向き合う人。駆け引きはしない。ストレートな気持ちが一番伝わるよ",share:"#ひのトラ 情熱の一匹狼",bestMatch:"tsuki_hyou",bestWhy:"ヒョウの冷静さがトラの熱さをいい方向に導く、最強コンビ",color:"#E88A30",pct:"4%",keywords:["戦","強","走","火"],rarity:"R",weight:5,work:"スピードと決断力が武器。新しいことを始める、人を引っ張る、結果を出す。そういう「挑戦できる場所」であなたの才能は爆発するよ。目標が明確なほど燃えるタイプだから、大きな夢を持って。",weak:"うまくいかないとイライラが顔に出ちゃうところ、自覚ある？笑　あと「大丈夫、ひとりでやれる」って無理しがち。頼ることは弱さじゃないよ。たまには休んでね。休むのも強さのうちだよ。"},
+  {id:"tsuki_hyou",name:"つきのヒョウ",sub:"冷静な戦略家",desc:"いつも冷静で、一歩引いて全体を見渡せる。観察力が鋭くて、人の気持ちの変化にすぐ気づく。頭の回転が速くて、困った時に頼りになる存在。どこか謎めいたところが、周りを惹きつける魅力。",love:"心を開くまでに時間がかかるけど、それだけあなたの愛は本物。信じられる人と出会えたら、最高の相棒になれるよ",share:"#つきのヒョウ 冷静な戦略家",bestMatch:"yume_kobuta",bestWhy:"こぶたの素直さが、ヒョウの緊張をスッとほどいてくれる唯一の存在",color:"#8898B0",pct:"3%",keywords:["月","夜","静","目"],rarity:"SR",weight:3,work:"分析力と正確さを活かせる仕事が天職。計画を立てたり、問題を解決したり、細かいところに気づける力が求められる場面で頼りにされるよ。冷静な判断力は12タイプの中でもピカイチ。",weak:"考えすぎて動けなくなること、あるよね。完璧を目指しすぎなくて大丈夫。あと人の好意を素直に受け取れないところ、もったいないよ。あなたのことを大切に思ってる人、ちゃんといるから。心のガード、少しだけ下げてみて。"},
   {id:"hoshi_kuma",name:"ほしのクマ",sub:"包容力No.1の守護者",desc:"困ってる人を放っておけない、優しさの塊。頼られるのが嬉しくて、周りからの信頼がとても厚い。「大丈夫？」って聞くのが得意だけど、聞かれると「大丈夫」って言っちゃう。本当は誰よりも温かい心の持ち主。",love:"尽くし上手だからこそ、あなた自身も大切にされる恋を選んでね。与えるだけじゃなく、受け取ることも愛だよ",share:"#ほしのクマ 包容力No.1",bestMatch:"niji_koala",bestWhy:"コアラの「無理しなくていいよ」が、クマの肩の荷をそっと降ろしてくれる",color:"#C8A060",pct:"16%",keywords:["守","抱","家","温"],rarity:"N",weight:18,work:"人を支える仕事が天職。教育、医療、福祉、チームのまとめ役など「誰かの力になれる場所」で輝くよ。あなたがいるだけでチームが安心する、そんな存在。",weak:"「大丈夫」が口ぐせだけど、本当に大丈夫？自分のこと後回しにしすぎてない？笑　たまにはわがまま言っていいんだよ。あなたが元気じゃないと、周りのみんなも困るからね。自分を甘やかす日を作って。"},
   {id:"kaze_uma",name:"かぜの馬",sub:"自由奔放な冒険家",desc:"じっとしてられない、とにかく動いていたい人。新しい場所、新しい体験を誰よりも楽しめる。行動力は12タイプの中でダントツ。思い立ったらすぐ動ける軽やかさが魅力。退屈が一番の敵で、ワクワクを追いかけて生きてる。",love:"自由を大切にしてくれる人が運命の相手。「一緒にいるけど、お互い自由」が理想の関係",share:"#かぜの馬 自由奔放な冒険家",bestMatch:"hi_no_tora",bestWhy:"トラの強さと馬の自由さが合わさると、どこまでも走っていける",color:"#E0D0B0",pct:"4%",keywords:["走","風","旅","空"],rarity:"R",weight:5,work:"変化と刺激がある環境が合ってる。旅、発信、企画、新しいことに挑戦できる場所であなたの才能は開花するよ。いろんな場所や人と関われる仕事だと、毎日が楽しくなる。",weak:"飽きっぽいところ、自覚あるでしょ？笑　やりたいことがコロコロ変わるのは悪いことじゃないけど、「これだけは続ける」を一つ決めてみて。あとたまに空気読まずに言っちゃうこと、あるよね。でもその正直さは長所でもあるから。"},
   {id:"kaze_ookami",name:"かぜのオオカミ",sub:"孤高のリアリスト",desc:"群れるより、自分の道を行くタイプ。でも冷たいんじゃなくて、本当に信頼できる人にはとことん優しい。直感が鋭くて、うわべだけの言葉はすぐ見抜く。本物の関係しかいらない。全人口の1%しかいない、伝説のタイプ。",love:"簡単に人を信じないけど、一度信じたら命がけで守る。そのギャップに惹かれる人、実はたくさんいるよ",share:"#かぜのオオカミ 出現率1%の伝説タイプ",bestMatch:"hana_panda",bestWhy:"パンダのやさしさがオオカミの孤独をそっと癒す、唯一心を許せる存在",color:"#7888A0",pct:"1%",keywords:["夜","月","孤","強"],rarity:"SSR",weight:1,work:"深く掘り下げる仕事で力を発揮する。真実を追求すること、分析すること、ものごとの本質を見極めることが得意。信頼できる少人数のチームで取り組むと、最高の結果を出せるよ。",weak:"「傷つく前に距離を取ろう」としちゃうところ、あるよね。でも大切な人まで遠ざけてたらもったいないよ。本当は誰よりも深いつながりを求めてるの、自分が一番わかってるはず。心を開いた先に、あなたが探してた場所があるよ。"}
@@ -176,8 +183,8 @@ function generateFortune(name,sign,gender){
   const signPersonality={
     おひつじ座:{trait:"あなたは今、「このままじゃダメだ」って焦りと戦ってるはず。行動力はあるのに、どこに向かえばいいか分からない。",love:g?"好きになったら一気に距離を詰めるタイプ。でも相手が引いたら急に冷めちゃう。今回は1テンポ待って。":"「待つ恋」が苦手。でも今月は追いかけるより追いかけさせるほうがうまくいく。",work:"競争心が燃えてるけど、ライバルは他人じゃなくて昨日の自分。比較をやめた瞬間、本当の力が出る。",health:"頭痛・首の凝りが出やすい時期。アドレナリンが出すぎてる。意識的にクールダウンの時間を。"},
     おうし座:{trait:"あなたは今、「変わらなきゃ」と「変わりたくない」の間で揺れてるはず。安定を愛するあなたにとって、変化は脅威。でも心のどこかでは分かってる。",love:g?"一度決めたら揺るがない。でもその頑固さが相手を窮屈にしてない？愛情表現、最近してる？":"「居心地のいい関係」を求めすぎて、刺激のある出会いを避けてない？今月は少し冒険してみて。",work:"コツコツ積み上げてきたものが評価される時期。ただし「いつも通り」だけだと天井が見える。一つだけ新しいことを混ぜて。",health:"喉と甲状腺に注意。言いたいことを飲み込みすぎてない？声を出す（歌でもOK）だけで体が軽くなる。"},
-    ふたご座:{trait:"あなたは今、頭の回転が速すぎて自分でも追いつけてない状態。選択肢が多すぎて決められない。でもそれは「どれも良い」ってことの裏返し。",love:g?"会話が面白い人に惹かれるけど、話が合う＝相性がいいとは限らない。言葉の裏にある誠実さを見て。":"「飽きるかも」って不安がある？それは相手の問題じゃなくて、あなたの中の好奇心が満たされてないだけ。二人で新しい体験を。",work:"マルチタスクが得意だけど、今は一つに集中するほうが結果が出る。器用貧乏から抜け出すチャンス。",health:"手首・肩・呼吸器が弱い時期。スマホの使いすぎに注意。1時間に1回、深呼吸3回。"},
-    かに座:{trait:"あなたは今、誰かを守りたい気持ちと自分を守りたい気持ちの間で消耗してるはず。優しさが自分を傷つけてることに気づいて。",love:g?"「俺がいないとダメだ」って思ってない？それは愛じゃなくて支配。相手の自立を応援できる強さを。":"相手の機嫌で自分の気分が左右されてない？それはエンパシーじゃなくて共依存のサイン。自分の感情を取り戻して。",work:"チームの空気を読みすぎて本音が言えない。でもあなたの意見がチームを救う場面が今週ある。勇気を出して。",health:"胃腸が弱ってる。ストレスが直接お腹に来るタイプ。温かい飲み物と、寝る前の5分の腹式呼吸。"},
+    ふたご座:{trait:"あなたは今、頭の回転が速すぎて自分でも追いつけてない状態。選択肢が多すぎて決められない。でもそれは「どれも良い」ってことの裏返し。",love:g?"会話が面白い人に惹かれるけど、話が合う＝相性がいいとは限らない。言葉の裏にある誠実さを見て。":"「飽きるかも」って不安がある？それは相手の問題じゃなくて、あなたの中の好奇心が満たされてないだけ。二人で新しい体験を。",work:"マルチタスクが得意だけど、今は一つに集中するほうが結果が出る。器用にいろんなことをこなせるからこそ、今は一つに絞ると一気に伸びるチャンス。",health:"手首・肩・呼吸器が弱い時期。スマホの使いすぎに注意。1時間に1回、深呼吸3回。"},
+    かに座:{trait:"あなたは今、誰かを守りたい気持ちと自分を守りたい気持ちの間で消耗してるはず。優しさが自分を傷つけてることに気づいて。",love:g?"「俺がいないとダメだ」って思ってない？それは愛じゃなくて支配。相手の自立を応援できる強さを。":"相手の機嫌で自分の気分が左右されてない？それは優しさの証拠だけど、自分の気持ちも大切にして。あなたの感情を取り戻して。",work:"チームの空気を読みすぎて本音が言えない。でもあなたの意見がチームを救う場面が今週ある。勇気を出して。",health:"胃腸が弱ってる。ストレスが直接お腹に来るタイプ。温かい飲み物と、寝る前の5分の腹式呼吸。"},
     しし座:{trait:"あなたは今、「認めてほしい」と「認めてほしいと思ってる自分が嫌」の間にいるはず。プライドが邪魔して素直になれない時期。",love:g?"「俺を見て」が強すぎると相手が疲れる。今月は相手を輝かせる側に回ってみて。意外とそっちのほうがモテる。":"褒められると嬉しいけど、お世辞は見抜ける。本気であなたの内面を見てくれる人を選んで。",work:"リーダーシップが求められる場面が増える。ただし「俺についてこい」より「一緒に行こう」のほうが今は効く。",health:"心臓と背中に負担がかかりやすい。姿勢を正すだけで自信とエネルギーが戻る。胸を張って。"},
     おとめ座:{trait:"あなたは今、「もっとちゃんとしなきゃ」で自分を追い詰めてるはず。完璧を目指すのは素晴らしいけど、完璧じゃない自分も許してあげて。",love:g?"相手の欠点が気になりすぎてない？理想のチェックリストを捨てて、一緒にいる時の「感覚」を信じて。":"「ちゃんとしてない自分は愛されない」って思ってない？ありのままで愛される経験が、あなたの人生を変える。",work:"分析力と正確さが光る時期。ただし細部にこだわりすぎて全体を見失わないで。完成度80%で出す練習を。",health:"腸内環境が運気に直結する時期。発酵食品を意識的に。あと、考えすぎて眠れない夜は書き出すことで解消。"},
     てんびん座:{trait:"あなたは今、誰かのバランスを取ることに疲れてるはず。「どっちも大事」は優しさだけど、それは「自分を後回しにしてる」の別名。",love:g?"「合わせすぎてる自分」に気づいて。本当の相性は、意見がぶつかった時に試される。":"いい人止まりになってない？好かれようとするより、自分の好きを優先したほうが魅力的。",work:"調整役として重宝されるけど、それだけじゃ昇進しない。自分の主張を通す場面を意識的に作って。",health:"腰と腎臓に注意。バランスを取ろうとしすぎて体にも歪みが出てる。ストレッチと水分補給。"},
@@ -185,7 +192,7 @@ function generateFortune(name,sign,gender){
     いて座:{trait:"あなたは今、「もっと面白いことがあるはず」って退屈と戦ってるはず。ルーティンが窮屈で、何かを壊したくなってる。",love:g?"「束縛しないでほしい」は分かるけど、自由すぎると相手は不安になる。たまには安心感をあげて。":"旅先の恋に憧れるタイプ。でも日常を一緒に楽しめる人のほうが長続きする。刺激と安定のバランスを。",work:"新規プロジェクトや挑戦に縁がある時期。ただしスタートダッシュだけで終わらせないで。やり切る力が今の課題。",health:"太ももと肝臓に注意。お酒の量を今月だけ半分にしてみて。驚くほど頭がクリアになるから。"},
     やぎ座:{trait:"あなたは今、「頑張ってるのに報われない」と感じてるはず。でもそれは成果が出るまでのタイムラグ。種はもう撒いてある。あと少し。",love:g?"仕事を優先しすぎて大切な人を放置してない？「忙しい」は言い訳にならない。今日5分だけ、全集中で向き合って。":"「しっかりしてるね」って言われるのは嬉しいけど、たまには甘えてみて。弱さを見せることも強さ。",work:"昇進・評価・報酬に動きがある時期。ただし「もらう」前に「与える」を意識して。見返り度外視の行動が結果的に最大リターンを生む。",health:"膝・関節・骨に注意。カルシウムとビタミンD意識して。あとストレスで歯を食いしばってない？寝る前にマウスピースか、顎のマッサージ。"},
     みずがめ座:{trait:"あなたは今、「みんなと同じ」が生理的に無理な時期。周りに合わせようとすると体調まで崩れる。もう無理に合わせなくていい。",love:g?"「変わってるね」が最高の褒め言葉。そんなあなたを面白がってくれる人が本物のパートナー。":"友達以上恋人未満が多くない？知的な繋がりは大事だけど、たまには理屈抜きで「好き」を認めてあげて。",work:"革新的なアイデアが降りてくる時期。ただし「画期的すぎて理解されない」パターンに注意。伝え方を工夫すれば通る。",health:"足首とふくらはぎが弱い時期。血行不良に注意。着圧ソックスか、寝る前のふくらはぎマッサージが効く。"},
-    うお座:{trait:"あなたは今、現実と空想の境目が曖昧になりかけてるはず。それは感受性が高まってる証拠。でも地に足をつける時間も必要。",love:g?"相手に夢を見すぎてない？理想化した相手と目の前の生身の相手は別人。ギャップに幻滅する前に、現実の良さを探して。":"「この人を助けてあげたい」が恋の始まりになりがち。でも共依存になるリスクがある。対等な関係を意識して。",work:"クリエイティブな仕事で力を発揮する時期。ただし締め切りや数字の管理は苦手が出やすい。得意な人に任せる勇気。",health:"足裏とリンパに注意。むくみやすい時期。足湯が最強。寝る前の10分だけでも効く。"}
+    うお座:{trait:"あなたは今、現実と空想の境目が曖昧になりかけてるはず。それは感受性が高まってる証拠。でも地に足をつける時間も必要。",love:g?"相手に夢を見すぎてない？理想化した相手と目の前の生身の相手は別人。ギャップに幻滅する前に、現実の良さを探して。":"「この人を助けてあげたい」が恋の始まりになりがち。でもお互いが自立した関係の方がうまくいくよ。対等な関係を意識して。",work:"クリエイティブな仕事で力を発揮する時期。ただし締め切りや数字の管理は苦手が出やすい。得意な人に任せる勇気。",health:"足裏とリンパに注意。むくみやすい時期。足湯が最強。寝る前の10分だけでも効く。"}
   };
   const sp=signPersonality[sign]||signPersonality["おひつじ座"];
 
@@ -199,10 +206,19 @@ function generateFortune(name,sign,gender){
   };
   const rm=rankMsgs[rank];
 
-  // Assign a character type based on sign + random
-  const signTypeMap={"おひつじ座":"hi_no_tora","おうし座":"umi_rakko","ふたご座":"mori_risu","かに座":"hoshi_kuma","しし座":"sora_unicorn","おとめ座":"tsuki_hyou","てんびん座":"hana_panda","さそり座":"kaze_ookami","いて座":"kaze_uma","やぎ座":"tsuki_hyou","みずがめ座":"sora_unicorn","うお座":"yuki_hakucho"};
-  const baseId=signTypeMap[sign]||"yume_kobuta";
-  let scores={};DREAM_TYPES.forEach(t=>{scores[t.id]=t.id===baseId?10:0;scores[t.id]+=Math.random()*t.weight*0.2});
+  // Assign a character type based on sign + date + random
+  const signAffinities={"おひつじ座":["hi_no_tora","kaze_uma","sora_unicorn"],"おうし座":["umi_rakko","hana_panda","niji_koala"],"ふたご座":["mori_risu","kaze_uma","tsuki_hyou"],"かに座":["hoshi_kuma","yuki_hakucho","hana_panda"],"しし座":["sora_unicorn","hi_no_tora","kaze_ookami"],"おとめ座":["tsuki_hyou","niji_koala","umi_rakko"],"てんびん座":["hana_panda","yuki_hakucho","tsuki_hyou"],"さそり座":["kaze_ookami","tsuki_hyou","sora_unicorn"],"いて座":["kaze_uma","hi_no_tora","sora_unicorn"],"やぎ座":["tsuki_hyou","hoshi_kuma","kaze_ookami"],"みずがめ座":["sora_unicorn","niji_koala","kaze_ookami"],"うお座":["yuki_hakucho","yume_kobuta","umi_rakko"]};
+  const affList=signAffinities[sign]||["yume_kobuta","mori_risu","hana_panda"];
+  const dayHash=(d.getFullYear()*367+d.getMonth()*31+d.getDate())%100;
+  const rarityBoost={N:0,R:2,SR:4,SSR:6};
+  let scores={};DREAM_TYPES.forEach(t=>{
+    const base={N:8,R:6,SR:4,SSR:2}[t.rarity];
+    let s=Math.random()*base;
+    if(t.id===affList[0])s+=3+(dayHash%2);
+    else if(t.id===affList[1])s+=2;
+    else if(t.id===affList[2])s+=1.5;
+    scores[t.id]=s;
+  });
   let bestType=DREAM_TYPES[0];DREAM_TYPES.forEach(t=>{if(scores[t.id]>scores[bestType.id])bestType=t});
   return{rank,summary:rm.summary,time:rm.time,risk:rm.risk,personality:sp,lucky:generateLucky(),sign,type:bestType};
 }
@@ -353,6 +369,25 @@ function FortuneTypeCard({type,className=""}){
   const shareUrl="https://yorunokotoba.vercel.app";
   const fullText=shareText+"\n"+shareUrl;
   const [shareMsg,setShareMsg]=useState("");
+  const cardRef=useRef(null);
+  async function saveImage(){
+    if(!cardRef.current)return;
+    try{
+      setShareMsg("画像を作成中...");
+      const canvas=await html2canvas(cardRef.current,{backgroundColor:"#FFF5F0",scale:2,useCORS:true,logging:false});
+      const dataUrl=canvas.toDataURL("image/png");
+      if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
+        const blob=await(await fetch(dataUrl)).blob();
+        const file=new File([blob],"yorunokotoba.png",{type:"image/png"});
+        await navigator.share({files:[file],title:"よるのことば"});
+        setShareMsg("");
+      }else{
+        const a=document.createElement("a");a.href=dataUrl;a.download="yorunokotoba.png";a.click();
+        setShareMsg("保存したよ！ストーリーに貼ってね");
+        setTimeout(()=>setShareMsg(""),3000);
+      }
+    }catch(e){setShareMsg("");console.log(e)}
+  }
   function doShare(platform){
     if(platform==="x"){window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,"_blank");return}
     if(platform==="line"){window.open(`https://line.me/R/share?text=${encodeURIComponent(fullText)}`,"_blank");return}
@@ -362,7 +397,7 @@ function FortuneTypeCard({type,className=""}){
     setTimeout(()=>{setCopied(false);setShareMsg("")},3000);
   }
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
-    <div style={{display:"inline-block",padding:"24px 32px",borderRadius:24,background:isSSR?"linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))":`linear-gradient(135deg,${type.color}12,${type.color}06)`,border:isSSR?`2px solid ${r.border}`:`1px solid ${type.color}20`,marginBottom:16,boxShadow:isSSR?r.glow:`0 4px 24px ${type.color}08`,animation:isSSR?"rarityGlow 3s ease infinite":"none"}}>
+    <div ref={cardRef} style={{display:"inline-block",padding:"24px 32px",borderRadius:24,background:isSSR?"linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))":`linear-gradient(135deg,${type.color}12,${type.color}06)`,border:isSSR?`2px solid ${r.border}`:`1px solid ${type.color}20`,marginBottom:16,boxShadow:isSSR?r.glow:`0 4px 24px ${type.color}08`,animation:isSSR?"rarityGlow 3s ease infinite":"none"}}>
       <div style={{animation:"rarityReveal 0.6s ease both"}}>
         <CharaAvatar id={type.id} size={80} animate={true}/>
       </div>
@@ -371,7 +406,8 @@ function FortuneTypeCard({type,className=""}){
       <p style={{fontSize:24,fontWeight:700,marginBottom:2,background:isSSR?"linear-gradient(135deg,#E8627C,#D4A853,#B08ACF)":`linear-gradient(135deg,${type.color},var(--rose))`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
       <p style={{fontSize:12,color:"var(--t2)"}}>{type.sub}</p>
       <p style={{fontSize:11,color:r.color,fontWeight:600,marginTop:4}}>出現率 {type.pct}</p>
-      {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:2,fontWeight:600}}>⚡ 伝説タイプ！スクショして自慢しよう</p>}
+      <p style={{fontSize:9,color:"var(--t4)",marginTop:8,letterSpacing:2}}>yorunokotoba.vercel.app</p>
+      {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:2,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
     </div>
 
     {/* Today's message */}
@@ -415,18 +451,22 @@ function FortuneTypeCard({type,className=""}){
 
     <div style={{marginBottom:8}}>
       <p style={{fontSize:11,color:"var(--t3)",textAlign:"center",marginBottom:10,letterSpacing:1}}>ー シェアする ー</p>
+      <button onClick={saveImage} className="hover-lift" style={{width:"100%",padding:"16px 0",borderRadius:16,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10}}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 画像を保存してシェア
+      </button>
+      <p style={{fontSize:10,color:"var(--t4)",textAlign:"center",marginBottom:12}}>Instagram・TikTok・ストーリーに使えるよ</p>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-        <button onClick={()=>doShare("x")} className="hover-lift" style={{padding:"14px 0",borderRadius:14,border:"none",background:"#000",color:"#fff",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Xに投稿
+        <button onClick={()=>doShare("x")} className="hover-lift" style={{padding:"12px 0",borderRadius:14,border:"none",background:"#000",color:"#fff",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> X
         </button>
-        <button onClick={()=>doShare("line")} className="hover-lift" style={{padding:"14px 0",borderRadius:14,border:"none",background:"#06C755",color:"#fff",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.95 1.95 5.55 4.87 7.03-.19.67-.68 2.5-.78 2.89-.13.5.18.49.38.36.16-.1 2.53-1.72 3.56-2.42.62.09 1.27.14 1.97.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/></svg> LINEに送る
+        <button onClick={()=>doShare("line")} className="hover-lift" style={{padding:"12px 0",borderRadius:14,border:"none",background:"#06C755",color:"#fff",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.95 1.95 5.55 4.87 7.03-.19.67-.68 2.5-.78 2.89-.13.5.18.49.38.36.16-.1 2.53-1.72 3.56-2.42.62.09 1.27.14 1.97.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/></svg> LINE
         </button>
       </div>
-      <button onClick={()=>doShare("native")} className="hover-lift" style={{width:"100%",marginTop:8,padding:"14px 0",borderRadius:14,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t1)",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Instagram / TikTok / その他
+      <button onClick={()=>doShare("native")} className="hover-lift" style={{width:"100%",marginTop:8,padding:"12px 0",borderRadius:14,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> その他のアプリ
       </button>
-      {copied&&<div className="fade-in" style={{textAlign:"center",marginTop:8,padding:"10px 14px",borderRadius:10,background:"rgba(232,98,124,0.06)",border:"1px solid rgba(232,98,124,0.12)"}}>
+      {shareMsg&&<div className="fade-in" style={{textAlign:"center",marginTop:8,padding:"10px 14px",borderRadius:10,background:"rgba(232,98,124,0.06)",border:"1px solid rgba(232,98,124,0.12)"}}>
         <p style={{fontSize:12,color:"var(--rose)",fontWeight:700}}>✓ {shareMsg}</p>
       </div>}
     </div>
@@ -530,9 +570,9 @@ function App(){
   return<div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FFF5F0 0%,#FFF0EB 25%,#FFE8E0 50%,#FFF0EB 75%,#FFF5F0 100%)",fontFamily:"Zen Maru Gothic, sans-serif",color:"var(--t1)",WebkitFontSmoothing:"antialiased"}}>
     {isInAppBrowser&&!dismissInApp&&<div style={{background:"linear-gradient(135deg,#E8627C,#B08ACF)",padding:"14px 20px",textAlign:"center",position:"sticky",top:0,zIndex:9999}}>
       <p style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:6}}>⚠️ アプリ内ブラウザでは一部機能が使えません</p>
-      <p style={{fontSize:11,color:"rgba(255,255,255,0.9)",marginBottom:10,lineHeight:1.6}}>Safari / Chrome で開くとプロフィール保存・通知が使えるよ</p>
+      <p style={{fontSize:11,color:"rgba(255,255,255,0.9)",marginBottom:10,lineHeight:1.6}}>URLをコピーしてSafariで開くと、プロフィール保存や通知が使えるよ</p>
       <div style={{display:"flex",gap:8,justifyContent:"center"}}>
-        <button onClick={()=>{const url='https://yorunokotoba.vercel.app';if(/iPhone|iPad/.test(navigator.userAgent)){window.location.href=url}else{window.open(url)}}} style={{padding:"8px 20px",borderRadius:20,border:"none",background:"#fff",color:"#E8627C",fontSize:12,fontWeight:700,cursor:"pointer"}}>Safariで開く</button>
+        <button onClick={()=>{navigator.clipboard.writeText('https://yorunokotoba.vercel.app').then(()=>alert('URLをコピーしたよ！\nSafariを開いてアドレスバーに貼り付けてね')).catch(()=>{const t=document.createElement('textarea');t.value='https://yorunokotoba.vercel.app';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしたよ！\nSafariを開いてアドレスバーに貼り付けてね')})}} style={{padding:"8px 20px",borderRadius:20,border:"none",background:"#fff",color:"#E8627C",fontSize:12,fontWeight:700,cursor:"pointer"}}>URLをコピー</button>
         <button onClick={()=>setDismissInApp(true)} style={{padding:"8px 16px",borderRadius:20,border:"1px solid rgba(255,255,255,0.5)",background:"transparent",color:"#fff",fontSize:11,cursor:"pointer"}}>このまま使う</button>
       </div>
     </div>}
