@@ -374,7 +374,9 @@ function FortuneTypeCard({type,className=""}){
     if(!cardRef.current)return;
     try{
       setShareMsg("画像を作成中...");
-      const canvas=await html2canvas(cardRef.current,{backgroundColor:"#FFF5F0",scale:3,useCORS:true,logging:false,width:cardRef.current.offsetWidth,height:cardRef.current.offsetHeight});
+      cardRef.current.style.display="block";
+      const canvas=await html2canvas(cardRef.current,{backgroundColor:null,scale:2,useCORS:true,logging:false,width:360,height:640});
+      cardRef.current.style.display="none";
       const dataUrl=canvas.toDataURL("image/png");
       if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
         const blob=await(await fetch(dataUrl)).blob();
@@ -396,31 +398,67 @@ function FortuneTypeCard({type,className=""}){
     setCopied(true);setShareMsg("コピーしました！好きなアプリに貼り付けてね");
     setTimeout(()=>{setCopied(false);setShareMsg("")},3000);
   }
-  // Convert hex to rgba for proper transparency
+  // Convert hex to rgba
   function hexToRgba(hex, alpha) {
     const h = hex.replace('#','');
-    const r = parseInt(h.substring(0,2),16);
-    const g = parseInt(h.substring(2,4),16);
-    const b = parseInt(h.substring(4,6),16);
-    return `rgba(${r},${g},${b},${alpha})`;
+    const rr = parseInt(h.substring(0,2),16);
+    const gg = parseInt(h.substring(2,4),16);
+    const bb = parseInt(h.substring(4,6),16);
+    return `rgba(${rr},${gg},${bb},${alpha})`;
   }
   const tc = type.color;
-  const cardBg = isSSR ? "linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))" : `linear-gradient(135deg,${hexToRgba(tc,0.1)},${hexToRgba(tc,0.03)})`;
-  const cardBorder = isSSR ? `2px solid ${r.border}` : `1px solid ${hexToRgba(tc,0.15)}`;
-  const cardShadow = isSSR ? r.glow : `0 4px 24px ${hexToRgba(tc,0.08)}`;
-  const nameColor = isSSR ? "linear-gradient(135deg,#E8627C,#D4A853,#B08ACF)" : `linear-gradient(135deg,${tc},#E8627C)`;
+  // Rarity-based card designs
+  const cardDesigns = {
+    SSR: {bg:"linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 30%,#1a0a2e 50%,#2d1b4e 70%,#1a0a2e 100%)",border:"2px solid #D4A853",accent:"#D4A853",nameGrad:"linear-gradient(135deg,#FFD700,#FFA500,#FF6B9D,#C084FC,#FFD700)",stars:"✦ ✦ ✦",labelBg:"linear-gradient(90deg,#D4A853,#FFD700)",labelColor:"#1a0a2e",glow:"0 0 40px rgba(212,168,83,0.4),0 0 80px rgba(212,168,83,0.15)",overlay:"radial-gradient(ellipse at 30% 20%,rgba(212,168,83,0.15),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(200,100,200,0.1),transparent 50%)"},
+    SR: {bg:"linear-gradient(160deg,#0f1628 0%,#1a2544 40%,#0f1628 100%)",border:"2px solid #7B8CDE",accent:"#7B8CDE",nameGrad:"linear-gradient(135deg,#7B8CDE,#A78BFA,#7B8CDE)",stars:"✦ ✦",labelBg:"linear-gradient(90deg,#7B8CDE,#A78BFA)",labelColor:"#fff",glow:"0 0 30px rgba(123,140,222,0.3)",overlay:"radial-gradient(ellipse at 50% 30%,rgba(123,140,222,0.12),transparent 60%)"},
+    R: {bg:"linear-gradient(160deg,#1a1520 0%,#2a2030 40%,#1a1520 100%)",border:"1.5px solid #E8627C",accent:"#E8627C",nameGrad:"linear-gradient(135deg,#E8627C,#F093A0,#E8627C)",stars:"✦",labelBg:"#E8627C",labelColor:"#fff",glow:"0 0 20px rgba(232,98,124,0.2)",overlay:"radial-gradient(ellipse at 50% 40%,rgba(232,98,124,0.08),transparent 60%)"},
+    N: {bg:"linear-gradient(160deg,#1a1520 0%,#221c28 40%,#1a1520 100%)",border:"1px solid rgba(255,255,255,0.1)",accent:"#ccc",nameGrad:`linear-gradient(135deg,${tc},#E8627C)`,stars:"",labelBg:"rgba(255,255,255,0.15)",labelColor:"#ccc",glow:"none",overlay:"radial-gradient(ellipse at 50% 40%,rgba(255,255,255,0.03),transparent 60%)"}
+  };
+  const cd = cardDesigns[type.rarity] || cardDesigns.N;
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
-    <div ref={cardRef} style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cardBg,border:cardBorder,boxShadow:cardShadow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center"}}>
-      <div style={{animation:"rarityReveal 0.6s ease both",display:"flex",justifyContent:"center"}}>
-        <CharaAvatar id={type.id} size={80} animate={true}/>
+    {/* Hidden story card for image export (9:16 vertical) */}
+    <div ref={cardRef} style={{display:"none",position:"absolute",left:"-9999px",width:360,height:640,background:cd.bg,borderRadius:0,overflow:"hidden",textAlign:"center",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+      <div style={{position:"absolute",inset:0,background:cd.overlay}}></div>
+      {isSSR&&<><div style={{position:"absolute",top:40,left:30,fontSize:10,opacity:0.3,color:"#D4A853"}}>✦</div><div style={{position:"absolute",top:80,right:40,fontSize:14,opacity:0.2,color:"#D4A853"}}>✦</div><div style={{position:"absolute",bottom:120,left:50,fontSize:8,opacity:0.25,color:"#D4A853"}}>✦</div><div style={{position:"absolute",top:200,right:60,fontSize:6,opacity:0.2,color:"#D4A853"}}>✦</div><div style={{position:"absolute",bottom:200,right:30,fontSize:12,opacity:0.15,color:"#D4A853"}}>✦</div></>}
+      {(type.rarity==="SR")&&<><div style={{position:"absolute",top:50,right:50,fontSize:8,opacity:0.2,color:"#7B8CDE"}}>✦</div><div style={{position:"absolute",bottom:150,left:40,fontSize:10,opacity:0.15,color:"#7B8CDE"}}>✦</div></>}
+      <div style={{position:"relative",zIndex:1,padding:"60px 30px 40px"}}>
+        <p style={{fontSize:10,letterSpacing:6,color:"rgba(255,255,255,0.4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>your character</p>
+        <div style={{width:140,height:140,margin:"16px auto",borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"2px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(255,255,255,0.15)",boxShadow:cd.glow}}>
+          <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={140} height={140} style={{display:"block",objectFit:"cover"}}/>
+        </div>
+        <div style={{margin:"16px auto 8px",display:"inline-block"}}>
+          <span style={{padding:"4px 16px",borderRadius:20,fontSize:12,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor}}>{cd.stars?cd.stars+" ":"" }{r.label}</span>
+        </div>
+        <p style={{fontSize:28,fontWeight:700,marginTop:12,marginBottom:6,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+        <p style={{fontSize:14,color:"rgba(255,255,255,0.6)",marginBottom:4}}>{type.sub}</p>
+        <p style={{fontSize:13,color:cd.accent,fontWeight:600,marginTop:8}}>出現率 {type.pct}</p>
+        <div style={{margin:"24px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)"}}></div>
+        <p style={{fontSize:12,color:"rgba(255,255,255,0.5)",lineHeight:1.8,padding:"0 10px"}}>{type.desc.slice(0,60)}...</p>
+        <div style={{marginTop:30}}>
+          <p style={{fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.3)"}}>よるのことば</p>
+          <p style={{fontSize:9,color:"rgba(255,255,255,0.2)",marginTop:4}}>yorunokotoba.vercel.app</p>
+        </div>
       </div>
-      <div style={{marginTop:10,marginBottom:8,display:"flex",justifyContent:"center"}}><RarityBadge rarity={type.rarity}/></div>
-      <p style={{fontSize:9,letterSpacing:4,color:"#999",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>your character</p>
-      <p style={{fontSize:24,fontWeight:700,marginBottom:4,background:nameColor,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
-      <p style={{fontSize:13,color:"#666"}}>{type.sub}</p>
-      <p style={{fontSize:12,color:r.color,fontWeight:600,marginTop:6}}>出現率 {type.pct}</p>
-      <p style={{fontSize:9,color:"#bbb",marginTop:10,letterSpacing:2}}>yorunokotoba.vercel.app</p>
-      {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:4,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
+    </div>
+
+    {/* Visible card on page */}
+    <div style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cd.bg,border:cd.border,boxShadow:cd.glow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center",position:"relative",overflow:"hidden"}}>
+      <div style={{position:"absolute",inset:0,background:cd.overlay,borderRadius:24}}></div>
+      <div style={{position:"relative",zIndex:1}}>
+        <div style={{animation:"rarityReveal 0.6s ease both",display:"flex",justifyContent:"center"}}>
+          <div style={{width:100,height:100,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"2px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(255,255,255,0.15)",boxShadow:cd.glow}}>
+            <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={100} height={100} style={{display:"block",objectFit:"cover",animation:"float 3s ease infinite"}}/>
+          </div>
+        </div>
+        <div style={{marginTop:10,marginBottom:6,display:"flex",justifyContent:"center"}}>
+          <span style={{padding:"3px 14px",borderRadius:20,fontSize:11,fontWeight:700,letterSpacing:1,background:cd.labelBg,color:cd.labelColor}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
+        </div>
+        <p style={{fontSize:9,letterSpacing:4,color:"rgba(255,255,255,0.4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:4,marginTop:8}}>your character</p>
+        <p style={{fontSize:24,fontWeight:700,marginBottom:4,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+        <p style={{fontSize:13,color:"rgba(255,255,255,0.6)"}}>{type.sub}</p>
+        <p style={{fontSize:12,color:cd.accent,fontWeight:600,marginTop:6}}>出現率 {type.pct}</p>
+        {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:6,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
+      </div>
     </div>
 
     {/* Today's message */}
