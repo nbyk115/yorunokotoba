@@ -207,7 +207,7 @@ function generateFortune(name,sign,gender){
   const rm=rankMsgs[rank];
 
   // Assign character type: fixed per zodiac sign (like MBTI - your type doesn't change)
-  const signCharacter={"おひつじ座":"hi_no_tora","おうし座":"umi_rakko","ふたご座":"mori_risu","かに座":"hoshi_kuma","しし座":"sora_unicorn","おとめ座":"tsuki_hyou","てんびん座":"hana_panda","さそり座":"kaze_ookami","いて座":"kaze_uma","やぎ座":"niji_koala","みずがめ座":"yuki_hakucho","うお座":"yume_kobuta"};
+  const signCharacter={"おひつじ座":"hi_no_tora","おうし座":"umi_rakko","ふたご座":"mori_risu","かに座":"hoshi_kuma","しし座":"sora_unicorn","おとめ座":"niji_koala","てんびん座":"hana_panda","さそり座":"kaze_ookami","いて座":"kaze_uma","やぎ座":"tsuki_hyou","みずがめ座":"yuki_hakucho","うお座":"yume_kobuta"};
   const charId=signCharacter[sign]||"yume_kobuta";
   const bestType=DREAM_TYPES.find(t=>t.id===charId)||DREAM_TYPES[0];
   return{rank,summary:rm.summary,time:rm.time,risk:rm.risk,personality:sp,lucky:generateLucky(),sign,type:bestType};
@@ -420,7 +420,7 @@ function FortuneTypeCard({type,className=""}){
         <div style={{marginTop:16,marginBottom:4}}>
           <span style={{padding:"5px 18px",borderRadius:20,fontSize:12,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor,display:"inline-block"}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
         </div>
-        <p style={{fontSize:30,fontWeight:700,marginTop:12,marginBottom:6,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+        <p style={{fontSize:30,fontWeight:700,marginTop:12,marginBottom:6,color:cd.accent}}>{type.name}</p>
         <p style={{fontSize:14,color:"#888",marginBottom:4}}>{type.sub}</p>
         <p style={{fontSize:14,color:cd.accent,fontWeight:700,marginTop:4}}>出現率 {type.pct}</p>
         <div style={{margin:"20px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(0,0,0,0.08),transparent)"}}></div>
