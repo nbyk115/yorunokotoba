@@ -355,13 +355,30 @@ function FortuneTypeCard({type,className=""}){
   const [shareMsg,setShareMsg]=useState("");
   const cardRef=useRef(null);
   async function saveImage(){
-    if(!cardRef.current)return;
+    const target=cardRef.current;
+    if(!target)return;
     try{
       setShareMsg("画像を作成中...");
-      cardRef.current.style.display="block";
-      const canvas=await html2canvas(cardRef.current,{backgroundColor:null,scale:3,useCORS:true,logging:false,width:360,height:640});
-      cardRef.current.style.display="none";
-      const dataUrl=canvas.toDataURL("image/png");
+      const canvas=await html2canvas(target,{backgroundColor:"#FFF5F0",scale:3,useCORS:true,logging:false});
+      // Create story-sized canvas (9:16)
+      const storyW=1080;const storyH=1920;
+      const sc=document.createElement("canvas");sc.width=storyW;sc.height=storyH;
+      const ctx=sc.getContext("2d");
+      // Background
+      const grad=ctx.createLinearGradient(0,0,storyW,storyH);
+      grad.addColorStop(0,"#FFF8F5");grad.addColorStop(0.5,"#FFF0EC");grad.addColorStop(1,"#FFF5F0");
+      ctx.fillStyle=grad;ctx.fillRect(0,0,storyW,storyH);
+      // Center the captured card
+      const ratio=Math.min((storyW*0.85)/canvas.width,(storyH*0.7)/canvas.height);
+      const dw=canvas.width*ratio;const dh=canvas.height*ratio;
+      const dx=(storyW-dw)/2;const dy=(storyH-dh)/2-60;
+      ctx.drawImage(canvas,dx,dy,dw,dh);
+      // Watermark
+      ctx.fillStyle="#ccc";ctx.font="28px 'Cormorant',serif";ctx.textAlign="center";
+      ctx.fillText("よるのことば",storyW/2,storyH-120);
+      ctx.font="22px sans-serif";ctx.fillStyle="#ddd";
+      ctx.fillText("yorunokotoba.vercel.app",storyW/2,storyH-80);
+      const dataUrl=sc.toDataURL("image/png");
       if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
         const blob=await(await fetch(dataUrl)).blob();
         const file=new File([blob],"yorunokotoba.png",{type:"image/png"});
@@ -372,7 +389,7 @@ function FortuneTypeCard({type,className=""}){
         setShareMsg("保存したよ！ストーリーに貼ってね");
         setTimeout(()=>setShareMsg(""),3000);
       }
-    }catch(e){setShareMsg("");console.log(e)}
+    }catch(e){setShareMsg("");console.log("saveImage error:",e)}
   }
   function doShare(platform){
     if(platform==="x"){location.href=`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;return}
@@ -400,34 +417,8 @@ function FortuneTypeCard({type,className=""}){
   };
   const cd = cardDesigns[type.rarity] || cardDesigns.N;
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
-    {/* Hidden story card for image export (9:16 vertical) */}
-    <div ref={cardRef} style={{display:"none",position:"absolute",left:"-9999px",width:360,height:640,background:cd.bg,overflow:"hidden",textAlign:"center",fontFamily:"Zen Maru Gothic, sans-serif"}}>
-      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg,animation:"none"}}></div>}
-      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%)",backgroundSize:"200% 200%"}}></div>}
-      {isSSR&&<>{["30,60,8","280,90,12","50,350,6","310,420,10","150,500,5","260,180,7","40,480,9","320,50,4","180,100,11","90,550,6"].map((s,i)=>{const[x,y,sz]=s.split(",");return<div key={i} style={{position:"absolute",left:x+"px",top:y+"px",fontSize:sz+"px",color:"#D4A853",opacity:0.2+Math.random()*0.15}}>✦</div>})}</>}
-      {type.rarity==="SR"&&<>{["40,80,8","290,150,10","60,450,6","280,380,9"].map((s,i)=>{const[x,y,sz]=s.split(",");return<div key={i} style={{position:"absolute",left:x+"px",top:y+"px",fontSize:sz+"px",color:"#7B8CDE",opacity:0.15+Math.random()*0.1}}>✦</div>})}</>}
-      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",padding:"0 30px"}}>
-        <p style={{fontSize:10,letterSpacing:6,color:"#bbb",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:12}}>your character</p>
-        <div style={{width:160,height:160,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"3px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)",boxShadow:cd.glow}}>
-          <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={160} height={160} style={{display:"block",objectFit:"cover"}}/>
-        </div>
-        <div style={{marginTop:16,marginBottom:4}}>
-          <span style={{padding:"5px 18px",borderRadius:20,fontSize:12,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor,display:"inline-block"}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
-        </div>
-        <p style={{fontSize:30,fontWeight:700,marginTop:12,marginBottom:6,color:cd.accent}}>{type.name}</p>
-        <p style={{fontSize:14,color:"#888",marginBottom:4}}>{type.sub}</p>
-        <p style={{fontSize:14,color:cd.accent,fontWeight:700,marginTop:4}}>出現率 {type.pct}</p>
-        <div style={{margin:"20px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(0,0,0,0.08),transparent)"}}></div>
-        <p style={{fontSize:12,color:"#999",lineHeight:1.8,padding:"0 10px"}}>{type.desc.slice(0,60)}...</p>
-        <div style={{marginTop:24}}>
-          <p style={{fontSize:11,letterSpacing:3,color:"#ccc",fontFamily:"Cormorant, serif"}}>よるのことば</p>
-          <p style={{fontSize:9,color:"#ddd",marginTop:4}}>yorunokotoba.vercel.app</p>
-        </div>
-      </div>
-    </div>
-
-    {/* Visible card on page */}
-    <div style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cd.bg,border:cd.border,boxShadow:cd.glow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center",position:"relative",overflow:"hidden"}}>
+    {/* Visible card on page - also used for image capture */}
+    <div ref={cardRef} style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cd.bg,border:cd.border,boxShadow:cd.glow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center",position:"relative",overflow:"hidden"}}>
       {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg,borderRadius:24}}></div>}
       {cd.shimmer&&<div className="holo-shimmer" style={{position:"absolute",inset:0,background:"linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.5) 50%,transparent 70%)",backgroundSize:"200% 200%",borderRadius:24,animation:"holoShimmer 3s ease infinite"}}></div>}
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
