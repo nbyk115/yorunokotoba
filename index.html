@@ -374,7 +374,7 @@ function FortuneTypeCard({type,className=""}){
     if(!cardRef.current)return;
     try{
       setShareMsg("画像を作成中...");
-      const canvas=await html2canvas(cardRef.current,{backgroundColor:"#FFF5F0",scale:2,useCORS:true,logging:false});
+      const canvas=await html2canvas(cardRef.current,{backgroundColor:"#FFF5F0",scale:3,useCORS:true,logging:false,width:cardRef.current.offsetWidth,height:cardRef.current.offsetHeight});
       const dataUrl=canvas.toDataURL("image/png");
       if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
         const blob=await(await fetch(dataUrl)).blob();
@@ -396,18 +396,31 @@ function FortuneTypeCard({type,className=""}){
     setCopied(true);setShareMsg("コピーしました！好きなアプリに貼り付けてね");
     setTimeout(()=>{setCopied(false);setShareMsg("")},3000);
   }
+  // Convert hex to rgba for proper transparency
+  function hexToRgba(hex, alpha) {
+    const h = hex.replace('#','');
+    const r = parseInt(h.substring(0,2),16);
+    const g = parseInt(h.substring(2,4),16);
+    const b = parseInt(h.substring(4,6),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  const tc = type.color;
+  const cardBg = isSSR ? "linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))" : `linear-gradient(135deg,${hexToRgba(tc,0.1)},${hexToRgba(tc,0.03)})`;
+  const cardBorder = isSSR ? `2px solid ${r.border}` : `1px solid ${hexToRgba(tc,0.15)}`;
+  const cardShadow = isSSR ? r.glow : `0 4px 24px ${hexToRgba(tc,0.08)}`;
+  const nameColor = isSSR ? "linear-gradient(135deg,#E8627C,#D4A853,#B08ACF)" : `linear-gradient(135deg,${tc},#E8627C)`;
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
-    <div ref={cardRef} style={{display:"inline-block",padding:"24px 32px",borderRadius:24,background:isSSR?"linear-gradient(135deg,rgba(232,98,124,0.12),rgba(212,168,83,0.08),rgba(176,138,207,0.1))":`linear-gradient(135deg,${type.color}12,${type.color}06)`,border:isSSR?`2px solid ${r.border}`:`1px solid ${type.color}20`,marginBottom:16,boxShadow:isSSR?r.glow:`0 4px 24px ${type.color}08`,animation:isSSR?"rarityGlow 3s ease infinite":"none"}}>
-      <div style={{animation:"rarityReveal 0.6s ease both"}}>
+    <div ref={cardRef} style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cardBg,border:cardBorder,boxShadow:cardShadow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center"}}>
+      <div style={{animation:"rarityReveal 0.6s ease both",display:"flex",justifyContent:"center"}}>
         <CharaAvatar id={type.id} size={80} animate={true}/>
       </div>
-      <div style={{marginTop:8,marginBottom:8}}><RarityBadge rarity={type.rarity}/></div>
-      <p style={{fontSize:9,letterSpacing:4,color:"var(--t4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>your character</p>
-      <p style={{fontSize:24,fontWeight:700,marginBottom:2,background:isSSR?"linear-gradient(135deg,#E8627C,#D4A853,#B08ACF)":`linear-gradient(135deg,${type.color},var(--rose))`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
-      <p style={{fontSize:12,color:"var(--t2)"}}>{type.sub}</p>
-      <p style={{fontSize:11,color:r.color,fontWeight:600,marginTop:4}}>出現率 {type.pct}</p>
-      <p style={{fontSize:9,color:"var(--t4)",marginTop:8,letterSpacing:2}}>yorunokotoba.vercel.app</p>
-      {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:2,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
+      <div style={{marginTop:10,marginBottom:8,display:"flex",justifyContent:"center"}}><RarityBadge rarity={type.rarity}/></div>
+      <p style={{fontSize:9,letterSpacing:4,color:"#999",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>your character</p>
+      <p style={{fontSize:24,fontWeight:700,marginBottom:4,background:nameColor,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+      <p style={{fontSize:13,color:"#666"}}>{type.sub}</p>
+      <p style={{fontSize:12,color:r.color,fontWeight:600,marginTop:6}}>出現率 {type.pct}</p>
+      <p style={{fontSize:9,color:"#bbb",marginTop:10,letterSpacing:2}}>yorunokotoba.vercel.app</p>
+      {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:4,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
     </div>
 
     {/* Today's message */}
