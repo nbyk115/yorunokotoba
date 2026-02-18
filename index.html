@@ -355,7 +355,7 @@ function FortuneTypeCard({type,className=""}){
   const todayMsg=getTodayMessage(type.id);
   const [showShare,setShowShare]=useState(false);
   const [copied,setCopied]=useState(false);
-  const shareText=`${type.name}（${type.sub}）\n${type.share}\n\n夢占い×ホロスコープ「よるのことば」`;
+  const shareText=`私のホロスコープタイプは「${type.name}」だった！🔮\n${type.sub}タイプらしい…当たりすぎてちょっと怖い😂\n\nあなたは何タイプ？👇`;
   const shareUrl="https://yorunokotoba.vercel.app";
   const fullText=shareText+"\n"+shareUrl;
   const [shareMsg,setShareMsg]=useState("");
@@ -365,7 +365,7 @@ function FortuneTypeCard({type,className=""}){
     try{
       setShareMsg("画像を作成中...");
       cardRef.current.style.display="block";
-      const canvas=await html2canvas(cardRef.current,{backgroundColor:null,scale:2,useCORS:true,logging:false,width:360,height:640});
+      const canvas=await html2canvas(cardRef.current,{backgroundColor:null,scale:3,useCORS:true,logging:false,width:360,height:640});
       cardRef.current.style.display="none";
       const dataUrl=canvas.toDataURL("image/png");
       if(navigator.share&&/iPhone|iPad|Android/.test(navigator.userAgent)){
@@ -381,8 +381,8 @@ function FortuneTypeCard({type,className=""}){
     }catch(e){setShareMsg("");console.log(e)}
   }
   function doShare(platform){
-    if(platform==="x"){window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,"_blank");return}
-    if(platform==="line"){window.open(`https://line.me/R/share?text=${encodeURIComponent(fullText)}`,"_blank");return}
+    if(platform==="x"){location.href=`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;return}
+    if(platform==="line"){location.href=`https://line.me/R/share?text=${encodeURIComponent(fullText)}`;return}
     if(platform==="native"&&navigator.share){navigator.share({title:"よるのことば",text:shareText,url:shareUrl}).catch(()=>{});return}
     const ta=document.createElement("textarea");ta.value=fullText;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(ta);
     setCopied(true);setShareMsg("コピーしました！好きなアプリに貼り付けてね");
