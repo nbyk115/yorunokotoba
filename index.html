@@ -284,18 +284,12 @@ function Card({children,className="",style={}}){return<div className={className}
 
 const LINE_URL="";
 function PremiumCTA({style={}}){
-  const features=[{icon:"🔮",label:"未来予兆リーディング"},{icon:"💕",label:"相性診断"},{icon:"📅",label:"月間運勢カレンダー"},{icon:"🧬",label:"深層心理アタッチメント分析"}];
-  return<div className="slide-up-4" style={{background:"linear-gradient(135deg,rgba(232,98,124,0.05),rgba(176,138,207,0.06))",border:"1px solid rgba(232,98,124,0.12)",borderRadius:18,padding:"24px 22px",textAlign:"center",position:"relative",overflow:"hidden",...style}}>
+  return<div className="slide-up-4" style={{background:"linear-gradient(135deg,rgba(232,98,124,0.05),rgba(176,138,207,0.06))",border:"1px solid rgba(232,98,124,0.12)",borderRadius:18,padding:"20px 22px",textAlign:"center",position:"relative",overflow:"hidden",...style}}>
   <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"var(--grad2)"}}/>
   <p style={{fontSize:14,fontWeight:700,color:"var(--t1)",marginBottom:4,letterSpacing:1}}>✦ Premium ✦</p>
-  <p style={{fontSize:10,color:"var(--t3)",marginBottom:16,letterSpacing:2}}>COMING SOON</p>
-  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:16}}>
-    {features.map((f,i)=><div key={i} style={{padding:"10px 8px",borderRadius:12,background:"rgba(255,255,255,0.6)",border:"1px solid rgba(232,98,124,0.06)"}}>
-      <span style={{fontSize:16}}>{f.icon}</span>
-      <p style={{fontSize:10,color:"var(--t2)",marginTop:4,fontWeight:500,lineHeight:1.4}}>{f.label}</p>
-    </div>)}
-  </div>
-  <div style={{padding:"12px 0",borderRadius:14,background:"rgba(58,40,48,0.04)",color:"var(--t3)",fontSize:12,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",letterSpacing:1}}>もうすぐ公開</div>
+  <p style={{fontSize:10,color:"var(--t3)",marginBottom:10,letterSpacing:2}}>COMING SOON</p>
+  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>相性診断・月間カレンダー・深層心理分析など</p>
+  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>もっと深く読み解く機能を準備中</p>
 </div>}
 
 function LuckySection({lucky,className=""}){
@@ -743,16 +737,6 @@ function App(){
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
 
-        {/* Premium locked */}
-        <div className="slide-up-5" style={{marginBottom:20}}>
-          <p style={{fontSize:13,fontWeight:700,marginBottom:10,color:"var(--t3)"}}>もっと深く知る</p>
-          {[{icon:"💕",title:"相性診断",desc:"気になるあの人との星座別マッチ度"},{icon:"🏮",title:"東洋占術・五行",desc:"五行バランスと吉方位の開運アクション"},{icon:"📅",title:"今月の運勢カレンダー",desc:"転機・チャンス・注意日を日別で"}].map((sec,i)=><div key={i} className="hover-lift" style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderRadius:14,background:"rgba(255,255,255,0.5)",border:"1px solid var(--border)",marginBottom:6,cursor:"pointer"}}>
-            <span style={{fontSize:18}}>{sec.icon}</span>
-            <div style={{flex:1}}><p style={{fontSize:12,fontWeight:700,color:"var(--t1)"}}>{sec.title}</p><p style={{fontSize:10,color:"var(--t3)",marginTop:1}}>{sec.desc}</p></div>
-            <span style={{fontSize:9,padding:"3px 8px",borderRadius:6,background:"rgba(232,98,124,0.06)",color:"var(--rose)",fontWeight:700}}>🔒</span>
-          </div>)}
-        </div>
-
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
@@ -789,19 +773,6 @@ function App(){
         </Card>
 
         <LuckySection lucky={dreamResult.lucky} className="slide-up-4"/>
-
-        {/* Premium locked sections */}
-        <div className="slide-up-5" style={{marginBottom:16}}>
-          <p style={{fontSize:13,fontWeight:700,marginBottom:12,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>もっと深く読み解く</p>
-          {[{icon:"🔮",title:"未来予兆リーディング",desc:"この夢が暗示する近い未来の出来事"},{icon:"💕",title:"恋愛・対人の深層",desc:"夢に出てきた人物の本当の意味"},{icon:"🧠",title:"深層心理カルテ",desc:"繰り返す夢のパターンから心の状態を診断"}].map((sec,i)=><div key={i} className="hover-lift" style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",borderRadius:14,background:"rgba(255,255,255,0.6)",border:"1px solid var(--border)",marginBottom:6,cursor:"pointer"}}>
-            <span style={{fontSize:20,flexShrink:0}}>{sec.icon}</span>
-            <div style={{flex:1}}>
-              <p style={{fontSize:12,fontWeight:700,color:"var(--t1)"}}>{sec.title}</p>
-              <p style={{fontSize:10,color:"var(--t3)",marginTop:1}}>{sec.desc}</p>
-            </div>
-            <span style={{fontSize:9,padding:"3px 8px",borderRadius:6,background:"rgba(232,98,124,0.08)",color:"var(--rose)",fontWeight:700}}>🔒</span>
-          </div>)}
-        </div>
 
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
