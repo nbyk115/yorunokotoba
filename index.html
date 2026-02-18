@@ -57,7 +57,7 @@ body{background:#FFF5F0;overscroll-behavior:none;-webkit-tap-highlight-color:tra
 :root{--bg1:#FFF5F0;--rose:#E8627C;--pink:#D4506A;--blush:#F2A0B0;--lavender:#B08ACF;--gold:#D4A853;--card:rgba(255,255,255,0.65);--border:rgba(180,140,140,0.12);--t1:#3A2830;--t2:rgba(58,40,48,0.72);--t3:rgba(58,40,48,0.45);--t4:rgba(58,40,48,0.28);--grad:linear-gradient(135deg,#E8627C,#D4506A);--grad2:linear-gradient(135deg,#E8627C,#B08ACF);--shadow:0 2px 16px rgba(180,100,120,0.08)}
 textarea:focus,input:focus{outline:none}
 .fade-in{animation:fadeIn .5s ease both}.slide-up{animation:slideUp .45s ease both}.slide-up-1{animation:slideUp .45s .05s ease both;opacity:0}.slide-up-2{animation:slideUp .45s .1s ease both;opacity:0}.slide-up-3{animation:slideUp .45s .15s ease both;opacity:0}.slide-up-4{animation:slideUp .45s .2s ease both;opacity:0}.slide-up-5{animation:slideUp .45s .25s ease both;opacity:0}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes twinkle{0%,100%{opacity:.08}50%{opacity:.35}}@keyframes rarityGlow{0%,100%{box-shadow:0 0 8px rgba(232,98,124,0.2)}50%{box-shadow:0 0 20px rgba(232,98,124,0.4)}}@keyframes rarityReveal{0%{transform:scale(0.3) rotate(-10deg);opacity:0}60%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes confetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(-60px) rotate(360deg);opacity:0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes twinkle{0%,100%{opacity:.08}50%{opacity:.35}}@keyframes rarityGlow{0%,100%{box-shadow:0 0 8px rgba(232,98,124,0.2)}50%{box-shadow:0 0 20px rgba(232,98,124,0.4)}}@keyframes rarityReveal{0%{transform:scale(0.3) rotate(-10deg);opacity:0}60%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes confetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(-60px) rotate(360deg);opacity:0}}@keyframes holoShimmer{0%{background-position:200% 200%}50%{background-position:0% 0%}100%{background-position:200% 200%}}
 .hover-lift{transition:all .2s}.hover-lift:active{transform:scale(0.98)}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 </style>
 </head>
@@ -206,20 +206,10 @@ function generateFortune(name,sign,gender){
   };
   const rm=rankMsgs[rank];
 
-  // Assign a character type based on sign + date + random
-  const signAffinities={"おひつじ座":["hi_no_tora","kaze_uma","sora_unicorn"],"おうし座":["umi_rakko","hana_panda","niji_koala"],"ふたご座":["mori_risu","kaze_uma","tsuki_hyou"],"かに座":["hoshi_kuma","yuki_hakucho","hana_panda"],"しし座":["sora_unicorn","hi_no_tora","kaze_ookami"],"おとめ座":["tsuki_hyou","niji_koala","umi_rakko"],"てんびん座":["hana_panda","yuki_hakucho","tsuki_hyou"],"さそり座":["kaze_ookami","tsuki_hyou","sora_unicorn"],"いて座":["kaze_uma","hi_no_tora","sora_unicorn"],"やぎ座":["tsuki_hyou","hoshi_kuma","kaze_ookami"],"みずがめ座":["sora_unicorn","niji_koala","kaze_ookami"],"うお座":["yuki_hakucho","yume_kobuta","umi_rakko"]};
-  const affList=signAffinities[sign]||["yume_kobuta","mori_risu","hana_panda"];
-  const dayHash=(d.getFullYear()*367+d.getMonth()*31+d.getDate())%100;
-  const rarityBoost={N:0,R:2,SR:4,SSR:6};
-  let scores={};DREAM_TYPES.forEach(t=>{
-    const base={N:8,R:6,SR:4,SSR:2}[t.rarity];
-    let s=Math.random()*base;
-    if(t.id===affList[0])s+=3+(dayHash%2);
-    else if(t.id===affList[1])s+=2;
-    else if(t.id===affList[2])s+=1.5;
-    scores[t.id]=s;
-  });
-  let bestType=DREAM_TYPES[0];DREAM_TYPES.forEach(t=>{if(scores[t.id]>scores[bestType.id])bestType=t});
+  // Assign character type: fixed per zodiac sign (like MBTI - your type doesn't change)
+  const signCharacter={"おひつじ座":"hi_no_tora","おうし座":"umi_rakko","ふたご座":"mori_risu","かに座":"hoshi_kuma","しし座":"sora_unicorn","おとめ座":"tsuki_hyou","てんびん座":"hana_panda","さそり座":"kaze_ookami","いて座":"kaze_uma","やぎ座":"niji_koala","みずがめ座":"yuki_hakucho","うお座":"yume_kobuta"};
+  const charId=signCharacter[sign]||"yume_kobuta";
+  const bestType=DREAM_TYPES.find(t=>t.id===charId)||DREAM_TYPES[0];
   return{rank,summary:rm.summary,time:rm.time,risk:rm.risk,personality:sp,lucky:generateLucky(),sign,type:bestType};
 }
 
@@ -407,55 +397,57 @@ function FortuneTypeCard({type,className=""}){
     return `rgba(${rr},${gg},${bb},${alpha})`;
   }
   const tc = type.color;
-  // Rarity-based card designs
+  // Rarity-based card designs (light base, bikkuriman style for rare)
   const cardDesigns = {
-    SSR: {bg:"linear-gradient(160deg,#1a0a2e 0%,#2d1b4e 30%,#1a0a2e 50%,#2d1b4e 70%,#1a0a2e 100%)",border:"2px solid #D4A853",accent:"#D4A853",nameGrad:"linear-gradient(135deg,#FFD700,#FFA500,#FF6B9D,#C084FC,#FFD700)",stars:"✦ ✦ ✦",labelBg:"linear-gradient(90deg,#D4A853,#FFD700)",labelColor:"#1a0a2e",glow:"0 0 40px rgba(212,168,83,0.4),0 0 80px rgba(212,168,83,0.15)",overlay:"radial-gradient(ellipse at 30% 20%,rgba(212,168,83,0.15),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(200,100,200,0.1),transparent 50%)"},
-    SR: {bg:"linear-gradient(160deg,#0f1628 0%,#1a2544 40%,#0f1628 100%)",border:"2px solid #7B8CDE",accent:"#7B8CDE",nameGrad:"linear-gradient(135deg,#7B8CDE,#A78BFA,#7B8CDE)",stars:"✦ ✦",labelBg:"linear-gradient(90deg,#7B8CDE,#A78BFA)",labelColor:"#fff",glow:"0 0 30px rgba(123,140,222,0.3)",overlay:"radial-gradient(ellipse at 50% 30%,rgba(123,140,222,0.12),transparent 60%)"},
-    R: {bg:"linear-gradient(160deg,#1a1520 0%,#2a2030 40%,#1a1520 100%)",border:"1.5px solid #E8627C",accent:"#E8627C",nameGrad:"linear-gradient(135deg,#E8627C,#F093A0,#E8627C)",stars:"✦",labelBg:"#E8627C",labelColor:"#fff",glow:"0 0 20px rgba(232,98,124,0.2)",overlay:"radial-gradient(ellipse at 50% 40%,rgba(232,98,124,0.08),transparent 60%)"},
-    N: {bg:"linear-gradient(160deg,#1a1520 0%,#221c28 40%,#1a1520 100%)",border:"1px solid rgba(255,255,255,0.1)",accent:"#ccc",nameGrad:`linear-gradient(135deg,${tc},#E8627C)`,stars:"",labelBg:"rgba(255,255,255,0.15)",labelColor:"#ccc",glow:"none",overlay:"radial-gradient(ellipse at 50% 40%,rgba(255,255,255,0.03),transparent 60%)"}
+    SSR: {bg:"linear-gradient(135deg,#FFF8F0,#FFF0E8,#FFF5F0)",border:"3px solid #D4A853",accent:"#D4A853",nameGrad:"linear-gradient(135deg,#D4A853,#FF6B9D,#C084FC,#D4A853)",stars:"✦ ✦ ✦",labelBg:"linear-gradient(90deg,#D4A853,#FFD700,#D4A853)",labelColor:"#5a3800",glow:"0 0 20px rgba(212,168,83,0.35),0 0 60px rgba(212,168,83,0.1)",holoBg:"conic-gradient(from 0deg at 50% 50%,rgba(255,215,0,0.15),rgba(255,107,157,0.1),rgba(192,132,252,0.1),rgba(100,200,255,0.08),rgba(255,215,0,0.15))",shimmer:true},
+    SR: {bg:"linear-gradient(135deg,#F5F0FF,#EEF0FF,#F8F5FF)",border:"2px solid #7B8CDE",accent:"#7B8CDE",nameGrad:"linear-gradient(135deg,#7B8CDE,#A78BFA)",stars:"✦ ✦",labelBg:"linear-gradient(90deg,#7B8CDE,#A78BFA)",labelColor:"#fff",glow:"0 0 15px rgba(123,140,222,0.25)",holoBg:"conic-gradient(from 0deg at 50% 50%,rgba(123,140,222,0.1),rgba(167,139,250,0.08),rgba(100,180,255,0.06),rgba(123,140,222,0.1))",shimmer:true},
+    R: {bg:"linear-gradient(135deg,#FFF5F5,#FFF0F3,#FFF5F5)",border:"2px solid #E8627C",accent:"#E8627C",nameGrad:"linear-gradient(135deg,#E8627C,#F093A0)",stars:"✦",labelBg:"#E8627C",labelColor:"#fff",glow:"0 0 10px rgba(232,98,124,0.15)",holoBg:"none",shimmer:false},
+    N: {bg:"linear-gradient(135deg,#FFF8F5,#FFF5F0,#FFF8F5)",border:"1px solid rgba(200,160,180,0.25)",accent:"#E8627C",nameGrad:`linear-gradient(135deg,${tc},#E8627C)`,stars:"",labelBg:"rgba(232,98,124,0.08)",labelColor:"#E8627C",glow:"0 4px 20px rgba(0,0,0,0.04)",holoBg:"none",shimmer:false}
   };
   const cd = cardDesigns[type.rarity] || cardDesigns.N;
   return<div className={className} style={{textAlign:"center",margin:"24px 0"}}>
     {/* Hidden story card for image export (9:16 vertical) */}
-    <div ref={cardRef} style={{display:"none",position:"absolute",left:"-9999px",width:360,height:640,background:cd.bg,borderRadius:0,overflow:"hidden",textAlign:"center",fontFamily:"Zen Maru Gothic, sans-serif"}}>
-      <div style={{position:"absolute",inset:0,background:cd.overlay}}></div>
-      {isSSR&&<><div style={{position:"absolute",top:40,left:30,fontSize:10,opacity:0.3,color:"#D4A853"}}>✦</div><div style={{position:"absolute",top:80,right:40,fontSize:14,opacity:0.2,color:"#D4A853"}}>✦</div><div style={{position:"absolute",bottom:120,left:50,fontSize:8,opacity:0.25,color:"#D4A853"}}>✦</div><div style={{position:"absolute",top:200,right:60,fontSize:6,opacity:0.2,color:"#D4A853"}}>✦</div><div style={{position:"absolute",bottom:200,right:30,fontSize:12,opacity:0.15,color:"#D4A853"}}>✦</div></>}
-      {(type.rarity==="SR")&&<><div style={{position:"absolute",top:50,right:50,fontSize:8,opacity:0.2,color:"#7B8CDE"}}>✦</div><div style={{position:"absolute",bottom:150,left:40,fontSize:10,opacity:0.15,color:"#7B8CDE"}}>✦</div></>}
-      <div style={{position:"relative",zIndex:1,padding:"60px 30px 40px"}}>
-        <p style={{fontSize:10,letterSpacing:6,color:"rgba(255,255,255,0.4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:6}}>your character</p>
-        <div style={{width:140,height:140,margin:"16px auto",borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"2px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(255,255,255,0.15)",boxShadow:cd.glow}}>
-          <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={140} height={140} style={{display:"block",objectFit:"cover"}}/>
+    <div ref={cardRef} style={{display:"none",position:"absolute",left:"-9999px",width:360,height:640,background:cd.bg,overflow:"hidden",textAlign:"center",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg,animation:"none"}}></div>}
+      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:"linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.4) 50%,transparent 70%)",backgroundSize:"200% 200%"}}></div>}
+      {isSSR&&<>{["30,60,8","280,90,12","50,350,6","310,420,10","150,500,5","260,180,7","40,480,9","320,50,4","180,100,11","90,550,6"].map((s,i)=>{const[x,y,sz]=s.split(",");return<div key={i} style={{position:"absolute",left:x+"px",top:y+"px",fontSize:sz+"px",color:"#D4A853",opacity:0.2+Math.random()*0.15}}>✦</div>})}</>}
+      {type.rarity==="SR"&&<>{["40,80,8","290,150,10","60,450,6","280,380,9"].map((s,i)=>{const[x,y,sz]=s.split(",");return<div key={i} style={{position:"absolute",left:x+"px",top:y+"px",fontSize:sz+"px",color:"#7B8CDE",opacity:0.15+Math.random()*0.1}}>✦</div>})}</>}
+      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",padding:"0 30px"}}>
+        <p style={{fontSize:10,letterSpacing:6,color:"#bbb",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:12}}>your character</p>
+        <div style={{width:160,height:160,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"3px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)",boxShadow:cd.glow}}>
+          <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={160} height={160} style={{display:"block",objectFit:"cover"}}/>
         </div>
-        <div style={{margin:"16px auto 8px",display:"inline-block"}}>
-          <span style={{padding:"4px 16px",borderRadius:20,fontSize:12,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor}}>{cd.stars?cd.stars+" ":"" }{r.label}</span>
+        <div style={{marginTop:16,marginBottom:4}}>
+          <span style={{padding:"5px 18px",borderRadius:20,fontSize:12,fontWeight:700,letterSpacing:2,background:cd.labelBg,color:cd.labelColor,display:"inline-block"}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
         </div>
-        <p style={{fontSize:28,fontWeight:700,marginTop:12,marginBottom:6,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
-        <p style={{fontSize:14,color:"rgba(255,255,255,0.6)",marginBottom:4}}>{type.sub}</p>
-        <p style={{fontSize:13,color:cd.accent,fontWeight:600,marginTop:8}}>出現率 {type.pct}</p>
-        <div style={{margin:"24px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)"}}></div>
-        <p style={{fontSize:12,color:"rgba(255,255,255,0.5)",lineHeight:1.8,padding:"0 10px"}}>{type.desc.slice(0,60)}...</p>
-        <div style={{marginTop:30}}>
-          <p style={{fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.3)"}}>よるのことば</p>
-          <p style={{fontSize:9,color:"rgba(255,255,255,0.2)",marginTop:4}}>yorunokotoba.vercel.app</p>
+        <p style={{fontSize:30,fontWeight:700,marginTop:12,marginBottom:6,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
+        <p style={{fontSize:14,color:"#888",marginBottom:4}}>{type.sub}</p>
+        <p style={{fontSize:14,color:cd.accent,fontWeight:700,marginTop:4}}>出現率 {type.pct}</p>
+        <div style={{margin:"20px auto",width:200,height:1,background:"linear-gradient(90deg,transparent,rgba(0,0,0,0.08),transparent)"}}></div>
+        <p style={{fontSize:12,color:"#999",lineHeight:1.8,padding:"0 10px"}}>{type.desc.slice(0,60)}...</p>
+        <div style={{marginTop:24}}>
+          <p style={{fontSize:11,letterSpacing:3,color:"#ccc",fontFamily:"Cormorant, serif"}}>よるのことば</p>
+          <p style={{fontSize:9,color:"#ddd",marginTop:4}}>yorunokotoba.vercel.app</p>
         </div>
       </div>
     </div>
 
     {/* Visible card on page */}
     <div style={{width:"100%",maxWidth:320,margin:"0 auto 16px",padding:"28px 24px",borderRadius:24,background:cd.bg,border:cd.border,boxShadow:cd.glow,animation:isSSR?"rarityGlow 3s ease infinite":"none",textAlign:"center",position:"relative",overflow:"hidden"}}>
-      <div style={{position:"absolute",inset:0,background:cd.overlay,borderRadius:24}}></div>
-      <div style={{position:"relative",zIndex:1}}>
-        <div style={{animation:"rarityReveal 0.6s ease both",display:"flex",justifyContent:"center"}}>
-          <div style={{width:100,height:100,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"2px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(255,255,255,0.15)",boxShadow:cd.glow}}>
-            <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={100} height={100} style={{display:"block",objectFit:"cover",animation:"float 3s ease infinite"}}/>
+      {cd.shimmer&&<div style={{position:"absolute",inset:0,background:cd.holoBg,borderRadius:24}}></div>}
+      {cd.shimmer&&<div className="holo-shimmer" style={{position:"absolute",inset:0,background:"linear-gradient(135deg,transparent 30%,rgba(255,255,255,0.5) 50%,transparent 70%)",backgroundSize:"200% 200%",borderRadius:24,animation:"holoShimmer 3s ease infinite"}}></div>}
+      <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+        <div style={{animation:"rarityReveal 0.6s ease both"}}>
+          <div style={{width:110,height:110,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"3px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)",boxShadow:cd.glow}}>
+            <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={110} height={110} style={{display:"block",objectFit:"cover",animation:"float 3s ease infinite"}}/>
           </div>
         </div>
-        <div style={{marginTop:10,marginBottom:6,display:"flex",justifyContent:"center"}}>
-          <span style={{padding:"3px 14px",borderRadius:20,fontSize:11,fontWeight:700,letterSpacing:1,background:cd.labelBg,color:cd.labelColor}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
+        <div style={{marginTop:12,marginBottom:6}}>
+          <span style={{padding:"4px 16px",borderRadius:20,fontSize:11,fontWeight:700,letterSpacing:1,background:cd.labelBg,color:cd.labelColor,display:"inline-block"}}>{cd.stars?cd.stars+" ":""}{r.label}</span>
         </div>
-        <p style={{fontSize:9,letterSpacing:4,color:"rgba(255,255,255,0.4)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:4,marginTop:8}}>your character</p>
+        <p style={{fontSize:9,letterSpacing:4,color:"#bbb",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:4,marginTop:4}}>your character</p>
         <p style={{fontSize:24,fontWeight:700,marginBottom:4,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
-        <p style={{fontSize:13,color:"rgba(255,255,255,0.6)"}}>{type.sub}</p>
+        <p style={{fontSize:13,color:"#888"}}>{type.sub}</p>
         <p style={{fontSize:12,color:cd.accent,fontWeight:600,marginTop:6}}>出現率 {type.pct}</p>
         {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:6,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
       </div>
