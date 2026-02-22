@@ -27,11 +27,8 @@ var VERSION_HISTORY = [
 
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
-  var lastSeenVersion = localStorage.getItem('lastSeenVersion');
-  if (!lastSeenVersion || lastSeenVersion !== APP_VERSION.version) {
-    return true;
-  }
-  return false;
+  // 常に表示（テスト用）
+  return true;
 }
 
 // バージョン情報を記録
