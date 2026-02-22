@@ -919,16 +919,22 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 // ============================================
 // 新12体データの統合
 // ============================================
-if (typeof NEW_CHARACTER_DATA !== 'undefined' && typeof DREAM_TYPES !== 'undefined') {
-  const newDreamTypes = Object.values(NEW_CHARACTER_DATA);
-  DREAM_TYPES.push(...newDreamTypes);
-  
-  if (typeof NEW_CHARA_IMAGES !== 'undefined' && typeof CHARA_IMAGES !== 'undefined') {
-    Object.assign(CHARA_IMAGES, NEW_CHARA_IMAGES);
-  }
-  
-  console.log('✅ 新12体を統合しました。全', DREAM_TYPES.length, '体');
-}
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    if (typeof NEW_CHARACTER_DATA !== 'undefined' && typeof DREAM_TYPES !== 'undefined') {
+      const newDreamTypes = Object.values(NEW_CHARACTER_DATA);
+      DREAM_TYPES.push(...newDreamTypes);
+      
+      if (typeof NEW_CHARA_IMAGES !== 'undefined' && typeof CHARA_IMAGES !== 'undefined') {
+        Object.assign(CHARA_IMAGES, NEW_CHARA_IMAGES);
+      }
+      
+      console.log('✅ 新12体を統合しました。全', DREAM_TYPES.length, '体');
+    } else {
+      console.error('❌ 統合失敗: DREAM_TYPES=', typeof DREAM_TYPES, 'NEW_CHARACTER_DATA=', typeof NEW_CHARACTER_DATA);
+    }
+  }, 200);
+});
 </script>
 </body>
 </html>
