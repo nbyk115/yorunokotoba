@@ -538,15 +538,15 @@ function FortuneTypeCard({type,className=""}){
         <p style={{fontSize:12,color:"var(--rose)",fontWeight:700}}>✓ {shareMsg}</p>
       </div>}
     </div>
-
-    {/* v8.0.0 プレミアムCTA */}
+    
+    {/* プレミアム機能の案内 */}
     <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:15,padding:25,marginTop:20,textAlign:"center",position:"relative",overflow:"hidden"}}>
       <div style={{position:"relative",zIndex:1}}>
         <div style={{fontSize:24,marginBottom:10}}>✨💕</div>
         <h3 style={{color:"white",fontSize:20,fontWeight:"bold",marginBottom:10}}>二人の相性を詳しく診断</h3>
         <p style={{color:"rgba(255,255,255,0.9)",fontSize:14,lineHeight:1.6,marginBottom:20}}>気になるあの人との相性は？<br/>24パターンの詳細診断で、二人の未来が見えてくる</p>
-        <div style={{backgroundColor:"white",color:"#667eea",border:"none",borderRadius:25,padding:"15px 40px",fontSize:16,fontWeight:"bold",cursor:"pointer",boxShadow:"0 4px 15px rgba(0,0,0,0.2)",display:"inline-block"}}>相性診断（準備中）</div>
-        <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,marginTop:15}}>近日公開予定</p>
+        <div style={{backgroundColor:"white",color:"#667eea",border:"none",borderRadius:25,padding:"15px 40px",fontSize:16,fontWeight:"bold",cursor:"pointer",boxShadow:"0 4px 15px rgba(0,0,0,0.2)",display:"inline-block"}}>相性診断（近日公開）</div>
+        <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,marginTop:15}}>準備中</p>
       </div>
     </div>
 
@@ -913,6 +913,22 @@ function App(){
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+
+<script>
+// ============================================
+// 新12体データの統合
+// ============================================
+if (typeof NEW_CHARACTER_DATA !== 'undefined' && typeof DREAM_TYPES !== 'undefined') {
+  const newDreamTypes = Object.values(NEW_CHARACTER_DATA);
+  DREAM_TYPES.push(...newDreamTypes);
+  
+  if (typeof NEW_CHARA_IMAGES !== 'undefined' && typeof CHARA_IMAGES !== 'undefined') {
+    Object.assign(CHARA_IMAGES, NEW_CHARA_IMAGES);
+  }
+  
+  console.log('✅ 新12体を統合しました。全', DREAM_TYPES.length, '体');
+}
 </script>
 </body>
 </html>
