@@ -61,7 +61,7 @@ textarea:focus,input:focus{outline:none}
 .hover-lift{transition:all .2s}.hover-lift:active{transform:scale(0.98)}.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 </style>
 
-<!-- v8.0.0 新機能 -->
+<!-- 新機能 -->
 <script src="./new_12_characters_complete.js"></script>
 <script src="./update_notification_system.js"></script>
 <script src="./premium_features_complete.js"></script>
@@ -291,13 +291,7 @@ function Card({children,className="",style={}}){return<div className={className}
 
 const LINE_URL="";
 function PremiumCTA({style={}}){
-  return<div className="slide-up-4" style={{background:"linear-gradient(135deg,rgba(232,98,124,0.05),rgba(176,138,207,0.06))",border:"1px solid rgba(232,98,124,0.12)",borderRadius:18,padding:"20px 22px",textAlign:"center",position:"relative",overflow:"hidden",...style}}>
-  <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:"var(--grad2)"}}/>
-  <p style={{fontSize:14,fontWeight:700,color:"var(--t1)",marginBottom:4,letterSpacing:1}}>✦ Premium ✦</p>
-  <p style={{fontSize:10,color:"var(--t3)",marginBottom:10,letterSpacing:2}}>COMING SOON</p>
-  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>相性診断・月間カレンダー・深層心理分析など</p>
-  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>もっと深く読み解く機能を準備中</p>
-</div>}
+  return}
 
 function LuckySection({lucky,className=""}){
   const items=[{label:"COLOR",value:lucky.color.v,reason:lucky.color.reason,bg:lucky.color.hex+"20",dot:lucky.color.hex},{label:"ITEM",value:lucky.item.v,reason:lucky.item.reason,bg:"rgba(176,138,207,0.08)",emoji:lucky.item.e},{label:"NUMBER",value:lucky.num.v,reason:lucky.num.reason,bg:"rgba(212,168,83,0.08)",emoji:"✨"}];
@@ -540,14 +534,12 @@ function FortuneTypeCard({type,className=""}){
     </div>
     
     {/* プレミアム機能の案内 */}
-    <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:15,padding:25,marginTop:20,textAlign:"center",position:"relative",overflow:"hidden"}}>
-      <div style={{position:"relative",zIndex:1}}>
-        <div style={{fontSize:24,marginBottom:10}}>✨💕</div>
-        <h3 style={{color:"white",fontSize:20,fontWeight:"bold",marginBottom:10}}>二人の相性を詳しく診断</h3>
-        <p style={{color:"rgba(255,255,255,0.9)",fontSize:14,lineHeight:1.6,marginBottom:20}}>気になるあの人との相性は？<br/>24パターンの詳細診断で、二人の未来が見えてくる</p>
-        <div style={{backgroundColor:"white",color:"#667eea",border:"none",borderRadius:25,padding:"15px 40px",fontSize:16,fontWeight:"bold",cursor:"pointer",boxShadow:"0 4px 15px rgba(0,0,0,0.2)",display:"inline-block"}}>相性診断（近日公開）</div>
-        <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,marginTop:15}}>準備中</p>
-      </div>
+    <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:15,padding:25,marginTop:20,textAlign:"center"}}>
+      <div style={{fontSize:24,marginBottom:10}}>✨💕</div>
+      <h3 style={{color:"white",fontSize:20,fontWeight:"bold",marginBottom:10}}>二人の相性を詳しく診断</h3>
+      <p style={{color:"rgba(255,255,255,0.9)",fontSize:14,lineHeight:1.6,marginBottom:20}}>気になるあの人との相性は？<br/>24パターンの詳細診断で、二人の未来が見えてくる</p>
+      <div style={{backgroundColor:"white",color:"#667eea",borderRadius:25,padding:"15px 40px",fontSize:16,fontWeight:"bold",display:"inline-block"}}>相性診断（近日公開）</div>
+      <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,marginTop:15}}>準備中</p>
     </div>
 
   </div>;
@@ -816,6 +808,16 @@ function App(){
         </Card>
 
         <LuckySection lucky={dreamResult.lucky} className="slide-up-4"/>
+        
+        {/* プレミアム機能の案内 */}
+        <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:15,padding:25,marginTop:20,marginBottom:20,textAlign:"center"}}>
+          <div style={{fontSize:24,marginBottom:10}}>✨💕</div>
+          <h3 style={{color:"white",fontSize:20,fontWeight:"bold",marginBottom:10}}>二人の相性を詳しく診断</h3>
+          <p style={{color:"rgba(255,255,255,0.9)",fontSize:14,lineHeight:1.6,marginBottom:20}}>気になるあの人との相性は？<br/>24パターンの詳細診断で、二人の未来が見えてくる</p>
+          <div style={{backgroundColor:"white",color:"#667eea",borderRadius:25,padding:"15px 40px",fontSize:16,fontWeight:"bold",display:"inline-block"}}>相性診断（近日公開）</div>
+          <p style={{color:"rgba(255,255,255,0.8)",fontSize:12,marginTop:15}}>準備中</p>
+        </div>
+
 
         <PremiumCTA style={{marginBottom:20}}/>
         <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
@@ -916,9 +918,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 
 <script>
-// ============================================
-// 新12体データの統合
-// ============================================
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
     if (typeof NEW_CHARACTER_DATA !== 'undefined' && typeof DREAM_TYPES !== 'undefined') {
@@ -930,8 +929,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       console.log('✅ 新12体を統合しました。全', DREAM_TYPES.length, '体');
-    } else {
-      console.error('❌ 統合失敗: DREAM_TYPES=', typeof DREAM_TYPES, 'NEW_CHARACTER_DATA=', typeof NEW_CHARACTER_DATA);
     }
   }, 200);
 });

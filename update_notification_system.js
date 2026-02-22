@@ -4,7 +4,7 @@
 
 // 現在のバージョン情報
 var APP_VERSION = {
-  version: '8.0.0',
+  version: '1.0',
   releaseDate: '2026-02-22',
   features: [
     '新キャラクター12体追加（全24体に）',
@@ -17,7 +17,7 @@ var APP_VERSION = {
 // バージョン履歴
 var VERSION_HISTORY = [
   {
-    version: '8.0.0',
+    version: '1.0',
     date: '2026-02-22',
     title: '大型アップデート🎉',
     description: '新キャラ12体追加＆プレミアム機能リリース！',
@@ -91,23 +91,10 @@ function UpdateNotificationModal(props) {
               color: white;
               font-size: 28px;
               font-weight: bold;
-              margin-bottom: 10px;
+              margin-bottom: 0;
               text-shadow: 0 2px 10px rgba(0,0,0,0.3);
             ">
-              アップデート完了！
-            </div>
-            
-            <div style="
-              color: rgba(255,255,255,0.95);
-              font-size: 16px;
-              font-weight: bold;
-              background-color: rgba(255,255,255,0.2);
-              display: inline-block;
-              padding: 8px 20px;
-              border-radius: 20px;
-              backdrop-filter: blur(10px);
-            ">
-              v${APP_VERSION.version}
+              新機能が追加されました
             </div>
           </div>
         </div>
@@ -290,11 +277,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
   }
   
-  // バージョンバッジを追加
-  var versionBadge = VersionBadge(function() {
-    showUpdateNotificationModal();
-  });
-  document.body.appendChild(versionBadge);
+  // バージョンバッジは非表示（ユーザーに不要）
+  // var versionBadge = VersionBadge(function() {
+  //   showUpdateNotificationModal();
+  // });
+  // document.body.appendChild(versionBadge);
 });
 
 console.log('✅ アップデート通知システム読み込み完了');
