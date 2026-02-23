@@ -347,7 +347,7 @@ function getDailyHoroscope(sign){
       {msg:"あなたの真面目さは武器。でも今日は少しだけふざけていい。",mood:"😜",theme:"遊び"}
     ],
     みずがめ座:[
-      {msg:"あなたの「変」は褒め言葉。普通じゃないから面白い。",mood:"👽",theme:"個性"},
+      {msg:"あなたの「変」は褒め言葉。普通じゃないから面白い。",mood:"🌟",theme:"個性"},
       {msg:"今日のアイデア、メモしておいて。あとで「天才か」ってなるから。",mood:"💡",theme:"発想"},
       {msg:"一人の時間が最高のクリエイティブタイム。今日はぜひ確保して。",mood:"🧘",theme:"孤独"},
       {msg:"「みんながやってるから」は最悪の理由。あなたの基準で選んで。",mood:"🚫",theme:"独自路線"},
@@ -710,7 +710,7 @@ function FortuneTypeCard({type,className=""}){
   const [shareMsg,setShareMsg]=useState("");
   async function saveImage(appName){
     try{
-      setShareMsg("画像を作成中...");
+      setShareMsg("画像を作成中…");
       const isS=isSSR,isSR2=type.rarity==="SR",isR=type.rarity==="R";
       // Create story card DOM dynamically
       const wrap=document.createElement("div");
@@ -750,7 +750,7 @@ function FortuneTypeCard({type,className=""}){
         <p style="font-size:15px;color:#888;margin:0 0 4px">${type.sub}</p>
         <p style="font-size:14px;color:${accentColor};font-weight:700;margin:6px 0 0">出現率 ${type.pct}</p>
         <div style="margin:20px auto;width:200px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.06),transparent)"></div>
-        <p style="font-size:12px;color:#999;line-height:1.8;padding:0 8px;margin:0">${type.desc.slice(0,60)}...</p>
+        <p style="font-size:12px;color:#999;line-height:1.8;padding:0 8px;margin:0">${type.desc.slice(0,60)}…</p>
         <div style="margin-top:24px">
           <p style="font-size:11px;letter-spacing:4px;color:#ccc;font-family:Cormorant,serif;margin:0">よるのことば</p>
           <p style="font-size:9px;color:#ddd;margin:4px 0 0">yorunokotoba.vercel.app</p>
@@ -1097,7 +1097,7 @@ function App(){
 
       {page==="home"&&mode==="dream"&&<><Card className="slide-up">
         <p style={{fontSize:13,color:"var(--t2)",marginBottom:14,fontWeight:500}}>今朝の夢を教えて</p>
-        <textarea value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder={"例：知らない街を歩いてたら\n急に空が紫色に変わって..."} style={{width:"100%",minHeight:120,background:"rgba(58,40,48,0.02)",border:"1px solid var(--border)",borderRadius:14,padding:16,fontSize:15,lineHeight:2,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",resize:"vertical"}}/>
+        <textarea value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder={"例：知らない街を歩いてたら\n急に空が紫色に変わって…"} style={{width:"100%",minHeight:120,background:"rgba(58,40,48,0.02)",border:"1px solid var(--border)",borderRadius:14,padding:16,fontSize:15,lineHeight:2,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",resize:"vertical"}}/>
         <button onClick={startDream} disabled={!dreamText.trim()} style={{width:"100%",marginTop:16,padding:"16px 0",...(dreamText.trim()?btnStyle:btnOff)}}>夢タイプを診断する</button>
       </Card>
       <div className="slide-up-1" style={{margin:"20px 0 24px"}}>
@@ -1106,8 +1106,7 @@ function App(){
       </div></>}
 
       {page==="home"&&mode==="fortune"&&hasProfile&&!editProfile?<div className="slide-up">
-        <Card style={{padding:28,textAlign:"center",background:"linear-gradient(135deg,rgba(232,98,124,0.04),rgba(176,138,207,0.04))"}}>
-          <div style={{marginBottom:16,animation:"float 4s ease infinite"}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
+        <Card style={{padding:28,textAlign:"center",background:"rgba(255,255,255,0.85)",border:"1px solid rgba(176,138,207,0.18)",boxShadow:"0 2px 16px rgba(176,138,207,0.08)"}}>          <div style={{marginBottom:16,animation:"float 4s ease infinite"}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
           <p style={{fontSize:20,fontWeight:700,color:"var(--t1)",marginBottom:4}}>おかえり、{name}さん</p>
           <p style={{fontSize:12,color:"var(--t3)",marginBottom:20}}>{SIGNS.find(s=>s.k===sign)?.icon} {sign} ・ {birthMonth}月{birthDay}日生まれ</p>
           <button onClick={startFortune} className="hover-lift" style={{width:"100%",padding:"18px 0",...btnStyle,fontSize:16,borderRadius:16,boxShadow:"0 4px 20px rgba(232,98,124,0.25)"}}>今日の運勢を見る</button>
@@ -1118,9 +1117,22 @@ function App(){
             </div>
             <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.9,fontWeight:500}}>{h.msg}</p>
           </div>:null})()}
-          <button onClick={()=>setEditProfile(true)} style={{marginTop:12,background:"none",border:"none",color:"var(--t4)",fontSize:11,cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",padding:4}}>プロフィールを変更する</button>
+          <button onClick={()=>setEditProfile(true)} style={{marginTop:12,background:"none",border:"none",color:"var(--t2)",fontSize:11,cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",padding:4,textDecoration:"underline"}}>プロフィールを変更する</button>
         </Card>
+        <div style={{marginTop:16,marginBottom:4}}>
+          <div style={{overflow:"hidden",borderRadius:16,padding:"8px 0"}}>
+            <div className="marquee-track">
+              {[...DREAM_TYPES,...DREAM_TYPES].map((t,i)=>{const ri=RARITY_INFO[t.rarity];const isSSR=t.rarity==="SSR";const isSR=t.rarity==="SR";const isR=t.rarity==="R";const borderColor=isSSR?"#D4A853":isSR?"#7B8CDE":isR?"#E8627C":t.color+"40";const glowStyle=isSSR?"0 0 8px rgba(212,168,83,0.4)":isSR?"0 0 6px rgba(123,140,222,0.3)":"none";return<div key={i} style={{minWidth:56,textAlign:"center",flexShrink:0}}>
+                <div style={{width:40,height:40,borderRadius:"50%",overflow:"hidden",margin:"0 auto 2px",border:`2px solid ${borderColor}`,boxShadow:glowStyle,background:"#fff"}}>
+                  <img src={CHARA_IMAGES[t.id]} style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"center center"}} alt={t.name}/>
+                </div>
+                <p style={{fontSize:8,color:"var(--t3)",lineHeight:1.2,whiteSpace:"nowrap"}}>{t.name}</p>
+              </div>})}
+            </div>
+          </div>
+        </div>
       </div>:page==="home"&&mode==="fortune"&&<Card className="slide-up" style={{padding:24}}>
+
         <div style={{textAlign:"center",marginBottom:12}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
         <p style={{fontSize:14,color:"var(--t2)",textAlign:"center",marginBottom:20,lineHeight:1.7}}>あなたの情報を教えて</p>
         <p style={{fontSize:11,color:"var(--t3)",marginBottom:6}}>ニックネーム</p>
@@ -1154,8 +1166,7 @@ function App(){
       </Card>}
 
       {page==="home"&&!pushEnabled&&('Notification' in window)&&('serviceWorker' in navigator)&&<div className="slide-up-3" style={{marginTop:20,marginBottom:12}}>
-        <Card style={{textAlign:"center",padding:20,background:"linear-gradient(135deg,rgba(232,98,124,0.04),rgba(176,138,207,0.04))"}}>
-          <p style={{fontSize:14,marginBottom:4}}>🔔</p>
+        <Card style={{textAlign:"center",padding:20,background:"rgba(255,255,255,0.85)",border:"1px solid rgba(176,138,207,0.2)",boxShadow:"0 2px 12px rgba(176,138,207,0.08)"}}>          <p style={{fontSize:14,marginBottom:4}}>🔔</p>
           <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:6}}>毎朝、今日の運勢をお届け</p>
           <p style={{fontSize:11,color:"var(--t3)",marginBottom:14,lineHeight:1.6}}>通知をONにすると毎朝8時にお知らせが届くよ</p>
           <button onClick={requestPush} className="hover-lift" style={{padding:"12px 32px",borderRadius:12,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>通知をONにする</button>
@@ -1195,7 +1206,7 @@ function App(){
           <p style={{fontSize:14,color:"var(--t1)",lineHeight:2,textAlign:"left",fontWeight:500}}>{fortuneResult.summary}</p>
           {fortuneResult.time&&<div style={{marginTop:12,padding:"10px 14px",borderRadius:12,background:"rgba(255,255,255,0.6)",textAlign:"left"}}>
             <p style={{fontSize:11,fontWeight:700,color:"var(--rose)",marginBottom:4}}>⏰ 今日のタイミング</p>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>{fortuneResult.time}</p>
+            <p style={{fontSize:12,color:"var(--t1)",lineHeight:1.8}}>{fortuneResult.time}</p>
           </div>}
         </Card>
 
@@ -1212,21 +1223,21 @@ function App(){
         {/* Love / Work / Health cards */}
         <Card className="slide-up-2" style={{marginBottom:12,borderLeft:"3px solid #E8627C"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="love" color="#E8627C"/><span style={{fontSize:14,fontWeight:700,color:"#E8627C"}}>今日の恋愛運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.personality.love}</p>
+          <p style={{fontSize:13,color:"var(--t1)",lineHeight:2}}>{fortuneResult.personality.love}</p>
         </Card>
         <Card className="slide-up-2" style={{marginBottom:12,borderLeft:"3px solid #6BA3BE"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="work" color="#6BA3BE"/><span style={{fontSize:14,fontWeight:700,color:"#6BA3BE"}}>今日の仕事運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.personality.work}</p>
+          <p style={{fontSize:13,color:"var(--t1)",lineHeight:2}}>{fortuneResult.personality.work}</p>
         </Card>
         <Card className="slide-up-3" style={{marginBottom:12,borderLeft:"3px solid #5BA87C"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="health" color="#5BA87C"/><span style={{fontSize:14,fontWeight:700,color:"#5BA87C"}}>今日の健康運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.personality.health}</p>
+          <p style={{fontSize:13,color:"var(--t1)",lineHeight:2}}>{fortuneResult.personality.health}</p>
         </Card>
 
         {/* Risk */}
         <Card className="slide-up-3" style={{marginBottom:24,borderLeft:"3px solid #D47070",background:"rgba(212,112,112,0.02)"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="watch" color="#D47070"/><span style={{fontSize:14,fontWeight:700,color:"#D47070"}}>今日気をつけること</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.risk}</p>
+          <p style={{fontSize:13,color:"var(--t1)",lineHeight:2}}>{fortuneResult.risk}</p>
         </Card>
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
