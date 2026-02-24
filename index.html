@@ -273,7 +273,7 @@ function generateFortune(name,sign,gender,birthDay,birthMonth){
   const rm=rankMsgs[rank];
 
   // Assign character type: fixed by sign + birthDay (odd/even)
-  const SIGN_CHARS={"おひつじ座":["hi_no_tora","honoo_phoenix"],"おうし座":["umi_rakko","komorebi_shika"],"ふたご座":["mori_risu","sakura_usagi"],"かに座":["hoshi_kuma","ame_iruka"],"しし座":["taiyou_lion","yume_kobuta"],"おとめ座":["yozora_fukurou","yuuyake_kitsune"],"てんびん座":["hana_panda","hana_poodle"],"さそり座":["kaze_ookami","mayonaka_neko"],"いて座":["kaze_uma","akatsuki_washi"],"やぎ座":["shizuku_penguin","tsuki_hyou"],"みずがめ座":["nijiiro_dragon","sora_unicorn"],"うお座":["yuki_hakucho","niji_koala"]};
+  const SIGN_CHARS={"おひつじ座":["hi_no_tora","honoo_phoenix"],"おうし座":["umi_rakko","komorebi_shika"],"ふたご座":["mori_risu","sakura_usagi"],"かに座":["hoshi_kuma","ame_iruka"],"しし座":["taiyou_lion","yume_kobuta"],"おとめ座":["yozora_fukurou","yuuyake_kitsune"],"てんびん座":["hana_poodle","hana_panda"],"さそり座":["kaze_ookami","mayonaka_neko"],"いて座":["kaze_uma","akatsuki_washi"],"やぎ座":["shizuku_penguin","tsuki_hyou"],"みずがめ座":["nijiiro_dragon","sora_unicorn"],"うお座":["yuki_hakucho","niji_koala"]};
   const pair=SIGN_CHARS[sign]||["yume_kobuta","yume_kobuta"];
   const bd=parseInt(birthDay)||1;
   const charId=pair[bd%2];
