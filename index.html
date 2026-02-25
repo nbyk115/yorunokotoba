@@ -682,7 +682,7 @@ function CharacterCarousel({className=""}){
 
 /* ─── Main App ─── */
 function App(){
-  const [mode,setMode]=useState("dream");const [page,setPage]=useState("home");
+  const [mode,setMode]=useState("dream");const [page,setPage]=useState("home");const [compatSign,setCompatSign]=useState("");const [compatResult,setCompatResult]=useState(null);
   const [dreamText,setDreamText]=useState("");const [dreamResult,setDreamResult]=useState(null);
   const [fortuneResult,setFortuneResult]=useState(null);const [loadingMsg,setLoadingMsg]=useState("");
   const [name,setName]=useState("");
@@ -747,7 +747,27 @@ function App(){
     }
     setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText);setDreamResult(result);setPage("dreamResult")}},900)}
   function startFortune(){if(!canFortune)return;saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","アドバイスをまとめ中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setPage("fortuneResult")}},900)}
-  function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null)}
+  function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null);setCompatResult(null);setCompatSign("")}
+
+  /* ── 相性診断 ── */
+  function calcCompatibility(mySign,theirSign){
+    const EL={"おひつじ座":"fire","おうし座":"earth","ふたご座":"air","かに座":"water","しし座":"fire","おとめ座":"earth","てんびん座":"air","さそり座":"water","いて座":"fire","やぎ座":"earth","みずがめ座":"air","うお座":"water"};
+    const Q={"おひつじ座":"cardinal","おうし座":"fixed","ふたご座":"mutable","かに座":"cardinal","しし座":"fixed","おとめ座":"mutable","てんびん座":"cardinal","さそり座":"fixed","いて座":"mutable","やぎ座":"cardinal","みずがめ座":"fixed","うお座":"mutable"};
+    const e1=EL[mySign],e2=EL[theirSign],q1=Q[mySign],q2=Q[theirSign];
+    const same=mySign===theirSign;
+    const sameEl=e1===e2;
+    const compat={"fire-air":80,"air-fire":80,"earth-water":78,"water-earth":78,"fire-fire":75,"air-air":72,"earth-earth":70,"water-water":82,"fire-earth":55,"earth-fire":55,"fire-water":48,"water-fire":48,"air-water":52,"water-air":52,"air-earth":58,"earth-air":58};
+    const base=same?85:compat[e1+"-"+e2]||60;
+    const h=simpleHash(mySign+theirSign);
+    const love=Math.min(98,Math.max(25,base+(h%21-10)+(q1===q2?-5:3)));
+    const work=Math.min(98,Math.max(25,base+((h>>4)%21-10)+(sameEl?5:-2)));
+    const friend=Math.min(98,Math.max(25,base+((h>>8)%21-10)+(same?8:0)));
+    const avg=Math.round((love+work+friend)/3);
+    const loveTexts=love>=75?["ふたりの間には自然な引力がある。一緒にいるだけで心地いい、そんな関係。","お互いの温度感がちょうどいい。無理せずいられる稀有な相性。"]:love>=55?["最初はゆっくりだけど、知れば知るほど深くなる関係。焦らないで。","「あれ、意外と合うかも」って気づく瞬間がくるよ。"]:["真逆だからこそ、惹かれるときの引力は強烈。でも理解には時間がかかる。","ぶつかることもあるけど、そこから学べることが多い組み合わせ。"];
+    const workTexts=work>=75?["仕事のリズムが合う。自然と役割分担ができて、チームとして最強。","お互いの強みを活かし合える関係。一緒にプロジェクトすると成果が出やすい。"]:work>=55?["得意分野は違うけど、だからこそ補い合える。意見交換が大事。","方法論の違いを理解すれば、いいコンビになれるポテンシャルあり。"]:["アプローチが正反対。衝突も多いけど、乗り越えると革新的な成果が出る。","お互いの「なぜそうする？」を理解する努力が必要。でも学びは大きい。"];
+    const friendTexts=friend>=75?["自然体でいられる関係。沈黙も苦じゃない、居心地のいい友情。","気づいたら隣にいる、そんな自然な友情が続くふたり。"]:friend>=55?["趣味や価値観が少しズレるけど、それが新しい発見になる。","一緒にいると世界が広がる。違う視点をくれる貴重な存在。"]:["距離感の取り方がカギ。近すぎず遠すぎず、程よい関係が吉。","ベタベタしない大人な友情が向いてる。たまに会うくらいがちょうどいい。"];
+    return{love,work,friend,avg,loveText:loveTexts[h%loveTexts.length],workText:workTexts[(h>>3)%workTexts.length],friendText:friendTexts[(h>>6)%friendTexts.length],mySign,theirSign};
+  }
 
   const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
   const btnOff={...btnStyle,background:"rgba(58,40,48,0.06)",color:"rgba(58,40,48,0.18)",cursor:"default"};
@@ -869,11 +889,21 @@ function App(){
         {/* Character Type - HERO */}
         {fortuneResult.type&&<FortuneTypeCard type={fortuneResult.type} className="slide-up"/>}
 
-        {/* Personality reading - "言い当て" */}
-        <Card className="slide-up-1" style={{marginBottom:12}}>
+        {/* Daily Summary - ランク */}
+        <Card className="slide-up-1" style={{marginBottom:12,background:fortuneResult.rank==="大吉"?"linear-gradient(135deg,#D4A85310,#E8627C08)":"var(--card)"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
             <span style={{fontSize:16}}>{SIGNS.find(s=>s.k===fortuneResult.sign)?.icon}</span>
-            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>{fortuneResult.sign}の今日</p>
+            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>今日の運勢：{fortuneResult.rank}</p>
+          </div>
+          <p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.summary}</p>
+          {fortuneResult.time&&<p style={{fontSize:12,color:"var(--t3)",lineHeight:1.9,marginTop:8}}>🕐 {fortuneResult.time}</p>}
+        </Card>
+
+        {/* Personality reading - 星座の特徴 */}
+        <Card className="slide-up-1" style={{marginBottom:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+            <Tag text="personality" color="#B08ACF"/>
+            <span style={{fontSize:13,fontWeight:700}}>{fortuneResult.sign}のあなた</span>
           </div>
           <p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.personality.trait}</p>
         </Card>
@@ -1008,7 +1038,7 @@ function App(){
             <div style={{padding:"8px 12px",borderRadius:10,background:"rgba(255,255,255,0.7)",border:`1px dashed ${f.color}30`,marginBottom:14}}>
               <p style={{fontSize:11,color:f.color,lineHeight:1.6,fontStyle:"italic"}}>{f.example}</p>
             </div>
-            <button onClick={()=>{alert("この機能は現在準備中です🙏\nもう少しだけお待ちください！")}} style={{width:"100%",padding:"12px 0",borderRadius:20,border:`1.5px solid ${f.color}`,background:"white",color:f.color,fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>¥480で診断する</button>
+            <button onClick={()=>{if(i===0){setPage("compatibility");window.scrollTo(0,0)}else{alert("この機能は現在準備中です🙏\nもう少しだけお待ちください！")}}} style={{width:"100%",padding:"12px 0",borderRadius:20,border:`1.5px solid ${f.color}`,background:i===0?f.color:"white",color:i===0?"white":f.color,fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{i===0?"相性を診断する 💕":"¥480で診断する"}</button>
           </Card>)}
         </div>
 
@@ -1038,6 +1068,51 @@ function App(){
         <div className="slide-up-4" style={{marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{width:"100%",padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
         </div>
+      </div>}
+
+      {/* ── 相性診断ページ ── */}
+      {page==="compatibility"&&<div className="fade-in" style={{maxWidth:440,margin:"0 auto"}}>
+        <div style={{textAlign:"center",padding:"32px 20px 24px",background:"linear-gradient(135deg,#E8627C,#B08ACF)",borderRadius:20,marginBottom:20}}>
+          <p style={{fontSize:11,letterSpacing:4,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:14}}>compatibility</p>
+          <h2 style={{color:"white",fontSize:22,fontWeight:"bold",marginBottom:8,lineHeight:1.5}}>💕 相性診断</h2>
+          <p style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.8}}>あの人の星座を選ぶだけ</p>
+        </div>
+
+        {!compatResult?<>
+          <Card className="slide-up" style={{padding:24}}>
+            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:4}}>あなたの星座</p>
+            <p style={{fontSize:15,marginBottom:16}}>{sign||"（ホームで設定してね）"}</p>
+            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:10}}>相手の星座を選んでね</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+              {SIGNS.map(s=><button key={s.k} onClick={()=>setCompatSign(s.k)} style={{padding:"10px 4px",borderRadius:12,border:compatSign===s.k?"2px solid #E8627C":"1.5px solid var(--border)",background:compatSign===s.k?"#E8627C10":"var(--card)",cursor:"pointer",textAlign:"center"}}>
+                <span style={{fontSize:20,display:"block"}}>{s.icon}</span>
+                <span style={{fontSize:9,color:compatSign===s.k?"#E8627C":"var(--t3)",fontWeight:compatSign===s.k?700:400}}>{s.k.replace("座","")}</span>
+              </button>)}
+            </div>
+          </Card>
+          <button disabled={!sign||!compatSign} onClick={()=>{if(!sign){alert("先にホームで星座を設定してね");return}const r=calcCompatibility(sign,compatSign);setCompatResult(r);window.scrollTo(0,0)}} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:sign&&compatSign?"linear-gradient(135deg,#E8627C,#B08ACF)":"#ccc",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:sign&&compatSign?"pointer":"default",marginTop:16,boxShadow:sign&&compatSign?"0 4px 16px rgba(232,98,124,0.3)":"none"}}>診断する 💕</button>
+        </>:<>
+          <Card className="slide-up" style={{padding:24,textAlign:"center"}}>
+            <p style={{fontSize:12,color:"var(--t3)",marginBottom:8}}>{compatResult.mySign} × {compatResult.theirSign}</p>
+            <div style={{fontSize:48,fontWeight:800,background:"linear-gradient(135deg,#E8627C,#B08ACF)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:4}}>{compatResult.avg}%</div>
+            <p style={{fontSize:11,color:"var(--t3)",marginBottom:20}}>総合相性スコア</p>
+            {[{label:"恋愛",score:compatResult.love,text:compatResult.loveText,color:"#E8627C",icon:"❤️"},{label:"仕事",score:compatResult.work,text:compatResult.workText,color:"#667eea",icon:"💼"},{label:"友情",score:compatResult.friend,text:compatResult.friendText,color:"#48BB78",icon:"🤝"}].map((cat,i)=><div key={i} style={{marginBottom:16,textAlign:"left"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                <span style={{fontSize:13,fontWeight:600,color:"var(--t1)"}}>{cat.icon} {cat.label}</span>
+                <span style={{fontSize:18,fontWeight:800,color:cat.color}}>{cat.score}%</span>
+              </div>
+              <div style={{height:6,borderRadius:3,background:"var(--border)",marginBottom:8}}>
+                <div style={{height:6,borderRadius:3,background:cat.color,width:cat.score+"%",transition:"width 1s ease"}}/>
+              </div>
+              <p style={{fontSize:11,color:"var(--t2)",lineHeight:1.7}}>{cat.text}</p>
+            </div>)}
+          </Card>
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            <button onClick={()=>{setCompatResult(null);setCompatSign("")}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1.5px solid #E8627C",background:"white",color:"#E8627C",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>別の人と診断</button>
+            <button onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
+          </div>
+        </>}
+        <div style={{height:40}}/>
       </div>}
 
       <footer style={{textAlign:"center",padding:"20px 0 52px",borderTop:"1px solid rgba(58,40,48,0.06)"}}>
