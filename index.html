@@ -740,6 +740,7 @@ function App(){
 
   // Firebase Auth listener
   useEffect(()=>{
+    auth.getRedirectResult().catch(()=>{});
     const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
     return()=>unsub();
   },[]);
@@ -756,8 +757,13 @@ function App(){
 
   // Sign in with Google
   async function signInWithGoogle(){
-    try{await auth.signInWithPopup(googleProvider);return true}
-    catch(e){if(e.code==="auth/popup-blocked"){try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){setToast("ログインできませんでした");return false}}setToast("ログインできませんでした");return false}
+    const isMobile=/iPhone|iPad|Android/i.test(navigator.userAgent);
+    try{
+      if(isMobile){await auth.signInWithRedirect(googleProvider);return true}
+      await auth.signInWithPopup(googleProvider);return true
+    }catch(e){
+      try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){setToast("ログインできませんでした");return false}
+    }
   }
   function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
 
