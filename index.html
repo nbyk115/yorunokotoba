@@ -25,6 +25,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-functions-compat.js"></script>
+<script src="https://js.pay.jp/v2/pay.js"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyAMSAW3ez0Hir2Guv4ibbuxUgzRTuS14PI",
@@ -35,6 +38,12 @@ firebase.initializeApp({
   appId:"1:133287391957:web:aafda69540c7359ba1a85c"
 });
 const db=firebase.firestore();
+const auth=firebase.auth();
+const googleProvider=new firebase.auth.GoogleAuthProvider();
+// PAY.JP — replace with your public key from dashboard
+const PAYJP_PK="pk_test_9107fcc9ef34f66a08662f64";
+const PAYJP_PLAN_ID="ynk_premium_monthly"; // plan ID from PAY.JP dashboard
+var fns;try{fns=firebase.app().functions("asia-northeast1")}catch(e){console.log("Functions init deferred")}
 window.fbMessaging=null;
 async function initPush(){
   try{
@@ -52,9 +61,16 @@ async function initPush(){
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#FFF5F0;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+:root{--bg1:#FFF5F0;--rose:#E8627C;--pink:#D4506A;--blush:#F2A0B0;--lavender:#B08ACF;--gold:#D4A853;--card:rgba(255,255,255,0.65);--border:rgba(180,140,140,0.12);--t1:#3A2830;--t2:rgba(58,40,48,0.72);--t3:rgba(58,40,48,0.45);--t4:rgba(58,40,48,0.28);--grad:linear-gradient(135deg,#E8627C,#D4506A);--grad2:linear-gradient(135deg,#E8627C,#B08ACF);--shadow:0 2px 16px rgba(180,100,120,0.08);--bg-body:linear-gradient(180deg,#FFF5F0 0%,#FFF0EB 25%,#FFE8E0 50%,#FFF0EB 75%,#FFF5F0 100%);--night-toggle-bg:rgba(232,98,124,0.08)}
+[data-theme="dark"]{--bg1:#0D0B0E;--rose:#F0809A;--pink:#E8627C;--blush:#D4809A;--lavender:#C4A0E0;--gold:#E8C068;--card:rgba(28,22,30,0.85);--border:rgba(200,160,180,0.08);--t1:#F0E8EC;--t2:rgba(240,232,236,0.75);--t3:rgba(240,232,236,0.45);--t4:rgba(240,232,236,0.25);--grad:linear-gradient(135deg,#F0809A,#E8627C);--grad2:linear-gradient(135deg,#F0809A,#C4A0E0);--shadow:0 2px 16px rgba(0,0,0,0.25);--bg-body:linear-gradient(180deg,#0D0B0E 0%,#12101A 25%,#16101E 50%,#12101A 75%,#0D0B0E 100%);--night-toggle-bg:rgba(240,128,154,0.12)}
+[data-theme="dark"] ::selection{background:rgba(240,128,154,0.3)}
+[data-theme="dark"] body{background:#0D0B0E}
+[data-theme="dark"] input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:rgba(255,255,255,0.05) !important;color:#F0E8EC !important;border-color:rgba(200,160,180,0.12) !important}
+[data-theme="dark"] input::placeholder,[data-theme="dark"] textarea::placeholder{color:rgba(240,232,236,0.3) !important}
+[data-theme="dark"] option{background:#1A1420;color:#F0E8EC}
+@media screen{[data-theme="dark"] [style*="rgba(255,255,255,0.92)"]{background:rgba(28,22,30,0.92) !important}[data-theme="dark"] [style*="rgba(255,255,255,0.65)"]{background:rgba(28,22,30,0.75) !important}[data-theme="dark"] [style*="rgba(255,255,255,0.5)"]{background:rgba(28,22,30,0.6) !important}[data-theme="dark"] [style*="rgba(255,255,255,0.7)"]{background:rgba(28,22,30,0.75) !important}}
+body{background:var(--bg1);overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;transition:background 0.3s}
 ::selection{background:rgba(255,150,170,0.25)}
-:root{--bg1:#FFF5F0;--rose:#E8627C;--pink:#D4506A;--blush:#F2A0B0;--lavender:#B08ACF;--gold:#D4A853;--card:rgba(255,255,255,0.65);--border:rgba(180,140,140,0.12);--t1:#3A2830;--t2:rgba(58,40,48,0.72);--t3:rgba(58,40,48,0.45);--t4:rgba(58,40,48,0.28);--grad:linear-gradient(135deg,#E8627C,#D4506A);--grad2:linear-gradient(135deg,#E8627C,#B08ACF);--shadow:0 2px 16px rgba(180,100,120,0.08)}
 textarea:focus,input:focus{outline:none}
 .fade-in{animation:fadeIn .5s ease both}.slide-up{animation:slideUp .45s ease both}.slide-up-1{animation:slideUp .45s .05s ease both;opacity:0}.slide-up-2{animation:slideUp .45s .1s ease both;opacity:0}.slide-up-3{animation:slideUp .45s .15s ease both;opacity:0}.slide-up-4{animation:slideUp .45s .2s ease both;opacity:0}.slide-up-5{animation:slideUp .45s .25s ease both;opacity:0}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breathe{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}@keyframes twinkle{0%,100%{opacity:.08}50%{opacity:.35}}@keyframes rarityGlow{0%,100%{box-shadow:0 0 8px rgba(232,98,124,0.2)}50%{box-shadow:0 0 20px rgba(232,98,124,0.4)}}@keyframes rarityReveal{0%{transform:scale(0.3) rotate(-10deg);opacity:0}60%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0deg);opacity:1}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}@keyframes confetti{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(-60px) rotate(360deg);opacity:0}}@keyframes holoShimmer{0%{background-position:200% 200%}50%{background-position:0% 0%}100%{background-position:200% 200%}}
@@ -236,6 +252,8 @@ function generateLucky(signIdx){
 }
 
 function simpleHash(str){let h=0;for(let i=0;i<str.length;i++){h=((h<<5)-h+str.charCodeAt(i))|0}return Math.abs(h)}
+const SIGN_CHARS={"おひつじ座":["hi_no_tora","honoo_phoenix"],"おうし座":["umi_rakko","komorebi_shika"],"ふたご座":["mori_risu","sakura_usagi"],"かに座":["hoshi_kuma","ame_iruka"],"しし座":["taiyou_lion","yume_kobuta"],"おとめ座":["yozora_fukurou","yuuyake_kitsune"],"てんびん座":["hana_poodle","hana_panda"],"さそり座":["kaze_ookami","mayonaka_neko"],"いて座":["kaze_uma","akatsuki_washi"],"やぎ座":["shizuku_penguin","tsuki_hyou"],"みずがめ座":["nijiiro_dragon","sora_unicorn"],"うお座":["yuki_hakucho","niji_koala"]};
+
 function generateFortune(name,sign,gender,birthDay,birthMonth){
   const signIdx=SIGNS.findIndex(s=>s.k===sign);
   const rng=makeSeededRandom(getDailySeed(signIdx*100));
@@ -273,7 +291,6 @@ function generateFortune(name,sign,gender,birthDay,birthMonth){
   const rm=rankMsgs[rank];
 
   // Assign character type: fixed by sign + birthDay (odd/even)
-  const SIGN_CHARS={"おひつじ座":["hi_no_tora","honoo_phoenix"],"おうし座":["umi_rakko","komorebi_shika"],"ふたご座":["mori_risu","sakura_usagi"],"かに座":["hoshi_kuma","ame_iruka"],"しし座":["taiyou_lion","yume_kobuta"],"おとめ座":["yozora_fukurou","yuuyake_kitsune"],"てんびん座":["hana_poodle","hana_panda"],"さそり座":["kaze_ookami","mayonaka_neko"],"いて座":["kaze_uma","akatsuki_washi"],"やぎ座":["shizuku_penguin","tsuki_hyou"],"みずがめ座":["nijiiro_dragon","sora_unicorn"],"うお座":["yuki_hakucho","niji_koala"]};
   const pair=SIGN_CHARS[sign]||["yume_kobuta","yume_kobuta"];
   const bd=parseInt(birthDay)||1;
   const charId=pair[bd%2];
@@ -333,7 +350,7 @@ function analyzeDream(text){
         :hasWork?"「べき思考」が強くなってる。「〜すべき」「〜じゃなきゃ」——これは認知行動療法でいう自動思考のワナ。「〜したい」に言い換えるだけで心が軽くなる。エネルギー的にはルートチャクラ（足元の安定）を意識して。裸足で地面に立つグラウンディングが効く。"
         :hasFree?"クラウンチャクラが開き始めてる。高次の自分と繋がろうとしてるサイン。心理学的には認知的不協和——今やってることと本当にやりたいことのズレに脳が警告を出してる。「本当はどうしたい？」を紙に書いて。瞑想5分が普段の3倍効く時期。"
         :"オーラの色が変わりかけてる転換期。心理的には無意識が現状の「ズレ」を感知してる。その違和感、たぶん合ってる。パワーストーンや自然に触れるとエネルギーが整う。同時にモヤモヤをノートに書き出して言語化してみて。",
-      watch:hasAnx?"エンパス体質が強まってる。他人の感情を自分のものだと勘違いしやすい。「これは私の感情？」と問いかけるだけで余計なエネルギーが剥がれる。反芻思考のループに入りそうなら、5分の散歩か冷たい水で手を洗って脳をリセット。"
+      watch:hasAnx?"共感体質が強まってる。他人の感情を自分のものだと勘違いしやすい。「これは私の感情？」と問いかけるだけで余計なエネルギーが剥がれる。反芻思考のループに入りそうなら、5分の散歩か冷たい水で手を洗って脳をリセット。"
         :hasWork?"インポスター症候群の兆候あり。「私なんかが」「たまたま」——それは歪んだ自己認知。事実ベースで実績をリスト化して。左肩が重く感じたらエネルギーの滞り。粗塩のお風呂が効く。"
         :hasLove?"確証バイアスに注意。「嫌われてるかも」と思うと裏付けばかり集めちゃう。反証を意識的に探して。寝る前に「自分のエネルギーだけを残す」とイメージしてエネルギーコードを切って。"
         :"反芻思考（同じことをグルグル考える）に入りかけてる。体を動かすのが一番の対処。左肩が重ければ邪気の滞り。深呼吸しながら手を振り払うイメージで。"},
@@ -366,19 +383,29 @@ function Particles(){const dots=Array.from({length:12},(_,i)=>({x:Math.random()*
 function Tag({text,color}){return<span style={{padding:"4px 10px",borderRadius:6,background:color+"18",color,fontSize:10,fontWeight:700,fontFamily:"Cormorant, serif",letterSpacing:1,textTransform:"uppercase"}}>{text}</span>}
 function Card({children,className="",style={}}){return<div className={className} style={{background:"var(--card)",border:"1px solid var(--border)",borderRadius:18,padding:22,boxShadow:"var(--shadow)",backdropFilter:"blur(8px)",WebkitBackdropFilter:"blur(8px)",...style}}>{children}</div>}
 
+function ExpandText({text,lines=3,style={}}){
+  const [open,setOpen]=useState(false);
+  const ref=useRef(null);
+  const [needsClamp,setNeedsClamp]=useState(false);
+  useEffect(()=>{if(ref.current){const el=ref.current;const lineH=parseFloat(getComputedStyle(el).lineHeight)||22;setNeedsClamp(el.scrollHeight>lineH*(lines+0.5))}},[text]);
+  return<div>
+    <p ref={ref} style={{fontSize:13,color:"var(--t2)",lineHeight:2,...style,...(!open&&needsClamp?{display:"-webkit-box",WebkitLineClamp:lines,WebkitBoxOrient:"vertical",overflow:"hidden"}:{})}}>{text}</p>
+    {needsClamp&&<button onClick={()=>setOpen(!open)} style={{background:"none",border:"none",color:"var(--rose)",fontSize:11,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",padding:"6px 0",display:"flex",alignItems:"center",gap:4}}>{open?"閉じる ▲":"もっと読む ▼"}</button>}
+  </div>
+}
+
 const LINE_URL="";
-function PremiumCTA({style={}}){
-  return <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:18,padding:"28px 22px",textAlign:"center",position:"relative",overflow:"hidden",...style}}>
-    <p style={{fontSize:11,letterSpacing:3,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:12}}>premium</p>
-    <h3 style={{color:"white",fontSize:18,fontWeight:"bold",marginBottom:6}}>もっと深く読み解く</h3>
-    <p style={{fontSize:11,color:"rgba(255,255,255,0.7)",marginBottom:18,lineHeight:1.6}}>プレミアムプラン、まもなく公開予定</p>
-    <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20,textAlign:"left"}}>
-      {[{icon:"💕",text:"相性診断 — あの人との相性を24パターンで分析"},{icon:"🌙",text:"月間運勢 — 毎月届くあなた専用の詳細運勢"},{icon:"🧠",text:"深層分析 — 認知パターン・五行で自分を知る"}].map((f,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"10px 14px",borderRadius:12,background:"rgba(255,255,255,0.1)"}}>
-        <span style={{fontSize:16,flexShrink:0,marginTop:1}}>{f.icon}</span>
-        <p style={{fontSize:11,color:"rgba(255,255,255,0.9)",lineHeight:1.6}}>{f.text}</p>
-      </div>)}
+function PremiumCTA({style={},onTap}){
+  function go(e){e.stopPropagation();onTap&&onTap()}
+  return <div style={{background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:18,padding:"32px 22px",textAlign:"center",position:"relative",overflow:"hidden",...style}}>
+    <div style={{position:"absolute",top:-30,right:-30,width:100,height:100,borderRadius:"50%",background:"rgba(255,255,255,0.06)"}}/>
+    <div style={{position:"absolute",bottom:-20,left:-20,width:70,height:70,borderRadius:"50%",background:"rgba(255,255,255,0.04)"}}/>
+    <p style={{color:"white",fontSize:21,fontWeight:800,lineHeight:1.7,position:"relative",marginBottom:6}}>あの人との相性、<br/>何人でも確かめ放題。</p>
+    <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:20,position:"relative"}}>月額480円ですべて使える</p>
+    <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:22,flexWrap:"wrap",position:"relative"}}>
+      {["💕 相性診断し放題","✨ 本当のわたし診断","✉️ 毎月届くおたより"].map((t,i)=><span key={i} style={{fontSize:12,color:"white",background:"rgba(255,255,255,0.15)",padding:"8px 16px",borderRadius:22,fontWeight:600,whiteSpace:"nowrap"}}>{t}</span>)}
     </div>
-    <div style={{backgroundColor:"rgba(255,255,255,0.15)",border:"1.5px solid rgba(255,255,255,0.35)",color:"white",borderRadius:25,padding:"14px 36px",fontSize:14,fontWeight:"bold",display:"inline-block",letterSpacing:1}}>公開までもう少し…お楽しみに</div>
+    <button onClick={go} style={{background:"white",border:"none",color:"#764ba2",borderRadius:25,padding:"14px 44px",fontSize:15,fontWeight:800,cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",boxShadow:"0 4px 16px rgba(0,0,0,0.1)",position:"relative"}}>くわしくはこちら →</button>
   </div>;
 }
 
@@ -447,47 +474,53 @@ function FortuneTypeCard({type,className=""}){
     try{
       setShareMsg("画像を作成中...");
       const isS=isSSR,isSR2=type.rarity==="SR",isR=type.rarity==="R";
-      // Create story card DOM dynamically
+      // Create story card DOM - DARK aesthetic 9:16
       const wrap=document.createElement("div");
       wrap.style.cssText="position:fixed;left:-9999px;top:0;width:360px;height:640px;overflow:hidden;font-family:'Zen Maru Gothic',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;";
-      // Background
-      wrap.style.background=isS?"linear-gradient(135deg,#FFF8F0,#FFF0E8,#FFF5F0)":isSR2?"linear-gradient(135deg,#F5F0FF,#EEF0FF,#F8F5FF)":isR?"linear-gradient(135deg,#FFF5F5,#FFF0F3,#FFF5F5)":"linear-gradient(135deg,#FFF8F5,#FFF5F0,#FFF8F5)";
-      // Holo overlay for SSR/SR
-      if(isS||isSR2){
-        const holo=document.createElement("div");
-        holo.style.cssText="position:absolute;inset:0;";
-        holo.style.background=isS?"conic-gradient(from 0deg at 50% 50%,rgba(255,215,0,0.15),rgba(255,107,157,0.1),rgba(192,132,252,0.1),rgba(100,200,255,0.08),rgba(255,215,0,0.15))":"conic-gradient(from 0deg at 50% 50%,rgba(123,140,222,0.1),rgba(167,139,250,0.08),rgba(100,180,255,0.06),rgba(123,140,222,0.1))";
-        wrap.appendChild(holo);
-        const shim=document.createElement("div");
-        shim.style.cssText="position:absolute;inset:0;background:linear-gradient(135deg,transparent 20%,rgba(255,255,255,0.5) 45%,rgba(255,255,255,0.6) 50%,rgba(255,255,255,0.5) 55%,transparent 80%);";
-        wrap.appendChild(shim);
-      }
-      // Sparkle stars
-      const stars=isS?[[30,50,10],[290,80,14],[55,340,8],[310,400,12],[160,490,6],[270,160,9],[45,470,11],[320,40,7],[185,90,13],[80,540,8]]:isSR2?[[40,70,10],[285,140,12],[65,430,8],[275,360,11]]:[];
-      const sc=isS?"#D4A853":isSR2?"#7B8CDE":"";
-      stars.forEach(([x,y,sz])=>{const s=document.createElement("div");s.textContent="✦";s.style.cssText=`position:absolute;left:${x}px;top:${y}px;font-size:${sz}px;color:${sc};opacity:0.25;`;wrap.appendChild(s)});
+      // Dark gradient background
+      const bgGrad=isS?"linear-gradient(160deg,#1A0F20 0%,#2A1530 30%,#1A1028 60%,#0F0A14 100%)"
+        :isSR2?"linear-gradient(160deg,#0F1020 0%,#1A1535 30%,#121028 60%,#0A0814 100%)"
+        :isR?"linear-gradient(160deg,#1A0F14 0%,#2A1520 30%,#1A1018 60%,#0F0A0E 100%)"
+        :"linear-gradient(160deg,#14101A 0%,#1E1528 30%,#181020 60%,#0E0A12 100%)";
+      wrap.style.background=bgGrad;
+      // Ambient glow
+      const glow=document.createElement("div");
+      const glowColor=isS?"rgba(212,168,83,0.12)":isSR2?"rgba(123,140,222,0.1)":isR?"rgba(232,98,124,0.1)":"rgba(176,138,207,0.08)";
+      glow.style.cssText=`position:absolute;top:20%;left:50%;transform:translateX(-50%);width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,${glowColor},transparent 70%);filter:blur(40px);`;
+      wrap.appendChild(glow);
+      // Sparkle particles
+      const sparkles=[[30,60,1.5,"0.4"],[290,100,2,"0.3"],[55,350,1,"0.5"],[310,420,1.5,"0.25"],[170,500,1,"0.35"],[50,180,1.5,"0.2"],[280,280,1,"0.3"],[160,80,0.8,"0.45"],[320,540,1.2,"0.2"],[40,480,0.8,"0.3"],[200,560,1,"0.25"],[300,50,0.8,"0.35"]];
+      const sparkColor=isS?"#D4A853":isSR2?"#7B8CDE":"#E8627C";
+      sparkles.forEach(([x,y,sz,op])=>{const s=document.createElement("div");s.style.cssText=`position:absolute;left:${x}px;top:${y}px;width:${sz*2}px;height:${sz*2}px;border-radius:50%;background:${sparkColor};opacity:${op};box-shadow:0 0 ${sz*4}px ${sparkColor};`;wrap.appendChild(s)});
+      // Thin decorative lines
+      const line1=document.createElement("div");
+      line1.style.cssText=`position:absolute;top:60px;left:30px;right:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);`;
+      wrap.appendChild(line1);
+      const line2=document.createElement("div");
+      line2.style.cssText=`position:absolute;bottom:70px;left:30px;right:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);`;
+      wrap.appendChild(line2);
       // Content
-      const accentColor=isS?"#D4A853":isSR2?"#7B8CDE":isR?"#E8627C":"#E8627C";
-      const borderStyle=isS?"3px solid #D4A853":isSR2?"3px solid #7B8CDE":isR?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)";
-      const labelBg=isS?"linear-gradient(90deg,#D4A853,#FFD700,#D4A853)":isSR2?"linear-gradient(90deg,#7B8CDE,#A78BFA)":isR?"#E8627C":"rgba(232,98,124,0.08)";
-      const labelColor=isS?"#5a3800":isSR2?"#fff":isR?"#fff":"#E8627C";
-      const glowStyle=isS?"0 0 20px rgba(212,168,83,0.35)":isSR2?"0 0 15px rgba(123,140,222,0.25)":isR?"0 0 10px rgba(232,98,124,0.15)":"0 4px 20px rgba(0,0,0,0.04)";
-      const starsText=isS?"✦ ✦ ✦ ":isSR2?"✦ ✦ ":"✦ ";
+      const accentColor=isS?"#D4A853":isSR2?"#A0B0E8":isR?"#F0809A":"#C4A0E0";
+      const borderStyle=isS?"2px solid rgba(212,168,83,0.5)":isSR2?"2px solid rgba(123,140,222,0.4)":isR?"2px solid rgba(232,98,124,0.35)":"2px solid rgba(176,138,207,0.25)";
+      const glowStyle=isS?"0 0 30px rgba(212,168,83,0.3)":isSR2?"0 0 25px rgba(123,140,222,0.25)":isR?"0 0 20px rgba(232,98,124,0.2)":"0 0 15px rgba(176,138,207,0.15)";
+      const labelBg=isS?"linear-gradient(90deg,#D4A853,#FFD700,#D4A853)":isSR2?"linear-gradient(90deg,rgba(123,140,222,0.3),rgba(167,139,250,0.3))":isR?"rgba(232,98,124,0.2)":"rgba(176,138,207,0.15)";
+      const labelColor=isS?"#1A0F20":isSR2?"#C8D0FF":isR?"#F0809A":"#C4A0E0";
+      const starsText=isS?"✦ ✦ ✦ ":isSR2?"✦ ✦ ":"";
       const content=document.createElement("div");
       content.style.cssText="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:0 30px;text-align:center;";
       content.innerHTML=`
-        <p style="font-size:10px;letter-spacing:6px;color:#bbb;text-transform:uppercase;font-family:Cormorant,serif;margin:0 0 14px">your character</p>
-        <div style="width:160px;height:160px;border-radius:50%;overflow:hidden;border:${borderStyle};box-shadow:${glowStyle}">
-          <img src="${CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta}" width="160" height="160" style="display:block;object-fit:cover"/>
+        <p style="font-size:9px;letter-spacing:8px;color:rgba(255,255,255,0.3);text-transform:uppercase;font-family:Cormorant,serif;margin:0 0 20px;font-weight:300">your character</p>
+        <div style="width:140px;height:140px;border-radius:50%;overflow:hidden;border:${borderStyle};box-shadow:${glowStyle}">
+          <img src="${CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta}" width="140" height="140" style="display:block;object-fit:cover" alt="character"/>
         </div>
-        <div style="margin:16px 0 6px"><span style="padding:5px 20px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:2px;background:${labelBg};color:${labelColor};display:inline-block">${type.rarity!=="N"?starsText:""}${r.label}</span></div>
-        <p style="font-size:32px;font-weight:700;margin:10px 0 6px;color:${accentColor}">${type.name}</p>
-        <p style="font-size:15px;color:#888;margin:0 0 4px">${type.sub}</p>
-        <div style="margin:20px auto;width:200px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,0,0,0.06),transparent)"></div>
-        <p style="font-size:12px;color:#999;line-height:1.8;padding:0 8px;margin:0">${type.desc.slice(0,60)}...</p>
-        <div style="margin-top:24px">
-          <p style="font-size:11px;letter-spacing:4px;color:#ccc;font-family:Cormorant,serif;margin:0">よるのことば</p>
-          <p style="font-size:9px;color:#ddd;margin:4px 0 0">yorunokotoba.vercel.app</p>
+        <div style="margin:18px 0 8px"><span style="padding:5px 22px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:2px;background:${labelBg};color:${labelColor};display:inline-block;border:1px solid rgba(255,255,255,0.06)">${starsText}${r.label}</span></div>
+        <p style="font-size:28px;font-weight:700;margin:8px 0 4px;color:${accentColor};letter-spacing:2px">${type.name}</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.45);margin:0 0 6px;letter-spacing:1px">${type.sub}</p>
+        <div style="margin:20px auto;width:180px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent)"></div>
+        <p style="font-size:11px;color:rgba(255,255,255,0.35);line-height:1.9;padding:0 12px;margin:0;letter-spacing:0.5px">${type.desc.slice(0,55)}...</p>
+        <div style="margin-top:36px">
+          <p style="font-size:13px;letter-spacing:6px;color:rgba(255,255,255,0.2);font-family:Cormorant,serif;margin:0;font-weight:300">よるのことば</p>
+          <p style="font-size:8px;color:rgba(255,255,255,0.15);margin:5px 0 0;letter-spacing:2px">yorunokotoba.vercel.app</p>
         </div>`;
       wrap.appendChild(content);
       document.body.appendChild(wrap);
@@ -512,6 +545,7 @@ function FortuneTypeCard({type,className=""}){
     }catch(e){setShareMsg("");console.log("saveImage error:",e)}
   }
   function doShare(platform){
+    gtag("event","share_result",{method:platform,type:type.name});
     if(platform==="x"){location.href=`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;return}
     if(platform==="line"){location.href=`https://line.me/R/share?text=${encodeURIComponent(fullText)}`;return}
     if(platform==="native"&&navigator.share){navigator.share({title:"よるのことば",text:shareText,url:shareUrl}).catch(()=>{});return}
@@ -544,7 +578,7 @@ function FortuneTypeCard({type,className=""}){
       <div style={{position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
         <div style={{animation:"rarityReveal 0.6s ease both"}}>
           <div style={{width:110,height:110,borderRadius:"50%",overflow:"hidden",border:isSSR?"3px solid #D4A853":type.rarity==="SR"?"3px solid #7B8CDE":type.rarity==="R"?"2px solid #E8627C":"2px solid rgba(200,160,180,0.3)",boxShadow:cd.glow}}>
-            <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={110} height={110} style={{display:"block",objectFit:"cover",animation:"float 3s ease infinite"}}/>
+            <img src={CHARA_IMAGES[type.id]||CHARA_IMAGES.yume_kobuta} width={110} height={110} style={{display:"block",objectFit:"cover",animation:"float 3s ease infinite"}} alt={type.name}/>
           </div>
         </div>
         <div style={{marginTop:12,marginBottom:6}}>
@@ -571,21 +605,21 @@ function FortuneTypeCard({type,className=""}){
 
     <Card style={{textAlign:"left",marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>🪞</span><p style={{fontSize:12,fontWeight:700,color:"white",background:`linear-gradient(135deg,${type.color},${type.color}cc)`,padding:"4px 14px",borderRadius:20,display:"inline-block",letterSpacing:1}}>あなたの性格</p></div>
-      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.desc}</p>
+      <ExpandText text={type.desc} lines={3}/>
     </Card>
     <Card style={{textAlign:"left",marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>💗</span><p style={{fontSize:12,fontWeight:700,color:"white",background:"linear-gradient(135deg,#E8627C,#F5A0B0)",padding:"4px 14px",borderRadius:20,display:"inline-block",letterSpacing:1}}>恋愛傾向</p></div>
-      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.love}</p>
+      <ExpandText text={type.love} lines={3}/>
     </Card>
     <Card style={{textAlign:"left",marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>✨</span><p style={{fontSize:12,fontWeight:700,color:"white",background:"linear-gradient(135deg,#667eea,#764ba2)",padding:"4px 14px",borderRadius:20,display:"inline-block",letterSpacing:1}}>仕事・才能</p></div>
-      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.work}</p>
+      <ExpandText text={type.work} lines={3}/>
     </Card>
     <Card style={{textAlign:"left",marginBottom:10}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}><span style={{fontSize:14}}>🫧</span><p style={{fontSize:12,fontWeight:700,color:"white",background:"linear-gradient(135deg,#D47070,#E8A0A0)",padding:"4px 14px",borderRadius:20,display:"inline-block",letterSpacing:1}}>弱点・注意点</p></div>
-      <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{type.weak}</p>
+      <ExpandText text={type.weak} lines={3}/>
     </Card>
-    {bestType&&<Card style={{textAlign:"left",marginBottom:10,background:"#fff",border:"1.5px solid rgba(232,98,124,0.25)",boxShadow:"0 4px 24px rgba(180,100,120,0.12)"}}>
+    {bestType&&<Card style={{textAlign:"left",marginBottom:10,border:"1.5px solid rgba(232,98,124,0.25)",boxShadow:"0 4px 24px rgba(180,100,120,0.12)"}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:14}}>
         <span style={{fontSize:14}}>💕</span>
         <p style={{fontSize:12,letterSpacing:2,color:"var(--rose)",textTransform:"uppercase",fontFamily:"Cormorant, serif",fontWeight:700}}>best match</p>
@@ -680,9 +714,143 @@ function CharacterCarousel({className=""}){
   </div>;
 }
 
+/* ─── Error Boundary ─── */
+class ErrorBoundary extends React.Component{constructor(p){super(p);this.state={err:null}}static getDerivedStateFromError(e){return{err:e}}render(){if(this.state.err)return React.createElement("div",{style:{padding:20,background:"#fff0f0",borderRadius:12,margin:20}},React.createElement("p",{style:{color:"red",fontWeight:700,fontSize:14}},"エラーが発生しました"),React.createElement("pre",{style:{fontSize:10,color:"#666",marginTop:8,whiteSpace:"pre-wrap"}},String(this.state.err?.message||this.state.err)),React.createElement("button",{onClick:()=>location.reload(),style:{marginTop:12,padding:"10px 20px",borderRadius:8,border:"none",background:"#E8627C",color:"#fff",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif"}},"リロード"));return this.props.children}}
+
 /* ─── Main App ─── */
 function App(){
-  const [mode,setMode]=useState("dream");const [page,setPage]=useState("home");const [compatSign,setCompatSign]=useState("");const [compatResult,setCompatResult]=useState(null);
+  const [mode,setMode]=useState("dream");const [page,setPage]=useState("home");const [compatSign,setCompatSign]=useState("");const [compatBirthDay,setCompatBirthDay]=useState("");const [compatResult,setCompatResult]=useState(null);const [deepResult,setDeepResult]=useState(null);
+  const [showPaywall,setShowPaywall]=useState(false);
+  const [showCardForm,setShowCardForm]=useState(false);
+  const [cardProcessing,setCardProcessing]=useState(false);
+  const payjpRef=useRef(null);
+  const cardElRef=useRef(null);
+  const [toast,setToast]=useState("");
+  useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(""),3000);return()=>clearTimeout(t)}},[toast]);
+
+  // ── Night Mode ──
+  const [nightMode,setNightMode]=useState(()=>{try{const saved=localStorage.getItem("ynk_night_mode");if(saved==="on")return true;if(saved==="off")return false;const h=new Date().getHours();return h>=22||h<5}catch(e){return false}});
+  useEffect(()=>{document.documentElement.setAttribute("data-theme",nightMode?"dark":"");document.body.style.background=nightMode?"#0D0B0E":"#FFF5F0"},[nightMode]);
+  function toggleNight(){const next=!nightMode;setNightMode(next);try{localStorage.setItem("ynk_night_mode",next?"on":"off")}catch(e){}}
+
+  // ── Auth & Premium State ──
+  const [user,setUser]=useState(null);
+  const [authLoading,setAuthLoading]=useState(true);
+  const [isPremium,setIsPremium]=useState(false);
+
+  // Firebase Auth listener
+  useEffect(()=>{
+    const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
+    return()=>unsub();
+  },[]);
+
+  // Firestore premium listener
+  useEffect(()=>{
+    if(!user)return setIsPremium(false);
+    const unsub=db.collection("users").doc(user.uid).onSnapshot(snap=>{
+      if(snap.exists){const d=snap.data();setIsPremium(d.premium===true)}
+      else setIsPremium(false);
+    },()=>setIsPremium(false));
+    return()=>unsub();
+  },[user]);
+
+  // Sign in with Google
+  async function signInWithGoogle(){
+    try{await auth.signInWithPopup(googleProvider);return true}
+    catch(e){if(e.code==="auth/popup-blocked"){try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){setToast("ログインできませんでした");return false}}setToast("ログインできませんでした");return false}
+  }
+  function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
+
+  // PAY.JP card element mount/unmount
+  useEffect(()=>{
+    if(showCardForm){
+      if(!payjpRef.current){payjpRef.current=window.Payjp(PAYJP_PK)}
+      const p=payjpRef.current;
+      const els=p.elements();
+      const card=els.create('card',{style:{base:{color:nightMode?'#e0d0e8':'#3A2830',fontSize:'16px','::placeholder':{color:nightMode?'#8a7a92':'#aaa'}},invalid:{color:'#E8627C'}}});
+      setTimeout(()=>{const m=document.getElementById('payjp-card-mount');if(m){card.mount('#payjp-card-mount');cardElRef.current=card}},120);
+      return()=>{if(cardElRef.current){try{cardElRef.current.unmount()}catch(e){};cardElRef.current=null}}
+    }
+  },[showCardForm,nightMode]);
+
+  // Submit card → Cloud Function
+  async function submitCard(){
+    if(!cardElRef.current||!user)return;
+    setCardProcessing(true);
+    try{
+      const result=await payjpRef.current.createToken(cardElRef.current);
+      if(result.error){setToast(result.error.message||"カード情報を確認してね");setCardProcessing(false);return}
+      if(!fns){try{fns=firebase.app().functions("asia-northeast1")}catch(e){setToast("接続エラー。リロードしてね");setCardProcessing(false);return}}
+      const subscribe=fns.httpsCallable('subscribe');
+      await subscribe({token:result.id});
+      setToast("プレミアム登録完了！🎉");
+      setShowCardForm(false);setShowPaywall(false);
+    }catch(e){
+      setToast("登録に失敗しました: "+(e.message||"もう一度試してね"));
+    }
+    setCardProcessing(false);
+  }
+
+  // Open card form (replaces openCheckout)
+  function openCheckout(){
+    if(!user){setToast("先にログインしてね");return}
+    setShowCardForm(true);
+  }
+
+  // Cancel subscription
+  const [showCancelConfirm,setShowCancelConfirm]=useState(false);
+  const [cancelProcessing,setCancelProcessing]=useState(false);
+  async function cancelSubscription(){
+    setCancelProcessing(true);
+    try{
+      if(!fns){try{fns=firebase.app().functions("asia-northeast1")}catch(e){}}
+      const cancel=fns.httpsCallable('cancelSubscription');
+      await cancel();
+      setIsPremium(false);
+      setToast("プレミアムを解約しました");
+      setShowCancelConfirm(false);
+    }catch(e){
+      setToast("解約に失敗しました: "+(e.message||"もう一度試してね"));
+    }
+    setCancelProcessing(false);
+  }
+
+  // Premium gate: login → checkout
+  async function handlePremiumAction(analyticsEvent){
+    gtag("event",analyticsEvent);
+    if(isPremium)return true;
+    if(!user){
+      const ok=await signInWithGoogle();
+      if(!ok)return false;
+    }
+    setShowPaywall(true);
+    return false;
+  }
+  const [bannerDismissed,setBannerDismissed]=useState(()=>{try{var bd=localStorage.getItem("ynk_banner_dismissed");return bd&&Date.now()-parseInt(bd)<86400000*60}catch(e){return false}});
+
+  // Browser back button support
+  const pageRef=React.useRef("home");
+  const skipPush=React.useRef(false);
+  React.useEffect(()=>{
+    if(skipPush.current){skipPush.current=false;return}
+    if(page!==pageRef.current){
+      window.history.pushState({page},"");
+      pageRef.current=page;
+    }
+  },[page]);
+  React.useEffect(()=>{
+    window.history.replaceState({page:"home"},"");
+    const onPop=(e)=>{
+      const target=e.state?.page||"home";
+      skipPush.current=true;
+      pageRef.current=target;
+      if(target==="home"){setPage("home");setDreamResult(null);setFortuneResult(null);setCompatResult(null);setCompatSign("");setCompatBirthDay("");setDeepResult(null)}
+      else{setPage(target)}
+      window.scrollTo(0,0);
+    };
+    window.addEventListener("popstate",onPop);
+    return()=>window.removeEventListener("popstate",onPop);
+  },[]);
   const [dreamText,setDreamText]=useState("");const [dreamResult,setDreamResult]=useState(null);
   const [fortuneResult,setFortuneResult]=useState(null);const [loadingMsg,setLoadingMsg]=useState("");
   const [name,setName]=useState("");
@@ -720,6 +888,7 @@ function App(){
   }
   const [streak,setStreak]=useState(()=>getStreak());
   const [collection,setCollection]=useState(()=>getStreak().collection);
+  function trackDream(typeId){const s=getStreak();const newCol=saveStreak(s.count,typeId,collection);setCollection(newCol);setStreak({...s,isNew:false})}
   const canFortune=name.trim()&&sign&&gender&&birthMonth&&birthDay;
   const quickDreams=["追いかけられる夢","歯が抜ける夢","空を飛ぶ夢","海にいる夢","蛇が出てくる夢","落ちる夢","遅刻する夢","好きな人が出てくる夢","知らない場所にいる夢","元カレ/元カノの夢","試験に落ちる夢","火事の夢"];
 
@@ -734,39 +903,190 @@ function App(){
     if(nonsense.test(t)||t.length<4&&!t.match(/[亜-熙ぁ-んァ-ヶ]/))return{ok:false,msg:"もう少し詳しく教えてね。どんな場面だった？誰が出てきた？"};
     return{ok:true};
   }
-  function startDream(){if(!dreamText.trim())return;
+  function startDream(){if(!dreamText.trim())return;gtag("event","dream_start");
     const v=validateDreamInput(dreamText);
     if(!v.ok){
       if(v.type==="noDream"){
-        setPage("loading");const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],mainReading:{intro:"あなたは今、心が「休息モード」に入ってるはず。夢を覚えていないのは、深い安定か、感情を無意識にブロックしてるサイン。",deep:"「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。"},type,actions:{should:"寝る前に「夢を覚えていたい」と3回唱える",aware:"感情を感じにくくなってないか自分に聞いてみて",avoid:"寝る直前のスマホ。夢の記憶を邪魔する"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
+        setPage("loading");const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],mainReading:{intro:"あなたは今、心が「休息モード」に入ってるはず。夢を覚えていないのは、深い安定か、感情を無意識にブロックしてるサイン。",deep:"「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。"},type,actions:{should:["寝る前に「夢を覚えていたい」と3回唱える"],aware:["感情を感じにくくなってないか自分に聞いてみて"],avoid:["寝る直前のスマホ。夢の記憶を邪魔する"]},lucky:generateLucky()});trackDream(type.id);setPage("dreamResult");window.scrollTo(0,0)}},900);return;
       }
       if(v.type==="sexual"){
-        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的なシンボル",meaning:"生命力・創造エネルギー",detail:"夢占いでは最も強いエネルギーの象徴。「何かを生み出したい」「もっと深くつながりたい」という根源的な欲求が表面化してる状態。"},{word:"肌の接触",meaning:"承認・一体化の欲求",detail:"「自分を丸ごと受け入れてほしい」という気持ちの投影。今、孤独や不安を感じてない？"}],mainReading:{intro:"あなたは今、誰かと深くつながりたい欲求がピークに達してるはず。それは体の話じゃなくて、心の話。「丸ごと受け入れてほしい」「本当の自分を見てほしい」——その叫びが夢に出てる。",deep:"夢占いでは性的な夢は生命エネルギーの爆発。あなたの中に「何かを生み出したい」「もっと本気で生きたい」っていう衝動が渦巻いてる。\n\nこの夢を見る人は、現実で自分を抑え込んでることが多い。仕事でも恋愛でも「本当はもっとこうしたい」があるのに、理性でブレーキかけてない？\n\nこのエネルギーは溜め込むと暴走する。今日、自分の欲求に素直になれる小さな行動を1つだけやってみて。"},type,actions:{should:"自分の欲求を紙に書き出す。言語化するだけでエネルギーが整理される",aware:"現実で「本当はこうしたい」を我慢してないか振り返って",avoid:"この夢を「恥ずかしいもの」として蓋をすること。大事なメッセージだから"},lucky:generateLucky()});setPage("dreamResult")}},900);return;
+        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的なシンボル",meaning:"生命力・創造エネルギー",detail:"夢占いでは最も強いエネルギーの象徴。「何かを生み出したい」「もっと深くつながりたい」という根源的な欲求が表面化してる状態。"},{word:"肌の接触",meaning:"承認・一体化の欲求",detail:"「自分を丸ごと受け入れてほしい」という気持ちの投影。今、孤独や不安を感じてない？"}],mainReading:{intro:"あなたは今、誰かと深くつながりたい欲求がピークに達してるはず。それは体の話じゃなくて、心の話。「丸ごと受け入れてほしい」「本当の自分を見てほしい」——その叫びが夢に出てる。",deep:"夢占いでは性的な夢は生命エネルギーの爆発。あなたの中に「何かを生み出したい」「もっと本気で生きたい」っていう衝動が渦巻いてる。\n\nこの夢を見る人は、現実で自分を抑え込んでることが多い。仕事でも恋愛でも「本当はもっとこうしたい」があるのに、理性でブレーキかけてない？\n\nこのエネルギーは溜め込むと暴走する。今日、自分の欲求に素直になれる小さな行動を1つだけやってみて。"},type,actions:{should:["自分の欲求を紙に書き出す。言語化するだけでエネルギーが整理される"],aware:["現実で「本当はこうしたい」を我慢してないか振り返って"],avoid:["この夢を「恥ずかしいもの」として蓋をすること。大事なメッセージだから"]},lucky:generateLucky()});trackDream(type.id);setPage("dreamResult");window.scrollTo(0,0)}},900);return;
       }
-      alert(v.msg);return;
+      setToast(v.msg||"もう少し詳しく教えてね");return;
     }
-    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText);setDreamResult(result);setPage("dreamResult")}},900)}
-  function startFortune(){if(!canFortune)return;saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","アドバイスをまとめ中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setPage("fortuneResult")}},900)}
-  function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null);setCompatResult(null);setCompatSign("")}
+    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText);trackDream(result.type.id);setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0)}},900)}
+  function startFortune(){if(!canFortune)return;gtag("event","fortune_start",{sign:sign});saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日の運気を計算中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setPage("fortuneResult");window.scrollTo(0,0)}},900)}
+  function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null);setCompatResult(null);setCompatSign("");setCompatBirthDay("");setDeepResult(null)}
 
   /* ── 相性診断 ── */
-  function calcCompatibility(mySign,theirSign){
+  function calcCompatibility(mySign,theirSign,myBD,theirBD){
     const EL={"おひつじ座":"fire","おうし座":"earth","ふたご座":"air","かに座":"water","しし座":"fire","おとめ座":"earth","てんびん座":"air","さそり座":"water","いて座":"fire","やぎ座":"earth","みずがめ座":"air","うお座":"water"};
     const Q={"おひつじ座":"cardinal","おうし座":"fixed","ふたご座":"mutable","かに座":"cardinal","しし座":"fixed","おとめ座":"mutable","てんびん座":"cardinal","さそり座":"fixed","いて座":"mutable","やぎ座":"cardinal","みずがめ座":"fixed","うお座":"mutable"};
     const e1=EL[mySign],e2=EL[theirSign],q1=Q[mySign],q2=Q[theirSign];
     const same=mySign===theirSign;
     const sameEl=e1===e2;
-    const compat={"fire-air":80,"air-fire":80,"earth-water":78,"water-earth":78,"fire-fire":75,"air-air":72,"earth-earth":70,"water-water":82,"fire-earth":55,"earth-fire":55,"fire-water":48,"water-fire":48,"air-water":52,"water-air":52,"air-earth":58,"earth-air":58};
-    const base=same?85:compat[e1+"-"+e2]||60;
+    // Wider base spread: 30-95
+    const compat={"fire-air":88,"air-fire":88,"earth-water":85,"water-earth":85,"fire-fire":78,"air-air":72,"earth-earth":68,"water-water":92,"fire-earth":42,"earth-fire":42,"fire-water":35,"water-fire":35,"air-water":45,"water-air":45,"air-earth":48,"earth-air":48};
+    const base=same?90:compat[e1+"-"+e2]||55;
     const h=simpleHash(mySign+theirSign);
-    const love=Math.min(98,Math.max(25,base+(h%21-10)+(q1===q2?-5:3)));
-    const work=Math.min(98,Math.max(25,base+((h>>4)%21-10)+(sameEl?5:-2)));
-    const friend=Math.min(98,Math.max(25,base+((h>>8)%21-10)+(same?8:0)));
+    const h2=simpleHash(myBD+theirBD+mySign);
+    // Wider variation: ±18, quality adds ±8, birthday adds ±7
+    const bdBonus=((parseInt(myBD,10)||1)+(parseInt(theirBD,10)||1))%15-7;
+    const qBonus=q1===q2?-8:(q1==="cardinal"&&q2==="mutable"||q1==="mutable"&&q2==="cardinal")?6:3;
+    const love=Math.min(98,Math.max(15,base+(h%37-18)+qBonus+bdBonus));
+    const work=Math.min(98,Math.max(15,base+((h>>4)%37-18)+(sameEl?8:-5)+((h2>>2)%11-5)));
+    const friend=Math.min(98,Math.max(15,base+((h>>8)%37-18)+(same?12:0)+((h2>>5)%11-5)));
     const avg=Math.round((love+work+friend)/3);
-    const loveTexts=love>=75?["ふたりの間には自然な引力がある。一緒にいるだけで心地いい、そんな関係。","お互いの温度感がちょうどいい。無理せずいられる稀有な相性。"]:love>=55?["最初はゆっくりだけど、知れば知るほど深くなる関係。焦らないで。","「あれ、意外と合うかも」って気づく瞬間がくるよ。"]:["真逆だからこそ、惹かれるときの引力は強烈。でも理解には時間がかかる。","ぶつかることもあるけど、そこから学べることが多い組み合わせ。"];
-    const workTexts=work>=75?["仕事のリズムが合う。自然と役割分担ができて、チームとして最強。","お互いの強みを活かし合える関係。一緒にプロジェクトすると成果が出やすい。"]:work>=55?["得意分野は違うけど、だからこそ補い合える。意見交換が大事。","方法論の違いを理解すれば、いいコンビになれるポテンシャルあり。"]:["アプローチが正反対。衝突も多いけど、乗り越えると革新的な成果が出る。","お互いの「なぜそうする？」を理解する努力が必要。でも学びは大きい。"];
-    const friendTexts=friend>=75?["自然体でいられる関係。沈黙も苦じゃない、居心地のいい友情。","気づいたら隣にいる、そんな自然な友情が続くふたり。"]:friend>=55?["趣味や価値観が少しズレるけど、それが新しい発見になる。","一緒にいると世界が広がる。違う視点をくれる貴重な存在。"]:["距離感の取り方がカギ。近すぎず遠すぎず、程よい関係が吉。","ベタベタしない大人な友情が向いてる。たまに会うくらいがちょうどいい。"];
-    return{love,work,friend,avg,loveText:loveTexts[h%loveTexts.length],workText:workTexts[(h>>3)%workTexts.length],friendText:friendTexts[(h>>6)%friendTexts.length],mySign,theirSign};
+    const loveTexts=love>=80?["運命的な引力がある。出会うべくして出会った、ってやつかも。","魂レベルで波長が合ってる。一緒にいるだけで心が満たされる関係。","言葉にしなくても伝わる。ふたりの間には見えない糸がちゃんとある。","一緒にいると「帰ってきた」って感じる。それが答えだよ。"]:love>=60?["最初はゆっくりだけど、知れば知るほど深くなる関係。焦らないで。","「あれ、意外と合うかも」って気づく瞬間がくるよ。","じわじわ好きになるタイプの相性。気づいた時にはもう離れられない。","お互いの「好き」のタイミングがちょっとズレるだけ。合わせ方がわかれば最強。"]:love>=40?["真逆だからこそ、惹かれるときの引力は強烈。でも理解には時間がかかる。","ぶつかることもあるけど、そこから学べることが多い組み合わせ。","「なんでそうなるの？」って思う瞬間が多い。でもそこに成長のヒントがある。","分かり合うまでに苦労する分、通じ合えた時の喜びは格別。"]:["正直、恋愛のテンポが噛み合いにくい。でも「だからこそ」の学びが深い。","ふたりの間には壁がある。でもその壁を超えたとき、誰より強い絆になる。","好きの形が違いすぎて戸惑うことが多い。でも「違うからこそ」見える景色がある。","すれ違いが多くなりがち。でも相手を変えようとせず受け入れると、道が開ける。"];
+    const workTexts=work>=80?["仕事の相性は最強クラス。自然と役割分担ができて、成果が倍になる。","お互いの才能が化学反応を起こす。一緒にやると想像以上の結果が出る。","「この人がいれば大丈夫」って思える仕事のパートナー。信頼感が半端ない。","阿吽の呼吸で動ける。言わなくても次にやることがわかる、最高のチーム。"]:work>=60?["得意分野は違うけど、だからこそ補い合える。意見交換が大事。","方法論の違いを理解すれば、いいコンビになれるポテンシャルあり。","ひとりじゃ思いつかないアイデアが生まれる関係。化学変化を楽しんで。","ペースは違うけど、ゴールは同じ。そこを信じられれば強いコンビになれる。"]:work>=40?["アプローチが正反対。衝突も多いけど、乗り越えると革新的な成果が出る。","お互いの「なぜそうする？」を理解する努力が必要。でも学びは大きい。","仕事の優先順位が食い違いがち。「まずは聞く」を意識するとうまく回り出す。","噛み合わない時は本当に噛み合わない。でも噛み合った時の爆発力はすごい。"]:["仕事の進め方が根本的に違う。同じチームより、違うプロジェクトで輝くタイプ。","距離を保ちつつリスペクトし合えれば、意外な化学反応が起きることも。","お互い「自分のやり方が正しい」と思ってるから、譲り合いがカギになる。","同じ空間で長時間一緒はキツいかも。でもたまに意見交換すると新しい発見がある。"];
+    const friendTexts=friend>=80?["自然体でいられる関係。沈黙も苦じゃない、居心地のいい友情。","気づいたら隣にいる、そんな自然な友情が続くふたり。","何年会わなくても、会った瞬間に元に戻れる。そういう友情の相性。","お互い無理しなくていい。「ありのまま」を受け入れ合える最高の関係。"]:friend>=60?["趣味や価値観が少しズレるけど、それが新しい発見になる。","一緒にいると世界が広がる。違う視点をくれる貴重な存在。","最初は「ちょっと合わないかも」って思うけど、知れば知るほど好きになる。","お互いの得意なことが違うから、一緒にいると視野が倍になる。"]:friend>=40?["距離感の取り方がカギ。近すぎず遠すぎず、程よい関係が吉。","ベタベタしない大人な友情が向いてる。たまに会うくらいがちょうどいい。","気を使いすぎると疲れちゃう関係。自然に任せるのが一番。","共通の趣味や場所があると一気に仲良くなれる。接点を見つけてみて。"]:["友情を育てるには意識的な努力が必要。でも続いた友情は一生もの。","無理に合わせず、お互いの世界を尊重する関係が理想。","「わかりあえない」を受け入れた先に、不思議と心地いい関係が生まれる。","深く付き合うより、さっぱりした関係のほうが長続きするタイプ。"];
+    // Character info
+    var myPair=SIGN_CHARS[mySign]||["yume_kobuta","yume_kobuta"];
+    var myCharId=myPair[(parseInt(myBD,10)||1)%2];
+    var myChar=DREAM_TYPES.find(function(t){return t.id===myCharId})||DREAM_TYPES[0];
+    var theirPair=SIGN_CHARS[theirSign]||["yume_kobuta","yume_kobuta"];
+    var theirCharId=theirPair[(parseInt(theirBD,10)||1)%2];
+    var theirChar=DREAM_TYPES.find(function(t){return t.id===theirCharId})||DREAM_TYPES[0];
+    return{love,work,friend,avg,loveText:loveTexts[h%loveTexts.length],workText:workTexts[(h>>3)%workTexts.length],friendText:friendTexts[(h>>6)%friendTexts.length],mySign,theirSign,myCharId,myCharName:myChar.name,theirCharId,theirCharName:theirChar.name};
+  }
+
+  /* ── 深層分析（五行×陰陽 = 10タイプ） ── */
+  const GOGYO_MAP={"おひつじ座":"fire","おうし座":"earth","ふたご座":"wood","かに座":"water","しし座":"fire","おとめ座":"metal","てんびん座":"wood","さそり座":"metal","いて座":"fire","やぎ座":"earth","みずがめ座":"wood","うお座":"water"};
+  const GOGYO_TYPES={
+    wood_yang:{name:"頭脳派の小悪魔",icon:"🦊",sub:"3手先まで読んでる。全部お見通し",color:"#2D8A4E",
+      os:"頭の中に常に「最適解マップ」が動いてる。会話しながら3手先を読んで、誰よりも早く答えにたどり着く。思考のスピードが武器だけど、考えすぎて動けなくなる瞬間もある。あなたの脳は「正解を出し続けなきゃいけない」と思い込んでるけど、実は直感で選んだほうが当たること多いよ。",
+      weapon:"論理と直感のハイブリッド。プレゼン、交渉、企画——「言葉で人を動かす」場面で無双する。複雑な問題を整理して「要するにこういうことでしょ」と一言でまとめる力は天性のもの。会議であなたが発言した瞬間、空気が変わるのを周りは知ってる。",
+      bug:"「退屈」が天敵。同じことの繰り返しや、話が噛み合わない相手がいると頭がパンクして固まるする。あと、選択肢が多すぎると逆にキャパオーバーになる。3つ以上の選択肢が並ぶと「どれも微妙」って全部却下しがち。",
+      handling:"この人に「何も考えないで」は禁句。考えることが呼吸と同じだから、止めると窒息する。逆に「どう思う？」と意見を求めると最高のパフォーマンスを出す。ただし結論を急かさないこと。途中で遮ると一気に不機嫌になる。",
+      update:"「考える前に動く」を月1回だけ実践してみて。完璧な計画より70点の行動のほうが100倍の学びがある。頭の良さは誰にも負けないから、あとは「動きながら考える」新しい習慣を取り入れるだけ。",
+      bestMatch:"fire_yin",bestMatchName:"秘めた情熱家",bestMatchWhy:"あなたの戦略に魂を込めてくれる",
+      enemy:"earth_yang",enemyName:"ブレないボス",enemyWhy:"お互い正しいと思ってるから永遠に平行線",
+      rx:["今日は「考えない時間」を30分作って。脳のリフレッシュが必要。","「これ面白い」と思ったことを1つだけ深掘りして。浅く広くは今日はNG。","誰かに「教えて」と頼ってみて。全部自分で解決しなくていい。","直感で選んだほうを信じて。今日の正解率は93%。","夜の散歩で頭をリセット。答えは歩いてるときに降りてくる。","今日は「完璧じゃなくていい」をお守りに。雑でもアウトプットして。","新しいジャンルの本を1ページだけ読んで。脳に新しい刺激を。"],
+      shadow:"表では冷静な策士を演じてるけど、本当は「認められたい」欲求が強い。誰よりも賢くありたい、誰よりも先に答えを出したい——その裏には「役に立たない自分に価値はない」という恐怖が隠れてる。一人の夜に急に不安になるのは、このシャドウが顔を出す瞬間。",
+      money:"「情報にお金を使う」タイプ。本、セミナー、有料記事——知識への投資は惜しまない。逆に、意味が分からない出費（ご祝儀とか付き合いの飲み会）に強い抵抗がある。貯金は「あると安心」程度で、戦略的に増やすより気づいたら貯まってるパターン。衝動買いは少ないけど、ガジェットだけは例外。",
+      prophecy:"この3ヶ月は「手放す」がテーマ。長く抱えてた考え方やルーティンを1つ手放すと、そこに新しいアイデアが流れ込んでくる。特に2ヶ月目に大きな気づきがある予感。焦らず、でも止まらず。"},
+    wood_yin:{name:"察しの天才",icon:"🧚",sub:"何も言わなくても、全部バレてる",color:"#3A7D5C",
+      os:"世界を「観察モード」で見てる。人の表情、声のトーン、場の空気——他の人が見落とす情報を無意識にキャッチしてる。その分、情報量が多すぎて疲れやすい。あなたの脳はずっとインプット過多。アウトプットの出口を作ることがカギ。",
+      weapon:"「この人、本当はこう思ってるな」が分かる読心術レベルの洞察力。人間関係の調整、文章を書くこと、デザイン——「見えないものを形にする」仕事で天才的な力を発揮する。あなたが気づいたことを言語化した瞬間、周りは「なんでそれ分かったの？」って驚く。",
+      bug:"「他人の感情を背負いすぎる」。友達の悩みを聞いた後、自分のことのように落ち込んでない？共感体質がMAXで、他人のストレスが自分に移る。一人の時間が不足すると限界がくる。",
+      handling:"この人の沈黙は「怒ってる」じゃなくて「考え中」。急かさないで待ってあげて。あと、大人数の集まりに無理に誘わないこと。少人数のほうが10倍輝く。本音を話してくれたら、それはものすごい信頼の証。",
+      update:"観察力は100点。次のステージは「発信力」。SNSでもブログでも日記でもいいから、感じたことを言葉にする習慣を。あなたの洞察を世界に出した瞬間、「分かる」って共感する人が集まってくる。",
+      bestMatch:"fire_yang",bestMatchName:"炎のカリスマ",bestMatchWhy:"あなたの分析を行動に変えてくれる",
+      enemy:"metal_yang",enemyName:"こだわりの魔法使い",enemyWhy:"お互い細かすぎて消耗する",
+      rx:["人混みを避けて。今日のあなたはスポンジ状態。吸収しすぎ注意。","感じたことをメモに3行書いて。言語化するだけで心が軽くなる。","「私はどう感じてる？」と自分に聞いて。他人の感情と混ざってない？","好きな音楽を聴きながら散歩。インプットをリセットする時間を。","今日は「断る」を1回だけ練習。自分の時間を守ることも大事。","夜寝る前にスマホを閉じて、5分だけ何も考えない時間を。","小さな発見を1つSNSに書いてみて。あなたの視点は誰かの宝物。"],
+      shadow:"穏やかな観察者の仮面の下に、「本当は誰よりも分かってるのに」という静かな怒りがある。周りが的外れなことを言ってる時、心の中で全員にダメ出ししてない？あと、本当に心を開いてる人は実は2〜3人しかいない。大勢と仲良くしてるように見えて、深い孤独を抱えてる。",
+      money:"「安心のために貯める」タイプ。口座の残高が減ると不安になるから、自然と節約体質。でも本や推し活など「自分の世界」に関するものには惜しみなく使う。二重人格的な消費パターン。大きな買い物の前に延々リサーチして、結局一番コスパのいいものを選ぶ。",
+      prophecy:"この3ヶ月は「アウトプット元年」。ずっと溜め込んできた観察と洞察を外に出すタイミングが来てる。SNSでもいいし、友達への一言でもいい。あなたの言葉が誰かの人生を変える出来事が、2ヶ月以内に起きる。"},
+    fire_yang:{name:"炎のカリスマ",icon:"🔥",sub:"やりたいことに一直線。止められない",color:"#D94F3B",
+      os:"「とりあえずやる」が初期設定。考える前に体が動いてる。失敗してもダメージ回復が異常に早くて、同じミスは絶対にしない。あなたの脳は「停滞＝死」と認識してるから、止まると不安になる。でもその推進力が誰にもマネできない最大の武器。",
+      weapon:"圧倒的な初速。他の人がまだ計画を練ってる間に、あなたは3周目を走ってる。新しいことを始める力、人を巻き込むカリスマ、失敗から立ち直る回復力——スタートアップ向きの才能フルセット。あなたが「これやろう」と言った瞬間、周りの目が輝くのを知ってるでしょ。",
+      bug:"「続ける力」がまだ育ってない。始めるのは天才、続けるのは苦手。あと、人の話を最後まで聞けない。相手が半分話したところで「分かった」って遮ってない？それ、分かってないこと多いよ。",
+      handling:"この人に長い説明は無意味。結論を先に言って。あと「ダメ」「無理」は燃料になるだけだから、止めたいなら「こっちのほうが面白くない？」と別の方向に誘導するのが正解。退屈させたら負け。",
+      update:"「始める力」は満点。次は「仕上げる力」のインストール。何か1つだけ、最後までやり切る経験を。途中で飽きても「あと10%だけ」と自分に言い聞かせて。完走した時の達成感が、あなたの新しい燃料になる。",
+      bestMatch:"wood_yin",bestMatchName:"察しの天才",bestMatchWhy:"暴走を冷静に軌道修正してくれる",
+      enemy:"water_yin",enemyName:"ひらめきの預言者",enemyWhy:"テンポが合わなすぎてイライラする",
+      rx:["午前中に一番やりたいことに着手。エネルギーのピークを逃すな。","誰かを褒めて。あなたの「すごいね」は人を本気にさせる力がある。","1つだけ「最後までやる」を意識して。今日の完走が明日の自信になる。","暴走注意報。「一晩寝てから決める」が今日のお守り。","今日は「聞く」に徹して。3秒待ってから返事するだけでいい。","体を動かして。ランニング、筋トレ、ダンス。エネルギーを燃やせ。","小さな成功を数えて。「できた」を3つ見つけたら今日は100点。"],
+      shadow:"「怖いものなんてない」って顔してるけど、本当は「置いていかれること」が死ぬほど怖い。常に動いてないと不安なのは、立ち止まると自分の弱さに向き合わなきゃいけないから。夜中に急に寂しくなるのは、日中の勢いで蓋をしてた感情が漏れてるサイン。",
+      money:"「今この瞬間に使う」タイプ。欲しいと思ったら買う、行きたいと思ったら行く。貯金は苦手だけど、お金を稼ぐ力が強いからなんとかなってる。問題はサブスクの解約忘れ。使ってないサービスに毎月払ってない？飲み会では奢りがち。気前の良さが魅力だけど、後で明細見てたまに青ざめる。",
+      prophecy:"この3ヶ月は「完走ボーナス」の時期。途中で投げ出さずに1つのことを最後までやり切ると、予想外の大きなリターンが来る。特に1ヶ月目に始めたことが3ヶ月目に化ける。スタートダッシュは得意でしょ？あとは走り切るだけ。"},
+    fire_yin:{name:"秘めた情熱家",icon:"🕯️",sub:"静かな情熱が、人を動かす",color:"#C4593E",
+      os:"内側に静かな炎が燃えてる。派手さはないけど、消えない。あなたの情熱は爆発型じゃなくて持続型。「好き」を貫く力が異常に強くて、周りの人はその姿に知らず知らず影響を受けてる。あなたの生き方そのものが誰かの光になってる。",
+      weapon:"「本物の情熱」。流行りに乗らない、他人に媚びない、自分の信じるものを淡々と続ける——その姿勢が人を惹きつける。教える仕事、ものづくり、クリエイティブ全般で輝く。あなたが「これいいよ」と言ったものは、本当にいい。その審美眼は信頼されてる。",
+      bug:"「自分の価値が分からない」。周りはあなたの影響を受けてるのに、本人だけが気づいてない。「私なんかが」が口癖じゃない？あと、自分のニーズを後回しにしすぎる。灯火は油がなくなったら消えるよ。",
+      handling:"この人の「大丈夫」を信じちゃダメ。本当は大丈夫じゃないことが多い。定期的に「最近どう？」って声をかけて。あと、急かさないこと。この人には「じっくり」が合ってる。無理に表舞台に引っ張り出すと輝きが消える。",
+      update:"内なる炎はもう十分燃えてる。次は「伝える力」。あなたが当たり前だと思ってることが、他人にとっては目から鱗の発見。感じたことを1日1回、誰かに話してみて。あなたの言葉は思ってる以上に人の心に火をつける。",
+      bestMatch:"wood_yang",bestMatchName:"頭脳派の小悪魔",bestMatchWhy:"あなたの情熱に戦略という翼をくれる",
+      enemy:"metal_yang",enemyName:"こだわりの魔法使い",enemyWhy:"完璧主義があなたの自由な炎を窮屈にする",
+      rx:["自分を褒める時間を3分。あなたの頑張り、ちゃんと見えてるよ。","好きなものに触れて。本、音楽、映画。炎に薪をくべる時間。","「助けて」を1回言ってみて。頼ることは弱さじゃない。","今日の小さな成功を日記に。あなたの価値を可視化しよう。","誰かに「ありがとう」って言われたら、素直に受け取って。","自分の作品や仕事を1つ見返して。あなたが作ったもの、すごいよ。","今日は自分のペースを死守して。急かされても「待って」って言って。"],
+      shadow:"「私なんかが」の仮面の裏に、実は強烈な自己表現欲がある。本当は自分の作品や考えを世界に見せたい、認められたい。でも傷つくのが怖くて出せない。SNSで下書きばかり溜まってない？あなたの「本当は見てほしい」は、決して恥ずかしいことじゃない。",
+      money:"「好きなものに静かに課金する」タイプ。派手な買い物はしないけど、推しのグッズ、お気に入りのブランド、こだわりのカフェ——「自分の世界」を豊かにするものには地味に使い続ける。貯金はそこそこできるけど、気づくと好きなものに溶けてる。ボーナスの使い道をすでに決めてるでしょ？",
+      prophecy:"この3ヶ月は「発見される」時期。あなたが静かに続けてきたことが、誰かの目に留まる出来事が起きる。大きなステージじゃなくていい、「見てくれてる人がいた」と気づく瞬間がくる。そのために今やるべきことは、発信を止めないこと。"},
+    earth_yang:{name:"ブレないボス",icon:"👑",sub:"決めたらやる。信頼度MAX",color:"#8B6F47",
+      os:"「計画→実行→成果」のプロセスが組み込まれてる。やると決めたらやる。途中で投げ出すことが生理的にできない。あなたの脳は「信頼」を最も重要な通貨だと認識してて、約束を破ることは自分を裏切ることと同義。だから周りからの信頼が異常に厚い。",
+      weapon:"「積み上げる力」。1年後、3年後を見据えて今日の1歩を踏める人。他の人が飽きて辞めた後も黙々と続けてる。マラソンランナー型の才能。プロジェクトマネジメント、経営、投資——長期戦で無類の強さを発揮する。",
+      bug:"「柔軟性不足」。計画通りにいかないと異常にストレスがかかる。想定外の事態が起きた時、固まって「こんなはずじゃ」と立ち止まりがち。あと、人にも自分と同じ基準を求めすぎて、周りが萎縮してない？",
+      handling:"この人との約束は絶対守って。一度信頼を失うと二度と取り戻せない。逆に、この人が「任せて」と言ったら本当に任せていい。中途半端が一番嫌いだから、お願いするなら全部任せる。途中で口を出すのは地雷。",
+      update:"計画力は完璧。次のステージは「手放す力」。コントロールできないものまでコントロールしようとしてない？完璧な計画じゃなくても走り出す練習を。あなたの実行力があれば、走りながら修正できる。",
+      bestMatch:"water_yang",bestMatchName:"七変化のちょうちょ",bestMatchWhy:"あなたの堅さに柔軟性を足してくれる",
+      enemy:"wood_yang",enemyName:"頭脳派の小悪魔",enemyWhy:"どっちが正しいかの戦いになりがち",
+      rx:["計画にない行動を1つだけ。予定外の楽しさを思い出して。","「まあいいか」を3回唱えて。完璧じゃなくても世界は回る。","誰かのミスを笑って許して。その余裕があなたの器を広げる。","今日のToDoを1つ削除。余白がクリエイティビティを生むよ。","計画を立てずにカフェに入って、メニューを直感で選んでみて。","「自分ルール」を1つだけ緩めて。その柔軟さが新しい発見を連れてくる。","夜は仕事のことを考えない。あなたの頭にも休息が必要。"],
+      shadow:"「しっかり者」の鎧の裏に、「誰かに甘えたい」子どもがいる。いつも頼られる側だけど、本当はあなたも頼りたい。でも「こんなことで弱音を吐いたらダメだ」と自分に禁じてる。お酒を飲んだ時だけ本音が漏れてない？あなたが弱さを見せた瞬間、周りはもっと近づきたいと思ってるよ。",
+      money:"「計画的に貯める」タイプ。家計簿つけてるか、頭の中に完璧な収支表がある。衝動買いはほぼゼロ。将来のために投資も勉強してるでしょ？弱点は「安いもので我慢しがち」なこと。たまには計画外の贅沢をしないと、人生がエクセルの表みたいになる。自分へのご褒美、月1でいいから許可して。",
+      prophecy:"この3ヶ月は「土台が報われる」時期。コツコツ積み上げてきたものが周りに認められる出来事がある。昇進、契約、信頼——「あなただから任せたい」と言われる瞬間。ただし2ヶ月目に想定外が来る。計画が崩れても慌てないで。あなたの実行力なら立て直せる。"},
+    earth_yin:{name:"癒しの守護天使",icon:"🌸",sub:"あなたがいるだけで、みんな安心",color:"#9B7B4A",
+      os:"「守る」が最優先タスク。大切な人、自分の居場所、日常の安定——これらが脅かされると全力で守りに入る。あなたの安心感は天然もので、一緒にいるだけで人の肩の力が抜ける。でも自分のことは後回しにしがちで、気づいたら疲弊してることが多い。",
+      weapon:"「安心感の塊」。あなたがいるとチームの心理的安全性が爆上がりする。相談しやすい、弱みを見せやすい、失敗しても責めない——この空気を作れるのは才能。カウンセラー、教育、バックオフィス、チームマネジメントで真価を発揮する。",
+      bug:"「変化への恐怖」。今あるものを守りたいあまり、新しいことに踏み出せない。「現状維持でいいじゃん」が口癖になってない？あと、自分を犠牲にして他人を守ろうとする癖。守る側が倒れたら、守るべきものも守れない。",
+      handling:"この人に急な変化を押し付けないで。変化は小出しに、予告してから。「来月からこう変わるよ」と事前共有するだけで受け入れ方が全然違う。あと、この人が「疲れてない」って言ったら疲れてる。定期的に休ませて。",
+      update:"守る力は最強クラス。次は「自分を守る」のアップデート。「NO」を言う練習を。全部引き受けなくていい。あなたが元気でいることが、周りの人にとって一番の安心材料だから。",
+      bestMatch:"fire_yin",bestMatchName:"秘めた情熱家",bestMatchWhy:"あなたの安定とあの人の情熱が最高のバランス",
+      enemy:"fire_yang",enemyName:"炎のカリスマ",enemyWhy:"振り回されて疲弊する",
+      rx:["自分のために30分使って。あなたにはその権利がある。","「NO」を1回だけ練習。小さなお願いでいいから断ってみて。","変化を1つだけ受け入れてみて。新しいカフェ、新しいルート。","「自分は十分頑張ってる」って声に出して。本当のことだから。","今日は誰かのお世話をしない時間を作って。自分をケアして。","好きな食べ物を自分のためだけに用意して。あなたも大切にされていい。","「変わること」を1つポジティブに捉えてみて。成長は変化の中にある。"],
+      shadow:"「優しくて穏やか」の裏に、「変わりたくない」への執着がある。新しい人、新しい環境、新しい自分——全部が脅威に感じる。あと、自分を犠牲にして人を助ける裏には「必要とされないと存在価値がない」という恐れが隠れてる。誰かのためじゃなくて、自分のために生きていい。",
+      money:"「安定が正義」タイプ。毎月決まった額を貯金してるか、固定費をきっちり管理してる。突然の大きな出費がストレス源。保険に入りすぎてない？安心を買いたい気持ちは分かるけど、「もしもの時」に備えすぎて「今」を楽しめてないなら本末転倒。たまには自分に投資して。",
+      prophecy:"この3ヶ月は「殻を破る」タイミング。安定を手放すのは怖いけど、小さな変化を1つ起こすと、思ってたより世界が優しいことに気づく。特に人間関係で新しい風が吹く予感。あなたが「大丈夫かな」と不安に思ってることの90%は、大丈夫。"},
+    metal_yang:{name:"こだわりの魔法使い",icon:"💎",sub:"妥協？ありえない。全部こだわる",color:"#7B6B9E",
+      os:"「美しくないものは存在してはいけない」が根本設定。仕事の質、見た目、人間関係の在り方——すべてに美意識がある。中途半端が生理的に無理で、やるなら完璧じゃないと気が済まない。その妥協のなさが最高の結果を生む。でも自分も周りも追い詰めることがある。",
+      weapon:"「クオリティの鬼」。あなたが手がけたものは、誰が見ても完成度が高い。デザイン、編集、品質管理、専門職——「仕上げの精度」で勝負する場面で無敵。「あの人に任せれば間違いない」という評価は、あなたが積み上げた信頼の証。",
+      bug:"「完璧じゃないと出せない症候群」。80点のものを出すくらいなら出さないほうがマシ、って思ってない？それ、チャンスを逃してる。あと、他人の仕事のクオリティが気になりすぎて、口を出して嫌われるパターンに注意。",
+      handling:"この人の仕事に雑なフィードバックは禁物。「なんか違う」じゃなくて「ここをこうしてほしい」と具体的に。あと、この人が提出期限を延ばしてきたら、それはサボりじゃなくてクオリティを上げようとしてる。信じて待つか、「この段階で一旦見せて」と言うのが正解。",
+      update:"完璧を目指す力は一流。次は「不完全を愛する力」。SNSに下書きじゃなくていきなり投稿する、部屋を完璧に片付けなくてもOKにする——小さな「まあいっか」が、あなたを自由にする。",
+      bestMatch:"water_yin",bestMatchName:"ひらめきの預言者",bestMatchWhy:"あなたの精度とあの人の直感が最強の組み合わせ",
+      enemy:"fire_yang",enemyName:"炎のカリスマ",enemyWhy:"雑すぎて見てられない",
+      rx:["80点で提出する練習。完璧は幻。出してから磨けばいい。","誰かの「いい加減さ」を楽しんでみて。その余白に学びがある。","鏡の自分に「よくやってるよ」って。自分に厳しすぎるよ。","美しいものに触れて。美術館、映画、音楽。あなたのセンスを充電。","今日は「60点でOK」と自分に許可を出して。それだけで楽になる。","他人の仕事に口を出したくなったら深呼吸。見守る強さを。","自分へのご褒美を1つ。完璧じゃなくても頑張ったあなたに。"],
+      shadow:"「完璧を求める」の裏に、「ダメな自分を見たくない」恐怖がある。他人のクオリティが気になるのは、実は自分のクオリティに一番厳しいから。100点じゃないと認められない、99点でも悔しい——それ、誰と戦ってるの？答えは過去の自分。幼い頃に「ちゃんとしなさい」と言われすぎたトラウマが残ってないか振り返ってみて。",
+      money:"「良いものに対価を払う」タイプ。安物買いの銭失いを嫌い、少し高くても質のいいものを選ぶ。ブランドへのこだわりが強く、「これは投資」と自分を納得させて買う天才。弱点はセール品を買えないこと。定価で買った翌日にセールが始まると精神的ダメージが大きい。",
+      prophecy:"この3ヶ月は「不完全の美」を学ぶ時期。あえて完璧を手放したところに予想外のチャンスが転がり込んでくる。2ヶ月目に「失敗した」と思う出来事があるけど、3ヶ月目にはそれが最高の伏線だったと気づく。今は信じて。"},
+    metal_yin:{name:"涙もろい共感の天使",icon:"🌙",sub:"感じすぎるのは、やさしさの証",color:"#8E7AB5",
+      os:"他人の感情を自動受信するアンテナが常にON。誰かが泣いてるとその悲しみが自分に流れ込んでくるし、誰かが怒ってると自分の心臓がバクバクする。あなたの感受性は才能だけど、受信設定をコントロールできないと自分が壊れる。",
+      weapon:"「感情の通訳者」。言葉にならない気持ちを感じ取って、それを形にできる。カウンセリング、看護、芸術、ライティング——「人の心に寄り添う」仕事で唯一無二の存在になれる。あなたに話を聞いてもらうだけで、救われる人が山ほどいる。",
+      bug:"「自分の感情と他人の感情の境界が曖昧」。今感じてるその辛さ、本当にあなたのもの？友達や家族の感情を無意識にコピーしてない？あと、「嫌われるのが怖い」から本音を隠すクセ。それが一番自分を傷つけてる。",
+      handling:"この人にネガティブな感情をぶつけすぎないで。スポンジみたいに吸い取っちゃうから。相談するなら「聞いてほしいだけ」「アドバイスがほしい」を最初に伝えて。あと、この人が急に1人になりたがったら止めないで。充電中。",
+      update:"感受性はギフト。次は「バリア」を身につけること。寝る前に「今日受け取った他人の感情を返します」と心の中で宣言するだけで違う。あなたの優しさは自分を守れてこそ最大限発揮される。",
+      bestMatch:"earth_yin",bestMatchName:"癒しの守護天使",bestMatchWhy:"あなたの感情を丸ごと受け止めてくれる安全基地",
+      enemy:"wood_yang",enemyName:"頭脳派の小悪魔",enemyWhy:"感情より論理を優先されると傷つく",
+      rx:["「これは私の感情？」と自分に聞いて。他人のものは返していい。","水に触れて浄化。手を洗う、シャワーを浴びる、海の動画を見る。","今日は人の相談を1件断ってOK。自分を守ることに罪悪感は不要。","好きな香りに包まれて。あなた専用のバリアを作ろう。","夜にキャンドルを灯して静かな時間を。あなたの心を取り戻す儀式。","「嫌われてもいい」を1回心の中で唱えて。全員に好かれなくていい。","自分の好きなことだけをする時間を30分。他人は一旦シャットアウト。"],
+      shadow:"「優しい共感者」の裏に、「全員に好かれたい」という底なしの欲求がある。嫌われるのが怖くて、本当は嫌なことにもニコニコしてない？あと、人の感情を感じ取れるのに自分の感情は分からない——という矛盾を抱えてる。「私って何が好きなんだっけ？」と思う瞬間があるなら、他人に意識が行きすぎてるサイン。",
+      money:"「罪悪感で散財する」タイプ。自分のためにお金を使うのが苦手で、プレゼントや奢りで人に使いがち。「自分にはもったいない」が口癖。逆に人からの好意（奢り、プレゼント）は受け取れない。お金と感情がリンクしてるから、落ち込んだ時にネットショッピングで散財するパターンに注意。",
+      prophecy:"この3ヶ月は「自分ファースト解禁」の時期。ずっと他人を優先してきたあなたに、自分のためだけに使える時間とエネルギーが戻ってくる。1ヶ月目に罪悪感があっても無視して大丈夫。3ヶ月後、自分を大切にし始めたあなたの周りに、もっと良い人間関係が集まってくる。"},
+    water_yang:{name:"七変化のちょうちょ",icon:"🦋",sub:"どこでも馴染む。誰よりも空気を読む",color:"#3A7DA8",
+      os:"「環境に合わせて最適化する」が自動実行されてる。転職しても、引っ越しても、初対面のグループに入っても、気づいたら馴染んでる。この適応力は天才的だけど、本当の自分がどれか分からなくなることがある。カメレオンの才能と、アイデンティティの迷子が共存してる。",
+      weapon:"「どこでも生きていける力」。組織でもフリーでも、国内でも海外でも、あなたはどこに放り込まれても結果を出せる。企画、営業、マネジメント、クリエイティブ——ジャンルを超えて活躍できる希少な才能。「何でもできる」は最強のスキル。",
+      bug:"「合わせすぎて自分がなくなる」。上司の前の自分、友達の前の自分、恋人の前の自分——全部違う人格になってない？それは適応力じゃなくて消耗。あと、「深くハマれない」問題。広く浅くなりがちで、専門性が育ちにくい。",
+      handling:"この人に「あなたって結局何がしたいの？」は地雷。本人が一番悩んでるから。代わりに「今一番楽しいことは？」と聞いてあげて。あと、この人の意見が毎回変わっても怒らないで。更新されてるだけ。",
+      update:"適応力は完成されてる。次のステージは「軸」を作ること。「これだけは譲れない」を3つ書き出して。環境が変わっても変わらない自分の核が見つかると、適応力がさらにパワーアップする。",
+      bestMatch:"earth_yang",bestMatchName:"ブレないボス",bestMatchWhy:"あなたに「軸」を教えてくれる存在",
+      enemy:"metal_yin",enemyName:"涙もろい共感の天使",enemyWhy:"お互い相手に合わせすぎて何も決まらない",
+      rx:["「自分はどうしたい？」を3回自分に聞いて。他人の期待は一旦無視。","1つのことに2時間だけ集中。浅く広くを今日は封印。","誰にも合わせない時間を作って。一人カフェ、一人映画。","「変わっていい」と自分を許して。昨日の自分と違っても大丈夫。","日記に「今日の本音」を1行だけ書いて。飾らなくていい。","「これだけは好き」を1つ確認して。それがあなたの軸になる。","今日は誰のためでもなく、自分のためだけに何かをして。"],
+      shadow:"「誰とでもうまくやれる」の裏に、「本当の自分では愛されない」という恐怖がある。環境に合わせて自分を変えるのは、素の自分を出したら受け入れてもらえないと思ってるから。全員に好かれてるように見えて、「本当の友達いるのかな」と夜中に考えることがあるでしょ？",
+      money:"「流れに任せる」タイプ。入ってきた分だけ使う、あれば使うなければ使わない。計画性はほぼゼロだけど、不思議とお金に困らない運の持ち主。問題は「何にいくら使ったか分からない」こと。気づいたら月末に残高がゼロ。自動引き落としの貯金だけはやっておいて。それだけで人生が変わる。",
+      prophecy:"この3ヶ月は「軸が見つかる」時期。ずっと探していた「これだ」という感覚が、思わぬ形で降りてくる。それは仕事かもしれないし、人かもしれないし、場所かもしれない。1ヶ月目はまだ霧の中だけど、2ヶ月目に急に視界が開ける。焦らず漂って大丈夫。"},
+    water_yin:{name:"ひらめきの預言者",icon:"🔮",sub:"言葉にできない直感が、全部当たる",color:"#4A6FA5",
+      os:"表面じゃなくて深層で世界を感じてる。言葉にならない直感、説明できない「なんとなく」、論理じゃ到達できない真実——あなたの知覚は他の人より2層くらい深い。その深さが孤独を生むけど、あなたにしか見えない世界がある。",
+      weapon:"「見えないものを見る力」。他人の本音、プロジェクトの落とし穴、時代の空気——データじゃ掴めないものをキャッチする。占い師、セラピスト、研究者、アーティスト——「深く潜る」仕事で唯一無二の成果を出す。あなたの直感は、他人の分析100時間分の価値がある。",
+      bug:"「現実世界との接続が不安定」。深く考えすぎて日常のタスクが疎かになったり、人の話を聞いてるようで頭の中は別世界にいたり。あと「理解されない孤独」。あなたの世界が深すぎて、言語化が追いつかないもどかしさ。",
+      handling:"この人に「もっと現実を見て」は最悪のアドバイス。見てるものが違うだけで、見えてないわけじゃない。あと、この人が「なんとなくやめたほうがいい」と言ったら、理由を聞かずに信じて。大体当たってる。",
+      update:"直感力は完成の域。次は「言語化」と「接地」。感じたことをノートに書く習慣を。書けなくても絵でも図でもいい。あなたの内なる世界が外に出た時、それは誰も作れないコンテンツになる。",
+      bestMatch:"metal_yang",bestMatchName:"こだわりの魔法使い",bestMatchWhy:"あなたのビジョンを完璧な形に仕上げてくれる",
+      enemy:"fire_yang",enemyName:"炎のカリスマ",enemyWhy:"スピードについていけなくて置いてかれる",
+      rx:["直感が囁いたことをメモして。理由は後から分かる。","裸足で地面に立って。グラウンディングであなたのアンテナが安定する。","深く潜りすぎたら浮上して。映画、散歩、料理で「今ここ」に戻って。","「分かってくれなくていい」と割り切って楽になろう。あなたの世界はあなたのもの。","今日のインスピレーションを絵か言葉にしてみて。形にすると力が宿る。","現実的なタスクを1つだけ片付けて。地に足をつける練習。","静かな場所で10分だけ目を閉じて。あなたの直感がリセットされる。"],
+      shadow:"「不思議ちゃん」の仮面の裏に、「普通になりたい」願望が隠れてる。みんなが盛り上がってることに興味を持てない自分、説明しても分かってもらえない自分——「なんで自分はこうなんだろう」と思ったこと、何回もあるでしょ？でもその「普通じゃなさ」が最大の才能だと気づいた時、あなたは無敵になる。",
+      money:"「お金に無頓着」タイプ。物質的な豊かさより精神的な豊かさが大事で、お金の話が苦手。通帳の残高をあまり見ない。でもなぜかお金が必要な時に不思議と入ってくる運の持ち主。弱点は現実的な金額計算。月々の固定費すら把握してないことがある。まず月の支出を1回だけ計算してみて。",
+      prophecy:"この3ヶ月は「直感が冴え渡る」時期。あなたの「なんとなく」の精度がさらに上がる。特に人間関係で「この人だ」と感じる出会いがある。それは恋愛かもしれないし、仕事のパートナーかもしれない。頭で考えず、心が反応した方向に進んで。3ヶ月後に「あの直感は正しかった」と確信する。"}
+  };
+  function calcGogyoType(userSign,userBirthDay){
+    var el=GOGYO_MAP[userSign]||"water";
+    var yinyang=parseInt(userBirthDay,10)%2===1?"yang":"yin";
+    var key=el+"_"+yinyang;
+    var t=GOGYO_TYPES[key];
+    if(!t)return null;
+    var today=new Date();
+    var seed=today.getFullYear()*10000+((today.getMonth()+1)*100)+today.getDate();
+    var rxIndex=(seed+simpleHash(key))%t.rx.length;
+    var pair=SIGN_CHARS[userSign]||["yume_kobuta","yume_kobuta"];
+    var cId=pair[parseInt(userBirthDay,10)%2];
+    var cData=DREAM_TYPES.find(function(dt){return dt.id===cId})||DREAM_TYPES[0];
+    return{key:key,name:t.name,icon:t.icon,sub:t.sub,color:t.color,os:t.os,weapon:t.weapon,bug:t.bug,handling:t.handling,update:t.update,shadow:t.shadow,money:t.money,prophecy:t.prophecy,bestMatch:t.bestMatch,bestMatchName:t.bestMatchName,bestMatchWhy:t.bestMatchWhy,enemy:t.enemy,enemyName:t.enemyName,enemyWhy:t.enemyWhy,todayRx:t.rx[rxIndex],element:el,yinyang:yinyang,charId:cId,charName:cData.name};
   }
 
   const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
@@ -774,35 +1094,41 @@ function App(){
 
   const isInAppBrowser=/Line|FBAN|FBAV|Instagram|Twitter/i.test(navigator.userAgent);
   const [dismissInApp,setDismissInApp]=useState(false);
-  return<div style={{minHeight:"100vh",background:"linear-gradient(180deg,#FFF5F0 0%,#FFF0EB 25%,#FFE8E0 50%,#FFF0EB 75%,#FFF5F0 100%)",fontFamily:"Zen Maru Gothic, sans-serif",color:"var(--t1)",WebkitFontSmoothing:"antialiased"}}>
+  return<div style={{minHeight:"100vh",background:"var(--bg-body)",fontFamily:"Zen Maru Gothic, sans-serif",color:"var(--t1)",WebkitFontSmoothing:"antialiased"}}>
     {isInAppBrowser&&!dismissInApp&&<div style={{background:"linear-gradient(135deg,#E8627C,#B08ACF)",padding:"14px 20px",textAlign:"center",position:"sticky",top:0,zIndex:9999}}>
       <p style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:6}}>⚠️ アプリ内ブラウザでは一部機能が使えません</p>
       <p style={{fontSize:11,color:"rgba(255,255,255,0.9)",marginBottom:10,lineHeight:1.6}}>URLをコピーして普段使ってるブラウザで開くと、プロフィール保存や通知が使えるよ</p>
       <div style={{display:"flex",gap:8,justifyContent:"center"}}>
-        <button onClick={()=>{navigator.clipboard.writeText('https://yorunokotoba.vercel.app').then(()=>alert('URLをコピーしたよ！\nブラウザを開いてアドレスバーに貼り付けてね')).catch(()=>{const t=document.createElement('textarea');t.value='https://yorunokotoba.vercel.app';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);alert('URLをコピーしたよ！\nブラウザを開いてアドレスバーに貼り付けてね')})}} style={{padding:"8px 20px",borderRadius:20,border:"none",background:"#fff",color:"#E8627C",fontSize:12,fontWeight:700,cursor:"pointer"}}>URLをコピー</button>
+        <button onClick={()=>{navigator.clipboard.writeText('https://yorunokotoba.vercel.app').then(()=>setToast('URLをコピーしたよ！ブラウザで開いてね')).catch(()=>{const t=document.createElement('textarea');t.value='https://yorunokotoba.vercel.app';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);setToast('URLをコピーしたよ！ブラウザで開いてね')})}} style={{padding:"8px 20px",borderRadius:20,border:"none",background:"#fff",color:"#E8627C",fontSize:12,fontWeight:700,cursor:"pointer"}}>URLをコピー</button>
         <button onClick={()=>setDismissInApp(true)} style={{padding:"8px 16px",borderRadius:20,border:"1px solid rgba(255,255,255,0.5)",background:"transparent",color:"#fff",fontSize:11,cursor:"pointer"}}>このまま使う</button>
       </div>
     </div>}
     <div style={{maxWidth:440,margin:"0 auto",padding:"0 20px"}}>
 
       <header className="fade-in" style={{textAlign:"center",paddingTop:36,paddingBottom:8,position:"relative"}}>
+        <button onClick={toggleNight} style={{position:"absolute",top:36,right:0,zIndex:5,width:40,height:40,borderRadius:12,border:"1px solid var(--border)",background:"var(--night-toggle-bg)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,transition:"all 0.3s"}} title={nightMode?"ライトモード":"ナイトモード"}>{nightMode?"☀️":"🌙"}</button>
         <Particles/><div style={{position:"relative",zIndex:1}}>
           <div style={{marginBottom:4,animation:"float 4s ease infinite"}}>{mode==="dream"
-            ?<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="moonH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F0D8FF"/><stop offset="100%" stopColor="#B08ACF"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonH)"/><circle cx="52" cy="34" r="22" fill="#FFF5F0"/><circle cx="22" cy="18" r="2" fill="#F5E6A8" opacity="0.6"/><circle cx="60" cy="58" r="1.5" fill="#F5E6A8" opacity="0.5"/><circle cx="16" cy="52" r="1" fill="#F5E6A8" opacity="0.4"/></svg>
-            :<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="starH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starH)"/><polygon points="40,14 46,28 60,30 50,40 52,55 40,48 28,55 30,40 20,30 34,28" fill="#fff" opacity="0.2"/></svg>
+            ?<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="moonH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={nightMode?"#C4A0E0":"#F0D8FF"}/><stop offset="100%" stopColor={nightMode?"#8060B0":"#B08ACF"}/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonH)"/><circle cx="52" cy="34" r="22" fill={nightMode?"#0D0B0E":"#FFF5F0"}/><circle cx="22" cy="18" r="2" fill="#F5E6A8" opacity="0.6"/><circle cx="60" cy="58" r="1.5" fill="#F5E6A8" opacity="0.5"/><circle cx="16" cy="52" r="1" fill="#F5E6A8" opacity="0.4"/></svg>
+            :mode==="compat"
+            ?<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="heartH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={nightMode?"#F0809A":"#E8627C"}/><stop offset="100%" stopColor={nightMode?"#C4A0E0":"#B08ACF"}/></linearGradient></defs><path d="M40 65 C20 50 8 38 8 26 C8 16 16 8 26 8 C32 8 37 12 40 18 C43 12 48 8 54 8 C64 8 72 16 72 26 C72 38 60 50 40 65Z" fill="url(#heartH)" opacity="0.9"/></svg>
+            :<svg viewBox="0 0 80 80" width={64} height={64}><defs><linearGradient id="starH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={nightMode?"#E8C068":"#FFD080"}/><stop offset="100%" stopColor={nightMode?"#F0809A":"#E8627C"}/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starH)"/><polygon points="40,14 46,28 60,30 50,40 52,55 40,48 28,55 30,40 20,30 34,28" fill="#fff" opacity="0.2"/></svg>
           }</div>
           <h1 onClick={goHome} style={{fontSize:28,fontWeight:700,letterSpacing:4,cursor:"pointer"}}><span style={{background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>よるのことば</span></h1>
-          <p style={{fontSize:13,color:"var(--t2)",marginTop:8,lineHeight:1.7}}>夢占い × ホロスコープで、あなたの今を読み解く</p>
+          <p style={{fontSize:13,color:"var(--t2)",marginTop:8,lineHeight:1.7}}>{mode==="compat"?"気になるあの人との相性を占う":mode==="fortune"?"ホロスコープで、今日のあなたを読み解く":"夢が伝える、あなたの深層心理"}</p>
         </div>
       </header>
 
       
 
-      {page==="home"&&<div className="slide-up" style={{display:"flex",gap:4,margin:"20px 0 24px",background:"rgba(232,98,124,0.04)",borderRadius:14,padding:4}}>
-        {[{k:"dream",l:"夢占い"},{k:"fortune",l:"ホロスコープ"}].map(t=><button key={t.k} onClick={()=>setMode(t.k)} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?"rgba(232,98,124,0.1)":"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{t.l}</button>)}
+      {page==="home"&&<div className="slide-up" style={{display:"flex",gap:4,margin:"20px 0 24px",background:"var(--night-toggle-bg)",borderRadius:14,padding:4}}>
+        {[{k:"dream",l:"夢占い",icon:"🌙"},{k:"fortune",l:"ホロスコープ",icon:"⭐"},{k:"compat",l:"相性",icon:"💕"}].map(t=><button key={t.k} onClick={()=>{if(t.k==="compat"){if(!isPremium){gtag("event","compat_tab_tap_free");setPage("premium");window.scrollTo(0,0);return}setMode(t.k)}else{setMode(t.k)}}} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?(nightMode?"rgba(240,128,154,0.15)":"rgba(232,98,124,0.1)"):"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:12,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",transition:"all 0.2s"}}>{t.icon} {t.l}</button>)}
       </div>}
 
-      {page==="home"&&<div className="slide-up" style={{marginBottom:20,borderRadius:16,background:"linear-gradient(135deg,#E8627C 0%,#B08ACF 100%)",padding:"16px 18px",boxShadow:"0 4px 16px rgba(232,98,124,0.2)"}}>
+      {page==="home"&&streak.count>1&&<p className="slide-up" style={{textAlign:"center",fontSize:11,color:"var(--rose)",fontWeight:600,marginBottom:4}}>🔥 {streak.count}日連続アクセス中！</p>}
+
+      {page==="home"&&!bannerDismissed&&<div className="slide-up" style={{marginBottom:20,borderRadius:16,background:"linear-gradient(135deg,#E8627C 0%,#B08ACF 100%)",padding:"16px 18px",boxShadow:"0 4px 16px rgba(232,98,124,0.2)",position:"relative"}}>
+        <button onClick={()=>{try{localStorage.setItem("ynk_banner_dismissed",String(Date.now()))}catch(e){}setBannerDismissed(true)}} style={{position:"absolute",top:8,right:12,background:"none",border:"none",color:"rgba(255,255,255,0.5)",fontSize:16,cursor:"pointer",padding:4}}>×</button>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <div style={{width:40,height:40,borderRadius:12,background:"rgba(255,255,255,0.2)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:20}}>🔮</div>
           <div style={{flex:1}}>
@@ -866,6 +1192,29 @@ function App(){
         <button onClick={startFortune} disabled={!canFortune} style={{width:"100%",padding:"16px 0",...(canFortune?btnStyle:btnOff)}}>ホロスコープを見る</button>
       </Card>}
 
+      {page==="home"&&mode==="compat"&&<Card className="slide-up" style={{padding:24,textAlign:"center"}}>
+        <div style={{marginBottom:12}}><span style={{fontSize:40}}>💕</span></div>
+        <p style={{fontSize:16,fontWeight:700,color:"var(--t1)",marginBottom:6}}>相性診断</p>
+        <p style={{fontSize:12,color:"var(--t3)",marginBottom:20,lineHeight:1.7}}>気になるあの人との相性を、<br/>星座×誕生日で詳しく診断</p>
+        {!sign?<div>
+          <p style={{fontSize:12,color:"var(--rose)",marginBottom:12}}>まず自分のプロフィールを設定してね</p>
+          <button onClick={()=>{setMode("fortune");setEditProfile(true)}} style={{padding:"14px 32px",borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>プロフィールを設定</button>
+        </div>:<div>
+          <p style={{fontSize:11,color:"var(--t3)",marginBottom:6,textAlign:"left"}}>相手の星座</p>
+          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
+            {SIGNS.map(s=><button key={s.k} onClick={()=>setCompatSign(s.k)} style={{padding:"8px 12px",borderRadius:12,border:compatSign===s.k?"1.5px solid var(--rose)":"1px solid var(--border)",background:compatSign===s.k?(nightMode?"rgba(240,128,154,0.12)":"rgba(232,98,124,0.08)"):"var(--card)",color:compatSign===s.k?"var(--rose)":"var(--t2)",fontSize:11,fontWeight:compatSign===s.k?700:400,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",transition:"all 0.2s"}}>{s.icon} {s.k}</button>)}
+          </div>
+          <p style={{fontSize:11,color:"var(--t3)",marginBottom:6,textAlign:"left"}}>相手の誕生日（日にちだけでOK）</p>
+          <div style={{display:"flex",gap:8,marginBottom:20}}>
+            <select value={compatBirthDay} onChange={e=>setCompatBirthDay(e.target.value)} style={{flex:1,background:nightMode?"rgba(255,255,255,0.05)":"rgba(58,40,48,0.03)",border:"1px solid var(--border)",borderRadius:12,padding:"12px 8px",fontSize:14,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif"}}>
+              <option value="">選んでね</option>
+              {Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d)}>{d}日</option>)}
+            </select>
+          </div>
+          <button disabled={!compatSign||!compatBirthDay} onClick={()=>{const r=calcCompatibility(sign,compatSign,birthDay,compatBirthDay);setCompatResult(r);setPage("compatibility");window.scrollTo(0,0)}} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:compatSign&&compatBirthDay?"var(--grad2)":"rgba(200,200,200,0.5)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:compatSign&&compatBirthDay?"pointer":"default",boxShadow:compatSign&&compatBirthDay?"0 4px 16px rgba(232,98,124,0.3)":"none",transition:"all 0.3s"}}>診断する 💕</button>
+        </div>}
+      </Card>}
+
       {page==="home"&&!pushEnabled&&('Notification' in window)&&('serviceWorker' in navigator)&&<div className="slide-up-3" style={{marginTop:20,marginBottom:12}}>
         <Card style={{textAlign:"center",padding:20,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(232,98,124,0.22)",boxShadow:"0 2px 20px rgba(180,100,120,0.10)"}}>
           <p style={{fontSize:14,marginBottom:4}}>🔔</p>
@@ -874,10 +1223,16 @@ function App(){
           <button onClick={requestPush} className="hover-lift" style={{padding:"12px 32px",borderRadius:12,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>通知をONにする</button>
         </Card>
       </div>}
-      {page==="home"&&<PremiumCTA style={{marginTop:20,marginBottom:32}}/>}
+      {page==="home"&&Object.keys(collection).length>0&&<Card className="slide-up" style={{marginTop:20}}>
+        <p style={{fontSize:14,fontWeight:700,color:"var(--t1)",marginBottom:12}}>🎴 夢キャラ図鑑 <span style={{fontSize:11,fontWeight:400,color:"var(--t3)"}}>{Object.keys(collection).length}/{DREAM_TYPES.length}</span></p>
+        <CollectionGrid collection={collection}/>
+      </Card>}
+      {page==="home"&&<PremiumCTA style={{marginTop:20,marginBottom:32}} onTap={()=>{gtag("event","premium_cta_tap",{from:"home"});setPage("premium");window.scrollTo(0,0)}}/>}
 
-      {page==="loading"&&<div className="fade-in" style={{textAlign:"center",padding:"60px 0"}}>
-        <div style={{marginBottom:20,animation:"float 2s ease infinite"}}>{mode==="dream"
+      {(page==="loading"||page==="deepLoading")&&<div className="fade-in" style={{textAlign:"center",padding:"60px 0"}}>
+        <div style={{marginBottom:20,animation:"float 2s ease infinite"}}>{page==="deepLoading"
+          ?<svg viewBox="0 0 80 80" width={80} height={80}><defs><linearGradient id="gogyoL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#764ba2"/><stop offset="100%" stopColor="#C8A0E8"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#gogyoL)" opacity="0.9"/><text x="40" y="48" textAnchor="middle" fontSize="28" fill="white">✨</text></svg>
+          :mode==="dream"
           ?<svg viewBox="0 0 80 80" width={80} height={80}><defs><linearGradient id="moonL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#F0D8FF"/><stop offset="100%" stopColor="#B08ACF"/></linearGradient></defs><circle cx="40" cy="40" r="28" fill="url(#moonL)"/><circle cx="52" cy="34" r="22" fill="#FFF5F0"/></svg>
           :<svg viewBox="0 0 80 80" width={80} height={80}><defs><linearGradient id="starL" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="40,6 49,28 72,30 55,46 59,70 40,58 21,70 25,46 8,30 31,28" fill="url(#starL)"/></svg>
         }</div>
@@ -905,35 +1260,34 @@ function App(){
             <Tag text="personality" color="#B08ACF"/>
             <span style={{fontSize:13,fontWeight:700}}>{fortuneResult.sign}のあなた</span>
           </div>
-          <p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.personality.trait}</p>
+          <ExpandText text={fortuneResult.personality.trait} lines={3} style={{fontSize:14}}/>
         </Card>
 
         {/* Daily Love / Work / Health - 日替わり */}
         <Card className="slide-up-2" style={{marginBottom:12}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="love" color="#E8627C"/><span style={{fontSize:13,fontWeight:700}}>今日の恋愛運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.dailyLove}</p>
+          <ExpandText text={fortuneResult.dailyLove} lines={3}/>
         </Card>
         <Card className="slide-up-2" style={{marginBottom:12}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="work" color="#6BA3BE"/><span style={{fontSize:13,fontWeight:700}}>今日の仕事運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.dailyWork}</p>
+          <ExpandText text={fortuneResult.dailyWork} lines={3}/>
         </Card>
         <Card className="slide-up-3" style={{marginBottom:12}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="health" color="#5BA87C"/><span style={{fontSize:13,fontWeight:700}}>今日の健康運</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.dailyHealth}</p>
+          <ExpandText text={fortuneResult.dailyHealth} lines={3}/>
         </Card>
 
         {/* Risk */}
         <Card className="slide-up-3" style={{marginBottom:12}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="watch" color="#D47070"/><span style={{fontSize:13,fontWeight:700}}>気をつけること</span></div>
-          <p style={{fontSize:13,color:"var(--t2)",lineHeight:2}}>{fortuneResult.risk}</p>
+          <ExpandText text={fortuneResult.risk} lines={3}/>
         </Card>
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
 
-        <CharacterCarousel className="slide-up-4"/>
-
-        <PremiumCTA style={{marginBottom:20}}/>
-        <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
+        <button onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>
+        <div style={{display:"flex",gap:8,marginBottom:40}}>
+          <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
         </div>
       </>}
@@ -942,7 +1296,7 @@ function App(){
         {/* Main Reading - the deep personal diagnosis */}
         <Card className="slide-up-1" style={{marginBottom:16,borderLeft:"3px solid var(--rose)"}}>
           <p style={{fontSize:15,fontWeight:700,color:"var(--t1)",lineHeight:2,marginBottom:12}}>{dreamResult.mainReading.intro}</p>
-          <p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{dreamResult.mainReading.deep}</p>
+          <ExpandText text={dreamResult.mainReading.deep} lines={4} style={{fontSize:14}}/>
         </Card>
 
         {/* Dream symbols - compact */}
@@ -959,6 +1313,7 @@ function App(){
         </Card>
 
         {/* Compact advice + lucky */}
+        {dreamResult.type&&<FortuneTypeCard type={dreamResult.type} className="slide-up-2"/>}
         <Card className="slide-up-3" style={{marginBottom:16}}>
           <p style={{fontSize:14,fontWeight:700,marginBottom:14,background:"var(--grad2)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>今日のアクション</p>
           {[{icon:"✅",title:"やること",items:dreamResult.actions.should,color:"#5BA87C"},{icon:"👀",title:"気にすること",items:dreamResult.actions.aware,color:"#6BA3BE"},{icon:"🚫",title:"やめること",items:dreamResult.actions.avoid,color:"#D47070"}].map((sec,i)=><div key={i} style={{marginBottom:i<2?14:0}}>
@@ -969,10 +1324,9 @@ function App(){
 
         <LuckySection lucky={dreamResult.lucky} className="slide-up-4"/>
 
-        <CharacterCarousel className="slide-up-4"/>
-
-        <PremiumCTA style={{marginBottom:20}}/>
-        <div className="slide-up-5" style={{display:"flex",gap:8,marginBottom:40}}>
+        <button onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>
+        <div style={{display:"flex",gap:8,marginBottom:40}}>
+          <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("fortune");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>ホロスコープもやる</button>
         </div>
       </>}
@@ -987,83 +1341,142 @@ function App(){
           <p style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.8}}>あなた専用の特別な占い体験を</p>
         </div>
 
-        {/* ── Section 1: サブスク ── */}
+        {/* ── メニュー一覧 ── */}
         <div className="slide-up-1" style={{marginBottom:24}}>
-          <p style={{fontSize:11,letterSpacing:3,color:"#667eea",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:10}}>monthly plan</p>
 
-          <Card style={{marginBottom:12,background:"linear-gradient(135deg,#667eea12,#764ba215)",border:"1px solid #667eea20"}}>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
-              <span style={{fontSize:22}}>🌙</span>
-              <p style={{fontSize:15,fontWeight:700,color:"#667eea"}}>月間運勢</p>
-              <span style={{fontSize:9,fontWeight:700,color:"#667eea",background:"#667eea18",padding:"3px 8px",borderRadius:8,marginLeft:"auto"}}>毎月届く</span>
+          {/* ── ワンプラン ¥480/月 ── */}
+          <Card style={{marginBottom:14,background:"linear-gradient(135deg,#667eea08,#764ba210)",border:"1px solid #667eea20",padding:"20px 18px"}}>
+            <div style={{textAlign:"center",marginBottom:16}}>
+              <span style={{fontSize:28,fontWeight:800,color:"#764ba2"}}>¥480</span><span style={{fontSize:12,color:"var(--t3)"}}>/月</span>
+              <p style={{fontSize:12,color:"var(--t2)",marginTop:4}}>ワンコインですべて使い放題</p>
             </div>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.9,marginBottom:10}}>12星座×月の運行から、あなた専用のレポートを毎月お届け。恋愛運・仕事運・注意日・ラッキーデーが一目でわかる</p>
-            <div style={{padding:"8px 12px",borderRadius:10,background:"rgba(255,255,255,0.7)",border:"1px dashed #667eea30"}}>
-              <p style={{fontSize:11,color:"#667eea",lineHeight:1.6,fontStyle:"italic"}}>例）3月のやぎ座 → 仕事運◎「15日に大きなチャンスが…」</p>
-            </div>
-          </Card>
 
-          <div style={{background:"white",borderRadius:20,padding:"24px 20px",textAlign:"center",border:"2px solid #667eea",boxShadow:"0 4px 24px rgba(102,126,234,0.12)"}}>
-            <div style={{display:"flex",alignItems:"baseline",justifyContent:"center",gap:4,marginBottom:4}}>
-              <span style={{fontSize:34,fontWeight:800,color:"var(--t1)"}}>¥280</span>
-              <span style={{fontSize:13,color:"var(--t3)"}}>/月</span>
-            </div>
-            <p style={{fontSize:11,color:"var(--t3)",marginBottom:4}}>初回7日間は無料でお試し</p>
-            <p style={{fontSize:10,color:"#667eea",fontWeight:600,marginBottom:12}}>1日たった9円 ☕</p>
-            <div style={{textAlign:"left",marginBottom:16,padding:"0 4px"}}>
-              {["毎月届く詳細運勢レポート","広告なし","新機能の先行利用"].map((t,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0"}}>
-                <span style={{color:"#667eea",fontSize:13}}>✓</span>
-                <p style={{fontSize:11,color:"var(--t2)"}}>{t}</p>
+            <div style={{display:"flex",flexDirection:"column",gap:10,marginBottom:18}}>
+              {[
+                {icon:"💕",title:"相性診断し放題",desc:"あの人との相性、何人でも確かめられる"},
+                {icon:"✨",title:"本当のわたし診断",desc:"隠れた魅力・3ヶ月後の予言まで"},
+                {icon:"✉️",title:"毎月届くおたより",desc:"あなた専用メッセージが毎月届く"}
+              ].map((f,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:14,background:"rgba(255,255,255,0.7)",border:"1px solid rgba(102,126,234,0.08)"}}>
+                <span style={{fontSize:20,flexShrink:0}}>{f.icon}</span>
+                <div><p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:1}}>{f.title}</p><p style={{fontSize:10,color:"var(--t3)",lineHeight:1.5}}>{f.desc}</p></div>
               </div>)}
             </div>
-            <button onClick={()=>{alert("月額プランは現在準備中です🙏\nもう少しだけお待ちください！")}} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1,boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>7日間無料で試してみる</button>
-            <p style={{fontSize:10,color:"var(--t4)",marginTop:8}}>いつでもキャンセルOK</p>
-          </div>
+
+            <button onClick={()=>{setShowPaywall(true)}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1,boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>7日間無料ではじめる</button>
+            <p style={{fontSize:10,color:"var(--t4)",textAlign:"center",marginTop:8}}>いつでもキャンセルOK</p>
+          </Card>
+
+          {/* 💕 相性診断プレビュー */}
+          <Card style={{marginBottom:14,padding:"18px 16px"}}>
+            <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",marginBottom:12}}>💕 相性診断イメージ</p>
+            <div style={{borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(232,98,124,0.10)"}}>
+              <div style={{background:"linear-gradient(135deg,#E8627C,#B08ACF)",padding:"14px 16px",textAlign:"center",position:"relative"}}>
+                <div style={{position:"absolute",top:8,right:10,fontSize:8,background:"rgba(255,255,255,0.25)",padding:"2px 8px",borderRadius:10,color:"white"}}>sample</div>
+                <p style={{fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:2}}>compatibility</p>
+              </div>
+              <div style={{background:"var(--card)",padding:"18px 16px",textAlign:"center"}}>
+                <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:16,marginBottom:12}}>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{width:48,height:48,borderRadius:"50%",overflow:"hidden",margin:"0 auto 4px"}}><CharaAvatar id={sign&&SIGN_CHARS[sign]?(SIGN_CHARS[sign])[(parseInt(birthDay,10)||1)%2]:"yume_kobuta"} size={48}/></div>
+                    <p style={{fontSize:9,color:"var(--t3)"}}>あなた</p>
+                  </div>
+                  <span style={{fontSize:20,color:"#E8627C"}}>×</span>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{width:48,height:48,borderRadius:"50%",overflow:"hidden",margin:"0 auto 4px"}}><CharaAvatar id="kaze_ookami" size={48}/></div>
+                    <p style={{fontSize:9,color:"var(--t3)"}}>あの人</p>
+                  </div>
+                </div>
+                <div style={{background:"linear-gradient(135deg,#FFF0F3,#F5F3FF)",borderRadius:14,padding:"12px 14px",marginBottom:8}}>
+                  <p style={{fontSize:11,color:"var(--t2)",lineHeight:1.8}}>総合スコア・恋愛相性・仕事相性・相性アドバイスなど、気になるあの人との相性が丸わかり</p>
+                </div>
+              </div>
+            </div>
+            <button onClick={()=>{gtag("event","compat_start");setPage("compatibility");window.scrollTo(0,0)}} style={{width:"100%",padding:"12px 0",borderRadius:20,border:"1.5px solid #E8627C",background:"var(--card)",color:"#E8627C",fontSize:12,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginTop:12}}>💕 まず相性診断を試してみる（無料）</button>
+          </Card>
+
+          {/* ✨ 本当のわたし診断プレビュー */}
+          <Card style={{marginBottom:14,padding:"18px 16px"}}>
+            <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",marginBottom:12}}>✨ 本当のわたし診断イメージ</p>
+            <div style={{borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(118,75,162,0.10)"}}>
+              <div style={{background:"linear-gradient(135deg,#764ba2,#C8A0E8)",padding:"14px 16px",textAlign:"center",position:"relative"}}>
+                <div style={{position:"absolute",top:8,right:10,fontSize:8,background:"rgba(255,255,255,0.25)",padding:"2px 8px",borderRadius:10,color:"white"}}>sample</div>
+                <p style={{fontSize:10,color:"rgba(255,255,255,0.6)",letterSpacing:2}}>deep analysis</p>
+              </div>
+              <div style={{background:"var(--card)",padding:"18px 16px"}}>
+                {(()=>{var previewEl=GOGYO_MAP[sign]||"fire";var previewYY=(parseInt(birthDay,10)||1)%2===1?"yang":"yin";var previewT=GOGYO_TYPES[previewEl+"_"+previewYY]||GOGYO_TYPES.fire_yang;return<>
+                <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:14}}>
+                  <div style={{flexShrink:0,width:52,height:52,borderRadius:"50%",overflow:"hidden"}}><CharaAvatar id={sign&&SIGN_CHARS[sign]?(SIGN_CHARS[sign])[(parseInt(birthDay,10)||1)%2]:"yume_kobuta"} size={52}/></div>
+                  <div>
+                    <p style={{fontSize:9,color:"var(--t4)",letterSpacing:1}}>あなたの五行タイプ</p>
+                    <p style={{fontSize:15,fontWeight:700,color:"#764ba2"}}>{previewT.icon} {previewT.name}</p>
+                    <p style={{fontSize:10,color:"var(--t3)"}}>{previewT.sub}</p>
+                  </div>
+                </div>
+                <div style={{display:"flex",gap:6}}>
+                  {["🪞 隠れた魅力","💰 お金の癖","🔮 3ヶ月予言"].map((t,i)=><span key={i} style={{flex:1,fontSize:10,color:"#764ba2",background:"#764ba210",padding:"7px 0",borderRadius:12,fontWeight:600,textAlign:"center"}}>{t}</span>)}
+                </div>
+                </>})()}
+              </div>
+            </div>
+            <p style={{fontSize:9,color:"var(--t4)",textAlign:"center",marginTop:8}}>※ イメージです。実際の結果はあなた専用に変わります</p>
+            <button onClick={()=>{if(!sign||!birthDay){setPage("home");setMode("fortune");setEditProfile(true);window.scrollTo(0,0);return}gtag("event","deep_analysis_start",{sign:sign,from:"premium"});setPage("deepLoading");window.scrollTo(0,0);var msgs=["五行のバランスを計算中","陰陽エネルギーを解析中","あなたの深層タイプを判定中"];var mi=0;setLoadingMsg(msgs[0]);var iv2=setInterval(function(){mi++;if(mi<msgs.length){setLoadingMsg(msgs[mi])}else{clearInterval(iv2);var r=calcGogyoType(sign,birthDay);if(!r){setPage("home");return}setDeepResult(r);setPage("deepAnalysis");window.scrollTo(0,0)}},900)}} style={{width:"100%",padding:"12px 0",borderRadius:20,border:"1.5px solid #764ba2",background:"var(--card)",color:"#764ba2",fontSize:12,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginTop:10}}>✨ まず診断してみる（途中まで無料）</button>
+          </Card>
+
+          {/* ✉️ おたよりプレビュー */}
+          <Card style={{marginBottom:14,padding:"18px 16px"}}>
+            <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",marginBottom:12}}>✉️ おたよりイメージ</p>
+            <div style={{borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(102,126,234,0.12)"}}>
+              <div style={{background:"linear-gradient(135deg,#667eea,#A78BFA)",padding:"16px 16px 14px",textAlign:"center",position:"relative"}}>
+                <div style={{position:"absolute",top:8,right:10,fontSize:8,background:"rgba(255,255,255,0.25)",padding:"2px 8px",borderRadius:10,color:"white"}}>sample</div>
+                <p style={{fontSize:9,color:"rgba(255,255,255,0.45)",letterSpacing:3,textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:2}}>monthly letter</p>
+                <p style={{fontSize:14,color:"white",fontWeight:700}}>3月のおたより</p>
+              </div>
+              <div style={{background:"var(--card)",padding:"16px 14px"}}>
+                {/* Chat bubble */}
+                <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:14}}>
+                  <div style={{flexShrink:0,width:48,height:48,borderRadius:"50%",overflow:"hidden",border:"2px solid #667eea20",display:"flex",alignItems:"center",justifyContent:"center",background:"#f9f5ff"}}><CharaAvatar id={sign&&SIGN_CHARS[sign]?(SIGN_CHARS[sign])[(parseInt(birthDay,10)||1)%2]:"yume_kobuta"} size={44}/></div>
+                  <div style={{background:"linear-gradient(135deg,#F9F5FF,#FFF0F5)",borderRadius:"4px 16px 16px 16px",padding:"12px 14px",flex:1}}>
+                    <p style={{fontSize:12,color:"var(--t1)",lineHeight:1.9,fontWeight:500}}>今月のあなた、ちょっと頑張りすぎてない？ 3月は「手放す」がテーマ。15日前後に大きな転機がありそう✨</p>
+                  </div>
+                </div>
+                {/* Monthly fortune bars */}
+                <div style={{display:"flex",gap:8,marginBottom:10}}>
+                  <div style={{flex:1,padding:"10px 8px",borderRadius:14,background:"linear-gradient(135deg,#FFF0F3,#FFF5F8)",textAlign:"center"}}>
+                    <p style={{fontSize:13,marginBottom:3}}>💗</p>
+                    <p style={{fontSize:9,fontWeight:700,color:"#E8627C",marginBottom:3}}>恋愛運</p>
+                    <p style={{fontSize:13,letterSpacing:1,color:"#E8627C"}}>★★★★<span style={{color:"#eee"}}>★</span></p>
+                  </div>
+                  <div style={{flex:1,padding:"10px 8px",borderRadius:14,background:"linear-gradient(135deg,#F0F0FF,#F5F3FF)",textAlign:"center"}}>
+                    <p style={{fontSize:13,marginBottom:3}}>💼</p>
+                    <p style={{fontSize:9,fontWeight:700,color:"#667eea",marginBottom:3}}>仕事運</p>
+                    <p style={{fontSize:13,letterSpacing:1,color:"#667eea"}}>★★★<span style={{color:"#eee"}}>★★</span></p>
+                  </div>
+                  <div style={{flex:1,padding:"10px 8px",borderRadius:14,background:"linear-gradient(135deg,#FFF8F0,#FFF5E8)",textAlign:"center"}}>
+                    <p style={{fontSize:13,marginBottom:3}}>💰</p>
+                    <p style={{fontSize:9,fontWeight:700,color:"#D4A853",marginBottom:3}}>金運</p>
+                    <p style={{fontSize:13,letterSpacing:1,color:"#D4A853"}}>★★★★<span style={{color:"#eee"}}>★</span></p>
+                  </div>
+                </div>
+                {/* Key dates */}
+                <div style={{display:"flex",gap:8}}>
+                  <div style={{flex:1,padding:"8px 10px",borderRadius:12,background:"#F0FFF5",textAlign:"center"}}>
+                    <p style={{fontSize:9,fontWeight:700,color:"#48BB78"}}>🍀 好調日</p>
+                    <p style={{fontSize:13,fontWeight:800,color:"var(--t1)",marginTop:3}}>8日・19日</p>
+                  </div>
+                  <div style={{flex:1,padding:"8px 10px",borderRadius:12,background:"#FFF5F5",textAlign:"center"}}>
+                    <p style={{fontSize:9,fontWeight:700,color:"#FF6B6B"}}>⚡ 注意日</p>
+                    <p style={{fontSize:13,fontWeight:800,color:"var(--t1)",marginTop:3}}>12日・25日</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p style={{fontSize:9,color:"var(--t4)",textAlign:"center",marginTop:8}}>※ イメージです。実際は毎月あなた専用の内容が届きます</p>
+          </Card>
         </div>
 
-        {/* ── Section 2: 都度課金 ── */}
-        <div className="slide-up-2" style={{marginBottom:24}}>
-          <p style={{fontSize:11,letterSpacing:3,color:"#E8627C",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:10}}>single purchase</p>
-
-          {[
-            {icon:"💕",title:"相性診断",tag:"24×12パターン",desc:"あの人の星座を選ぶだけ。恋愛・仕事・友情、3つの相性スコアとアドバイスが届く。「なんか合わない」の理由、ちゃんとわかるよ",example:"例）やぎ座×しし座 → 恋愛72%「正反対だからこそ惹かれる…」",color:"#E8627C",grad:"linear-gradient(135deg,#E8627C12,#F5A0B015)"},
-            {icon:"🧠",title:"深層分析",tag:"自分の取扱説明書",desc:"五行（木火土金水）×認知パターンで、思考のクセ・才能の源泉・ストレスの原因を可視化。自分でも気づかなかった一面に出会える",example:"例）五行「水」タイプ → 直感力◎ ストレス源は「曖昧さ」",color:"#764ba2",grad:"linear-gradient(135deg,#764ba212,#C8A0E815)"}
-          ].map((f,i)=><Card key={i} style={{marginBottom:12,background:f.grad,border:`1px solid ${f.color}20`}}>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
-              <span style={{fontSize:22}}>{f.icon}</span>
-              <p style={{fontSize:15,fontWeight:700,color:f.color}}>{f.title}</p>
-              <span style={{fontSize:9,fontWeight:700,color:f.color,background:f.color+"18",padding:"3px 8px",borderRadius:8,marginLeft:"auto"}}>{f.tag}</span>
-            </div>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.9,marginBottom:10}}>{f.desc}</p>
-            <div style={{padding:"8px 12px",borderRadius:10,background:"rgba(255,255,255,0.7)",border:`1px dashed ${f.color}30`,marginBottom:14}}>
-              <p style={{fontSize:11,color:f.color,lineHeight:1.6,fontStyle:"italic"}}>{f.example}</p>
-            </div>
-            <button onClick={()=>{if(i===0){setPage("compatibility");window.scrollTo(0,0)}else{alert("この機能は現在準備中です🙏\nもう少しだけお待ちください！")}}} style={{width:"100%",padding:"12px 0",borderRadius:20,border:`1.5px solid ${f.color}`,background:i===0?f.color:"white",color:i===0?"white":f.color,fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{i===0?"相性を診断する 💕":"¥480で診断する"}</button>
-          </Card>)}
+        <div className="slide-up-3" style={{marginBottom:12,textAlign:"center"}}>
+          <button onClick={()=>{setShowPaywall(true)}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1,boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>7日間無料ではじめる</button>
         </div>
-
-        {/* Free vs Premium 比較表 */}
-        <Card className="slide-up-3" style={{marginBottom:12,padding:"20px 18px"}}>
-          <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",textAlign:"center",marginBottom:14}}>無料プラン vs プレミアム</p>
-          <div style={{display:"grid",gridTemplateColumns:"1fr auto auto",gap:"8px 12px",alignItems:"center"}}>
-            <span/>
-            <p style={{fontSize:10,fontWeight:700,color:"var(--t3)",textAlign:"center"}}>無料</p>
-            <p style={{fontSize:10,fontWeight:700,color:"#667eea",textAlign:"center"}}>有料</p>
-            {[
-              ["ホロスコープ（毎日）","✅","✅"],
-              ["夢占い","✅","✅"],
-              ["キャラ24種コレクション","✅","✅"],
-              ["月間運勢レポート","—","月額280円"],
-              ["相性診断","—","1回480円"],
-              ["深層分析（五行×認知）","—","1回480円"],
-              ["新機能の先行利用","—","月額に含む"],
-            ].map(([label,free,prem],i)=><React.Fragment key={i}>
-              <p style={{fontSize:11,color:"var(--t2)"}}>{label}</p>
-              <p style={{textAlign:"center",fontSize:11,color:free==="✅"?"var(--t1)":"var(--t4)"}}>{free}</p>
-              <p style={{textAlign:"center",fontSize:10,color:prem==="✅"?"var(--t1)":"#667eea",fontWeight:prem==="✅"?400:600}}>{prem}</p>
-            </React.Fragment>)}
-          </div>
-        </Card>
 
         <div className="slide-up-4" style={{marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{width:"100%",padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
@@ -1075,47 +1488,290 @@ function App(){
         <div style={{textAlign:"center",padding:"32px 20px 24px",background:"linear-gradient(135deg,#E8627C,#B08ACF)",borderRadius:20,marginBottom:20}}>
           <p style={{fontSize:11,letterSpacing:4,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:14}}>compatibility</p>
           <h2 style={{color:"white",fontSize:22,fontWeight:"bold",marginBottom:8,lineHeight:1.5}}>💕 相性診断</h2>
-          <p style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.8}}>あの人の星座を選ぶだけ</p>
+          <p style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.8}}>ふたりのキャラで相性を占う</p>
         </div>
 
         {!compatResult?<>
           <Card className="slide-up" style={{padding:24}}>
-            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:4}}>あなたの星座</p>
-            <p style={{fontSize:15,marginBottom:16}}>{sign||"（ホームで設定してね）"}</p>
-            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:10}}>相手の星座を選んでね</p>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:4}}>あなた</p>
+            {sign?<p style={{fontSize:15,marginBottom:20}}>{sign}{birthDay?"・"+birthDay+"日生まれ":""}</p>
+            :<div style={{padding:"14px 16px",borderRadius:14,background:"#FFF0F3",border:"1px solid #E8627C20",marginBottom:20}}>
+              <p style={{fontSize:12,color:"#E8627C",lineHeight:1.7,marginBottom:10}}>まだプロフィールが設定されてないよ</p>
+              <button onClick={()=>{goHome();window.scrollTo(0,0)}} style={{padding:"10px 20px",borderRadius:20,border:"none",background:"#E8627C",color:"white",fontSize:12,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>ホームで設定する →</button>
+            </div>}
+
+            <p style={{fontSize:13,fontWeight:700,color:"#E8627C",marginBottom:10}}>相手の情報を教えてね</p>
+
+            <p style={{fontSize:12,color:"var(--t2)",marginBottom:8}}>星座</p>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8,marginBottom:16}}>
               {SIGNS.map(s=><button key={s.k} onClick={()=>setCompatSign(s.k)} style={{padding:"10px 4px",borderRadius:12,border:compatSign===s.k?"2px solid #E8627C":"1.5px solid var(--border)",background:compatSign===s.k?"#E8627C10":"var(--card)",cursor:"pointer",textAlign:"center"}}>
                 <span style={{fontSize:20,display:"block"}}>{s.icon}</span>
                 <span style={{fontSize:9,color:compatSign===s.k?"#E8627C":"var(--t3)",fontWeight:compatSign===s.k?700:400}}>{s.k.replace("座","")}</span>
               </button>)}
             </div>
-          </Card>
-          <button disabled={!sign||!compatSign} onClick={()=>{if(!sign){alert("先にホームで星座を設定してね");return}const r=calcCompatibility(sign,compatSign);setCompatResult(r);window.scrollTo(0,0)}} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:sign&&compatSign?"linear-gradient(135deg,#E8627C,#B08ACF)":"#ccc",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:sign&&compatSign?"pointer":"default",marginTop:16,boxShadow:sign&&compatSign?"0 4px 16px rgba(232,98,124,0.3)":"none"}}>診断する 💕</button>
-        </>:<>
-          <Card className="slide-up" style={{padding:24,textAlign:"center"}}>
-            <p style={{fontSize:12,color:"var(--t3)",marginBottom:8}}>{compatResult.mySign} × {compatResult.theirSign}</p>
-            <div style={{fontSize:48,fontWeight:800,background:"linear-gradient(135deg,#E8627C,#B08ACF)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:4}}>{compatResult.avg}%</div>
-            <p style={{fontSize:11,color:"var(--t3)",marginBottom:20}}>総合相性スコア</p>
-            {[{label:"恋愛",score:compatResult.love,text:compatResult.loveText,color:"#E8627C",icon:"❤️"},{label:"仕事",score:compatResult.work,text:compatResult.workText,color:"#667eea",icon:"💼"},{label:"友情",score:compatResult.friend,text:compatResult.friendText,color:"#48BB78",icon:"🤝"}].map((cat,i)=><div key={i} style={{marginBottom:16,textAlign:"left"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-                <span style={{fontSize:13,fontWeight:600,color:"var(--t1)"}}>{cat.icon} {cat.label}</span>
-                <span style={{fontSize:18,fontWeight:800,color:cat.color}}>{cat.score}%</span>
-              </div>
-              <div style={{height:6,borderRadius:3,background:"var(--border)",marginBottom:8}}>
-                <div style={{height:6,borderRadius:3,background:cat.color,width:cat.score+"%",transition:"width 1s ease"}}/>
-              </div>
-              <p style={{fontSize:11,color:"var(--t2)",lineHeight:1.7}}>{cat.text}</p>
-            </div>)}
+
+            <p style={{fontSize:12,color:"var(--t2)",marginBottom:8}}>誕生日（日にちだけでOK）</p>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+              <select value={compatBirthDay} onChange={e=>setCompatBirthDay(e.target.value)} style={{flex:1,padding:"12px 14px",borderRadius:12,border:"1.5px solid var(--border)",fontSize:14,fontFamily:"Zen Maru Gothic, sans-serif",color:compatBirthDay?"var(--t1)":"var(--t4)",background:"var(--card)",WebkitAppearance:"none",appearance:"none"}}>
+                <option value="">選んでね</option>
+                {Array.from({length:31},(_,i)=>i+1).map(d=><option key={d} value={String(d)}>{d}日</option>)}
+              </select>
+            </div>
+            <p style={{fontSize:10,color:"var(--t4)",lineHeight:1.6}}>※ 誕生日からキャラクターが決まるよ</p>
           </Card>
           <div style={{display:"flex",gap:8,marginTop:16}}>
-            <button onClick={()=>{setCompatResult(null);setCompatSign("")}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1.5px solid #E8627C",background:"white",color:"#E8627C",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>別の人と診断</button>
+            <button disabled={!sign||!compatSign||!compatBirthDay} onClick={()=>{const r=calcCompatibility(sign,compatSign,birthDay,compatBirthDay);setCompatResult(r);window.scrollTo(0,0)}} style={{flex:1,padding:"16px 0",borderRadius:25,border:"none",background:sign&&compatSign&&compatBirthDay?"linear-gradient(135deg,#E8627C,#B08ACF)":"#ccc",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:sign&&compatSign&&compatBirthDay?"pointer":"default",boxShadow:sign&&compatSign&&compatBirthDay?"0 4px 16px rgba(232,98,124,0.3)":"none"}}>診断する 💕</button>
+            <button onClick={()=>{goHome();window.scrollTo(0,0)}} style={{padding:"16px 20px",borderRadius:25,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠</button>
+          </div>
+        </>:<>
+          {/* Result: Character × Character header */}
+          <Card className="slide-up" style={{padding:24,textAlign:"center"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:16}}>
+              <div style={{textAlign:"center"}}>
+                <CharaAvatar id={compatResult.myCharId} size={72}/>
+                <p style={{fontSize:11,fontWeight:700,color:"var(--t1)",marginTop:6}}>{compatResult.myCharName}</p>
+                <p style={{fontSize:9,color:"var(--t4)"}}>{compatResult.mySign}</p>
+              </div>
+              <div style={{fontSize:24,color:"#E8627C"}}>×</div>
+              <div style={{textAlign:"center"}}>
+                <CharaAvatar id={compatResult.theirCharId} size={72}/>
+                <p style={{fontSize:11,fontWeight:700,color:"var(--t1)",marginTop:6}}>{compatResult.theirCharName}</p>
+                <p style={{fontSize:9,color:"var(--t4)"}}>{compatResult.theirSign}</p>
+              </div>
+            </div>
+            <div style={{fontSize:48,fontWeight:800,background:"linear-gradient(135deg,#E8627C,#B08ACF)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",marginBottom:4}}>{compatResult.avg}%</div>
+            <p style={{fontSize:11,color:"var(--t3)",marginBottom:20}}>総合相性スコア</p>
+
+            {/* ── PREMIUM GATE ── */}
+            {isPremium?<div>
+              {[{label:"恋愛",score:compatResult.love,color:"#E8627C",icon:"❤️",text:compatResult.loveText},{label:"仕事",score:compatResult.work,color:"#667eea",icon:"💼",text:compatResult.workText},{label:"友情",score:compatResult.friend,color:"#48BB78",icon:"🤝",text:compatResult.friendText}].map((cat,i)=><div key={i} style={{marginBottom:20,textAlign:"left"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                  <span style={{fontSize:13,fontWeight:600,color:"var(--t1)"}}>{cat.icon} {cat.label}</span>
+                  <span style={{fontSize:18,fontWeight:800,color:cat.color}}>{cat.score}%</span>
+                </div>
+                <div style={{height:6,borderRadius:3,background:"var(--border)",marginBottom:8}}>
+                  <div style={{height:6,borderRadius:3,background:cat.color,width:cat.score+"%",transition:"width 1s ease"}}/>
+                </div>
+                <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.7}}>{cat.text}</p>
+              </div>)}
+            </div>:<div style={{position:"relative"}}>
+              <div style={{filter:"blur(6px)",pointerEvents:"none",userSelect:"none",WebkitUserSelect:"none"}}>
+                {[{label:"恋愛",score:compatResult.love,color:"#E8627C",icon:"❤️"},{label:"仕事",score:compatResult.work,color:"#667eea",icon:"💼"},{label:"友情",score:compatResult.friend,color:"#48BB78",icon:"🤝"}].map((cat,i)=><div key={i} style={{marginBottom:16,textAlign:"left"}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+                    <span style={{fontSize:13,fontWeight:600,color:"var(--t1)"}}>{cat.icon} {cat.label}</span>
+                    <span style={{fontSize:18,fontWeight:800,color:cat.color}}>??%</span>
+                  </div>
+                  <div style={{height:6,borderRadius:3,background:"var(--border)",marginBottom:8}}>
+                    <div style={{height:6,borderRadius:3,background:cat.color,width:"50%"}}/>
+                  </div>
+                  <p style={{fontSize:11,color:"var(--t2)",lineHeight:1.7}}>この項目は有料です</p>
+                </div>)}
+              </div>
+              <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10}}>
+                <div style={{background:"var(--card)",borderRadius:20,padding:"24px 20px",textAlign:"center",boxShadow:"0 8px 32px rgba(232,98,124,0.2)",border:"1px solid #E8627C20",maxWidth:280}}>
+                  <div style={{fontSize:32,marginBottom:8}}>🔓</div>
+                  <p style={{fontSize:14,fontWeight:800,color:"var(--t1)",marginBottom:4}}>詳細を見る</p>
+                  <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.7,marginBottom:14}}>恋愛・仕事・友情の各スコアとアドバイス</p>
+                  <button onClick={()=>{gtag("event","compat_paywall_tap",{signs:compatResult.mySign+"×"+compatResult.theirSign});setShowPaywall(true)}} style={{width:"100%",padding:"12px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>月額プランで解放 ¥480/月</button>
+                  <p style={{fontSize:10,color:"var(--t4)",marginTop:6}}>何人でも診断し放題</p>
+                </div>
+              </div>
+            </div>}
+          </Card>
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            <button onClick={()=>{setCompatResult(null);setCompatSign("");setCompatBirthDay("")}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1.5px solid #E8627C",background:"var(--card)",color:"#E8627C",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>別の人と診断</button>
             <button onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
           </div>
         </>}
         <div style={{height:40}}/>
       </div>}
 
+      {/* ── 深層分析結果ページ ── */}
+      {page==="deepAnalysis"&&deepResult&&<div className="fade-in" style={{maxWidth:440,margin:"0 auto"}}>
+        {/* Header — Character × Attribute */}
+        <div style={{textAlign:"center",padding:"32px 20px 28px",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",borderRadius:20,marginBottom:20,position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%)"}}/>
+          <p style={{fontSize:11,letterSpacing:4,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:16,position:"relative"}}>deep analysis</p>
+          <div style={{position:"relative",marginBottom:12}}>
+            <CharaAvatar id={deepResult.charId} size={90} animate/>
+          </div>
+          <p style={{fontSize:18,fontWeight:800,color:"#fff",marginBottom:4,position:"relative"}}>{deepResult.charName}</p>
+          <p style={{fontSize:11,color:"rgba(255,255,255,0.6)",marginBottom:14,position:"relative"}}>の深層タイプは…</p>
+          <div style={{display:"inline-block",background:"rgba(255,255,255,0.18)",borderRadius:16,padding:"10px 20px",position:"relative",backdropFilter:"blur(4px)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,justifyContent:"center"}}>
+              <span style={{fontSize:22}}>{deepResult.icon}</span>
+              <div style={{textAlign:"left"}}>
+                <p style={{fontSize:15,fontWeight:800,color:"#fff"}}>{deepResult.name}</p>
+                <p style={{fontSize:10,color:"rgba(255,255,255,0.7)"}}>{({wood:"木",fire:"火",earth:"土",metal:"金",water:"水"}[deepResult.element]||"")}の{deepResult.yinyang==="yang"?"陽":"陰"}</p>
+              </div>
+            </div>
+          </div>
+          <p style={{fontSize:12,color:"rgba(255,255,255,0.8)",marginTop:12,position:"relative",lineHeight:1.7}}>{deepResult.sub}</p>
+        </div>
+
+        {/* 1. あなたの本質 — FREE */}
+        <Card className="slide-up" style={{marginBottom:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span style={{fontSize:18}}>💫</span>
+            <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>あなたの本質</p>
+          </div>
+          <ExpandText text={deepResult.os} lines={3}/>
+        </Card>
+
+        {/* 2. 地雷ポイント — FREE */}
+        <Card className="slide-up-1" style={{marginBottom:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span style={{fontSize:18}}>💣</span>
+            <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>地雷ポイント</p>
+          </div>
+          <ExpandText text={deepResult.bug} lines={3}/>
+        </Card>
+
+        {/* Share panel — FREE content sharing drives traffic */}
+        <div className="slide-up-2" style={{marginBottom:16,padding:"16px",borderRadius:16,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(118,75,162,0.15)"}}>
+          <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",textAlign:"center",marginBottom:10}}>あなたのタイプをシェアしよう</p>
+          <div style={{display:"flex",justifyContent:"center",gap:10}}>
+            <button onClick={()=>{gtag("event","deep_share",{method:"x",type:deepResult.name});location.href="https://x.com/intent/tweet?text="+encodeURIComponent("よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+"\n\n"+deepResult.sub+"\n\n当たりすぎて怖い…")+"&url="+encodeURIComponent("https://yorunokotoba.vercel.app")}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"#000",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </button>
+            <button onClick={()=>{gtag("event","deep_share",{method:"line",type:deepResult.name});location.href="https://line.me/R/share?text="+encodeURIComponent("よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+"\n"+deepResult.sub+"\n\nhttps://yorunokotoba.vercel.app")}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"#06C755",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.95 1.95 5.55 4.87 7.03-.19.67-.68 2.5-.78 2.89-.13.5.18.49.38.36.16-.1 2.53-1.72 3.56-2.42.62.09 1.27.14 1.97.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/></svg>
+            </button>
+            <button onClick={()=>{gtag("event","deep_share",{method:"native",type:deepResult.name});if(navigator.share){navigator.share({title:"よるのことば",text:"本当のわたし診断で「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+" "+deepResult.sub,url:"https://yorunokotoba.vercel.app"}).catch(()=>{})}else{var ta=document.createElement("textarea");ta.value="よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった "+deepResult.icon+"\nhttps://yorunokotoba.vercel.app";ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);setToast("コピーしました！")}}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--t3)"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V10c0-1.1.9-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .9 2 2z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* ── PREMIUM GATE ── */}
+        {isPremium?<div className="slide-up-2">
+          <Card style={{marginBottom:12}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>⚔️</span>
+              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>最強の武器</p>
+            </div>
+            <ExpandText text={deepResult.weapon} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:12,background:nightMode?"linear-gradient(135deg,rgba(196,160,224,0.06),rgba(196,160,224,0.03))":"linear-gradient(135deg,#1a1a2e10,#1a1a2e05)",border:nightMode?"1px solid rgba(196,160,224,0.1)":"1px solid #1a1a2e15"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>🪞</span>
+              <p style={{fontSize:14,fontWeight:700,color:nightMode?"#C4A0E0":"#1a1a2e"}}>隠れた魅力</p>
+            </div>
+            <ExpandText text={deepResult.shadow} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:12}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>💰</span>
+              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>お金の癖</p>
+            </div>
+            <ExpandText text={deepResult.money} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:12,background:"linear-gradient(135deg,"+deepResult.color+"08,"+deepResult.color+"04)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>⚠️</span>
+              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>取扱注意ポイント</p>
+            </div>
+            <ExpandText text={deepResult.handling} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:12}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>✨</span>
+              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>もっと輝くヒント</p>
+            </div>
+            <ExpandText text={deepResult.update} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:12}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>🗺️</span>
+              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>相性マップ</p>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <div style={{flex:1,padding:12,borderRadius:14,background:"#48BB7808",border:"1px solid #48BB7815"}}>
+                <p style={{fontSize:10,color:"#48BB78",marginBottom:4}}>✨ 最高の相棒</p>
+                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>{deepResult.bestMatchName}</p>
+                <p style={{fontSize:10,color:"var(--t3)",lineHeight:1.6,marginTop:4}}>{deepResult.bestMatchWhy}</p>
+              </div>
+              <div style={{flex:1,padding:12,borderRadius:14,background:"#E8627C08",border:"1px solid #E8627C15"}}>
+                <p style={{fontSize:10,color:"#E8627C",marginBottom:4}}>⚡ 天敵</p>
+                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>{deepResult.enemyName}</p>
+                <p style={{fontSize:10,color:"var(--t3)",lineHeight:1.6,marginTop:4}}>{deepResult.enemyWhy}</p>
+              </div>
+            </div>
+          </Card>
+          <Card style={{marginBottom:12,background:"linear-gradient(135deg,#6B21A810,#6B21A805)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>🔮</span>
+              <p style={{fontSize:14,fontWeight:700,color:"#6B21A8"}}>3ヶ月後の予言</p>
+            </div>
+            <ExpandText text={deepResult.prophecy} lines={4} style={{fontSize:13}}/>
+          </Card>
+          <Card style={{marginBottom:0,background:"linear-gradient(135deg,#764ba210,#C8A0E808)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+              <span style={{fontSize:18}}>💊</span>
+              <p style={{fontSize:14,fontWeight:700,color:"#764ba2"}}>今日の処方箋</p>
+            </div>
+            <p style={{fontSize:14,color:"var(--t1)",lineHeight:2}}>{deepResult.rx[new Date().getDay()]||deepResult.rx[0]}</p>
+          </Card>
+        </div>:<div className="slide-up-2" style={{position:"relative",marginBottom:12}}>
+          <div style={{filter:"blur(6px)",pointerEvents:"none",userSelect:"none",WebkitUserSelect:"none"}}>
+            <Card style={{marginBottom:12}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:18}}>⚔️</span>
+                <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>最強の武器</p>
+              </div>
+              <p style={{fontSize:13,color:"var(--t2)",lineHeight:2.1}}>{deepResult.weapon.slice(0,40)}...</p>
+            </Card>
+            <Card style={{marginBottom:12,background:nightMode?"linear-gradient(135deg,rgba(196,160,224,0.06),rgba(196,160,224,0.03))":"linear-gradient(135deg,#1a1a2e10,#1a1a2e05)",border:nightMode?"1px solid rgba(196,160,224,0.1)":"1px solid #1a1a2e15"}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:18}}>🪞</span>
+                <p style={{fontSize:14,fontWeight:700,color:nightMode?"#C4A0E0":"#1a1a2e"}}>隠れた魅力</p>
+              </div>
+              <p style={{fontSize:13,color:"var(--t2)",lineHeight:2.1}}>{deepResult.shadow.slice(0,40)}...</p>
+            </Card>
+            <Card style={{marginBottom:12}}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                <span style={{fontSize:18}}>💰</span>
+                <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>お金の癖</p>
+              </div>
+              <p style={{fontSize:13,color:"var(--t2)",lineHeight:2.1}}>{deepResult.money.slice(0,40)}...</p>
+            </Card>
+            <Card style={{marginBottom:12}}><p style={{fontSize:13,color:"var(--t2)"}}>...ほか5項目</p></Card>
+          </div>
+          <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:10}}>
+            <div style={{background:"var(--card)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 8px 32px rgba(118,75,162,0.2)",border:"1px solid #764ba220",maxWidth:300}}>
+              <div style={{fontSize:36,marginBottom:12}}>🔓</div>
+              <p style={{fontSize:16,fontWeight:800,color:"var(--t1)",marginBottom:6}}>あと8項目あるよ</p>
+              <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:16}}>最強の武器・🪞隠れた魅力・💰お金の癖・取扱注意・輝くヒント・相性マップ・🔮3ヶ月予言・処方箋</p>
+              <button onClick={()=>{gtag("event","deep_paywall_tap",{type:deepResult.name});setShowPaywall(true)}} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(118,75,162,0.3)"}}>月額プランですべて見る ¥480/月</button>
+              <p style={{fontSize:10,color:"var(--t4)",marginTop:6}}>7日間無料・いつでもキャンセルOK</p>
+            </div>
+          </div>
+        </div>}
+
+        {/* Buttons */}
+        <div style={{display:"flex",gap:8,marginTop:20}}>
+          <button onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"14px 0",borderRadius:20,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
+        </div>
+        <div style={{height:40}}/>
+      </div>}
+
       <footer style={{textAlign:"center",padding:"20px 0 52px",borderTop:"1px solid rgba(58,40,48,0.06)"}}>
+        {/* Account */}
+        <div style={{marginBottom:16,padding:"12px 16px",borderRadius:14,background:"var(--card)",border:"1px solid var(--border)",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          {user?<>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              {user.photoURL?<img src={user.photoURL} alt="" style={{width:28,height:28,borderRadius:14}}/>:<div style={{width:28,height:28,borderRadius:14,background:"var(--grad)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff"}}>👤</div>}
+              <div style={{textAlign:"left"}}>
+                <p style={{fontSize:11,fontWeight:600,color:"var(--t1)"}}>{user.displayName||"ユーザー"}</p>
+                <p style={{fontSize:9,color:isPremium?"#E8627C":"var(--t4)"}}>{isPremium?"✨ プレミアム会員":"無料プラン"}</p>
+              </div>
+            </div>
+            <button onClick={signOut} style={{fontSize:10,color:"var(--t4)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif"}}>ログアウト</button>
+          </>:<button onClick={signInWithGoogle} style={{width:"100%",fontSize:12,color:"var(--t3)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",padding:"4px 0"}}>🔑 ログインする</button>}
+        </div>
+        {user&&isPremium&&<div style={{marginBottom:16,textAlign:"center"}}>
+          <button onClick={()=>setShowCancelConfirm(true)} style={{fontSize:10,color:"var(--t4)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",textDecoration:"underline"}}>プレミアムを解約する</button>
+        </div>}
         {!window.matchMedia("(display-mode: standalone)").matches&&(()=>{
           const ua=navigator.userAgent;
           const isIOS=/iPad|iPhone|iPod/.test(ua);
@@ -1193,18 +1849,64 @@ function App(){
           <p style={{fontSize:11,color:"var(--t3)",textAlign:"center"}}>{(()=>{const d=new Date();const seed=d.getFullYear()*10000+d.getMonth()*100+d.getDate();const base=800+((seed*2654435761)>>>0)%600;const hour=d.getHours();const boost=Math.floor(hour*hour*0.8+hour*12);const jitter=((seed*16807+hour*31)>>>0)%50;return`🔮 今日 ${(base+boost+jitter).toLocaleString()} 人が占いました`})()}</p>
         </div>
         <p style={{fontFamily:"Cormorant, serif",fontSize:14,color:"var(--t4)",letterSpacing:4,fontWeight:300}}>よるのことば</p>
+        <div style={{marginTop:10,display:"flex",justifyContent:"center",gap:16,flexWrap:"wrap"}}>
+          <a href="/legal.html" style={{fontSize:9,color:"var(--t4)",textDecoration:"none"}}>特定商取引法</a>
+          <a href="/privacy.html" style={{fontSize:9,color:"var(--t4)",textDecoration:"none"}}>プライバシーポリシー</a>
+          <a href="/terms.html" style={{fontSize:9,color:"var(--t4)",textDecoration:"none"}}>利用規約</a>
+        </div>
         <p style={{fontSize:9,color:"var(--t4)",marginTop:6,opacity:0.5}}>© 2026</p>
       </footer>
-      {(page==="fortuneResult"||page==="dreamResult")&&<div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",zIndex:999}}>
-        <button onClick={()=>{goHome();window.scrollTo(0,0)}} className="hover-lift" style={{padding:"12px 28px",borderRadius:24,border:"none",background:"var(--grad)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 20px rgba(232,98,124,0.3)",display:"flex",alignItems:"center",gap:6}}>
-          <span style={{fontSize:15}}>🏠</span> ホームに戻る
-        </button>
-      </div>}
     </div>
+
+    {/* ── 解約確認モーダル ── */}
+    {showCancelConfirm&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.55)",zIndex:10000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>setShowCancelConfirm(false)}>
+      <div onClick={e=>e.stopPropagation()} style={{background:nightMode?"#1E1622":"#fff",borderRadius:20,padding:"28px 24px",maxWidth:320,width:"100%",textAlign:"center",boxShadow:nightMode?"0 20px 60px rgba(0,0,0,0.5)":"0 20px 60px rgba(0,0,0,0.2)"}}>
+        <div style={{fontSize:32,marginBottom:10}}>😢</div>
+        <p style={{fontSize:15,fontWeight:700,color:"var(--t1)",marginBottom:8}}>本当に解約する？</p>
+        <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:20}}>解約すると相性診断・深層分析などのプレミアム機能が使えなくなります。次回更新日以降の課金は発生しません。</p>
+        <button disabled={cancelProcessing} onClick={cancelSubscription} style={{width:"100%",padding:"14px 0",borderRadius:20,border:"none",background:cancelProcessing?"rgba(200,200,200,0.5)":"rgba(200,60,60,0.9)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:cancelProcessing?"wait":"pointer",marginBottom:8}}>{cancelProcessing?"処理中...":"解約する"}</button>
+        <button onClick={()=>setShowCancelConfirm(false)} style={{width:"100%",padding:"14px 0",borderRadius:20,border:"none",background:"none",color:"var(--t3)",fontSize:13,fontWeight:500,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>やっぱりやめる</button>
+      </div>
+    </div>}
+
+    {/* ── ペイウォールモーダル ── */}
+    {toast&&<div style={{position:"fixed",bottom:80,left:"50%",transform:"translateX(-50%)",background:"rgba(58,40,48,0.92)",color:"#fff",padding:"12px 24px",borderRadius:20,fontSize:13,fontWeight:500,zIndex:10001,maxWidth:"80%",textAlign:"center",animation:"slideUp .3s ease",boxShadow:"0 4px 20px rgba(0,0,0,0.15)"}}>{toast}</div>}
+    {showPaywall&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.55)",zIndex:10000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>{setShowPaywall(false);setShowCardForm(false)}}>
+      <div onClick={e=>e.stopPropagation()} className="paywall-modal-inner" style={{background:nightMode?"#1E1622":"#fff",borderRadius:24,padding:"32px 24px",maxWidth:360,width:"100%",textAlign:"center",position:"relative",boxShadow:nightMode?"0 20px 60px rgba(0,0,0,0.5)":"0 20px 60px rgba(0,0,0,0.2)"}}>
+        <button onClick={()=>{setShowPaywall(false);setShowCardForm(false)}} style={{position:"absolute",top:12,right:16,background:"none",border:"none",fontSize:20,color:"var(--t4)",cursor:"pointer"}}>×</button>
+        <div style={{fontSize:40,marginBottom:12}}>🔮</div>
+        <p style={{fontSize:17,fontWeight:800,color:"var(--t1)",marginBottom:8,lineHeight:1.5}}>よるのことば プレミアム</p>
+        <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.9,marginBottom:20}}>月額¥480で相性診断し放題・本当のわたし診断・毎月届くおたより、ぜんぶ使えるようになるよ。</p>
+        <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:16}}>
+          {[{icon:"💕",text:"相性診断し放題"},{icon:"✨",text:"本当のわたし診断（完全版）"},{icon:"💌",text:"毎月届くおたより"},{icon:"🔓",text:"7日間無料お試し"}].map((f,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 14px",borderRadius:12,background:"rgba(232,98,124,0.04)"}}>
+            <span style={{fontSize:16}}>{f.icon}</span>
+            <span style={{fontSize:12,color:"var(--t1)",fontWeight:500}}>{f.text}</span>
+          </div>)}
+        </div>
+        {!user?<>
+          <button onClick={async()=>{const ok=await signInWithGoogle();if(ok)setToast("ログインしたよ！")}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"#4285f4",color:"#fff",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:"0 2px 8px rgba(66,133,244,0.3)"}}>
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Googleでログイン
+          </button>
+          <p style={{fontSize:10,color:"var(--t4)",marginTop:8}}>ログイン後、プレミアムに登録できます</p>
+        </>:<>
+          <p style={{fontSize:11,color:"var(--t3)",marginBottom:12}}>🙋 {user.displayName||user.email} でログイン中</p>
+          {showCardForm?<div>
+            <div id="payjp-card-mount" style={{padding:"14px",border:"1.5px solid var(--border)",borderRadius:14,background:nightMode?"rgba(255,255,255,0.05)":"rgba(58,40,48,0.03)",marginBottom:12,minHeight:44}}/>
+            <button disabled={cardProcessing} onClick={submitCard} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:cardProcessing?"rgba(200,200,200,0.5)":"linear-gradient(135deg,#E8627C,#B08ACF)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:cardProcessing?"wait":"pointer",boxShadow:cardProcessing?"none":"0 4px 16px rgba(232,98,124,0.3)",letterSpacing:1}}>{cardProcessing?"処理中...✨":"カードを登録して始める"}</button>
+            <button onClick={()=>setShowCardForm(false)} style={{width:"100%",marginTop:8,padding:"10px 0",borderRadius:14,border:"none",background:"none",color:"var(--t4)",fontSize:12,cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif"}}>← 戻る</button>
+            <p style={{fontSize:9,color:"var(--t4)",marginTop:6,lineHeight:1.6}}>🔒 カード情報はPAY.JPが安全に管理します。よるのことばにカード番号は保存されません。</p>
+          </div>:<>
+            <button onClick={()=>{gtag("event","checkout_open");openCheckout()}} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#E8627C,#B08ACF)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(232,98,124,0.3)",letterSpacing:1}}>✨ 月額¥480で始める</button>
+            <p style={{fontSize:10,color:"var(--t4)",marginTop:8}}>7日間無料 · いつでも解約OK</p>
+          </>}
+        </>}
+      </div>
+    </div>}
   </div>;
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+ReactDOM.createRoot(document.getElementById("root")).render(<ErrorBoundary><App/></ErrorBoundary>);
 </script>
 </body>
 </html>
