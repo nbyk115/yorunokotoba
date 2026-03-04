@@ -757,12 +757,13 @@ function App(){
 
   // Sign in with Google
   async function signInWithGoogle(){
-    const isMobile=/iPhone|iPad|Android/i.test(navigator.userAgent);
     try{
-      if(isMobile){await auth.signInWithRedirect(googleProvider);return true}
       await auth.signInWithPopup(googleProvider);return true
     }catch(e){
-      try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){setToast("ログインできませんでした");return false}
+      if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"||e.code==="auth/cancelled-popup-request"){
+        try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){}
+      }
+      setToast("ログインできませんでした");return false
     }
   }
   function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
