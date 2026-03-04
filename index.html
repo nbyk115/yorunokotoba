@@ -740,8 +740,23 @@ function App(){
 
   // Firebase Auth listener
   useEffect(()=>{
-    auth.getRedirectResult().catch(()=>{});
-    const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
+    auth.getRedirectResult().then(result=>{
+      if(result&&result.user){
+        try{
+          const pending=localStorage.getItem('ynk_pending_action');
+          if(pending==='paywall'){localStorage.removeItem('ynk_pending_action');setTimeout(()=>setShowPaywall(true),500)}
+        }catch(e){}
+      }
+    }).catch(()=>{});
+    const unsub=auth.onAuthStateChanged(u=>{
+      setUser(u);setAuthLoading(false);
+      if(u){
+        try{
+          const pending=localStorage.getItem('ynk_pending_action');
+          if(pending==='paywall'){localStorage.removeItem('ynk_pending_action');setTimeout(()=>setShowPaywall(true),800)}
+        }catch(e){}
+      }
+    });
     return()=>unsub();
   },[]);
 
@@ -757,13 +772,19 @@ function App(){
 
   // Sign in with Google
   async function signInWithGoogle(){
+    const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if(isMobile){
+      try{localStorage.setItem('ynk_pending_action','paywall')}catch(e){}
+      auth.signInWithRedirect(googleProvider);
+      return true
+    }
     try{
       await auth.signInWithPopup(googleProvider);return true
     }catch(e){
-      if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"||e.code==="auth/cancelled-popup-request"){
-        try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){}
-      }
-      setToast("ログインできませんでした");return false
+      console.log("Auth error:",e.code,e.message);
+      try{localStorage.setItem('ynk_pending_action','paywall')}catch(ex){}
+      auth.signInWithRedirect(googleProvider);
+      return true
     }
   }
   function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
