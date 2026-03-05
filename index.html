@@ -739,9 +739,6 @@ function App(){
   const [isPremium,setIsPremium]=useState(false);
 
   useEffect(()=>{
-    auth.getRedirectResult().then(r=>{
-      if(r&&r.user){try{if(sessionStorage.getItem('ynk_open_paywall')){sessionStorage.removeItem('ynk_open_paywall');setTimeout(()=>{setShowPaywall(true)},600)}}catch(e){}}
-    }).catch(()=>{});
     const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
     return()=>unsub();
   },[]);
@@ -760,23 +757,16 @@ function App(){
   async function signInWithGoogle(){
     const ua=navigator.userAgent;
     const inApp=/(Line|FBAV|FBAN|Instagram|Twitter)/i.test(ua);
-    const mobile=/iPhone|iPad|iPod|Android/i.test(ua);
     if(inApp){
       setToast("ブラウザで開いてね。URLをコピーしてSafariかChromeで開こう");
       try{navigator.clipboard.writeText("https://yorunokotoba.vercel.app")}catch(e){}
-      return false
-    }
-    if(mobile){
-      try{sessionStorage.setItem('ynk_open_paywall','1')}catch(e){}
-      auth.signInWithRedirect(googleProvider);
       return false
     }
     try{
       await auth.signInWithPopup(googleProvider);
       return true
     }catch(e){
-      try{sessionStorage.setItem('ynk_open_paywall','1')}catch(ex){}
-      auth.signInWithRedirect(googleProvider);
+      setToast("ログインできませんでした（"+e.code+"）");
       return false
     }
   }
