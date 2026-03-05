@@ -741,15 +741,30 @@ function App(){
   useEffect(()=>{
     auth.getRedirectResult().then(r=>{
       if(r&&r.user){
+        setDebugInfo("redirect成功:"+r.user.uid.slice(0,8));
         try{
           if(sessionStorage.getItem('ynk_after_login')){
             sessionStorage.removeItem('ynk_after_login');
-            setTimeout(()=>setShowPaywall(true),500);
+            // Wait for Firestore to load premium status before showing paywall
+            setTimeout(()=>{
+              db.collection("users").doc(r.user.uid).get().then(snap=>{
+                if(snap.exists&&snap.data().premium===true){
+                  setIsPremium(true);
+                  setToast("プレミアム会員でログインしたよ！🎉");
+                }else{
+                  setShowPaywall(true);
+                }
+              }).catch(()=>setShowPaywall(true));
+            },300);
           }
         }catch(e){}
       }
-    }).catch(()=>{});
-    const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
+    }).catch((e)=>{setDebugInfo("redirectエラー:"+(e.code||e.message))});
+    const unsub=auth.onAuthStateChanged(u=>{
+      setUser(u);setAuthLoading(false);
+      if(u) setDebugInfo("auth:"+u.uid.slice(0,8)+" 読込中...");
+      else setDebugInfo("未ログイン");
+    });
     return()=>unsub();
   },[]);
 
@@ -783,14 +798,9 @@ function App(){
       try{navigator.clipboard.writeText("https://yorunokotoba.vercel.app")}catch(e){}
       return false
     }
-    try{
-      await auth.signInWithPopup(googleProvider);
-      return true
-    }catch(e){
-      try{sessionStorage.setItem('ynk_after_login','1')}catch(ex){}
-      auth.signInWithRedirect(googleProvider);
-      return false
-    }
+    try{sessionStorage.setItem('ynk_after_login','1')}catch(e){}
+    auth.signInWithRedirect(googleProvider);
+    return false
   }
   function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
 
