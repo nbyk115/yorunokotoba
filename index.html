@@ -1267,7 +1267,7 @@ function App(){
         <p style={{fontSize:14,fontWeight:700,color:"var(--t1)",marginBottom:12}}>🎴 夢キャラ図鑑 <span style={{fontSize:11,fontWeight:400,color:"var(--t3)"}}>{Object.keys(collection).length}/{DREAM_TYPES.length}</span></p>
         <CollectionGrid collection={collection}/>
       </Card>}
-      {page==="home"&&<PremiumCTA style={{marginTop:20,marginBottom:32}} onTap={()=>{gtag("event","premium_cta_tap",{from:"home"});setPage("premium");window.scrollTo(0,0)}}/>}
+      {page==="home"&&!isPremium&&<PremiumCTA style={{marginTop:20,marginBottom:32}} onTap={()=>{gtag("event","premium_cta_tap",{from:"home"});setPage("premium");window.scrollTo(0,0)}}/>}
 
       {(page==="loading"||page==="deepLoading")&&<div className="fade-in" style={{textAlign:"center",padding:"60px 0"}}>
         <div style={{marginBottom:20,animation:"float 2s ease infinite"}}>{page==="deepLoading"
@@ -1325,7 +1325,7 @@ function App(){
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
 
-        <button onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>
+        {!isPremium&&<button onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>}
         <div style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
@@ -1364,7 +1364,7 @@ function App(){
 
         <LuckySection lucky={dreamResult.lucky} className="slide-up-4"/>
 
-        <button onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>
+        {!isPremium&&<button onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>}
         <div style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("fortune");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>ホロスコープもやる</button>
@@ -1402,8 +1402,9 @@ function App(){
               </div>)}
             </div>
 
+            {isPremium?<div style={{textAlign:"center",padding:"12px 0"}}><p style={{fontSize:14,fontWeight:700,color:"#764ba2"}}>✨ プレミアム会員です</p></div>:<>
             <button onClick={()=>{setShowPaywall(true)}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1,boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>7日間無料ではじめる</button>
-            <p style={{fontSize:10,color:"var(--t4)",textAlign:"center",marginTop:8}}>いつでもキャンセルOK</p>
+            <p style={{fontSize:10,color:"var(--t4)",textAlign:"center",marginTop:8}}>いつでもキャンセルOK</p></>}
           </Card>
 
           {/* 💕 相性診断プレビュー */}
@@ -1514,9 +1515,9 @@ function App(){
           </Card>
         </div>
 
-        <div className="slide-up-3" style={{marginBottom:12,textAlign:"center"}}>
+        {!isPremium&&<div className="slide-up-3" style={{marginBottom:12,textAlign:"center"}}>
           <button onClick={()=>{setShowPaywall(true)}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1,boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>7日間無料ではじめる</button>
-        </div>
+        </div>}
 
         <div className="slide-up-4" style={{marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{width:"100%",padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホームに戻る</button>
