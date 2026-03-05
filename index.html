@@ -738,9 +738,10 @@ function App(){
   const [authLoading,setAuthLoading]=useState(true);
   const [isPremium,setIsPremium]=useState(false);
 
-  // Firebase Auth listener
   useEffect(()=>{
-    auth.getRedirectResult().catch(()=>{});
+    auth.getRedirectResult().then(r=>{
+      if(r&&r.user){try{if(sessionStorage.getItem('ynk_open_paywall')){sessionStorage.removeItem('ynk_open_paywall');setTimeout(()=>{setShowPaywall(true)},600)}}catch(e){}}
+    }).catch(()=>{});
     const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
     return()=>unsub();
   },[]);
@@ -757,15 +758,25 @@ function App(){
 
   // Sign in with Google
   async function signInWithGoogle(){
+    const ua=navigator.userAgent;
+    const inApp=/(Line|FBAV|FBAN|Instagram|Twitter)/i.test(ua);
+    const mobile=/iPhone|iPad|iPod|Android/i.test(ua);
+    if(inApp){
+      setToast("ブラウザで開いてね。URLをコピーしてSafariかChromeで開こう");
+      try{navigator.clipboard.writeText("https://yorunokotoba.vercel.app")}catch(e){}
+      return false
+    }
+    if(mobile){
+      try{sessionStorage.setItem('ynk_open_paywall','1')}catch(e){}
+      auth.signInWithRedirect(googleProvider);
+      return false
+    }
     try{
       await auth.signInWithPopup(googleProvider);
       return true
     }catch(e){
-      console.log("Auth error:",e.code);
-      if(e.code==="auth/popup-blocked"||e.code==="auth/popup-closed-by-user"||e.code==="auth/cancelled-popup-request"){
-        try{await auth.signInWithRedirect(googleProvider);return true}catch(e2){}
-      }
-      setToast("ログインできませんでした");
+      try{sessionStorage.setItem('ynk_open_paywall','1')}catch(ex){}
+      auth.signInWithRedirect(googleProvider);
       return false
     }
   }
@@ -778,7 +789,13 @@ function App(){
       const p=payjpRef.current;
       const els=p.elements();
       const card=els.create('card',{style:{base:{color:nightMode?'#e0d0e8':'#3A2830',fontSize:'16px','::placeholder':{color:nightMode?'#8a7a92':'#aaa'}},invalid:{color:'#E8627C'}}});
-      setTimeout(()=>{const m=document.getElementById('payjp-card-mount');if(m){card.mount('#payjp-card-mount');cardElRef.current=card}},120);
+      let mounted=false;
+      function tryMount(attempt){
+        const m=document.getElementById('payjp-card-mount');
+        if(m&&!mounted){card.mount('#payjp-card-mount');cardElRef.current=card;mounted=true}
+        else if(attempt<10){setTimeout(()=>tryMount(attempt+1),200)}
+      }
+      setTimeout(()=>tryMount(0),300);
       return()=>{if(cardElRef.current){try{cardElRef.current.unmount()}catch(e){};cardElRef.current=null}}
     }
   },[showCardForm,nightMode]);
@@ -838,11 +855,9 @@ function App(){
       const ok=await signInWithGoogle();
       if(!ok)return false;
       setShowPaywall(true);
-      setTimeout(()=>setShowCardForm(true),400);
       return false;
     }
     setShowPaywall(true);
-    setShowCardForm(true);
     return false;
   }
   const [bannerDismissed,setBannerDismissed]=useState(()=>{try{var bd=localStorage.getItem("ynk_banner_dismissed");return bd&&Date.now()-parseInt(bd)<86400000*60}catch(e){return false}});
@@ -1781,7 +1796,7 @@ function App(){
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               {user.photoURL?<img src={user.photoURL} alt="" style={{width:28,height:28,borderRadius:14}}/>:<div style={{width:28,height:28,borderRadius:14,background:"var(--grad)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff"}}>👤</div>}
               <div style={{textAlign:"left"}}>
-                <p style={{fontSize:11,fontWeight:600,color:"var(--t1)"}}>{user.displayName||"ユーザー"}</p>
+                <p style={{fontSize:11,fontWeight:600,color:"var(--t1)"}}>{user.displayName||user.email||"ユーザー"}</p>
                 <p style={{fontSize:9,color:isPremium?"#E8627C":"var(--t4)"}}>{isPremium?"✨ プレミアム会員":"無料プラン"}</p>
               </div>
             </div>
@@ -1903,13 +1918,13 @@ function App(){
           </div>)}
         </div>
         {!user?<>
-          <button onClick={async()=>{const ok=await signInWithGoogle();if(ok){setToast("ログインしたよ！");setTimeout(()=>setShowCardForm(true),400)}}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"#4285f4",color:"#fff",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:"0 2px 8px rgba(66,133,244,0.3)"}}>
+          <button onClick={async()=>{const ok=await signInWithGoogle();if(ok){setToast("ログインしたよ！")}}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"#4285f4",color:"#fff",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:"0 2px 8px rgba(66,133,244,0.3)"}}>
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Googleでログイン
           </button>
           <p style={{fontSize:10,color:"var(--t4)",marginTop:8}}>ログイン後、プレミアムに登録できます</p>
         </>:<>
-          <p style={{fontSize:11,color:"var(--t3)",marginBottom:12}}>🙋 {user.displayName||user.email} でログイン中</p>
+          <p style={{fontSize:11,color:"var(--t3)",marginBottom:12}}>🙋 {user.displayName||user.email||"ゲスト"} でログイン中</p>
           {showCardForm?<div>
             <div id="payjp-card-mount" style={{padding:"14px",border:"1.5px solid var(--border)",borderRadius:14,background:nightMode?"rgba(255,255,255,0.05)":"rgba(58,40,48,0.03)",marginBottom:12,minHeight:44}}/>
             <button disabled={cardProcessing} onClick={submitCard} style={{width:"100%",padding:"16px 0",borderRadius:25,border:"none",background:cardProcessing?"rgba(200,200,200,0.5)":"linear-gradient(135deg,#E8627C,#B08ACF)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:cardProcessing?"wait":"pointer",boxShadow:cardProcessing?"none":"0 4px 16px rgba(232,98,124,0.3)",letterSpacing:1}}>{cardProcessing?"処理中...✨":"カードを登録して始める"}</button>
