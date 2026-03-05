@@ -778,7 +778,7 @@ function App(){
       if(!payjpRef.current){payjpRef.current=window.Payjp(PAYJP_PK)}
       const p=payjpRef.current;
       const els=p.elements();
-      const card=els.create('card',{style:{base:{color:nightMode?'#e0d0e8':'#3A2830',fontSize:'16px','::placeholder':{color:nightMode?'#8a7a92':'#aaa'}},invalid:{color:'#E8627C'}}});
+      const card=els.create('card',{style:{base:{color:nightMode?'#e0d0e8':'#3A2830',fontSize:'14px',lineHeight:'24px','::placeholder':{color:nightMode?'#8a7a92':'#aaa'}},invalid:{color:'#E8627C'}}});
       let mounted=false;
       function tryMount(attempt){
         const m=document.getElementById('payjp-card-mount');
@@ -800,6 +800,7 @@ function App(){
       if(!fns){try{fns=firebase.app().functions("asia-northeast1")}catch(e){setToast("接続エラー。リロードしてね");setCardProcessing(false);return}}
       const subscribe=fns.httpsCallable('subscribe');
       await subscribe({token:result.id});
+      setIsPremium(true);
       setToast("プレミアム登録完了！🎉");
       setShowCardForm(false);setShowPaywall(false);
     }catch(e){
