@@ -586,13 +586,13 @@ function FortuneTypeCard({type,className=""}){
         </div>
         <p style={{fontSize:9,letterSpacing:4,color:"#bbb",textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:4,marginTop:4}}>your character</p>
         <p style={{fontSize:24,fontWeight:700,marginBottom:4,background:cd.nameGrad,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{type.name}</p>
-        <p style={{fontSize:13,color:"#888"}}>{type.sub}</p>
+        <p style={{fontSize:13,color:"var(--t3)"}}>{type.sub}</p>
         {isSSR&&<p style={{fontSize:10,color:"#D4A853",marginTop:6,fontWeight:600}}>⚡ 伝説タイプ！画像を保存して自慢しよう</p>}
       </div>
     </div>
 
     {/* Today's message */}
-    <Card style={{textAlign:"left",marginBottom:10,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(232,98,124,0.22)",boxShadow:"0 2px 20px rgba(180,100,120,0.10)"}}>
+    <Card style={{textAlign:"left",marginBottom:10,background:nightMode?"rgba(28,22,30,0.92)":"rgba(255,255,255,0.92)",border:nightMode?"1px solid rgba(200,160,180,0.12)":"1px solid rgba(232,98,124,0.22)",boxShadow:nightMode?"0 2px 20px rgba(0,0,0,0.2)":"0 2px 20px rgba(180,100,120,0.10)"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
         <CharaAvatar id={type.id} size={32}/>
         <div><p style={{fontSize:9,letterSpacing:3,color:"var(--rose)",textTransform:"uppercase",fontFamily:"Cormorant, serif",fontWeight:600}}>your mission</p>
@@ -633,7 +633,7 @@ function FortuneTypeCard({type,className=""}){
 
 
 
-    <div style={{marginBottom:8,padding:"20px 16px",borderRadius:20,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(232,98,124,0.22)",boxShadow:"0 2px 20px rgba(180,100,120,0.10)"}}>
+    <div style={{marginBottom:8,padding:"20px 16px",borderRadius:20,background:nightMode?"rgba(28,22,30,0.92)":"rgba(255,255,255,0.92)",border:nightMode?"1px solid rgba(200,160,180,0.12)":"1px solid rgba(232,98,124,0.22)",boxShadow:nightMode?"0 2px 20px rgba(0,0,0,0.2)":"0 2px 20px rgba(180,100,120,0.10)"}}>
       <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",textAlign:"center",marginBottom:14}}>ストーリーにシェアしよう</p>
       <div style={{display:"flex",justifyContent:"center",gap:12,marginBottom:10}}>
         <button onClick={()=>{saveImage("Instagram")}} className="hover-lift" style={{width:52,height:52,borderRadius:16,border:"none",background:"linear-gradient(135deg,#F58529,#DD2A7B,#8134AF,#515BD4)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -739,6 +739,16 @@ function App(){
   const [isPremium,setIsPremium]=useState(false);
 
   useEffect(()=>{
+    auth.getRedirectResult().then(r=>{
+      if(r&&r.user){
+        try{
+          if(sessionStorage.getItem('ynk_after_login')){
+            sessionStorage.removeItem('ynk_after_login');
+            setTimeout(()=>setShowPaywall(true),500);
+          }
+        }catch(e){}
+      }
+    }).catch(()=>{});
     const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
     return()=>unsub();
   },[]);
@@ -766,7 +776,8 @@ function App(){
       await auth.signInWithPopup(googleProvider);
       return true
     }catch(e){
-      setToast("ログインできませんでした（"+e.code+"）");
+      try{sessionStorage.setItem('ynk_after_login','1')}catch(ex){}
+      auth.signInWithRedirect(googleProvider);
       return false
     }
   }
@@ -1176,7 +1187,7 @@ function App(){
       </>}
 
       {page==="home"&&mode==="fortune"&&hasProfile&&!editProfile?<div className="slide-up">
-        <Card style={{padding:28,textAlign:"center",background:"rgba(255,255,255,0.92)",border:"1px solid rgba(232,98,124,0.22)",boxShadow:"0 2px 20px rgba(180,100,120,0.10)"}}>
+        <Card style={{padding:28,textAlign:"center",background:nightMode?"rgba(28,22,30,0.92)":"rgba(255,255,255,0.92)",border:nightMode?"1px solid rgba(200,160,180,0.12)":"1px solid rgba(232,98,124,0.22)",boxShadow:nightMode?"0 2px 20px rgba(0,0,0,0.2)":"0 2px 20px rgba(180,100,120,0.10)"}}>
           <div style={{marginBottom:16,animation:"float 4s ease infinite"}}><svg viewBox="0 0 100 100" width={56} height={56}><defs><linearGradient id="starI" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#FFD080"/><stop offset="100%" stopColor="#E8627C"/></linearGradient></defs><polygon points="50,8 61,35 90,38 68,58 74,88 50,73 26,88 32,58 10,38 39,35" fill="url(#starI)"/><polygon points="50,18 58,35 76,38 63,50 66,68 50,60 34,68 37,50 24,38 42,35" fill="#fff" opacity="0.25"/></svg></div>
           <p style={{fontSize:20,fontWeight:700,color:"var(--t1)",marginBottom:4}}>おかえり、{name}さん</p>
           <p style={{fontSize:12,color:"var(--t3)",marginBottom:20}}>{SIGNS.find(s=>s.k===sign)?.icon} {sign} ・ {birthMonth}月{birthDay}日生まれ</p>
@@ -1241,7 +1252,7 @@ function App(){
       </Card>}
 
       {page==="home"&&!pushEnabled&&('Notification' in window)&&('serviceWorker' in navigator)&&<div className="slide-up-3" style={{marginTop:20,marginBottom:12}}>
-        <Card style={{textAlign:"center",padding:20,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(232,98,124,0.22)",boxShadow:"0 2px 20px rgba(180,100,120,0.10)"}}>
+        <Card style={{textAlign:"center",padding:20,background:nightMode?"rgba(28,22,30,0.92)":"rgba(255,255,255,0.92)",border:nightMode?"1px solid rgba(200,160,180,0.12)":"1px solid rgba(232,98,124,0.22)",boxShadow:nightMode?"0 2px 20px rgba(0,0,0,0.2)":"0 2px 20px rgba(180,100,120,0.10)"}}>
           <p style={{fontSize:14,marginBottom:4}}>🔔</p>
           <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:6}}>毎朝、今日の運勢をお届け</p>
           <p style={{fontSize:11,color:"var(--t3)",marginBottom:14,lineHeight:1.6}}>通知をONにすると毎朝8時にお知らせが届くよ</p>
@@ -1653,7 +1664,7 @@ function App(){
         </Card>
 
         {/* Share panel — FREE content sharing drives traffic */}
-        <div className="slide-up-2" style={{marginBottom:16,padding:"16px",borderRadius:16,background:"rgba(255,255,255,0.92)",border:"1px solid rgba(118,75,162,0.15)"}}>
+        <div className="slide-up-2" style={{marginBottom:16,padding:"16px",borderRadius:16,background:nightMode?"rgba(28,22,30,0.92)":"rgba(255,255,255,0.92)",border:nightMode?"1px solid rgba(200,160,180,0.12)":"1px solid rgba(118,75,162,0.15)"}}>
           <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",textAlign:"center",marginBottom:10}}>あなたのタイプをシェアしよう</p>
           <div style={{display:"flex",justifyContent:"center",gap:10}}>
             <button onClick={()=>{gtag("event","deep_share",{method:"x",type:deepResult.name});location.href="https://x.com/intent/tweet?text="+encodeURIComponent("よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+"\n\n"+deepResult.sub+"\n\n当たりすぎて怖い…")+"&url="+encodeURIComponent("https://yorunokotoba.vercel.app")}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"#000",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
