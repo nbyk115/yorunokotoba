@@ -741,16 +741,14 @@ function App(){
   useEffect(()=>{
     auth.getRedirectResult().then(r=>{
       if(r&&r.user){
-        setDebugInfo("redirect成功:"+r.user.uid.slice(0,8));
         try{
           if(sessionStorage.getItem('ynk_after_login')){
             sessionStorage.removeItem('ynk_after_login');
-            // Wait for Firestore to load premium status before showing paywall
             setTimeout(()=>{
               db.collection("users").doc(r.user.uid).get().then(snap=>{
                 if(snap.exists&&snap.data().premium===true){
                   setIsPremium(true);
-                  setToast("プレミアム会員でログインしたよ！🎉");
+                  setToast("おかえり！プレミアム会員だよ🎉");
                 }else{
                   setShowPaywall(true);
                 }
@@ -759,33 +757,18 @@ function App(){
           }
         }catch(e){}
       }
-    }).catch((e)=>{setDebugInfo("redirectエラー:"+(e.code||e.message))});
-    const unsub=auth.onAuthStateChanged(u=>{
-      setUser(u);setAuthLoading(false);
-      if(u) setDebugInfo("auth:"+u.uid.slice(0,8)+" 読込中...");
-      else setDebugInfo("未ログイン");
-    });
+    }).catch(()=>{});
+    const unsub=auth.onAuthStateChanged(u=>{setUser(u);setAuthLoading(false)});
     return()=>unsub();
   },[]);
 
   // Firestore premium listener
-  const [debugInfo,setDebugInfo]=useState("読込中...");
   useEffect(()=>{
-    if(!user){setIsPremium(false);setDebugInfo("未ログイン");return}
-    setDebugInfo("UID:"+user.uid.slice(0,8)+"... Firestore読込中");
+    if(!user){setIsPremium(false);return}
     const unsub=db.collection("users").doc(user.uid).onSnapshot(snap=>{
-      if(snap.exists){
-        const d=snap.data();
-        setIsPremium(d.premium===true);
-        setDebugInfo("UID:"+user.uid.slice(0,8)+" premium:"+String(d.premium)+" status:"+String(d.subscriptionStatus));
-      }else{
-        setIsPremium(false);
-        setDebugInfo("UID:"+user.uid.slice(0,8)+" ドキュメントなし");
-      }
-    },(err)=>{
-      setIsPremium(false);
-      setDebugInfo("UID:"+user.uid.slice(0,8)+" Firestoreエラー:"+err.code);
-    });
+      if(snap.exists){const d=snap.data();setIsPremium(d.premium===true)}
+      else setIsPremium(false);
+    },()=>setIsPremium(false));
     return()=>unsub();
   },[user]);
 
@@ -1911,7 +1894,6 @@ function App(){
           <a href="/privacy.html" style={{fontSize:9,color:"var(--t4)",textDecoration:"none"}}>プライバシーポリシー</a>
           <a href="/terms.html" style={{fontSize:9,color:"var(--t4)",textDecoration:"none"}}>利用規約</a>
         </div>
-        <p style={{fontSize:9,color:"var(--rose)",marginTop:8,padding:"6px 12px",background:"rgba(232,98,124,0.08)",borderRadius:8,display:"inline-block"}}>{debugInfo}</p>
         <p style={{fontSize:9,color:"var(--t4)",marginTop:6,opacity:0.5}}>© 2026</p>
       </footer>
     </div>
