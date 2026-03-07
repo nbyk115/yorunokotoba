@@ -1496,7 +1496,8 @@ function App(){
     setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText,SIGNS.findIndex(s=>s.k===sign));setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0);
             // Auto-save to archive
             try{
-              const entry={id:Date.now(),date:new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric"}),text:dreamText.slice(0,120),symbols:(result.symbols||[]).slice(0,3).map(s=>s.word),intro:result.mainReading.intro.slice(0,60)};
+              const autoTitle=(txt)=>{if(txt.includes("追")||txt.includes("逃"))return"追いかけられる夢";if(txt.includes("歯"))return"歯が抜ける夢";if(txt.includes("飛")||txt.includes("空"))return"空を飛ぶ夢";if(txt.includes("落"))return"落ちる夢";if(txt.includes("水")||txt.includes("海"))return"水の夢";if(txt.includes("元カレ")||txt.includes("元カノ"))return"元恋人の夢";if(txt.includes("好き")||txt.includes("恋")||txt.includes("キス")||txt.includes("告白"))return"恋愛の夢";if(txt.includes("死"))return"死の夢";if(txt.includes("火"))return"火の夢";if(txt.includes("友"))return"友達の夢";if(txt.includes("家"))return"家の夢";if(txt.includes("電車"))return"乗り物の夢";if(txt.includes("学校"))return"学校の夢";if(txt.includes("月"))return"月の夢";if(txt.includes("蛇"))return"蛇の夢";if(txt.includes("猫"))return"猫の夢";if(txt.includes("犬"))return"犬の夢";if(txt.includes("鳥"))return"鳥の夢";return txt.slice(0,15)+"の夢";};
+              const entry={id:Date.now(),date:new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric"}),title:autoTitle(dreamText),text:dreamText.slice(0,200),symbols:(result.symbols||[]).slice(0,5).map(s=>s.word),symbolDetails:(result.symbols||[]).slice(0,5).map(s=>({word:s.word,meaning:s.meaning,detail:s.detail})),theme:result.theme||null,todayMessage:result.todayMessage||"",mainReading:{intro:result.mainReading.intro,deep:result.mainReading.deep},actions:result.actions,};
               const prev=JSON.parse(localStorage.getItem("ynk_dream_archive")||"[]");
               const next=[entry,...prev].slice(0,30);
               localStorage.setItem("ynk_dream_archive",JSON.stringify(next));
@@ -1505,29 +1506,50 @@ function App(){
   function startFortune(){if(!canFortune)return;gtag("event","fortune_start",{sign:sign});saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日の運気を計算中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setFortuneTab("love");setPage("fortuneResult");window.scrollTo(0,0)}},900)}
   function generateDreamSummary(entries){
     if(!entries||entries.length===0)return null;
-    // Count symbol frequency
+    const symbolMeanings={蛇:"変容・再生",歯:"コントロール感の揺らぎ",水:"抑えられた感情",飛:"自由への渇望",追:"向き合うべき課題",落:"基盤の不安定さ",火:"情熱または怒り",海:"潜在意識の声",花:"成長のサイン",月:"直感と女性性",猫:"孤独と自立",犬:"信頼と依存",魚:"幸運のサイン",鳥:"解放と希望",雨:"浄化と感情の開放",友:"人間関係の投影",家:"アイデンティティ",学校:"評価への不安",車:"人生の方向性",死:"終わりと再生",赤ちゃん:"新しい可能性",好き:"恋愛感情の投影",元カレ:"過去の未清算",元カノ:"過去の未清算",知らない:"未知の自己",怖:"変化への抵抗",泣:"感情の解放要求",笑:"表面的な適応",走:"焦りと追われる感",電車:"人生ルートへの疑問",夢全体:"潜在意識からの信号",鏡:"自己認識",お金:"価値観と不安",子供:"インナーチャイルド"};
+    // シンボル頻度
     const freq={};
     entries.forEach(e=>{(e.symbols||[]).forEach(s=>{freq[s]=(freq[s]||0)+1})});
     const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
     const top=sorted.slice(0,3);
-    const symbolMeanings={蛇:"変容・再生への渇望",歯:"コントロール感の揺らぎ",水:"抑えられた感情",飛:"自由への渇望",追:"向き合うべき課題",落:"基盤の不安定さ",火:"情熱または怒り",海:"潜在意識の声",花:"成長のサイン",月:"直感と女性性",猫:"孤独と自立",犬:"信頼と依存",魚:"幸運のサイン",鳥:"解放と希望",雨:"浄化と感情の開放",友:"人間関係の投影",家:"アイデンティティ",学校:"評価への不安",車:"人生の方向性",死:"終わりと再生",赤ちゃん:"新しい可能性",好き:"恋愛感情の投影",元カレ:"過去の未清算",元カノ:"過去の未清算",知らない:"未知の自己",怖:"変化への抵抗",泣:"感情の解放要求",笑:"表面的な適応",走:"焦りと追われる感",電車:"人生ルートへの疑問",夢全体:"潜在意識からの信号"};
     const topLabels=top.map(([s,c])=>({symbol:s,count:c,meaning:symbolMeanings[s]||"深層心理のサイン"}));
     const count=entries.length;
     const now=new Date();
     const monthStr=`${now.getFullYear()}年${now.getMonth()+1}月`;
-    // Generate reading based on dominant symbols
+    // テーマ頻度（新データ）
+    const themeFreq={};
+    entries.forEach(e=>{if(e.theme?.key)themeFreq[e.theme.key]=(themeFreq[e.theme.key]||0)+1});
+    const domTheme=Object.entries(themeFreq).sort((a,b)=>b[1]-a[1])[0]?.[0]||"mystery";
+    const themeLabels={anx:"不安・解放",love:"恋愛・感情",free:"自由・飛翔",work:"成長・課題",mystery:"深層・謎"};
+    const themeColors={anx:"#6BA3BE",love:"#E8627C",free:"#B08ACF",work:"#D4A853",mystery:"#764ba2"};
+    // 月間リーディング（テーマ＋シンボル複合）
     const dom=top[0]?.[0]||"";
-    const readings={
-      蛇:`${monthStr}は「変化したい自分」と向き合う夢を多く見てる。今のあなたは何かを脱皮しようとしてる途中。その変化を受け入れる準備が、心の底から整ってきてるよ。`,
-      歯:`${monthStr}は「コントロール感」に関する夢が多かった。自分でコントロールできないことへの不安が夢に出てる。手放すことと、握ることの区別を意識してみて。`,
-      水:`${monthStr}は感情が夢を通して溢れてた月。抑えてきた気持ちが水の形で出てくるのは、そろそろ誰かに話すタイミングというサインかも。`,
-      飛:`${monthStr}は「もっと自由になりたい」気持ちが夢に出てた月。今いる場所に窮屈さを感じてる。その気持ち、無視しないで。`,
-      追:`${monthStr}は何かから逃げる夢が多かった。向き合うべき課題があるはず。夢が毎回同じパターンを見せるのは、「そろそろ決着つけて」というサイン。`,
-      恋:`${monthStr}は恋愛に関する夢が目立った月。気になってる人への気持ちを夢が代わりに処理してくれてる。現実でも一歩踏み出すエネルギーが高まってるよ。`,
+    const themeReadings={
+      anx:`${monthStr}は「不安と解放」テーマの夢が多かった。心が何かから解放されたがってるサイン。溜め込んできたものを少しずつ吐き出す準備ができてきてる。怖くていい、泣いていい。`,
+      love:`${monthStr}は恋愛・感情テーマの夢が多かった。誰かへの気持ち、または「つながりたい」という根源的な欲求が夢に出続けた月。現実で一歩踏み出すエネルギーが高まってるよ。`,
+      free:`${monthStr}は「自由・飛翔」テーマの夢が目立った。今いる場所への窮屈さと、どこかへ行きたい衝動。その気持ちは正しい。まず「何から自由になりたいか」を言語化してみて。`,
+      work:`${monthStr}は「成長・課題」テーマの夢が多かった。頑張ってること、乗り越えようとしてることが夢に出てる。無意識がちゃんとあなたのチャレンジを処理してくれてる証拠。`,
+      mystery:`${monthStr}は深層心理からのメッセージが多い月だった。言葉にしにくい感覚、漠然とした予感——それが夢の形で出てきてる。答えを急がず、感じるままにいて。`
     };
-    const defaultReading=`${monthStr}は${count}つの夢を記録した。繰り返し出てきたシンボルには「${topLabels[0]?.symbol||"潜在意識"}（${topLabels[0]?.meaning||"深層心理のサイン"}）」がある。あなたの深層心理が今月もっとも気にかけているテーマがここにある。`;
-    const reading=readings[dom]||defaultReading;
-    return{monthStr,count,topSymbols:topLabels,reading};
+    const symbolReadings={
+      蛇:`${monthStr}は「変化したい自分」と向き合う夢が多かった。脱皮しようとしてる途中。その変化、受け入れていいよ。`,
+      歯:`${monthStr}はコントロール感への不安が夢に出てた。手放すことと握ることの区別を、今月意識してみて。`,
+      水:`${monthStr}は抑えた感情が水の形で溢れてた月。そろそろ誰かに話すタイミングかも。`,
+      飛:`${monthStr}は「もっと自由に」という気持ちが夢に出続けた。その衝動、無視しないで。`,
+      追:`${monthStr}は何かから逃げる夢が多かった。向き合うべき課題がある。夢が毎回同じパターンを見せるのは「そろそろ決着つけて」というサイン。`,
+      好き:`${monthStr}は恋愛の夢が目立った。気になってる人への気持ちを夢が代わりに処理してくれてる。現実で動くタイミングかも。`,
+      落:`${monthStr}は不安定さを感じる夢が多かった。地に足がつかない感覚——基盤となるものを見直す時期。`,
+    };
+    const reading=themeReadings[domTheme]||(symbolReadings[dom]||`${monthStr}は${count}つの夢を記録。繰り返し出てきた「${topLabels[0]?.symbol||"潜在意識"}」があなたの今月のテーマ。`);
+    // 来月へのアドバイス
+    const nextAdvice={
+      anx:"来月は「手放す練習」を意識してみて。1つだけ、ずっと抱えてたものを誰かに話してみよう。",
+      love:"来月は感情を言葉にする練習を。「好き」「会いたい」を声に出してみて。夢が現実に近づいてくるから。",
+      free:"来月はいつもと違う選択を1つだけ。小さくていい。その一歩が翼の第一打ちになる。",
+      work:"来月は「やめること」を1つ決めてみて。頑張り方を変えると、夢のテーマも変わってくるよ。",
+      mystery:"来月は直感を信じる練習を。論理より「なんとなく」を大事にする期間にしてみて。"
+    };
+    return{monthStr,count,topSymbols:topLabels,reading,domTheme,themeLabel:themeLabels[domTheme]||"深層",themeColor:themeColors[domTheme]||"#764ba2",nextAdvice:nextAdvice[domTheme]||"来月も夢を記録していこう。パターンが見えてくるほど、深層心理が読み解けるようになるから。"};
   }
 
   function goHome(){setPage("home");setDreamResult(null);setFortuneResult(null);setCompatResult(null);setCompatSign("");setCompatBirthDay("");setDeepResult(null);setLetterResult(null);setArchivePage(null)}
@@ -2147,7 +2169,7 @@ function App(){
         <p style={{fontSize:12,color:"var(--t3)",marginBottom:10}}>よく見る夢</p>
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{quickDreams.map((d,i)=><button key={i} className="hover-lift" onClick={()=>setDreamText(d)} style={{padding:"9px 16px",borderRadius:20,border:"1px solid var(--border)",background:"rgba(255,255,255,0.5)",color:"var(--t2)",fontSize:12,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{d}</button>)}</div>
       </div>
-      {dreamArchive.length>0&&<div className="slide-up-2" style={{marginBottom:24}}>
+      {mode==="dream"&&dreamArchive.length>0&&<div className="slide-up-2" style={{marginBottom:24}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
           <p style={{fontSize:12,color:"var(--t3)"}}>🗂 過去の夢</p>
           <button onClick={()=>{if(!isPremium){gtag("event","archive_all_tap_free");setShowPaywall(true)}else{setArchivePage("list")}}} style={{fontSize:11,color:"var(--rose)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",fontWeight:600}}>{isPremium?"すべて見る →":"🔒 すべて見る"}</button>
@@ -2156,7 +2178,7 @@ function App(){
           {dreamArchive.slice(0,3).map((e,i)=><div key={e.id} className="hover-lift" onClick={()=>{if(!isPremium){gtag("event","archive_preview_tap_free");setShowPaywall(true)}else{setArchivePage(String(e.id))}}} style={{padding:"12px 14px",borderRadius:14,background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
               <p style={{fontSize:10,color:"var(--t4)"}}>{e.date}</p>
-              <div style={{display:"flex",gap:4}}>{(e.symbols||[]).map((s,j)=><span key={j} style={{fontSize:9,padding:"2px 7px",borderRadius:8,background:"rgba(232,98,124,0.07)",color:"var(--rose)",fontWeight:600}}>{s}</span>)}</div>
+
             </div>
             <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.6,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{e.text}</p>
           </div>)}
@@ -2857,18 +2879,31 @@ function App(){
           const summary=generateDreamSummary(thisMonth);
           return<>
             {/* プレミアム分析カード */}
-            {isPremium&&summary?<div style={{marginBottom:20,padding:"20px",borderRadius:18,background:"linear-gradient(135deg,rgba(176,138,207,0.12),rgba(232,98,124,0.06))",border:"1px solid rgba(176,138,207,0.2)"}}>
-              <p style={{fontSize:11,color:"#B08ACF",fontWeight:700,letterSpacing:1,marginBottom:10}}>✨ {summary.monthStr}の夢パターン分析</p>
-              <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.9,marginBottom:12}}>{summary.reading}</p>
-              {summary.topSymbols.length>0&&<div>
-                <p style={{fontSize:10,color:"var(--t4)",marginBottom:6}}>今月のキーシンボル</p>
-                <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                  {summary.topSymbols.map((s,i)=><div key={i} style={{padding:"6px 12px",borderRadius:12,background:"rgba(176,138,207,0.1)",border:"1px solid rgba(176,138,207,0.2)"}}>
-                    <span style={{fontSize:12,fontWeight:700,color:"#B08ACF"}}>{s.symbol}</span>
-                    <span style={{fontSize:10,color:"var(--t3)",marginLeft:4}}>{s.meaning}</span>
-                  </div>)}
+            {isPremium&&summary?<div style={{marginBottom:20,borderRadius:18,overflow:"hidden",boxShadow:"0 2px 16px rgba(176,138,207,0.12)"}}>
+              <div style={{background:`linear-gradient(135deg,${summary.themeColor||"#B08ACF"},${summary.themeColor||"#B08ACF"}aa)`,padding:"18px 20px"}}>
+                <p style={{fontSize:10,color:"rgba(255,255,255,0.8)",fontWeight:700,letterSpacing:1.5,marginBottom:6}}>✦ {summary.monthStr}の夢パターン分析</p>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                  <span style={{fontSize:11,background:"rgba(255,255,255,0.25)",color:"white",padding:"3px 10px",borderRadius:10,fontWeight:700}}>{summary.themeLabel||"深層"}テーマ</span>
+                  <span style={{fontSize:11,color:"rgba(255,255,255,0.75)"}}>{summary.count}件の記録</span>
                 </div>
-              </div>}
+              </div>
+              <div style={{background:"var(--card)",padding:"18px 20px"}}>
+                <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.9,marginBottom:14}}>{summary.reading}</p>
+                {summary.topSymbols.length>0&&<div style={{marginBottom:14}}>
+                  <p style={{fontSize:10,color:"var(--t4)",marginBottom:8,letterSpacing:1}}>今月のキーシンボル</p>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                    {summary.topSymbols.map((s,i)=><div key={i} style={{padding:"6px 12px",borderRadius:12,background:`rgba(${i===0?"176,138,207":"232,98,124"},0.08)`,border:`1px solid rgba(${i===0?"176,138,207":"232,98,124"},0.2)`}}>
+                      <span style={{fontSize:12,fontWeight:700,color:i===0?"#B08ACF":"var(--rose)"}}>{s.symbol}</span>
+                      {s.count>1&&<span style={{fontSize:9,color:"var(--t4)",marginLeft:4}}>{s.count}回</span>}
+                      <span style={{fontSize:10,color:"var(--t3)",marginLeft:4}}>{s.meaning}</span>
+                    </div>)}
+                  </div>
+                </div>}
+                {summary.nextAdvice&&<div style={{padding:"12px 14px",borderRadius:12,background:`rgba(${summary.themeColor==="#E8627C"?"232,98,124":"176,138,207"},0.06)`,borderLeft:`2px solid ${summary.themeColor||"#B08ACF"}`}}>
+                  <p style={{fontSize:10,color:"var(--t4)",marginBottom:4,fontWeight:700}}>来月へのアドバイス</p>
+                  <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>{summary.nextAdvice}</p>
+                </div>}
+              </div>
             </div>:!isPremium&&summary&&summary.count>=3?<div onClick={()=>setShowPaywall(true)} className="hover-lift" style={{marginBottom:20,padding:"18px 20px",borderRadius:18,background:"linear-gradient(135deg,#E8627C,#B08ACF)",cursor:"pointer"}}>
               <p style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}}>✨ {summary.monthStr}の夢パターン分析</p>
               <p style={{fontSize:11,color:"rgba(255,255,255,0.85)",lineHeight:1.7}}>今月{summary.count}つの夢を記録。繰り返し出てくるシンボルが、あなたの深層心理を語ってる。プレミアムで読み解こう →</p>
@@ -2878,7 +2913,7 @@ function App(){
               {dreamArchive.map((e,i)=><div key={e.id} className="hover-lift" onClick={()=>setArchivePage(String(e.id))} style={{padding:"14px 16px",borderRadius:16,background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
                   <p style={{fontSize:10,color:"var(--t4)"}}>{e.date}</p>
-                  <div style={{display:"flex",gap:4}}>{(e.symbols||[]).map((s,j)=><span key={j} style={{fontSize:9,padding:"2px 7px",borderRadius:8,background:"rgba(232,98,124,0.07)",color:"var(--rose)",fontWeight:600}}>{s}</span>)}</div>
+    
                 </div>
                 <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.7,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{e.text}</p>
                 {e.intro&&<p style={{fontSize:11,color:"var(--t3)",marginTop:4,lineHeight:1.6,display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{e.intro}</p>}
@@ -2896,24 +2931,61 @@ function App(){
       {page==="home"&&archivePage&&archivePage!=="list"&&isPremium&&(()=>{
         const entry=dreamArchive.find(e=>String(e.id)===archivePage);
         if(!entry)return null;
+        const th=entry.theme||{grad:"linear-gradient(135deg,#B08ACF,#8B6AAF)",icon:"🔮",label:"夢の記録",color:"#B08ACF"};
         return<div className="fade-in" style={{maxWidth:440,margin:"0 auto"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
             <button onClick={()=>setArchivePage("list")} style={{background:"none",border:"none",cursor:"pointer",fontSize:20,color:"var(--t3)",padding:0}}>←</button>
             <p style={{fontSize:12,color:"var(--t4)"}}>{entry.date}</p>
           </div>
-          <div style={{background:"var(--card)",borderRadius:20,padding:"24px 20px",border:"1px solid var(--border)",marginBottom:16}}>
-            <p style={{fontSize:11,color:"var(--t4)",marginBottom:8,letterSpacing:1}}>🌙 みた夢</p>
-            <p style={{fontSize:14,color:"var(--t1)",lineHeight:1.9,whiteSpace:"pre-line"}}>{entry.text}{entry.text.length>=120?"…":""}</p>
-          </div>
-          {(entry.symbols||[]).length>0&&<div style={{marginBottom:16}}>
-            <p style={{fontSize:11,color:"var(--t4)",marginBottom:8}}>シンボル</p>
-            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-              {(entry.symbols||[]).map((s,i)=><span key={i} style={{padding:"6px 14px",borderRadius:20,background:"rgba(232,98,124,0.07)",border:"1px solid rgba(232,98,124,0.12)",color:"var(--rose)",fontSize:12,fontWeight:600}}>{s}</span>)}
+
+          {/* ヒーローカード */}
+          <div style={{borderRadius:22,overflow:"hidden",marginBottom:14,boxShadow:"0 4px 20px rgba(0,0,0,0.08)"}}>
+            <div style={{background:th.grad,padding:"20px 20px 14px",position:"relative",overflow:"hidden"}}>
+              <div style={{position:"absolute",top:-15,right:-15,width:70,height:70,borderRadius:"50%",background:"rgba(255,255,255,0.08)"}}/>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10,position:"relative"}}>
+                <span style={{fontSize:18}}>{th.icon}</span>
+                <span style={{fontSize:10,color:"rgba(255,255,255,0.75)",fontWeight:600,letterSpacing:1}}>{th.label}</span>
+              </div>
+              <p style={{fontSize:16,fontWeight:700,color:"white",marginBottom:6,position:"relative"}}>{entry.title||entry.text.slice(0,15)+"の夢"}</p>
+              <p style={{fontSize:13,color:"rgba(255,255,255,0.85)",lineHeight:1.8,position:"relative"}}>{entry.mainReading?.intro||entry.intro||""}</p>
             </div>
+            {entry.mainReading?.deep&&<div style={{background:"var(--card)",padding:"14px 18px"}}>
+              <p style={{fontSize:12,color:"var(--t2)",lineHeight:2}}>{entry.mainReading.deep}</p>
+            </div>}
+          </div>
+
+          {/* 今日この夢が伝えること */}
+          {entry.todayMessage&&<div style={{marginBottom:14,padding:"16px 18px",borderRadius:16,background:"rgba(176,138,207,0.07)",borderLeft:"3px solid "+(th.color||"#B08ACF")}}>
+            <p style={{fontSize:10,color:th.color||"#B08ACF",fontWeight:800,letterSpacing:1.5,marginBottom:6}}>✦ この夢が伝えていたこと</p>
+            <p style={{fontSize:13,color:"var(--t1)",lineHeight:2}}>{entry.todayMessage}</p>
           </div>}
-          {entry.intro&&<div style={{padding:"16px 18px",borderRadius:16,background:"rgba(176,138,207,0.06)",border:"1px dashed rgba(176,138,207,0.2)",marginBottom:16}}>
-            <p style={{fontSize:13,color:"var(--t2)",lineHeight:1.9}}>{entry.intro}</p>
+
+          {/* みた夢テキスト */}
+          <div style={{background:"var(--card)",borderRadius:16,padding:"16px 18px",border:"1px solid var(--border)",marginBottom:14}}>
+            <p style={{fontSize:10,color:"var(--t4)",marginBottom:8,letterSpacing:1}}>🌙 みた夢</p>
+            <p style={{fontSize:13,color:"var(--t2)",lineHeight:1.9}}>{entry.text}{entry.text.length>=200?"…":""}</p>
+          </div>
+
+          {/* シンボル */}
+          {(entry.symbolDetails||entry.symbols||[]).length>0&&<div style={{background:"var(--card)",borderRadius:16,padding:"16px 18px",border:"1px solid var(--border)",marginBottom:14}}>
+            <p style={{fontSize:10,color:"var(--t4)",marginBottom:10,letterSpacing:1}}>🔮 シンボル解析</p>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+              {(entry.symbolDetails||entry.symbols.map(s=>({word:s}))).map((s,i)=><span key={i} style={{fontSize:11,padding:"5px 12px",borderRadius:20,background:i===0?"var(--rose)":"rgba(176,138,207,0.1)",color:i===0?"white":"var(--t2)",fontWeight:600}}>{s.word}{s.meaning?` · ${s.meaning}`:""}</span>)}
+            </div>
+            {(entry.symbolDetails||[]).slice(0,1).map((s,i)=><div key={i} style={{padding:"10px 12px",borderRadius:10,background:"var(--bg)",borderLeft:"2px solid var(--rose)"}}>
+              <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8}}>{s.detail}</p>
+            </div>)}
           </div>}
+
+          {/* アクション */}
+          {entry.actions&&<div style={{background:"var(--card)",borderRadius:16,padding:"16px 18px",border:"1px solid var(--border)",marginBottom:14}}>
+            <p style={{fontSize:10,color:"var(--t4)",marginBottom:12,letterSpacing:1}}>✅ この日のアクション</p>
+            {[{icon:"✅",title:"やること",items:entry.actions.should,color:"#5BA87C"},{icon:"👀",title:"意識すること",items:entry.actions.aware,color:"#6BA3BE"},{icon:"🚫",title:"避けること",items:entry.actions.avoid,color:"#D47070"}].map((sec,i)=><div key={i} style={{marginBottom:i<2?12:0}}>
+              <p style={{fontSize:11,fontWeight:700,color:sec.color,marginBottom:6}}>{sec.icon} {sec.title}</p>
+              {(sec.items||[]).map((item,j)=><p key={j} style={{fontSize:12,color:"var(--t2)",lineHeight:1.7,paddingLeft:8,borderLeft:`2px solid ${sec.color}25`,marginBottom:3}}>{item}</p>)}
+            </div>)}
+          </div>}
+
           <div style={{display:"flex",gap:8,marginBottom:40}}>
             <button onClick={()=>{
               try{
