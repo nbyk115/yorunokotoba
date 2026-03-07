@@ -1320,7 +1320,7 @@ function App(){
     var pair=SIGN_CHARS[userSign]||["yume_kobuta","yume_kobuta"];
     var cId=pair[parseInt(userBirthDay,10)%2];
     var cData=DREAM_TYPES.find(function(dt){return dt.id===cId})||DREAM_TYPES[0];
-    return{key:key,name:t.name,icon:t.icon,sub:t.sub,color:t.color,os:t.os,weapon:t.weapon,bug:t.bug,handling:t.handling,update:t.update,shadow:t.shadow,money:t.money,prophecy:t.prophecy,bestMatch:t.bestMatch,bestMatchName:t.bestMatchName,bestMatchWhy:t.bestMatchWhy,enemy:t.enemy,enemyName:t.enemyName,enemyWhy:t.enemyWhy,todayRx:t.rx[rxIndex],element:el,yinyang:yinyang,charId:cId,charName:cData.name};
+    return{key:key,name:t.name,icon:t.icon,sub:t.sub,color:t.color,os:t.os,weapon:t.weapon,bug:t.bug,handling:t.handling,update:t.update,shadow:t.shadow,money:t.money,prophecy:t.prophecy,bestMatch:t.bestMatch,bestMatchName:t.bestMatchName,bestMatchWhy:t.bestMatchWhy,enemy:t.enemy,enemyName:t.enemyName,enemyWhy:t.enemyWhy,rx:t.rx,todayRx:t.rx[rxIndex],element:el,yinyang:yinyang,charId:cId,charName:cData.name};
   }
 
   const btnStyle={borderRadius:14,border:"none",background:"var(--grad)",color:"#fff",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",letterSpacing:1};
