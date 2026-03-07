@@ -407,7 +407,7 @@ function generateFortune(name,sign,gender,birthDay,birthMonth){
   return{rank,summary:rm.summary,time:rm.time,risk:rm.risk,personality:spWithDaily,lucky:generateLucky(signIdx),sign,type:bestType,dailyLove,dailyWork,dailyHealth};
 }
 
-function analyzeDream(text){
+function analyzeDream(text,signIdx){
   const rng0=makeSeededRandom(getDailySeed(text.length*7+text.charCodeAt(0||0)));
 
   // ── シンボルマップ（各3パターン、シードで選択）──
@@ -705,7 +705,7 @@ function analyzeDream(text){
     ?["答えが出ないことを考え続ける","嫉妬や不安からの衝動行動","SNSで比べること"]
     :["ネガティブな人との長時間の会話","意味を探しすぎて不安になること","大きなお金の動き"];
 
-  return{symbols,type,theme,todayMessage,actions:{should:actShould,aware:actAware,avoid:actAvoid},lucky:generateLucky(99),mainReading:{intro:readingIntro,deep:readingDeep}};
+  return{symbols,type,theme,todayMessage,actions:{should:actShould,aware:actAware,avoid:actAvoid},lucky:generateLucky(signIdx||0),mainReading:{intro:readingIntro,deep:readingDeep}};
 }
 
 
@@ -1486,14 +1486,14 @@ function App(){
     const v=validateDreamInput(dreamText);
     if(!v.ok){
       if(v.type==="noDream"){
-        setPage("loading");window.scrollTo(0,0);const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],mainReading:{intro:"あなたは今、心が「休息モード」に入ってるはず。夢を覚えていないのは、深い安定か、感情を無意識にブロックしてるサイン。",deep:"「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。"},type,actions:{should:["寝る前に「夢を覚えていたい」と3回唱える"],aware:["感情を感じにくくなってないか自分に聞いてみて"],avoid:["寝る直前のスマホ。夢の記憶を邪魔する"]},lucky:generateLucky()});setPage("dreamResult");window.scrollTo(0,0)}},900);return;
+        setPage("loading");window.scrollTo(0,0);const msgs=["潜在意識を読み取ってるよ","夢を覚えてなくても大丈夫","眠りの深層を解析中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"夢の不在",meaning:"深い安定 or 抑圧",detail:"夢を覚えていないのは2つの可能性がある。①深く安定した睡眠が取れている ②感情を無意識に抑え込んでいて、夢として処理される前にブロックしてる。最近「感情を感じにくい」と思うなら後者かも。"}],mainReading:{intro:"あなたは今、心が「休息モード」に入ってるはず。夢を覚えていないのは、深い安定か、感情を無意識にブロックしてるサイン。",deep:"「何も感じない」が続いてるなら要注意。感情を封印しすぎてるサインかも。今日寝る前に「明日の朝、夢を覚えていたい」って3回唱えてみて。これだけで夢の記憶率が上がる。"},type,actions:{should:["寝る前に「夢を覚えていたい」と3回唱える"],aware:["感情を感じにくくなってないか自分に聞いてみて"],avoid:["寝る直前のスマホ。夢の記憶を邪魔する"]},lucky:generateLucky(signIdx||0)});setPage("dreamResult");window.scrollTo(0,0)}},900);return;
       }
       if(v.type==="sexual"){
-        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的なシンボル",meaning:"生命力・創造エネルギー",detail:"夢占いでは最も強いエネルギーの象徴。「何かを生み出したい」「もっと深くつながりたい」という根源的な欲求が表面化してる状態。"},{word:"肌の接触",meaning:"承認・一体化の欲求",detail:"「自分を丸ごと受け入れてほしい」という気持ちの投影。今、孤独や不安を感じてない？"}],mainReading:{intro:"あなたは今、誰かと深くつながりたい欲求がピークに達してるはず。それは体の話じゃなくて、心の話。「丸ごと受け入れてほしい」「本当の自分を見てほしい」——その叫びが夢に出てる。",deep:"夢占いでは性的な夢は生命エネルギーの爆発。あなたの中に「何かを生み出したい」「もっと本気で生きたい」っていう衝動が渦巻いてる。\n\nこの夢を見る人は、現実で自分を抑え込んでることが多い。仕事でも恋愛でも「本当はもっとこうしたい」があるのに、理性でブレーキかけてない？\n\nこのエネルギーは溜め込むと暴走する。今日、自分の欲求に素直になれる小さな行動を1つだけやってみて。"},type,actions:{should:["自分の欲求を紙に書き出す。言語化するだけでエネルギーが整理される"],aware:["現実で「本当はこうしたい」を我慢してないか振り返って"],avoid:["この夢を「恥ずかしいもの」として蓋をすること。大事なメッセージだから"]},lucky:generateLucky()});setPage("dreamResult");window.scrollTo(0,0)}},900);return;
+        setPage("loading");const msgs=["夢を読み取ってるよ","深層心理を解析中","本当の欲求を読み解き中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const type=DREAM_TYPES[Math.floor(Math.random()*DREAM_TYPES.length)];setDreamResult({symbols:[{word:"性的なシンボル",meaning:"生命力・創造エネルギー",detail:"夢占いでは最も強いエネルギーの象徴。「何かを生み出したい」「もっと深くつながりたい」という根源的な欲求が表面化してる状態。"},{word:"肌の接触",meaning:"承認・一体化の欲求",detail:"「自分を丸ごと受け入れてほしい」という気持ちの投影。今、孤独や不安を感じてない？"}],mainReading:{intro:"あなたは今、誰かと深くつながりたい欲求がピークに達してるはず。それは体の話じゃなくて、心の話。「丸ごと受け入れてほしい」「本当の自分を見てほしい」——その叫びが夢に出てる。",deep:"夢占いでは性的な夢は生命エネルギーの爆発。あなたの中に「何かを生み出したい」「もっと本気で生きたい」っていう衝動が渦巻いてる。\n\nこの夢を見る人は、現実で自分を抑え込んでることが多い。仕事でも恋愛でも「本当はもっとこうしたい」があるのに、理性でブレーキかけてない？\n\nこのエネルギーは溜め込むと暴走する。今日、自分の欲求に素直になれる小さな行動を1つだけやってみて。"},type,actions:{should:["自分の欲求を紙に書き出す。言語化するだけでエネルギーが整理される"],aware:["現実で「本当はこうしたい」を我慢してないか振り返って"],avoid:["この夢を「恥ずかしいもの」として蓋をすること。大事なメッセージだから"]},lucky:generateLucky(signIdx||0)});setPage("dreamResult");window.scrollTo(0,0)}},900);return;
       }
       setToast(v.msg||"もう少し詳しく教えてね");return;
     }
-    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText);setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0);
+    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(dreamText,SIGNS.findIndex(s=>s.k===sign));setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0);
             // Auto-save to archive
             try{
               const entry={id:Date.now(),date:new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric"}),text:dreamText.slice(0,120),symbols:(result.symbols||[]).slice(0,3).map(s=>s.word),intro:result.mainReading.intro.slice(0,60)};
@@ -2318,17 +2318,11 @@ function App(){
 
         {!feedbackSent.fortune&&<FeedbackWidget type="fortune" onSent={()=>setFeedbackSent(p=>({...p,fortune:true}))}/>}
 
-        {!isPremium
-          ?<div onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{width:"100%",padding:"20px",borderRadius:18,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
+        {!isPremium&&<div onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{width:"100%",padding:"20px",borderRadius:18,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
             <p style={{fontSize:13,opacity:0.85,marginBottom:4}}>今日の運勢を見たなら…</p>
             <p style={{fontSize:16,fontWeight:800,letterSpacing:0.5}}>💕 あの人との相性も確かめてみない？</p>
             <p style={{fontSize:11,opacity:0.75,marginTop:6}}>¥480/月 · いつでも解約OK</p>
-          </div>
-          :<div onClick={()=>{setMode("compat");goHome();}} className="hover-lift" style={{width:"100%",padding:"18px",borderRadius:18,background:"linear-gradient(135deg,rgba(232,98,124,0.08),rgba(176,138,207,0.08))",border:"1.5px solid rgba(232,98,124,0.2)",cursor:"pointer",marginBottom:16,textAlign:"center"}}>
-            <p style={{fontSize:15,fontWeight:700,color:"var(--rose)"}}>💕 あの人との相性を診断する</p>
-            <p style={{fontSize:11,color:"var(--t3)",marginTop:4}}>気になる人との相性、今すぐチェック</p>
-          </div>
-        }
+          </div>}
         <div style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
@@ -2408,17 +2402,11 @@ function App(){
 
         {!feedbackSent.dream&&<FeedbackWidget type="dream" onSent={()=>setFeedbackSent(p=>({...p,dream:true}))}/>}
 
-        {!isPremium
-          ?<div onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{padding:"20px",borderRadius:18,background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
+        {!isPremium&&<div onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{padding:"20px",borderRadius:18,background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
             <p style={{fontSize:13,opacity:0.85,marginBottom:4}}>夢の続きが気になるなら…</p>
             <p style={{fontSize:16,fontWeight:800,letterSpacing:0.5}}>💕 あの人との相性も確かめてみない？</p>
             <p style={{fontSize:11,opacity:0.75,marginTop:6}}>¥480/月 · いつでも解約OK</p>
-          </div>
-          :<div onClick={()=>{setMode("compat");goHome();}} className="hover-lift" style={{padding:"18px",borderRadius:18,background:"linear-gradient(135deg,rgba(232,98,124,0.08),rgba(176,138,207,0.08))",border:"1.5px solid rgba(232,98,124,0.2)",cursor:"pointer",marginBottom:16,textAlign:"center"}}>
-            <p style={{fontSize:15,fontWeight:700,color:"var(--rose)"}}>💕 あの人との相性を診断する</p>
-            <p style={{fontSize:11,color:"var(--t3)",marginTop:4}}>気になる人との相性、今すぐチェック</p>
-          </div>
-        }
+          </div>}
         <div style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("fortune");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>ホロスコープもやる</button>
