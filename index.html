@@ -799,6 +799,38 @@ function App(){
   const [user,setUser]=useState(null);
   const [authLoading,setAuthLoading]=useState(true);
   const [isPremium,setIsPremium]=useState(false);
+  const [emailInput,setEmailInput]=useState("");
+  const [emailSent,setEmailSent]=useState(false);
+  const [emailLoading,setEmailLoading]=useState(false);
+  const [showEmailForm,setShowEmailForm]=useState(false);
+  const [emailLinkPending,setEmailLinkPending]=useState(()=>auth.isSignInWithEmailLink(window.location.href));
+
+  // Email link sign-in on page load
+  useEffect(()=>{
+    if(!auth.isSignInWithEmailLink(window.location.href))return;
+    let email=null;
+    try{email=localStorage.getItem('ynk_email_for_signin')}catch(e){}
+    if(!email){
+      // localStorage unavailable → show input in paywall instead
+      setShowEmailForm(true);
+      setShowPaywall(true);
+      return;
+    }
+    auth.signInWithEmailLink(email,window.location.href)
+      .then(()=>{
+        try{localStorage.removeItem('ynk_email_for_signin')}catch(e){}
+        window.history.replaceState({},'',window.location.pathname);
+        setToast("ログインできたよ！✨");
+      })
+      .catch(err=>{
+        window.history.replaceState({},'',window.location.pathname);
+        if(err.code==='auth/invalid-action-code'){
+          setToast("このリンクはもう使えないよ。もう一度ログインしてね");
+        }else{
+          setToast("ログインに失敗したよ。もう一度試してね");
+        }
+      });
+  },[]);
 
   useEffect(()=>{
     auth.getRedirectResult().then(r=>{
@@ -848,6 +880,24 @@ function App(){
     return false
   }
   function signOut(){auth.signOut();setIsPremium(false);setToast("ログアウトしました")}
+
+  async function sendEmailLink(email){
+    if(!email||!email.includes("@")){setToast("正しいメールアドレスを入力してね");return}
+    setEmailLoading(true);
+    const actionCodeSettings={
+      url:"https://yorunokotoba.vercel.app",
+      handleCodeInApp:true
+    };
+    try{
+      await auth.sendSignInLinkToEmail(email,actionCodeSettings);
+      try{localStorage.setItem('ynk_email_for_signin',email)}catch(e){}
+      setEmailSent(true);
+      setEmailLoading(false);
+    }catch(e){
+      setEmailLoading(false);
+      setToast("送信に失敗したよ。もう一度試してね");
+    }
+  }
 
   // PAY.JP card element mount/unmount
   useEffect(()=>{
@@ -1198,94 +1248,340 @@ function App(){
       おひつじ座:[
         "今月は「動」の月。じっとしてられないエネルギーが溢れてる。迷う前に動いて正解。でも全力で突っ走ったあとは、ちゃんと休む日を作ってね。",
         "今月は新しい出会いや挑戦に縁がある月。怖がらなくて大丈夫。あなたの行動力が周りを巻き込んで、思った以上にいい方向に転がるよ。",
-        "少しペースを落としてみて。あなたの直感は今月も鋭いけど、走りすぎると大切なものを見落とす。意識的に「待つ」時間を作って。"
+        "少しペースを落としてみて。あなたの直感は今月も鋭いけど、走りすぎると大切なものを見落とす。意識的に「待つ」時間を作って。",
+        "先月から引きずってるモヤモヤ、今月中にスッキリさせて。答えを出す勇気があなたには必ずある。動くか、手放すか、どっちかを決めるだけでいい。",
+        "今月のあなたはパワーが全開。でもそれは、周りを振り回すパワーじゃなくて、自分の夢に向かうパワーとして使って。方向さえ合えば最強の月になる。"
       ],
       おうし座:[
         "今月は自分への投資が実を結ぶ月。美味しいもの食べて、好きな場所に行って、五感を満たして。それが一番の開運法。",
         "変化の波が来てるけど、焦らなくて大丈夫。あなたのペースで受け入れていけばいい。無理に合わせなくていいから。",
-        "コツコツ積み上げてきたものが形になるサイン。「まだまだ」って思ってるかもだけど、周りはちゃんとあなたの頑張りを見てるよ。"
+        "コツコツ積み上げてきたものが形になるサイン。「まだまだ」って思ってるかもだけど、周りはちゃんとあなたの頑張りを見てるよ。",
+        "心地いい場所から一歩だけ踏み出してみて。無理に大きく変わらなくていい。「いつもと違う選択」を一つだけするだけで、世界が広がる。",
+        "今月は「本物かどうか」を見極める感覚が冴える月。人間関係もお金の使い方も、本当に価値があるものだけを残していく作業。直感を信じて。"
       ],
       ふたご座:[
         "今月は情報感度がいつも以上に高い。気になること全部メモして。その中に来月のあなたを救うヒントがある。",
         "人との会話から大きなチャンスが生まれる月。話すこと、聞くこと、全部がつながっていく。コミュニケーションに全力で。",
-        "選択肢が多すぎて迷う月。でもどれを選んでもハズレはないよ。直感で「これ」って思ったものを信じて。"
+        "選択肢が多すぎて迷う月。でもどれを選んでもハズレはないよ。直感で「これ」って思ったものを信じて。",
+        "今月は「深める」がテーマ。広く浅くが得意なあなただけど、一つのことに集中してみると、自分でも知らなかった才能が出てくる。",
+        "頭の回転が全開の月。アイデアが湧いてきたら、流さずにちゃんと形にして。誰かに話すか、メモするか。動かないともったいないよ。"
       ],
       かに座:[
         "今月は「自分を守る」がテーマ。人に優しくする前に、まず自分に優しくして。あなたが元気じゃないと、誰も助けられないでしょ？",
         "大切な人との関係が深まる月。ちょっと勇気を出して本音を言ってみて。相手もきっとそれを待ってる。",
-        "感情の波が大きくなりやすい月。でもそれはあなたの感受性が豊かな証拠。波に飲まれそうになったら、一人の時間を作ってリセットして。"
+        "感情の波が大きくなりやすい月。でもそれはあなたの感受性が豊かな証拠。波に飲まれそうになったら、一人の時間を作ってリセットして。",
+        "過去の出来事をいつまでも抱えてない？今月は「もういいや」と手放す練習の月。ちゃんと消化されてない感情があるなら、今月中に向き合って。",
+        "誰かのために頑張りすぎてるあなたへ。今月は自分のために時間とお金を使っていい月。罪悪感なんていらない。自己投資が一番の開運だよ。"
       ],
       しし座:[
         "今月はあなたが主役の月。遠慮しないで。やりたいことをやって、言いたいことを言って。そのエネルギーが周りもいい方向に引っ張る。",
         "プライドが邪魔して素直になれない場面があるかも。でも「ごめん」と「ありがとう」が言えたら最強。今月のテーマは素直さ。",
-        "注目を浴びる場面が増える月。自信を持って堂々としてればいい。あなたのオーラに惹かれる人が現れるよ。"
+        "注目を浴びる場面が増える月。自信を持って堂々としてればいい。あなたのオーラに惹かれる人が現れるよ。",
+        "今月は「誰かの役に立てた」という実感が、あなたを一番輝かせてくれる。見返りを求めず動いた分だけ、後から大きなものが返ってくる月。",
+        "やりたいことリストの中で、ずっと後回しにしてるものはない？今月はそれに手をつける月。完璧じゃなくていいから、まず始めるだけでいい。"
       ],
       おとめ座:[
         "今月は完璧を目指さなくていい月。70点の自分を許してあげて。それだけで気持ちが楽になるし、意外と周りも気にしてないから。",
         "分析力が冴える月。でも考えすぎて動けなくなるのだけ注意。「えいっ」と動いた先に答えがあるよ。",
-        "誰かの役に立てる場面が多い月。あなたの気配りと正確さは、誰にも真似できない才能。でも頑張りすぎないでね。"
+        "誰かの役に立てる場面が多い月。あなたの気配りと正確さは、誰にも真似できない才能。でも頑張りすぎないでね。",
+        "今月は「自分を批判する声」に気づいて、そっとシャットアウトする練習をして。あなたが思ってるより、あなたは十分できてるよ。",
+        "細かいことが気になる感覚が強まる月。でもそれは弱さじゃなくて、見逃せないほど繊細に世界を受け取ってるってこと。その感覚を仕事や創造に活かして。"
       ],
       てんびん座:[
         "今月は自分軸を大事にして。誰かに合わせすぎてない？「私はこうしたい」を言葉にする練習の月。",
         "美意識が高まる月。ファッション、インテリア、人間関係。「美しいかどうか」が判断基準になるよ。",
-        "バランスを取ろうとして疲れたら、あえて偏っていいから。全部均等にしなくていい。今月は好きなほうに振り切って。"
+        "バランスを取ろうとして疲れたら、あえて偏っていいから。全部均等にしなくていい。今月は好きなほうに振り切って。",
+        "今月は「断る」ことが開運になる月。無理な誘いや、本当はやりたくないお願いをさらっと断れたら、自分でも驚くくらい気持ちが軽くなる。",
+        "誰かとの比較で落ち込みやすい時期。でもあなたの「選ぶ目」と「整える力」は誰にも真似できない才能。人と比べる暇があったら、自分の好きを磨いて。"
       ],
       さそり座:[
         "今月は深い感情と向き合う月。表面的な付き合いに疲れてるなら、思い切って本音を出してみて。あなたの深さを受け止めてくれる人がいる。",
         "直感がいつも以上に鋭い月。「なんか違う」と感じたことは全部当たってるよ。自分のセンサーを信じて。",
-        "手放すことで新しいものが入ってくる月。執着してるものがあるなら、今月がリリースのタイミング。"
+        "手放すことで新しいものが入ってくる月。執着してるものがあるなら、今月がリリースのタイミング。",
+        "信頼できる人とそうじゃない人が、今月はっきり見えてくる。答え合わせの月だよ。傷つくかもしれないけど、わかってよかった、に変わる。",
+        "今月のあなたは磁力が強い。人を引き寄せる力も、感情の強度も、いつもの倍。この力を壊すことじゃなくて、創ることに使うと最高の月になる。"
       ],
       いて座:[
         "今月は冒険心が爆発する月。やったことないこと、行ったことない場所、会ったことない人。全部が新しい扉を開いてくれる。",
         "自由に動けるエネルギーがある月。でもスタートダッシュだけで終わらせないで。今月始めたことを来月もちゃんと続けて。",
-        "退屈は敵。でも「面白くないな」と思ったら、面白くする側に回って。あなたにはそのパワーがある。"
+        "退屈は敵。でも「面白くないな」と思ったら、面白くする側に回って。あなたにはそのパワーがある。",
+        "「いつかやろう」の「いつか」は今月。旅でも勉強でも挑戦でも。動くタイミングを待ってたなら、今がそのときだよ。",
+        "今月は誰かに夢を話してみて。声に出すと現実に近づく。あなたの話を聞いた人が、思わぬ形で協力者になってくれることがある月。"
       ],
       やぎ座:[
         "今月は頑張りが報われる月。今まで種を撒いてきた場所から芽が出始めてる。もう少しだけ水をあげ続けて。",
         "「休む」ことも仕事のうち。今月は意識的にオフの日を作って。何もしない贅沢を自分に許可してあげて。",
-        "真面目なあなたに伝えたい。「もう十分頑張ってるよ」。自分を認めてあげることが、今月一番の開運法。"
+        "真面目なあなたに伝えたい。「もう十分頑張ってるよ」。自分を認めてあげることが、今月一番の開運法。",
+        "長期的な目標の見直しにいい月。「これ、本当に自分がやりたいこと？」って問いに、正直に答えてみて。方向修正するなら今。",
+        "今月は「信頼」がキーワード。あなたの誠実さをちゃんと見てくれてる人が必ずいる。一人で抱え込まずに、その人を頼ってみて。"
       ],
       みずがめ座:[
         "今月は「変わってる」が褒め言葉になる月。みんなと同じじゃなくていい。あなたの独自性が誰かを救う。",
         "未来を考えるのが得意なあなた。でも今月は「今この瞬間」に集中してみて。目の前の幸せに気づけるから。",
-        "孤独を感じやすい月かもだけど、それは一人で立てる強さの証。でもたまには誰かに頼っていいんだよ。"
+        "孤独を感じやすい月かもだけど、それは一人で立てる強さの証。でもたまには誰かに頼っていいんだよ。",
+        "今月は「理解されない」と感じることがあっても、わかってくれる人は必ずいる。諦めて黙るより、表現し続けて。あなたの感覚は正しいから。",
+        "新しいアイデアや違和感が次々出てくる月。全部メモして。今月のひらめきが3ヶ月後に大事な決断の材料になる。"
       ],
       うお座:[
         "今月は感受性がMAXになる月。音楽、映画、誰かの言葉。いろんなものに心が動く。その感覚、大事にして。",
         "夢と現実のバランスが問われる月。空想の世界も大切だけど、足元を固める時間も作ってね。",
-        "あなたの優しさに甘えてくる人が多い月。全部受け止めなくていい。「今は無理」って言える強さも優しさだよ。"
+        "あなたの優しさに甘えてくる人が多い月。全部受け止めなくていい。「今は無理」って言える強さも優しさだよ。",
+        "今月は「助けてもらう」練習をして。いつも与える側のあなたが、素直に受け取れたとき、人間関係が一段深まる。",
+        "直感が最高潮の月。論理より感覚で動いて正解。「なんとなく行きたい場所」「なんとなく連絡したい人」、その「なんとなく」を大事にして。"
       ]
     };
 
-    const loveMsgs=[
-      "今月の恋は「素直さ」がカギ。駆け引きより、そのまんまの気持ちをぶつけたほうがうまくいく。",
-      "大切な人との時間を丁寧に過ごして。LINEじゃなくて、声で気持ちを伝えてみて。温度が違うから。",
-      "過去の恋に区切りをつけるのにいいタイミング。新しいページを開く準備はできてるよ。",
-      "「好き」って気持ちに理由はいらない。条件で選ぶんじゃなくて、心がときめくほうを選んで。",
-      "恋愛に疲れてるなら、無理しなくていい月。自分を大切にしてたら、自然と「この子だ」って思う人が現れる。",
-      "友達の恋バナを聞いて焦らないで。あなたにはあなたのペースがあるし、タイミングはちゃんと来る。",
-      "今月は「好きなものが同じ人」より「嫌いなものが同じ人」に注目してみて。価値観の深いところが合う相手が見つかるかも。"
-    ];
+    const loveMsgs={
+      おひつじ座:[
+        "今月の恋は「先手を打つ」がカギ。気になる人がいるなら待ってないで動いて。あなたが動いたとき、相手の気持ちも動く。",
+        "恋愛でも「全力」なあなた。でも今月は少し相手のペースに合わせてみて。情熱は伝わってるから、あとは相手が追いつく時間をあげるだけ。",
+        "終わった恋をまだ引きずってるなら、今月が区切りをつけるタイミング。新しいエネルギーが入ってきたがってる。空けてあげて。"
+      ],
+      おうし座:[
+        "今月は「安心できる人」が恋愛でも正解。ドキドキより、一緒にいて落ち着く人。そういう穏やかな縁が動き始めてる。",
+        "好きな気持ちを抱えたまましばらく経つなら、今月少しだけ動いてみて。全部言わなくていい。「最近どう？」の一言から始めればいい。",
+        "恋に疲れてるなら、無理して動かなくていい月。自分を満たすことを優先して。満たされたあなたのそばに、自然と人が集まってくる。"
+      ],
+      ふたご座:[
+        "今月は「話が合う人」との縁が動く。深い会話ができる相手、一緒にいて退屈しない人。そういう知的な相性に注目してみて。",
+        "気持ちが揺れやすい時期。「好きかも」が何人かいてもいい。でも本当に「この人」って思える感覚が来たとき、迷わないで。",
+        "LINEじゃなくて、直接会う時間を作って。文章じゃ伝わらないあなたの魅力が、対面でちゃんと伝わる月だから。"
+      ],
+      かに座:[
+        "大切な人には「大切」って言葉で伝えてみて。態度で示してるのはわかってる。でも言葉は、思ってるより相手の心に深く届くよ。",
+        "今月は「安全な恋」より「本当の恋」を選んで。傷つくのが怖くて踏み出せないなら、その怖さと一緒に動いてみて。怖さの先に本物がある。",
+        "相手に尽くしすぎて疲れてきてない？今月は「してもらう」練習をして。わがままを言える関係のほうが、長続きするから。"
+      ],
+      しし座:[
+        "今月は堂々と好意を見せていい月。「好きかもしれない」なんて曖昧にせず、ちゃんと向き合って。あなたの真っ直ぐさが相手を動かす。",
+        "恋愛でも「認めてほしい」気持ちが出やすい月。でも認められるより、認める側に回ってみて。そのほうが不思議と愛が深まる。",
+        "今のパートナーや気になる人に、最近ちゃんと感謝を伝えてる？「いてくれてありがとう」の一言が今月すごく効く。"
+      ],
+      おとめ座:[
+        "相手の粗探しをしてしまいがちな月。でも「完璧な人」は存在しない。その人の何が好きか、もう一度思い出してみて。",
+        "今月は自分磨きが恋愛運を上げる。新しいコスメ、お気に入りの服、居心地のいい場所。自分を丁寧に扱うことで、内側から輝き始める。",
+        "恋愛で悩んでることをノートに書き出してみて。頭の中で考えるより、書いたほうがスッキリして、答えが見えやすくなるよ。"
+      ],
+      てんびん座:[
+        "今月は「この人でいいのかな」ではなく「この人がいい」と思える恋を選んで。消去法じゃなく、ちゃんと惹かれてる人に目を向けて。",
+        "恋愛でも「調整」しすぎてない？相手に合わせることが当たり前になってるなら、今月は自分の本音を一つだけ出してみて。",
+        "美しいデート体験が恋を深める月。行きたい場所、食べたいもの、どんどんリクエストして。あなたのセンスが相手を喜ばせる。"
+      ],
+      さそり座:[
+        "今月は「信頼できるか」を見極める感度が鋭い月。曖昧な関係に答えを出すとき。はっきりさせることで、どちらに転んでも前に進める。",
+        "執着してる恋があるなら、一度冷静に見てみて。「好き」と「慣れ」と「依存」は違う。今月その区別がつくようになる月。",
+        "深く愛せる人だからこそ、嫉妬も独占欲も人一倍強い。でもそれを相手に向けすぎると窮屈になる。今月は信頼することを選んでみて。"
+      ],
+      いて座:[
+        "今月は「自由でいさせてくれる人」との縁が動く。束縛や干渉が多い関係からは少し距離を置いて、心が軽くなる方向を選んで。",
+        "好きな人ができたら、遠慮なく全力で動いていい月。断られても傷つかない。あなたの明るさはどんな結果でもリカバリーできるから。",
+        "恋より楽しいことが多い月かもしれないけど、それはそれでいい。自分が輝いてるとき、好きな人から自然と連絡が来たりする。"
+      ],
+      やぎ座:[
+        "今月は「長く一緒にいられるか」という目線で人を見てみて。今だけ楽しい恋より、未来を一緒に歩けそうな人。そういう縁に気づく月。",
+        "恋愛を後回しにしがちなあなたへ。仕事や目標も大事だけど、今月だけは気になる人への連絡を先に返してみて。",
+        "好きな人に弱みを見せることが怖い？今月はちょっとだけ鎧を脱いでみて。完璧じゃない部分を見せたとき、相手はもっとあなたに近づきたくなる。"
+      ],
+      みずがめ座:[
+        "今月は「普通の恋愛」じゃなくていい。あなたにしか感じられない特別な縁、独自のやりとり、二人だけの世界観。そこに本物の愛がある。",
+        "恋愛において「理解されない」と感じてるなら、説明しすぎなくていい。あなたをそのまま受け入れてくれる人が、ちゃんといる。",
+        "フレンドシップから始まる恋に縁がある月。「友達以上かも」と気づく瞬間が来たら、見過ごさないで。"
+      ],
+      うお座:[
+        "今月は感情がダイレクトに伝わる月。「なんとなくあなたのことが頭にある」それだけで伝えてみて。言葉より気持ちが届く時期だから。",
+        "理想が高いあなたに伝えたい。完璧な人じゃなくていい。一緒にいるとなんか安心する、それだけで十分な理由になる。",
+        "今月は「受け取る」練習を。好意を向けられたとき「なんで私に？」って疑わないで、素直にありがとうと言ってみて。"
+      ]
+    };
 
-    const moneyMsgs=[
-      "自分磨きへの投資は惜しまないで。美容、学び、体験。ここに使ったお金は全部返ってくる。",
-      "衝動買いしそうになったら一晩寝かせて。朝起きてもまだ欲しかったら買っていい。",
-      "お金の使い方を見直すのにいい月。サブスクの整理だけで意外と浮くよ。",
-      "「安いから買う」を今月は封印。「本当に欲しいから買う」だけにして。モノの量より質。",
-      "貯金のことを考えるのにいい月。無理な額じゃなくていい。月1万円でも、始めることが大事。",
-      "人に奢ったり、プレゼントしたり。「出すお金」が巡り巡って返ってくる月。ケチらないで。",
-      "将来やりたいことリスト、書いてみて。お金は目的があると自然と貯まる。漠然とした不安より具体的な目標。"
-    ];
+    const moneyMsgs={
+      おひつじ座:[
+        "衝動買いが多くなりやすい月。「今すぐ欲しい」気持ちが強いときほど、一晩待って。朝起きてもまだ欲しかったら買っていい。",
+        "今月は「体験」にお金を使うのが正解。物より思い出。行ってみたかった場所、やってみたかったこと、そこへの投資は必ず返ってくる。",
+        "大きな買い物は今月後半に。月初は衝動的になりやすいから、欲しいものリストに追加して寝かせてみて。"
+      ],
+      おうし座:[
+        "今月は「本物にだけお金を使う」を意識して。安くて質が低いものを何個も買うより、少し高くても長く使えるものを一つ。あなたの審美眼を信じて。",
+        "美容や食への投資が特に効く月。ケチらないで。自分を喜ばせるためのお金は、最終的に自信という形で返ってくるよ。",
+        "固定費の見直しにいい月。使ってないサービス、更新したままのサブスク。整理するだけで気持ちもスッキリする。"
+      ],
+      ふたご座:[
+        "今月は「情報への投資」が当たる月。本、講座、セミナー。知識にお金を使った分だけ、来月以降の選択肢が広がるよ。",
+        "細かい出費が積み重なりやすい月。カフェ代、移動費、ちょっとした買い物。週一でレシートをチェックするだけで変わる。",
+        "友達との食事や遊びにお金がかかる月。でも人間関係への投資は惜しまないで。そのつながりが思わぬところで助けてくれる。"
+      ],
+      かに座:[
+        "今月は「安心」に投資していい月。居心地のいい家、好きな香り、自分がほっとできる環境。そこへのお金は贅沢じゃなくて必需品。",
+        "誰かのためにお金を使いすぎてない？今月は自分への出費を意識的に増やして。あなたが満たされてないと、与えることもできなくなる。",
+        "将来への不安からお金を握りしめすぎてない？貯めることも大事だけど、今の幸せにも使って。バランスが大事な月。"
+      ],
+      しし座:[
+        "今月は「見た目への投資」が開運につながる月。新しいコーデ、ヘアスタイル、部屋の雰囲気。外から変えると内側の自信が変わる。",
+        "奢ったり、プレゼントしたり、気前よく使うと後から大きくなって返ってくる月。ケチると逆効果だから、太っ腹でいって。",
+        "大きな買い物を検討中なら今月中に決断して。タイミングが合ってる月だから、迷ってる時間がもったいない。"
+      ],
+      おとめ座:[
+        "今月はお金の管理が得意なあなたの力が全開。家計簿つけたり、節約したりするのが特に捗る月。でも締めすぎず、楽しみにも使ってね。",
+        "「もったいない」精神が仇になりやすい月。使わないものはいっそ手放して。物を減らすことで、本当に必要なものが見えてくる。",
+        "スキルアップへの投資が後から大きく返ってくる月。資格、勉強、ツール。将来の自分への先払いだと思って。"
+      ],
+      てんびん座:[
+        "今月は「美しいもの」へのお金が心を豊かにする。お花を買う、いい器を使う、お気に入りの場所でコーヒーを飲む。そういう小さな贅沢を大切に。",
+        "誰かと割り勘でモヤっとした経験があるなら、今月は最初にお金の話を決めてしまって。後からのモヤモヤを避けるほうが人間関係のためになる。",
+        "衝動買いよりも「計画した贅沢」が満足度を高める月。欲しいものリストを作って、一週間後にまだ欲しかったら買う、これだけで後悔が減る。"
+      ],
+      さそり座:[
+        "今月は「隠れた価値」を見抜く目が冴える月。掘り出し物を見つけるのも、投資先を見極めるのも、あなたの感覚が一番頼りになる。",
+        "誰かへの不信感からお金をケチってしまいそうな場面がある。でも本当に価値のある相手やサービスには、ちゃんと払う価値がある。",
+        "今月は「捨てる」でお金が動く。不用品を売ったり、断捨離したりすることで、新しいお金の流れが生まれる。"
+      ],
+      いて座:[
+        "今月は「体験」と「旅」にお金を使うのが最高の投資。そこで得た経験は必ずあなたの財産になる。お金を使うことを恐れないで。",
+        "計画なく使いすぎやすい月。大まかでいいから今月の予算を決めておいて。「旅費：○万、食事：○万」それだけでだいぶ変わる。",
+        "友達を誘う側になることが多い月。ノリで奢りすぎると後から後悔するから、楽しむことと財布のバランスだけは意識しておいて。"
+      ],
+      やぎ座:[
+        "今月は長期的なお金の計画を立てるのにいい月。来年、3年後、5年後。漠然とした不安を「具体的な目標」に変えるだけで気持ちが落ち着く。",
+        "頑張った自分へのご褒美を我慢しすぎてない？今月は一つだけ、ちゃんと欲しいものを買っていい。それが次のモチベーションになる。",
+        "信頼できる人からお金のアドバイスをもらうのにいい月。NISAや積立、保険の見直し。今動き始めることで将来が変わる。"
+      ],
+      みずがめ座:[
+        "今月は「未来への投資」が特に効く月。新しいスキル、異分野の知識、ニッチな趣味。誰もやってないことへのお金が後から大化けする。",
+        "社会や環境に配慮した使い方を意識してみて。フェアトレード、サステナブルなブランド。自分の価値観に合ったお金の使い方が気持ちよくなる。",
+        "お金に執着しすぎないで。必要な分はちゃんと入ってくる月だから、「足りない」より「どう使おう」という発想で動いて。"
+      ],
+      うお座:[
+        "今月は「感性を満たす」お金の使い方が吉。美術館、映画、好きな作家の本。魂が喜ぶ使い方をすると、後から豊かさが戻ってくる。",
+        "誰かに頼まれると断れなくてお金が出ていきやすい月。「今月は余裕がなくて」って一言だけ言えるようになると、だいぶ楽になるよ。",
+        "漠然とお金の不安を感じやすい時期。でも具体的に書き出してみると意外と大丈夫なことが多い。まず現状を把握することから始めて。"
+      ]
+    };
 
-    const actionMsgs=[
-      "月末までに新しいお店に1つ行ってみて。知らない場所が新しいエネルギーをくれる。",
-      "スマホの写真フォルダを整理して。いらないスクショ消すだけで気分がスッキリする。",
-      "普段会わない人にLINEしてみて。「最近どう？」の一言が思わぬ展開を呼ぶ。",
-      "寝る前5分だけ、今日あったいいことを3つ書いてみて。それだけで幸福度が変わるよ。",
-      "クローゼットの中で3ヶ月着てない服、1着だけ手放してみて。空間ができると新しいものが入ってくる。",
-      "いつもと違う道を歩いてみて。散歩でも通勤でも。景色が変わると頭もリフレッシュされる。",
-      "お気に入りの香りを見つけて。アロマでもハンドクリームでも。嗅覚からの癒しは効果絶大。"
-    ];
+    const actionMsgs={
+      おひつじ座:[
+        "「やろうと思ってたけどずっとやってないこと」を今月一つだけ、5分だけやってみて。動き出した勢いがあなたを本当に変える。",
+        "体を動かすことをルーティンに入れてみて。ジムじゃなくていい。毎日10分歩くだけでいい。体が整うと気持ちも整う。",
+        "苦手な人に先から話しかけてみて。あなたから動いたとき、関係が予想外に良くなることがある月。"
+      ],
+      おうし座:[
+        "お気に入りのカフェや場所に、いつもより少し長く滞在してみて。急がない時間が、今月のあなたに必要なものを運んでくる。",
+        "部屋に生花を一輪置いてみて。視覚から入る美しさが、日常の中の幸福感を底上げしてくれる。",
+        "今月は「味覚」を意識して丁寧に食べてみて。食事をスマホしながら食べるのをやめるだけで、満足感が全然違う。"
+      ],
+      ふたご座:[
+        "気になってた人に「最近どう？」って送ってみて。その一言が思わぬ展開を呼ぶ可能性がある。今月はコネクションを使う月。",
+        "アイデアが湧いてきたら、その場でメモする習慣をつけて。スマホのメモアプリでいい。今月の思いつきが来月の宝になる。",
+        "普段行かない種類のコンテンツに触れてみて。読まないジャンルの本、見ないジャンルの映画。視野が広がると発想も変わる。"
+      ],
+      かに座:[
+        "信頼できる友達に、最近の本音を少し話してみて。全部話さなくていい。一つだけ吐き出すだけで、すごく楽になる。",
+        "自分に手紙を書いてみて。「最近頑張ってるね」「これよかったよ」短くていい。自分を認める練習になる。",
+        "「疲れた」と思ったときに何をすると回復するか、リストにしてみて。5個書ければ十分。いざというとき迷わずそこから選べるようになる。"
+      ],
+      しし座:[
+        "自分がいいなと思ったものを「いいね」じゃなく言葉で伝えてみて。「あのとき助かった」「あれ好きだった」。人を喜ばせる言葉があなたにも返ってくる。",
+        "今月は誰かの「初挑戦」を応援してみて。背中を押してあげる体験が、自分の挑戦する勇気も育ててくれる。",
+        "鏡の前で一回だけ「今日もいい顔してる」って言ってみて。バカみたいでいい。続けると本当に自信が変わっていく。"
+      ],
+      おとめ座:[
+        "「完璧にできたこと」じゃなく「やろうとしたこと」に丸をつける習慣をつけてみて。結果じゃなく姿勢を認めると、動くのが楽になる。",
+        "気になってた整理・片付けを一か所だけやってみて。引き出し一つでいい。空間がスッキリすると思考もスッキリする。",
+        "SNSのフォローを一度見直してみて。見るたびに気持ちが下がるアカウントは、ミュートかフォロー解除して。情報環境を整えることが心を整える。"
+      ],
+      てんびん座:[
+        "今月は「どっちでもいいよ」を封印して、何かを一つだけ自分で決めてみて。ランチでも行き先でも。決める練習が自分軸を育てる。",
+        "部屋のインテリアを一か所変えてみて。クッションの色を変えるだけでいい。空間が整うと気持ちも整う。",
+        "今月お世話になった人に、LINEじゃなくて直接「ありがとう」を言ってみて。言葉にすることで関係が一段深まる。"
+      ],
+      さそり座:[
+        "日記や記録をつけてみて。毎日じゃなくていい。「今日感じたこと一行」だけでいい。自分の感情パターンが見えてくる。",
+        "ずっと気になってたのに調べることを後回しにしてたことを、今月一つだけ深掘りしてみて。知った先に次の扉がある。",
+        "「これ手放したいな」と思ってるものを一つ処分してみて。物でも習慣でも。空いた場所に新しいものが入ってくる。"
+      ],
+      いて座:[
+        "いつもと違うルートで移動してみて。知らない道は新しい発見をくれる。小さな冒険が今月のあなたにエネルギーをくれる。",
+        "気になってた場所に一人で行ってみて。カフェでも美術館でも。一人の時間が今月のあなたを充電させてくれる。",
+        "やりたいことリストを書いてみて。「できるかどうか」は関係なくていい。書くだけで現実が動き始める月。"
+      ],
+      やぎ座:[
+        "「休む予定」をスケジュールに先に入れてみて。空白の日を意図的に作ること。埋めないことへの罪悪感をなくす練習にもなる。",
+        "今月達成したいことを、小さなステップに分解してみて。「大きな一歩」より「小さな一歩×10」のほうが絶対に続く。",
+        "信頼できる人に「最近どう見える？」って聞いてみて。自分では気づかない成長を教えてもらえることがある。"
+      ],
+      みずがめ座:[
+        "誰にも言ってなかった自分の考えを、一人でいいから話してみて。アイデアは声に出すことで磨かれる。",
+        "新しいコミュニティや場所に顔を出してみて。オンラインでもいい。まったく違う価値観に触れることが、今月のあなたに刺激をくれる。",
+        "「普通こうでしょ」という常識を一つだけ疑ってみて。別にそうしなくてよかったじゃん、という発見が今月のどこかに必ずある。"
+      ],
+      うお座:[
+        "創りたいもの、表現したいもの、何かあるなら今月だけでいいから形にしてみて。完成じゃなくていい。途中まででいい。",
+        "お気に入りの音楽を流しながら、何も考えずただ漂う時間を作って。罪悪感なんていらない。うお座にはそういう時間が必要。",
+        "信頼できる人に最近の自分の状態を正直に話してみて。「実はちょっとしんどい」を言葉にするだけで、気持ちが楽になる。"
+      ]
+    };
+
+    const questionMsgs={
+      おひつじ座:[
+        "今月動こうとしてることの中で、「本当に自分がやりたいこと」はどれ？誰かのために動いてることと、自分のために動いてることを分けてみて。",
+        "「怖いけどやりたいこと」が今あるとしたら、何？その怖さの正体を一言で言えるなら、もうほぼ乗り越えてる。",
+        "今月の自分に点数をつけるなら何点？理由と一緒に考えてみて。その点数の差分が、来月の伸びしろになる。"
+      ],
+      おうし座:[
+        "今の生活の中で、「これがあるから大丈夫」と思えるものはある？そのお守りみたいな存在を大切にしてる？",
+        "最後に「本当に美味しい」と感じたのはいつ？五感を喜ばせることを、最近どのくらい意識できてる？",
+        "今持っているもの、人間関係、習慣の中で、本当に大切なのはどれ？手放せないものと、実は手放してもいいものを分けてみて。"
+      ],
+      ふたご座:[
+        "今月一番「面白い」と思ったことは何？その感覚を誰かに伝えたとき、どんな反応があった？",
+        "「知ってる」と「わかってる」は違う。今月深く理解したことと、まだ表面しか知らないことがあるとしたら、それぞれ何？",
+        "あなたのまわりで、「この人の話は何時間でも聞ける」という人は誰？その人のどこに惹かれてる？"
+      ],
+      かに座:[
+        "最近「本当に安心できた」と思えた瞬間はあった？どんな状況だったか、思い出してみて。",
+        "誰かのために頑張ってることの中に、「本当は自分のためにやってる」ことが混じってない？",
+        "心の中で「まだ許せてない」ことはある？許すことと、忘れることと、受け入れることは違う。今どの段階にいる？"
+      ],
+      しし座:[
+        "今月、誰かに「すごい」と言われたとき素直に受け取れた？もしモヤっとしたなら、その理由は何だと思う？",
+        "本当はもっと輝けるのに、何かが邪魔してると感じることはある？その「何か」の正体は？",
+        "自分のことを一番理解してくれてると思う人は誰？その人に最近ちゃんと感謝を伝えてる？"
+      ],
+      おとめ座:[
+        "「もっとうまくできたはず」と思ってることと「十分うまくやれた」と思ってること、今月それぞれ何があった？",
+        "自分に厳しくしすぎてる部分はどこ？もし親友が同じ状況なら、なんて声をかける？",
+        "今の自分のルーティンの中で、「なんとなく続けてるけど意味ある？」と思うものはある？"
+      ],
+      てんびん座:[
+        "最近「本当にこれがしたい」という気持ちで動けた場面はあった？それとも誰かに合わせてばかりだった？",
+        "今の人間関係の中で「この人といると消耗する」と感じることはある？気づいてるなら、どう対処してる？",
+        "美しいと思うものの中で、今月一番心を動かされたのは何？なんでそれが美しく見えたんだろう？"
+      ],
+      さそり座:[
+        "今心の中で「まだ決断できてないこと」はある？決断できない理由は、怖さ？情報不足？それとも本当はもう答えが出てる？",
+        "信頼できると思ってる人のうち、本当に秘密を打ち明けられる人は何人いる？",
+        "手放したいのに手放せないでいるものがあるとしたら、それを手放せない本当の理由は何だと思う？"
+      ],
+      いて座:[
+        "今月「退屈だな」と感じた瞬間はあった？その退屈はどこから来てた？環境？自分？それとも何か別のもの？",
+        "3年後の自分に、今の自分から手紙を書くとしたら、何を伝えたい？",
+        "「ずっとやってみたいけど、まだできてないこと」のリストに何がある？それをやれてない本当の理由は何？"
+      ],
+      やぎ座:[
+        "今取り組んでいることの中で「本当はやりたくないけどやってる」ものはある？それを続ける理由は、義務感？恐れ？それとも本当の志？",
+        "最後に「よく頑張った」と自分を褒めたのはいつ？どんなことで？",
+        "今の自分のペースは、本当に自分が選んでるペース？それとも周りに合わせてるうちにそうなったペース？"
+      ],
+      みずがめ座:[
+        "「理解されない」と感じることが多いテーマがあるとしたら、それは何？伝え方の問題？それとも本当に違う価値観を持ってる？",
+        "今の自分が「普通」だと思ってることで、実は誰もそう思ってないことがあるとしたら？",
+        "5年後に「あのとき始めてよかった」と思えることを、今月一つ始めるとしたら何をする？"
+      ],
+      うお座:[
+        "最近「言えなかった本音」はある？それを言えなかった理由は、相手のため？それとも自分が傷つきたくなかったから？",
+        "今感じてる感情を、一つの色で表すとしたら何色？なんでその色を選んだの？",
+        "「ありのままの自分」でいられる場所や関係は、今の生活の中にある？それはどこで、誰と？"
+      ]
+    };
 
     const closings=[
       "今月もあなたらしく、でも無理しすぎないで。また来月届けるね。",
@@ -1296,14 +1592,19 @@ function App(){
     ];
 
     const n=userName||"あなた";
+    const signLove=loveMsgs[userSign]||loveMsgs["おひつじ座"];
+    const signMoney=moneyMsgs[userSign]||moneyMsgs["おひつじ座"];
+    const signAction=actionMsgs[userSign]||actionMsgs["おひつじ座"];
+    const signQuestion=questionMsgs[userSign]||questionMsgs["おひつじ座"];
     return{
       month:monthNames[m],
       year:y,
       greeting:n+"さんへ\n\n"+pick(greetings),
       overview:pick(overviews[userSign]||overviews["おひつじ座"]),
-      love:pick(loveMsgs),
-      money:pick(moneyMsgs),
-      action:pick(actionMsgs),
+      love:pick(signLove),
+      money:pick(signMoney),
+      action:pick(signAction),
+      question:pick(signQuestion),
       closing:pick(closings)+"\n\nよるのことば より"
     };
   }
@@ -1876,21 +2177,7 @@ function App(){
           <ExpandText text={deepResult.bug} lines={3}/>
         </Card>
 
-        {/* Share panel — FREE content sharing drives traffic */}
-        <div className="slide-up-2" style={{marginBottom:16,padding:"16px",borderRadius:16,background:"var(--card-highlight)",border:"1px solid var(--card-highlight-border)"}}>
-          <p style={{fontSize:12,fontWeight:700,color:"var(--t1)",textAlign:"center",marginBottom:10}}>あなたのタイプをシェアしよう</p>
-          <div style={{display:"flex",justifyContent:"center",gap:10}}>
-            <button onClick={()=>{gtag("event","deep_share",{method:"x",type:deepResult.name});location.href="https://x.com/intent/tweet?text="+encodeURIComponent("よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+"\n\n"+deepResult.sub+"\n\n当たりすぎて怖い…")+"&url="+encodeURIComponent("https://yorunokotoba.vercel.app")}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"#000",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </button>
-            <button onClick={()=>{gtag("event","deep_share",{method:"line",type:deepResult.name});location.href="https://line.me/R/share?text="+encodeURIComponent("よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+"\n"+deepResult.sub+"\n\nhttps://yorunokotoba.vercel.app")}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"#06C755",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.95 1.95 5.55 4.87 7.03-.19.67-.68 2.5-.78 2.89-.13.5.18.49.38.36.16-.1 2.53-1.72 3.56-2.42.62.09 1.27.14 1.97.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/></svg>
-            </button>
-            <button onClick={()=>{gtag("event","deep_share",{method:"native",type:deepResult.name});if(navigator.share){navigator.share({title:"よるのことば",text:"本当のわたし診断で「"+deepResult.charName+"」×「"+deepResult.name+"」だった"+deepResult.icon+" "+deepResult.sub,url:"https://yorunokotoba.vercel.app"}).catch(()=>{})}else{var ta=document.createElement("textarea");ta.value="よるのことば｜本当のわたし診断✨\n「"+deepResult.charName+"」×「"+deepResult.name+"」だった "+deepResult.icon+"\nhttps://yorunokotoba.vercel.app";ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);setToast("コピーしました！")}}} className="hover-lift" style={{width:44,height:44,borderRadius:14,border:"none",background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--t3)"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V10c0-1.1.9-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .9 2 2z"/></svg>
-            </button>
-          </div>
-        </div>
+
 
         {/* ── PREMIUM GATE ── */}
         {isPremium?<div className="slide-up-2">
@@ -1929,24 +2216,7 @@ function App(){
             </div>
             <ExpandText text={deepResult.update} lines={4} style={{fontSize:13}}/>
           </Card>
-          <Card style={{marginBottom:12}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-              <span style={{fontSize:18}}>🗺️</span>
-              <p style={{fontSize:14,fontWeight:700,color:deepResult.color}}>相性マップ</p>
-            </div>
-            <div style={{display:"flex",gap:8}}>
-              <div style={{flex:1,padding:12,borderRadius:14,background:"#48BB7808",border:"1px solid #48BB7815"}}>
-                <p style={{fontSize:10,color:"#48BB78",marginBottom:4}}>✨ 最高の相棒</p>
-                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>{deepResult.bestMatchName}</p>
-                <p style={{fontSize:10,color:"var(--t3)",lineHeight:1.6,marginTop:4}}>{deepResult.bestMatchWhy}</p>
-              </div>
-              <div style={{flex:1,padding:12,borderRadius:14,background:"#E8627C08",border:"1px solid #E8627C15"}}>
-                <p style={{fontSize:10,color:"#E8627C",marginBottom:4}}>⚡ 天敵</p>
-                <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>{deepResult.enemyName}</p>
-                <p style={{fontSize:10,color:"var(--t3)",lineHeight:1.6,marginTop:4}}>{deepResult.enemyWhy}</p>
-              </div>
-            </div>
-          </Card>
+
           <Card style={{marginBottom:12,background:"linear-gradient(135deg,#6B21A810,#6B21A805)"}}>
             <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
               <span style={{fontSize:18}}>🔮</span>
@@ -1989,8 +2259,8 @@ function App(){
           <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:10}}>
             <div style={{background:"var(--card)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 8px 32px rgba(118,75,162,0.2)",border:"1px solid #764ba220",maxWidth:300}}>
               <div style={{fontSize:36,marginBottom:12}}>🔓</div>
-              <p style={{fontSize:16,fontWeight:800,color:"var(--t1)",marginBottom:6}}>あと8項目あるよ</p>
-              <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:16}}>最強の武器・🪞隠れた魅力・💰お金の癖・取扱注意・輝くヒント・相性マップ・🔮3ヶ月予言・処方箋</p>
+              <p style={{fontSize:16,fontWeight:800,color:"var(--t1)",marginBottom:6}}>あと7項目あるよ</p>
+              <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:16}}>最強の武器・🪞隠れた魅力・💰お金の癖・取扱注意・輝くヒント・🔮3ヶ月予言・処方箋</p>
               <button onClick={()=>{gtag("event","deep_paywall_tap",{type:deepResult.name});setShowPaywall(true)}} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(118,75,162,0.3)"}}>月額プランですべて見る ¥480/月</button>
               <p style={{fontSize:10,color:"var(--t4)",marginTop:6}}>7日間無料・いつでもキャンセルOK</p>
             </div>
@@ -2026,6 +2296,10 @@ function App(){
             <p style={{fontSize:11,color:"#6BA3BE",fontWeight:700,marginBottom:8,letterSpacing:1}}>✅ 今月やってみて</p>
             <p style={{fontSize:14,color:"#5C4033",lineHeight:2.1}}>{letterResult.action}</p>
           </div>
+          {letterResult.question&&<div style={{marginBottom:24,padding:"18px 20px",borderRadius:16,background:"rgba(176,138,207,0.08)",border:"1px dashed rgba(176,138,207,0.3)"}}>
+            <p style={{fontSize:11,color:"#B08ACF",fontWeight:700,marginBottom:8,letterSpacing:1}}>🪞 今月の問い</p>
+            <p style={{fontSize:14,color:"#5C4033",lineHeight:2.2,fontStyle:"italic"}}>{letterResult.question}</p>
+          </div>}
           <div style={{borderTop:"1px dashed #D4C0B0",margin:"20px 0",opacity:0.6}}/>
           <p style={{fontSize:14,color:"#5C4033",lineHeight:2.2,whiteSpace:"pre-line"}}>{letterResult.closing}</p>
         </div>
@@ -2042,12 +2316,12 @@ function App(){
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               {user.photoURL?<img src={user.photoURL} alt="" style={{width:28,height:28,borderRadius:14}}/>:<div style={{width:28,height:28,borderRadius:14,background:"var(--grad)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff"}}>👤</div>}
               <div style={{textAlign:"left"}}>
-                <p style={{fontSize:11,fontWeight:600,color:"var(--t1)"}}>{user.displayName||user.email||"ユーザー"}</p>
+                <p style={{fontSize:11,fontWeight:600,color:"var(--t1)"}}>{name.trim()||"ログイン中"}</p>
                 <p style={{fontSize:9,color:isPremium?"#E8627C":"var(--t4)"}}>{isPremium?"✨ プレミアム会員":"無料プラン"}</p>
               </div>
             </div>
             <button onClick={signOut} style={{fontSize:10,color:"var(--t4)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif"}}>ログアウト</button>
-          </>:<button onClick={signInWithGoogle} style={{width:"100%",fontSize:12,color:"var(--t3)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",padding:"4px 0"}}>🔑 ログインする</button>}
+          </>:<button onClick={()=>setShowPaywall(true)} style={{width:"100%",fontSize:12,color:"var(--t3)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",padding:"4px 0"}}>🔑 ログイン / 新規登録</button>}
         </div>
         {user&&isPremium&&<div style={{marginBottom:16,textAlign:"center"}}>
           <button onClick={()=>setShowCancelConfirm(true)} style={{fontSize:10,color:"var(--t4)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",textDecoration:"underline"}}>プレミアムを解約する</button>
@@ -2151,9 +2425,9 @@ function App(){
 
     {/* ── ペイウォールモーダル ── */}
     {toast&&<div style={{position:"fixed",bottom:80,left:"50%",transform:"translateX(-50%)",background:"rgba(58,40,48,0.92)",color:"#fff",padding:"12px 24px",borderRadius:20,fontSize:13,fontWeight:500,zIndex:10001,maxWidth:"80%",textAlign:"center",animation:"slideUp .3s ease",boxShadow:"0 4px 20px rgba(0,0,0,0.15)"}}>{toast}</div>}
-    {showPaywall&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.55)",zIndex:10000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>{setShowPaywall(false);setShowCardForm(false)}}>
+    {showPaywall&&<div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.55)",zIndex:10000,display:"flex",alignItems:"center",justifyContent:"center",padding:20}} onClick={()=>{setShowPaywall(false);setShowCardForm(false);setShowEmailForm(false);setEmailSent(false);setEmailInput("")}}>
       <div onClick={e=>e.stopPropagation()} className="paywall-modal-inner" style={{background:nightMode?"#1E1622":"#fff",borderRadius:24,padding:"32px 24px",maxWidth:360,width:"100%",textAlign:"center",position:"relative",boxShadow:nightMode?"0 20px 60px rgba(0,0,0,0.5)":"0 20px 60px rgba(0,0,0,0.2)"}}>
-        <button onClick={()=>{setShowPaywall(false);setShowCardForm(false)}} style={{position:"absolute",top:12,right:16,background:"none",border:"none",fontSize:20,color:"var(--t4)",cursor:"pointer"}}>×</button>
+        <button onClick={()=>{setShowPaywall(false);setShowCardForm(false);setShowEmailForm(false);setEmailSent(false);setEmailInput("")}} style={{position:"absolute",top:12,right:16,background:"none",border:"none",fontSize:20,color:"var(--t4)",cursor:"pointer"}}>×</button>
         <div style={{fontSize:40,marginBottom:12}}>🔮</div>
         <p style={{fontSize:17,fontWeight:800,color:"var(--t1)",marginBottom:8,lineHeight:1.5}}>よるのことば プレミアム</p>
         <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.9,marginBottom:20}}>月額¥480で相性診断し放題・本当のわたし診断・毎月届くおたより、ぜんぶ使えるようになるよ。</p>
@@ -2164,11 +2438,49 @@ function App(){
           </div>)}
         </div>
         {!user?<>
-          <button onClick={async()=>{const ok=await signInWithGoogle();if(ok){setToast("ログインしたよ！")}}} style={{width:"100%",padding:"15px 0",borderRadius:25,border:"none",background:"#4285f4",color:"#fff",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:"0 2px 8px rgba(66,133,244,0.3)"}}>
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <button onClick={signInWithGoogle} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"#4285f4",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,boxShadow:"0 2px 8px rgba(66,133,244,0.3)",marginBottom:8}}>
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Googleでログイン
           </button>
-          <p style={{fontSize:10,color:"var(--t4)",marginTop:8}}>ログイン後、プレミアムに登録できます</p>
+          <div style={{position:"relative",margin:"8px 0"}}>
+            <div style={{height:1,background:"var(--border)"}}/>
+            <span style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:nightMode?"#1E1622":"#fff",padding:"0 10px",fontSize:10,color:"var(--t4)"}}>または</span>
+          </div>
+          {!showEmailForm?<button onClick={()=>setShowEmailForm(true)} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"1.5px solid var(--border)",background:"var(--card)",color:"var(--t1)",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>
+            ✉️ メールアドレスでログイン
+          </button>:emailSent?<div style={{textAlign:"center",padding:"16px",borderRadius:16,background:"rgba(232,98,124,0.05)",border:"1px solid rgba(232,98,124,0.15)"}}>
+            <div style={{fontSize:28,marginBottom:8}}>📬</div>
+            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",marginBottom:4}}>メールを送ったよ！</p>
+            <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8}}>{emailInput} に届いたリンクをタップしてね。迷惑メールフォルダも確認してみて。</p>
+            <button onClick={()=>{setEmailSent(false);setEmailInput("");setShowEmailForm(false)}} style={{marginTop:12,fontSize:11,color:"var(--t4)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",textDecoration:"underline"}}>やり直す</button>
+          </div>:emailLinkPending?<div>
+            <p style={{fontSize:12,color:"var(--t2)",marginBottom:8,lineHeight:1.8}}>メールのリンクからアクセスしたね。確認のためメールアドレスをもう一度入力して。</p>
+            <input
+              type="email"
+              placeholder="メールアドレスを入力"
+              value={emailInput}
+              onChange={e=>setEmailInput(e.target.value)}
+              onKeyDown={e=>{if(e.key==="Enter"&&emailInput){auth.signInWithEmailLink(emailInput,window.location.href).then(()=>{setEmailLinkPending(false);window.history.replaceState({},"",window.location.pathname);setToast("ログインできたよ！✨")}).catch(()=>setToast("メールアドレスが違うよ"))}}}
+              style={{width:"100%",padding:"12px 16px",borderRadius:14,border:"1.5px solid var(--border)",background:nightMode?"rgba(255,255,255,0.06)":"rgba(58,40,48,0.04)",color:"var(--t1)",fontSize:13,fontFamily:"Zen Maru Gothic, sans-serif",boxSizing:"border-box",outline:"none",marginBottom:8}}
+            />
+            <button onClick={()=>{if(!emailInput)return;auth.signInWithEmailLink(emailInput,window.location.href).then(()=>{setEmailLinkPending(false);window.history.replaceState({},"",window.location.pathname);setToast("ログインできたよ！✨")}).catch(()=>setToast("メールアドレスが違うよ"))}} style={{width:"100%",padding:"13px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>
+              確認してログイン
+            </button>
+          </div>:<div>
+            <input
+              type="email"
+              placeholder="メールアドレスを入力"
+              value={emailInput}
+              onChange={e=>setEmailInput(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&sendEmailLink(emailInput)}
+              style={{width:"100%",padding:"12px 16px",borderRadius:14,border:"1.5px solid var(--border)",background:nightMode?"rgba(255,255,255,0.06)":"rgba(58,40,48,0.04)",color:"var(--t1)",fontSize:13,fontFamily:"Zen Maru Gothic, sans-serif",boxSizing:"border-box",outline:"none",marginBottom:8}}
+            />
+            <button onClick={()=>sendEmailLink(emailInput)} disabled={emailLoading} style={{width:"100%",padding:"13px 0",borderRadius:25,border:"none",background:emailLoading?"rgba(200,160,224,0.4)":"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"#fff",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:emailLoading?"wait":"pointer"}}>
+              {emailLoading?"送信中...":"ログインリンクを送る"}
+            </button>
+            <button onClick={()=>{setShowEmailForm(false);setEmailInput("")}} style={{width:"100%",marginTop:6,padding:"8px 0",borderRadius:14,border:"none",background:"none",color:"var(--t4)",fontSize:11,cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif"}}>← 戻る</button>
+          </div>}
+          <p style={{fontSize:10,color:"var(--t4)",marginTop:10}}>ログイン後、プレミアムに登録できます</p>
         </>:<>
           <p style={{fontSize:11,color:"var(--t3)",marginBottom:12}}>🙋 {user.displayName||user.email||"ゲスト"} でログイン中</p>
           {showCardForm?<div>
