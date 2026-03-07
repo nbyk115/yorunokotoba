@@ -1160,6 +1160,7 @@ function App(){
     return()=>window.removeEventListener("popstate",onPop);
   },[]);
   const [dreamText,setDreamText]=useState("");const [dreamResult,setDreamResult]=useState(null);
+  const [fortuneTab,setFortuneTab]=useState("love");
   const [dreamArchive,setDreamArchive]=useState(()=>{try{const s=localStorage.getItem("ynk_dream_archive");return s?JSON.parse(s):[]}catch(e){return[]}});
   const [archivePage,setArchivePage]=useState(null);
   const [feedbackSent,setFeedbackSent]=useState({fortune:false,dream:false});
@@ -1233,7 +1234,7 @@ function App(){
               localStorage.setItem("ynk_dream_archive",JSON.stringify(next));
               setDreamArchive(next);
             }catch(e){}}},900)}
-  function startFortune(){if(!canFortune)return;gtag("event","fortune_start",{sign:sign});saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日の運気を計算中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setPage("fortuneResult");window.scrollTo(0,0)}},900)}
+  function startFortune(){if(!canFortune)return;gtag("event","fortune_start",{sign:sign});saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日の運気を計算中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setFortuneTab("love");setPage("fortuneResult");window.scrollTo(0,0)}},900)}
   function generateDreamSummary(entries){
     if(!entries||entries.length===0)return null;
     // Count symbol frequency
@@ -1850,7 +1851,7 @@ function App(){
       
 
       {page==="home"&&<div className="slide-up" style={{display:"flex",gap:4,margin:"20px 0 24px",background:"var(--night-toggle-bg)",borderRadius:14,padding:4}}>
-        {[{k:"dream",l:"夢占い",icon:"🌙"},{k:"fortune",l:"ホロスコープ",icon:"⭐"},{k:"compat",l:"相性",icon:"💕"}].map(t=><button key={t.k} onClick={()=>{if(t.k==="compat"){if(!isPremium){gtag("event","compat_tab_tap_free");setPage("premium");window.scrollTo(0,0);return}setMode(t.k)}else{setMode(t.k)}}} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?(nightMode?"rgba(240,128,154,0.15)":"rgba(232,98,124,0.1)"):"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:12,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",transition:"all 0.2s"}}>{t.icon} {t.l}</button>)}
+        {[{k:"dream",l:"夢占い",icon:"🌙"},{k:"fortune",l:"ホロスコープ",icon:"⭐"}].map(t=><button key={t.k} onClick={()=>setMode(t.k)} style={{flex:1,padding:"12px 0",borderRadius:11,border:"none",background:mode===t.k?(nightMode?"rgba(240,128,154,0.15)":"rgba(232,98,124,0.1)"):"transparent",color:mode===t.k?"var(--rose)":"var(--t3)",fontSize:12,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",transition:"all 0.2s"}}>{t.icon} {t.l}</button>)}
       </div>}
 
       {page==="home"&&streak.count>1&&<p className="slide-up" style={{textAlign:"center",fontSize:11,color:"var(--rose)",fontWeight:600,marginBottom:4}}>🔥 {streak.count}日連続アクセス中！</p>}
@@ -1972,6 +1973,7 @@ function App(){
       {page==="home"&&isPremium&&<div style={{marginTop:20,marginBottom:32,background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:18,padding:"24px 22px",textAlign:"center",position:"relative",overflow:"hidden"}}>
         <p style={{color:"white",fontSize:15,fontWeight:800,marginBottom:14}}>✨ プレミアム会員</p>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {mode==="dream"&&dreamArchive.length>0&&<button onClick={()=>setArchivePage("list")} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.25)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",borderTop:"1px solid rgba(255,255,255,0.15)"}}>🗂 夢の記録を見る（{dreamArchive.length}件）</button>}
           <button onClick={()=>{setMode("compat")}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>💕 相性診断</button>
           <button onClick={()=>{setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✨ 本当のわたし診断</button>
           <button onClick={()=>{if(!sign){setPage("home");setMode("fortune");setEditProfile(true);return}gtag("event","letter_open",{sign});const lr=generateMonthlyLetter(sign,name);setLetterResult(lr);setPage("letter");window.scrollTo(0,0)}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✉️ 今月のおたより</button>
@@ -1989,63 +1991,81 @@ function App(){
         <p style={{fontSize:14,color:"var(--t3)",animation:"breathe 1.8s infinite"}}>{loadingMsg}</p>
       </div>}
 
-      {page==="fortuneResult"&&fortuneResult&&<>
-        {/* Character Type - HERO */}
-        {fortuneResult.type&&<FortuneTypeCard type={fortuneResult.type} className="slide-up"/>}
-
-        {/* Daily Summary - ランク */}
-        <Card className="slide-up-1" style={{marginBottom:12,background:fortuneResult.rank==="大吉"?"linear-gradient(135deg,#D4A85310,#E8627C08)":"var(--card)"}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-            <span style={{fontSize:16}}>{SIGNS.find(s=>s.k===fortuneResult.sign)?.icon}</span>
-            <p style={{fontSize:13,fontWeight:700,color:"var(--t1)"}}>今日の運勢：{fortuneResult.rank}</p>
+      {page==="fortuneResult"&&fortuneResult&&(()=>{
+        const activeTab=fortuneTab;
+        const setActiveTab=setFortuneTab;
+        const tabData={
+          love:{icon:"💕",label:"恋愛",color:"#E8627C",text:fortuneResult.dailyLove},
+          work:{icon:"✨",label:"仕事",color:"#6BA3BE",text:fortuneResult.dailyWork},
+          health:{icon:"🌿",label:"健康",color:"#5BA87C",text:fortuneResult.dailyHealth},
+        };
+        return<>
+        {/* ── HERO: キャラ + ランク統合 ── */}
+        <div className="slide-up" style={{marginBottom:20,borderRadius:22,overflow:"hidden",boxShadow:"var(--card-highlight-shadow)"}}>
+          {fortuneResult.type&&<FortuneTypeCard type={fortuneResult.type} style={{marginBottom:0,borderRadius:"22px 22px 0 0"}}/>}
+          <div style={{background:fortuneResult.rank==="大吉"?"linear-gradient(135deg,#FFF8E8,#FFF0F3)":"var(--card)",padding:"18px 20px",borderTop:"1px solid var(--border)",borderRadius:"0 0 22px 22px"}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
+              <div style={{display:"flex",alignItems:"center",gap:6}}>
+                <span style={{fontSize:15}}>{SIGNS.find(s=>s.k===fortuneResult.sign)?.icon}</span>
+                <p style={{fontSize:12,color:"var(--t3)",fontWeight:600}}>{fortuneResult.sign}</p>
+              </div>
+              <span style={{fontSize:11,fontWeight:800,padding:"4px 12px",borderRadius:20,background:fortuneResult.rank==="大吉"?"linear-gradient(135deg,#D4A853,#E8627C)":fortuneResult.rank==="吉"?"linear-gradient(135deg,#B08ACF,#667eea)":"rgba(58,40,48,0.08)",color:fortuneResult.rank==="大吉"||fortuneResult.rank==="吉"?"#fff":"var(--t3)"}}>{fortuneResult.rank}</span>
+            </div>
+            <p style={{fontSize:15,color:"var(--t1)",lineHeight:2,fontWeight:500}}>{fortuneResult.summary}</p>
+            {fortuneResult.time&&<p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginTop:8,display:"flex",alignItems:"center",gap:4}}><span>🕐</span>{fortuneResult.time}</p>}
           </div>
-          <p style={{fontSize:14,color:"var(--t2)",lineHeight:2.1}}>{fortuneResult.summary}</p>
-          {fortuneResult.time&&<p style={{fontSize:12,color:"var(--t3)",lineHeight:1.9,marginTop:8}}>🕐 {fortuneResult.time}</p>}
-        </Card>
+        </div>
 
-        {/* Personality reading - 星座の特徴 */}
-        <Card className="slide-up-1" style={{marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-            <Tag text="personality" color="#B08ACF"/>
-            <span style={{fontSize:13,fontWeight:700}}>{fortuneResult.sign}のあなた</span>
+        {/* ── 今日のあなたへ ── */}
+        {fortuneResult.personality.dailyInsight&&<div className="slide-up-1" style={{marginBottom:16,padding:"18px 20px",borderRadius:18,background:"linear-gradient(135deg,rgba(176,138,207,0.1),rgba(232,98,124,0.06))",borderLeft:"3px solid #B08ACF"}}>
+          <p style={{fontSize:10,color:"#B08ACF",fontWeight:800,letterSpacing:1.5,marginBottom:8}}>✦ 今日のあなたへ</p>
+          <p style={{fontSize:14,color:"var(--t1)",lineHeight:2}}>{fortuneResult.personality.dailyInsight}</p>
+        </div>}
+
+        {/* ── セクション区切り ── */}
+        <div className="slide-up-2" style={{display:"flex",alignItems:"center",gap:10,margin:"4px 0 14px"}}>
+          <div style={{flex:1,height:1,background:"var(--border)"}}/>
+          <p style={{fontSize:10,color:"var(--t4)",letterSpacing:2,fontWeight:600}}>TODAY'S FORTUNE</p>
+          <div style={{flex:1,height:1,background:"var(--border)"}}/>
+        </div>
+
+        {/* ── 恋愛/仕事/健康 タブ切り替え ── */}
+        <Card className="slide-up-2" style={{marginBottom:12}}>
+          <div style={{display:"flex",gap:6,marginBottom:14,background:"var(--night-toggle-bg)",borderRadius:12,padding:3}}>
+            {Object.entries(tabData).map(([k,v])=><button key={k} onClick={()=>setActiveTab(k)} style={{flex:1,padding:"9px 0",borderRadius:10,border:"none",background:activeTab===k?"var(--card)":"transparent",color:activeTab===k?v.color:"var(--t3)",fontSize:12,fontWeight:activeTab===k?700:500,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",transition:"all 0.2s",boxShadow:activeTab===k?"0 2px 8px rgba(0,0,0,0.06)":"none"}}>{v.icon} {v.label}</button>)}
           </div>
-          {fortuneResult.personality.dailyInsight&&<div style={{background:"linear-gradient(135deg,rgba(176,138,207,0.1),rgba(232,98,124,0.08))",borderRadius:10,padding:"12px 14px",marginBottom:12,borderLeft:"3px solid #B08ACF"}}>
-            <p style={{fontSize:11,color:"#B08ACF",fontWeight:700,marginBottom:4}}>✦ 今日のあなたへ</p>
-            <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.9,margin:0}}>{fortuneResult.personality.dailyInsight}</p>
-          </div>}
-          <ExpandText text={fortuneResult.personality.trait} lines={3} style={{fontSize:14}}/>
+          <ExpandText text={tabData[activeTab].text} lines={4} style={{fontSize:14,lineHeight:2}}/>
         </Card>
 
-        {/* Daily Love / Work / Health - 日替わり */}
-        <Card className="slide-up-2" style={{marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="love" color="#E8627C"/><span style={{fontSize:13,fontWeight:700}}>今日の恋愛運</span></div>
-          <ExpandText text={fortuneResult.dailyLove} lines={3}/>
-        </Card>
-        <Card className="slide-up-2" style={{marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="work" color="#6BA3BE"/><span style={{fontSize:13,fontWeight:700}}>今日の仕事運</span></div>
-          <ExpandText text={fortuneResult.dailyWork} lines={3}/>
-        </Card>
-        <Card className="slide-up-3" style={{marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="health" color="#5BA87C"/><span style={{fontSize:13,fontWeight:700}}>今日の健康運</span></div>
-          <ExpandText text={fortuneResult.dailyHealth} lines={3}/>
-        </Card>
-
-        {/* Risk */}
-        <Card className="slide-up-3" style={{marginBottom:12}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}><Tag text="watch" color="#D47070"/><span style={{fontSize:13,fontWeight:700}}>気をつけること</span></div>
-          <ExpandText text={fortuneResult.risk} lines={3}/>
+        {/* ── 気をつけること ── */}
+        <Card className="slide-up-3" style={{marginBottom:12,background:"rgba(212,112,112,0.03)",border:"1px solid rgba(212,112,112,0.1)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <span style={{fontSize:13}}>⚠️</span>
+            <p style={{fontSize:13,fontWeight:700,color:"#D47070"}}>気をつけること</p>
+          </div>
+          <ExpandText text={fortuneResult.risk} lines={3} style={{fontSize:13}}/>
         </Card>
 
         <LuckySection lucky={fortuneResult.lucky} className="slide-up-4"/>
 
         {!feedbackSent.fortune&&<FeedbackWidget type="fortune" onSent={()=>setFeedbackSent(p=>({...p,fortune:true}))}/>}
 
-        {!isPremium&&<button onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"20px 0",borderRadius:16,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:15,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 16px rgba(102,126,234,0.3)",letterSpacing:1}}>💕 あの人との相性、確かめてみない？ →</button>}
+        {!isPremium
+          ?<div onClick={()=>{gtag("event","premium_cta_tap",{from:"fortune"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{width:"100%",padding:"20px",borderRadius:18,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
+            <p style={{fontSize:13,opacity:0.85,marginBottom:4}}>今日の運勢を見たなら…</p>
+            <p style={{fontSize:16,fontWeight:800,letterSpacing:0.5}}>💕 あの人との相性も確かめてみない？</p>
+            <p style={{fontSize:11,opacity:0.75,marginTop:6}}>¥480/月 · いつでも解約OK</p>
+          </div>
+          :<div onClick={()=>{setMode("compat");goHome();}} className="hover-lift" style={{width:"100%",padding:"18px",borderRadius:18,background:"linear-gradient(135deg,rgba(232,98,124,0.08),rgba(176,138,207,0.08))",border:"1.5px solid rgba(232,98,124,0.2)",cursor:"pointer",marginBottom:16,textAlign:"center"}}>
+            <p style={{fontSize:15,fontWeight:700,color:"var(--rose)"}}>💕 あの人との相性を診断する</p>
+            <p style={{fontSize:11,color:"var(--t3)",marginTop:4}}>気になる人との相性、今すぐチェック</p>
+          </div>
+        }
         <div style={{display:"flex",gap:8,marginBottom:40}}>
           <button className="hover-lift" onClick={()=>{goHome();window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,border:"1px solid var(--border)",background:"var(--card)",color:"var(--t2)",fontSize:13,fontWeight:600,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>🏠 ホーム</button>
           <button className="hover-lift" onClick={()=>{goHome();setMode("dream");window.scrollTo(0,0)}} style={{flex:1,padding:"15px 0",borderRadius:12,...btnStyle,fontSize:13}}>夢占いもやる</button>
         </div>
-      </>}
+      </>})()}
 
       {page==="dreamResult"&&dreamResult&&<>
         {/* Main Reading - the deep personal diagnosis */}
