@@ -632,7 +632,8 @@ function analyzeDream(text,signIdx){
     usedKeys.add(k);
   }
 
-  const todayMessage=(primaryPat.hint)||"今日の自分の感情を大切にして"nst actShould=(primaryPat.should)||["今日の自分の感情に正直になる"];
+  const todayMessage=(primaryPat.hint)||"今日の自分の感情を大切にして";
+  const actShould=(primaryPat.should)||["今日の自分の感情に正直になる"];
   const actAware=hasAnx
     ?["夜中の悩みループ思考に入ってないか確認する","「解決しようとする」より「感じきる」を優先する"]
     :hasLove
