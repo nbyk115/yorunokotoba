@@ -614,7 +614,7 @@ function analyzeDream(text,signIdx){
 
   const symbols=[];
   const usedKeys=new Set();
-  symbols.push({word:primaryKey,meaning:primaryPat.m,detail:primaryPat.d});
+  symbols.push({word:primaryKey,meaning:(primaryPat.m||"深層心理のサイン"),detail:(primaryPat.d||"あなたの深層心理からのメッセージ。")});
   usedKeys.add(primaryKey);
   for(const k of detected){
     if(usedKeys.has(k)||symbols.length>=4||!(k in map))continue;
@@ -632,8 +632,7 @@ function analyzeDream(text,signIdx){
     usedKeys.add(k);
   }
 
-  const todayMessage=primaryPat.hint;
-  const actShould=primaryPat.should;
+  const todayMessage=(primaryPat.hint)||"今日の自分の感情を大切にして"nst actShould=(primaryPat.should)||["今日の自分の感情に正直になる"];
   const actAware=hasAnx
     ?["夜中の悩みループ思考に入ってないか確認する","「解決しようとする」より「感じきる」を優先する"]
     :hasLove
@@ -657,11 +656,11 @@ function analyzeDream(text,signIdx){
   const type=DREAM_TYPES.find(t=>t.id===charId)||DREAM_TYPES[0];
 
   const readingIntros={
-    anx:`今夢が見せたのは、あなたの内側で何かが「もう限界」と言い始めてる証拠。表では大丈夫な顔をしてても、夢は正直。${primaryPat.d.split("。")[0]}。`,
-    love:`恋愛か感情か、誰かへの気持ちが深層心理から出てきた夢。好きとか嫌いとか以上の、もっと根本的な「つながりたい」という欲求が動いてる。${primaryPat.d.split("。")[0]}。`,
-    free:`どこか別の場所へ、別の自分へ。今いる場所への窮屈さと、解放への渇望が夢に出た。その感覚は正直だし、正しい。${primaryPat.d.split("。")[0]}。`,
-    work:`頑張ってきた自分が、成長の壁にぶつかりかけてる時期に見る夢。諦めと前進の間で揺れてる状態。${primaryPat.d.split("。")[0]}。`,
-    mystery:`夢が伝えたいことがある、でもまだ言語化できない——そういう状態の時に見る夢。直感と深層心理が活性化してる。${primaryPat.d.split("。")[0]}。`
+    anx:`今夢が見せたのは、あなたの内側で何かが「もう限界」と言い始めてる証拠。表では大丈夫な顔をしてても、夢は正直。${(primaryPat.d||"").split("。")[0]}。`,
+    love:`恋愛か感情か、誰かへの気持ちが深層心理から出てきた夢。好きとか嫌いとか以上の、もっと根本的な「つながりたい」という欲求が動いてる。${(primaryPat.d||"").split("。")[0]}。`,
+    free:`どこか別の場所へ、別の自分へ。今いる場所への窮屈さと、解放への渇望が夢に出た。その感覚は正直だし、正しい。${(primaryPat.d||"").split("。")[0]}。`,
+    work:`頑張ってきた自分が、成長の壁にぶつかりかけてる時期に見る夢。諦めと前進の間で揺れてる状態。${(primaryPat.d||"").split("。")[0]}。`,
+    mystery:`夢が伝えたいことがある、でもまだ言語化できない——そういう状態の時に見る夢。直感と深層心理が活性化してる。${(primaryPat.d||"").split("。")[0]}。`
   };
   const readingDeeps={
     anx:`「大丈夫」と言い続けることで、本当は大丈夫じゃない部分を封印してきたのかもしれない。\n\n心は正直で、夢という形で「そろそろ本音を出して」と伝えてくる。怖い夢、追われる夢、不安な夢は、あなたが感情に正直になれてるサイン。\n\n今必要なのは「解決策」じゃなくて「正直さ」。誰かに「実は疲れてる」って言うだけで、夢は変わる。`,
@@ -751,7 +750,7 @@ function RarityBadge({rarity,size="normal"}){
   const r=RARITY_INFO[rarity]||RARITY_INFO.N;
   const isSSR=rarity==="SSR";const isSR=rarity==="SR";
   const s=size==="small"?{padding:"2px 8px",fontSize:9}:{padding:"4px 14px",fontSize:11};
-  return<span style={{...s,borderRadius:20,fontWeight:700,letterSpacing:1,color:r.color,border:`1.5px solid ${r.border}`,background:isSSR?"linear-gradient(90deg,rgba(232,98,124,0.08),rgba(212,168,83,0.12),rgba(232,98,124,0.08))":"rgba(255,255,255,0.6)",backgroundSize:isSSR?"200% 100%":"auto",animation:isSSR?"shimmer 3s linear infinite":"none",boxShadow:r.glow,display:"inline-flex",alignItems:"center",gap:4}}>
+  return<span style={{...s,borderRadius:20,fontWeight:700,letterSpacing:1,color:r.color,border:`1.5px solid ${r.border}`,background:isSSR?"linear-gradient(90deg,rgba(232,98,124,0.18),rgba(212,168,83,0.22),rgba(232,98,124,0.18))":"var(--card)",backgroundSize:isSSR?"200% 100%":"auto",animation:isSSR?"shimmer 3s linear infinite":"none",boxShadow:r.glow,display:"inline-flex",alignItems:"center",gap:4}}>
     {r.icon&&<span>{r.icon}</span>}{r.label}
   </span>;
 }
@@ -999,7 +998,7 @@ function CharacterCarousel({className=""}){
   return<div className={className} style={{marginTop:16,marginBottom:8}}>
     <p style={{fontSize:10,color:"var(--t4)",letterSpacing:2,textTransform:"uppercase",fontFamily:"Cormorant, serif",marginBottom:10,textAlign:"center"}}>ALL CHARACTERS</p>
     <div ref={scrollRef} className="no-scrollbar" style={{display:"flex",gap:10,overflowX:"auto",paddingBottom:10,paddingTop:12,scrollSnapType:"x mandatory",WebkitOverflowScrolling:"touch",cursor:"grab",userSelect:"none"}}>
-      {DREAM_TYPES.map((t,i)=>{const ri=RARITY_INFO[t.rarity];return<div key={t.id} style={{minWidth:86,maxWidth:86,scrollSnapAlign:"center",background:active===i?`linear-gradient(135deg,${t.color}15,${t.color}08)`:"rgba(255,255,255,0.6)",border:active===i?`1.5px solid ${t.color}35`:"1px solid var(--border)",borderRadius:16,padding:"12px 4px 10px",textAlign:"center",boxShadow:active===i?`0 4px 20px ${t.color}12`:"var(--shadow)",transition:"all 0.3s ease",transform:active===i?"scale(1.06)":"scale(1)",position:"relative",overflow:"visible"}}>
+      {DREAM_TYPES.map((t,i)=>{const ri=RARITY_INFO[t.rarity];return<div key={t.id} style={{minWidth:86,maxWidth:86,scrollSnapAlign:"center",background:active===i?`linear-gradient(135deg,${t.color}15,${t.color}08)`:"var(--card)",border:active===i?`1.5px solid ${t.color}35`:"1px solid var(--border)",borderRadius:16,padding:"12px 4px 10px",textAlign:"center",boxShadow:active===i?`0 4px 20px ${t.color}12`:"var(--shadow)",transition:"all 0.3s ease",transform:active===i?"scale(1.06)":"scale(1)",position:"relative",overflow:"visible"}}>
         {t.rarity!=="N"&&<div style={{position:"absolute",top:-8,right:-4,zIndex:1}}><RarityBadge rarity={t.rarity} size="small"/></div>}
         <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:52,marginBottom:4}}><CharaAvatar id={t.id} size={48} animate={active===i}/></div>
         <p style={{fontSize:10,fontWeight:700,color:"var(--t1)",lineHeight:1.3,pointerEvents:"none"}}>{(()=>{const idx=t.name.lastIndexOf("の");return idx>0&&idx<t.name.length-1?<>{t.name.slice(0,idx+1)}<br/>{t.name.slice(idx+1)}</>:t.name})()}</p>
@@ -1460,7 +1459,7 @@ function App(){
       }
       setToast(v.msg||"もう少し詳しく教えてね");return;
     }
-    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=analyzeDream(useText,SIGNS.findIndex(s=>s.k===sign));setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0);
+    setPage("loading");const msgs=["夢を読み取ってるよ","シンボルを解析中","あなたの夢タイプを診断中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);try{const result=analyzeDream(useText,SIGNS.findIndex(s=>s.k===sign));setDreamResult(result);setPage("dreamResult");window.scrollTo(0,0);
             // Auto-save to archive
             try{
               const autoTitle=(txt)=>{if(txt.includes("追")||txt.includes("逃"))return"追いかけられる夢";if(txt.includes("歯"))return"歯が抜ける夢";if(txt.includes("飛")||txt.includes("空"))return"空を飛ぶ夢";if(txt.includes("落"))return"落ちる夢";if(txt.includes("水")||txt.includes("海"))return"水の夢";if(txt.includes("元カレ")||txt.includes("元カノ"))return"元恋人の夢";if(txt.includes("好き")||txt.includes("恋")||txt.includes("キス")||txt.includes("告白"))return"恋愛の夢";if(txt.includes("死"))return"死の夢";if(txt.includes("火"))return"火の夢";if(txt.includes("友"))return"友達の夢";if(txt.includes("家"))return"家の夢";if(txt.includes("電車"))return"乗り物の夢";if(txt.includes("学校"))return"学校の夢";if(txt.includes("月"))return"月の夢";if(txt.includes("蛇"))return"蛇の夢";if(txt.includes("猫"))return"猫の夢";if(txt.includes("犬"))return"犬の夢";if(txt.includes("鳥"))return"鳥の夢";return txt.slice(0,15)+"の夢";};
@@ -1469,7 +1468,7 @@ function App(){
               const next=[entry,...prev].slice(0,30);
               localStorage.setItem("ynk_dream_archive",JSON.stringify(next));
               setDreamArchive(next);
-            }catch(e){}}},900)}
+            }catch(e){}}catch(e){setToast("エラーが発生しました。もう一度試してね");setPage("home");}}},900)}
   function startFortune(){if(!canFortune)return;gtag("event","fortune_start",{sign:sign});saveProfile();setEditProfile(false);setPage("loading");const msgs=["星の配置を読んでるよ",name+"さんのホロスコープを分析中","今日の運気を計算中","アドバイスをまとめ中"];let i=0;setLoadingMsg(msgs[0]);const iv=setInterval(()=>{i++;if(i<msgs.length)setLoadingMsg(msgs[i]);else{clearInterval(iv);const result=generateFortune(name,sign,gender,birthDay,birthMonth);setFortuneResult(result);setFortuneTab("love");setPage("fortuneResult");window.scrollTo(0,0)}},900)}
   function generateDreamSummary(entries){
     if(!entries||entries.length===0)return null;
