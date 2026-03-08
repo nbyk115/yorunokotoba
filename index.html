@@ -2306,58 +2306,70 @@ function App(){
 
       {page==="dreamResult"&&dreamResult&&<>
 
-        {/* ── STEP1: この夢の意味は？（シンボル） ── */}
-        <Card className="slide-up" style={{marginBottom:14}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-            <div style={{width:32,height:32,borderRadius:10,background:"linear-gradient(135deg,rgba(176,138,207,0.2),rgba(232,98,124,0.1))",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <span style={{fontSize:16}}>🔮</span>
-            </div>
-            <div>
-              <p style={{fontSize:13,fontWeight:800,color:"var(--t1)"}}>この夢の意味</p>
-              <p style={{fontSize:10,color:"var(--t4)"}}>「{dreamText.slice(0,18)}{dreamText.length>18?"…":""}」</p>
-            </div>
-          </div>
-          {dreamResult.symbols.map((s,i)=><div key={i} style={{marginBottom:i<dreamResult.symbols.length-1?10:0,padding:"14px 16px",borderRadius:14,background:i===0?(nightMode?"rgba(232,98,124,0.08)":"linear-gradient(135deg,rgba(232,98,124,0.06),rgba(176,138,207,0.04))"):"var(--bg)",border:i===0?"1px solid rgba(232,98,124,0.12)":"1px solid var(--border)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
-              <span style={{fontSize:13,fontWeight:800,color:i===0?"var(--rose)":"#B08ACF"}}>{s.word}</span>
-              <span style={{fontSize:10,color:"var(--t4)",padding:"2px 8px",borderRadius:8,background:"rgba(0,0,0,0.04)"}}>{s.meaning}</span>
-            </div>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8,margin:0}}>{s.detail}</p>
-          </div>)}
-        </Card>
+        {/* ── BLOCK1: この夢が言ってること ── */}
+        <div className="slide-up" style={{marginBottom:14,borderRadius:20,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.07)"}}>
 
-        {/* ── STEP2: 今のあなたの状態（深層心理） ── */}
-        <div className="slide-up-1" style={{marginBottom:14,borderRadius:20,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.07)"}}>
-          <div style={{background:dreamResult.theme?dreamResult.theme.grad:"linear-gradient(135deg,#B08ACF,#8B6AAF)",padding:"18px 20px 14px",position:"relative",overflow:"hidden"}}>
+          {/* テーマヘッダー */}
+          <div style={{background:dreamResult.theme?dreamResult.theme.grad:"linear-gradient(135deg,#B08ACF,#8B6AAF)",padding:"14px 20px",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",top:-10,right:-10,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.08)"}}/>
-            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8,position:"relative"}}>
-              <span style={{fontSize:11,background:"rgba(255,255,255,0.2)",color:"white",padding:"3px 10px",borderRadius:10,fontWeight:700}}>{dreamResult.theme?dreamResult.theme.icon+" "+dreamResult.theme.label:"深層心理"}</span>
+            <div style={{display:"flex",alignItems:"center",gap:8,position:"relative"}}>
+              <div style={{width:28,height:28,borderRadius:8,background:"rgba(255,255,255,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>
+                {dreamResult.theme?dreamResult.theme.icon:"🔮"}
+              </div>
+              <div>
+                <p style={{fontSize:10,color:"rgba(255,255,255,0.7)",fontWeight:700,letterSpacing:1}}>この夢が言ってること</p>
+                <p style={{fontSize:12,color:"white",fontWeight:700}}>「{dreamText.slice(0,16)}{dreamText.length>16?"…":""}」</p>
+              </div>
             </div>
-            <p style={{fontSize:11,color:"rgba(255,255,255,0.7)",fontWeight:700,letterSpacing:1,marginBottom:6,position:"relative"}}>今のあなたの状態</p>
-            <p style={{fontSize:14,fontWeight:700,color:"white",lineHeight:1.9,position:"relative"}}>{dreamResult.mainReading.intro}</p>
           </div>
-          {dreamResult.mainReading.deep&&<div style={{background:"var(--card)",padding:"14px 20px"}}>
-            <ExpandText text={dreamResult.mainReading.deep} lines={3} style={{fontSize:13,color:"var(--t2)",lineHeight:2}}/>
-          </div>}
+
+          {/* シンボル＋深層心理 統合 */}
+          <div style={{background:"var(--card)",padding:"16px 18px"}}>
+            {/* シンボル一覧 */}
+            {dreamResult.symbols.map((s,i)=><div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:i<dreamResult.symbols.length-1?12:0,paddingBottom:i<dreamResult.symbols.length-1?12:0,borderBottom:i<dreamResult.symbols.length-1?"1px solid var(--border)":"none"}}>
+              <div style={{minWidth:40,textAlign:"center"}}>
+                <span style={{fontSize:13,fontWeight:800,color:i===0?"var(--rose)":"#B08ACF"}}>{s.word}</span>
+              </div>
+              <div style={{flex:1}}>
+                <span style={{fontSize:10,color:"var(--t4)",background:"var(--bg)",padding:"2px 8px",borderRadius:8,fontWeight:600,display:"inline-block",marginBottom:4}}>{s.meaning}</span>
+                <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.8,margin:0}}>{s.detail}</p>
+              </div>
+            </div>)}
+
+            {/* 深層心理（区切り線の後） */}
+            <div style={{marginTop:14,paddingTop:14,borderTop:"1px solid var(--border)"}}>
+              <p style={{fontSize:13,fontWeight:700,color:"var(--t1)",lineHeight:1.9,marginBottom:dreamResult.mainReading.deep?8:0}}>{dreamResult.mainReading.intro}</p>
+              {dreamResult.mainReading.deep&&<ExpandText text={dreamResult.mainReading.deep} lines={2} style={{fontSize:12,color:"var(--t3)",lineHeight:1.9}}/>}
+            </div>
+          </div>
         </div>
 
-        {/* ── STEP3: 今日どうする？（メッセージ＋アクション） ── */}
-        <div className="slide-up-2" style={{marginBottom:14,borderRadius:18,border:"1px solid "+(dreamResult.theme?dreamResult.theme.color+"30":"rgba(176,138,207,0.25)"),overflow:"hidden"}}>
-          {dreamResult.todayMessage&&<div style={{padding:"16px 20px",borderBottom:"1px solid "+(dreamResult.theme?dreamResult.theme.color+"20":"rgba(176,138,207,0.15)")}}>
-            <p style={{fontSize:10,color:dreamResult.theme?dreamResult.theme.color:"#B08ACF",fontWeight:800,letterSpacing:1.5,marginBottom:8}}>✦ 今日のメッセージ</p>
-            <p style={{fontSize:14,color:"var(--t1)",lineHeight:2,fontWeight:500}}>{dreamResult.todayMessage}</p>
+        {/* ── BLOCK2: じゃあ今日これやって ── */}
+        <div className="slide-up-1" style={{marginBottom:14,borderRadius:20,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.06)",border:"1px solid "+(dreamResult.theme?dreamResult.theme.color+"25":"rgba(176,138,207,0.2)")}}>
+
+          {/* 今日のメッセージ */}
+          {dreamResult.todayMessage&&<div style={{padding:"16px 18px",background:dreamResult.theme?(nightMode?"rgba(0,0,0,0.2)":dreamResult.theme.color+"08"):"var(--bg)",borderBottom:"1px solid "+(dreamResult.theme?dreamResult.theme.color+"15":"var(--border)")}}>
+            <p style={{fontSize:10,color:dreamResult.theme?dreamResult.theme.color:"#B08ACF",fontWeight:800,letterSpacing:1.5,marginBottom:6}}>✦ 夢からのメッセージ</p>
+            <p style={{fontSize:15,color:"var(--t1)",lineHeight:1.9,fontWeight:600}}>{dreamResult.todayMessage}</p>
           </div>}
-          <div style={{padding:"16px 20px",background:"var(--card)"}}>
-            <p style={{fontSize:10,color:"var(--t4)",fontWeight:700,letterSpacing:1,marginBottom:12}}>今日やること</p>
-            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+
+          {/* 今日やること */}
+          <div style={{padding:"16px 18px",background:"var(--card)"}}>
+            <p style={{fontSize:10,color:"var(--t4)",fontWeight:700,letterSpacing:1,marginBottom:10}}>今日やること</p>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
               {dreamResult.actions.should.map((item,j)=><div key={j} style={{display:"flex",alignItems:"flex-start",gap:10}}>
-                <span style={{fontSize:12,color:"#5BA87C",flexShrink:0,marginTop:2}}>✓</span>
+                <div style={{width:20,height:20,borderRadius:6,background:dreamResult.theme?dreamResult.theme.color+"15":"rgba(176,138,207,0.12)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,marginTop:1}}>
+                  <span style={{fontSize:10,color:dreamResult.theme?dreamResult.theme.color:"#B08ACF",fontWeight:800}}>✓</span>
+                </div>
                 <p style={{fontSize:13,color:"var(--t1)",lineHeight:1.8}}>{item}</p>
               </div>)}
             </div>
-            {(dreamResult.actions.aware||[]).length>0&&<details style={{marginTop:12}}><summary style={{fontSize:11,color:"var(--t3)",cursor:"pointer",listStyle:"none",padding:"4px 0",fontWeight:600}}>もっと見る（意識すること・避けること）▾</summary>
+
+            {/* 意識すること・避けること 折りたたみ */}
+            {((dreamResult.actions.aware||[]).length>0||(dreamResult.actions.avoid||[]).length>0)&&<details style={{marginTop:12}}>
+              <summary style={{fontSize:11,color:"var(--t3)",cursor:"pointer",listStyle:"none",padding:"6px 0",fontWeight:600,borderTop:"1px solid var(--border)"}}>意識すること・避けること ▾</summary>
               <div style={{marginTop:10,display:"flex",flexDirection:"column",gap:10}}>
-                {[{icon:"👀",title:"意識すること",items:dreamResult.actions.aware,color:"#6BA3BE"},{icon:"🚫",title:"避けること",items:dreamResult.actions.avoid,color:"#D47070"}].map((sec,i)=><div key={i}>
+                {[{icon:"👀",title:"意識すること",items:dreamResult.actions.aware||[],color:"#6BA3BE"},{icon:"🚫",title:"避けること",items:dreamResult.actions.avoid||[],color:"#D47070"}].map((sec,i)=>sec.items.length>0&&<div key={i}>
                   <p style={{fontSize:11,fontWeight:700,color:sec.color,marginBottom:6}}>{sec.icon} {sec.title}</p>
                   {sec.items.map((item,j)=><p key={j} style={{fontSize:12,color:"var(--t2)",lineHeight:1.7,paddingLeft:10,borderLeft:`2px solid ${sec.color}30`,marginBottom:4}}>{item}</p>)}
                 </div>)}
@@ -2366,7 +2378,7 @@ function App(){
           </div>
         </div>
 
-        <LuckySection lucky={dreamResult.lucky} className="slide-up-3"/>
+        <LuckySection lucky={dreamResult.lucky} className="slide-up-2"/>
         {!feedbackSent.dream&&<FeedbackWidget type="dream" onSent={()=>setFeedbackSent(p=>({...p,dream:true}))}/>}
         {!isPremium&&<div onClick={()=>{gtag("event","premium_cta_tap",{from:"dream"});setPage("premium");window.scrollTo(0,0)}} className="hover-lift" style={{padding:"20px",borderRadius:18,background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",cursor:"pointer",marginBottom:16,boxShadow:"0 4px 20px rgba(102,126,234,0.35)",textAlign:"center"}}>
             <p style={{fontSize:13,opacity:0.85,marginBottom:4}}>夢の続きが気になるなら…</p>
