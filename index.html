@@ -2129,7 +2129,7 @@ function App(){
       {page==="home"&&mode==="dream"&&<><Card className="slide-up">
         <p style={{fontSize:13,color:"var(--t2)",marginBottom:14,fontWeight:500}}>今朝の夢を教えて</p>
         <textarea value={dreamText} onChange={e=>setDreamText(e.target.value)} placeholder={"例：知らない街を歩いてたら\n急に空が紫色に変わって..."} style={{width:"100%",minHeight:120,background:"rgba(58,40,48,0.02)",border:"1px solid var(--border)",borderRadius:14,padding:16,fontSize:15,lineHeight:2,color:"var(--t1)",fontFamily:"Zen Maru Gothic, sans-serif",resize:"vertical"}}/>
-        <button onClick={startDream} disabled={!dreamText.trim()} style={{width:"100%",marginTop:16,padding:"16px 0",...(dreamText.trim()?btnStyle:btnOff)}}>夢タイプを診断する</button>
+        <button onClick={()=>startDream()} disabled={!dreamText.trim()} style={{width:"100%",marginTop:16,padding:"16px 0",...(dreamText.trim()?btnStyle:btnOff)}}>夢タイプを診断する</button>
       </Card>
       <div className="slide-up-1" style={{margin:"20px 0 24px"}}>
         <p style={{fontSize:12,color:"var(--t3)",marginBottom:10}}>よく見る夢</p>
