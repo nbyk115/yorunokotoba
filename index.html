@@ -2169,21 +2169,7 @@ function App(){
         <p style={{fontSize:12,color:"var(--t3)",marginBottom:10}}>よく見る夢</p>
         <div style={{display:"flex",flexWrap:"wrap",gap:8}}>{quickDreams.map((d,i)=><button key={i} className="hover-lift" onClick={()=>setDreamText(d)} style={{padding:"9px 16px",borderRadius:20,border:"1px solid var(--border)",background:"rgba(255,255,255,0.5)",color:"var(--t2)",fontSize:12,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>{d}</button>)}</div>
       </div>
-      {mode==="dream"&&dreamArchive.length>0&&<div className="slide-up-2" style={{marginBottom:24}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
-          <p style={{fontSize:12,color:"var(--t3)"}}>🗂 過去の夢</p>
-          <button onClick={()=>{if(!isPremium){gtag("event","archive_all_tap_free");setShowPaywall(true)}else{setArchivePage("list")}}} style={{fontSize:11,color:"var(--rose)",background:"none",border:"none",cursor:"pointer",fontFamily:"Zen Maru Gothic, sans-serif",fontWeight:600}}>{isPremium?"すべて見る →":"🔒 すべて見る"}</button>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {dreamArchive.slice(0,3).map((e,i)=><div key={e.id} className="hover-lift" onClick={()=>{if(!isPremium){gtag("event","archive_preview_tap_free");setShowPaywall(true)}else{setArchivePage(String(e.id))}}} style={{padding:"12px 14px",borderRadius:14,background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer"}}>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
-              <p style={{fontSize:10,color:"var(--t4)"}}>{e.date}</p>
 
-            </div>
-            <p style={{fontSize:12,color:"var(--t2)",lineHeight:1.6,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{e.text}</p>
-          </div>)}
-        </div>
-      </div>}
       </>}
 
       {page==="home"&&mode==="fortune"&&hasProfile&&!editProfile?<div className="slide-up">
@@ -2262,11 +2248,11 @@ function App(){
       {page==="home"&&!isPremium&&<PremiumCTA style={{marginTop:20,marginBottom:32}} onTap={()=>{gtag("event","premium_cta_tap",{from:"home"});setPage("premium");window.scrollTo(0,0)}}/>}
       {page==="home"&&isPremium&&<div style={{marginTop:20,marginBottom:32,background:"linear-gradient(135deg,#667eea 0%,#764ba2 100%)",borderRadius:18,padding:"24px 22px",textAlign:"center",position:"relative",overflow:"hidden"}}>
         <p style={{color:"white",fontSize:15,fontWeight:800,marginBottom:14}}>✨ プレミアム会員</p>
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {mode==="dream"&&dreamArchive.length>0&&<button onClick={()=>setArchivePage("list")} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.25)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",marginBottom:4}}>📖 夢の全記録＋分析（{dreamArchive.length}件）</button>}
-          <button onClick={()=>{setMode("compat")}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>💕 相性診断</button>
-          <button onClick={()=>{setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✨ 本当のわたし診断</button>
-          <button onClick={()=>{if(!sign){setPage("home");setMode("fortune");setEditProfile(true);return}gtag("event","letter_open",{sign});const lr=generateMonthlyLetter(sign,name);setLetterResult(lr);setPage("letter");window.scrollTo(0,0)}} style={{width:"100%",padding:"12px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✉️ 今月のおたより</button>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <button onClick={()=>{goHome();setMode("dream");setArchivePage("list")}} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.22)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>📖 夢の記録{dreamArchive.length>0?`（${dreamArchive.length}件）`:""}</button>
+          <button onClick={()=>{setMode("compat")}} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.22)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>💕 相性診断</button>
+          <button onClick={()=>{setPage("premium");window.scrollTo(0,0)}} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.22)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✨ 本当のわたし診断</button>
+          <button onClick={()=>{if(!sign){setPage("home");setMode("fortune");setEditProfile(true);return}gtag("event","letter_open",{sign});const lr=generateMonthlyLetter(sign,name);setLetterResult(lr);setPage("letter");window.scrollTo(0,0)}} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"rgba(255,255,255,0.22)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer"}}>✉️ 今月のおたより</button>
         </div>
       </div>}
 
@@ -2680,7 +2666,7 @@ function App(){
                   <div style={{fontSize:32,marginBottom:8}}>🔓</div>
                   <p style={{fontSize:14,fontWeight:800,color:"var(--t1)",marginBottom:4}}>詳細を見る</p>
                   <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.7,marginBottom:14}}>恋愛・仕事・友情の各スコアとアドバイス</p>
-                  <button onClick={()=>{gtag("event","compat_paywall_tap",{signs:compatResult.mySign+"×"+compatResult.theirSign});setShowPaywall(true)}} style={{width:"100%",padding:"12px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>月額プランで解放 ¥480/月</button>
+                  {!isPremium&&<button onClick={()=>{gtag("event","compat_paywall_tap",{signs:compatResult.mySign+"×"+compatResult.theirSign});setShowPaywall(true)}} style={{width:"100%",padding:"12px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#667eea,#764ba2)",color:"white",fontSize:13,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(102,126,234,0.3)"}}>月額プランで解放 ¥480/月</button>}
                   <p style={{fontSize:10,color:"var(--t4)",marginTop:6}}>何人でも診断し放題</p>
                 </div>
               </div>
@@ -2819,7 +2805,7 @@ function App(){
               <div style={{fontSize:36,marginBottom:12}}>🔓</div>
               <p style={{fontSize:16,fontWeight:800,color:"var(--t1)",marginBottom:6}}>あと7項目あるよ</p>
               <p style={{fontSize:11,color:"var(--t3)",lineHeight:1.8,marginBottom:16}}>最強の武器・🪞隠れた魅力・💰お金の癖・取扱注意・輝くヒント・🔮3ヶ月予言・処方箋</p>
-              <button onClick={()=>{gtag("event","deep_paywall_tap",{type:deepResult.name});setShowPaywall(true)}} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(118,75,162,0.3)"}}>月額プランですべて見る ¥480/月</button>
+              {!isPremium&&<button onClick={()=>{gtag("event","deep_paywall_tap",{type:deepResult.name});setShowPaywall(true)}} style={{width:"100%",padding:"14px 0",borderRadius:25,border:"none",background:"linear-gradient(135deg,#764ba2,#C8A0E8)",color:"white",fontSize:14,fontWeight:700,fontFamily:"Zen Maru Gothic, sans-serif",cursor:"pointer",boxShadow:"0 4px 16px rgba(118,75,162,0.3)"}}>月額プランですべて見る ¥480/月</button>}
               <p style={{fontSize:10,color:"var(--t4)",marginTop:6}}>7日間無料・いつでもキャンセルOK</p>
             </div>
           </div>
@@ -2867,11 +2853,11 @@ function App(){
         </div>
       </div>}
 
-      {/* ── 夢アーカイブ リストページ ── */}
+      {/* ── 夢の記録 リストページ ── */}
       {page==="home"&&archivePage==="list"&&isPremium&&<div className="fade-in" style={{maxWidth:440,margin:"0 auto"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
           <button onClick={()=>setArchivePage(null)} style={{background:"none",border:"none",cursor:"pointer",fontSize:20,color:"var(--t3)",padding:0}}>←</button>
-          <h2 style={{fontSize:17,fontWeight:700,color:"var(--t1)"}}>🗂 夢のアーカイブ</h2>
+          <h2 style={{fontSize:17,fontWeight:700,color:"var(--t1)"}}>📖 夢の記録</h2>
         </div>
         {(()=>{
           const now=new Date();
@@ -2908,7 +2894,7 @@ function App(){
               <p style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:4}}>✨ {summary.monthStr}の夢パターン分析</p>
               <p style={{fontSize:11,color:"rgba(255,255,255,0.85)",lineHeight:1.7}}>今月{summary.count}つの夢を記録。繰り返し出てくるシンボルが、あなたの深層心理を語ってる。プレミアムで読み解こう →</p>
             </div>:null}
-            {/* アーカイブリスト */}
+            {/* 記録リスト */}
             <div style={{display:"flex",flexDirection:"column",gap:10}}>
               {dreamArchive.map((e,i)=><div key={e.id} className="hover-lift" onClick={()=>setArchivePage(String(e.id))} style={{padding:"14px 16px",borderRadius:16,background:"var(--card)",border:"1px solid var(--border)",cursor:"pointer"}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
@@ -2919,7 +2905,7 @@ function App(){
                 {e.intro&&<p style={{fontSize:11,color:"var(--t3)",marginTop:4,lineHeight:1.6,display:"-webkit-box",WebkitLineClamp:1,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{e.intro}</p>}
               </div>)}
             </div>
-            {dreamArchive.length===0&&<p style={{textAlign:"center",color:"var(--t4)",fontSize:13,padding:"40px 0"}}>まだ夢の記録がないよ。夢占いをしてみて🌙</p>}
+            {dreamArchive.length===0&&<p style={{textAlign:"center",color:"var(--t4)",fontSize:13,padding:"40px 0"}}>まだ記録がないよ。夢占いをしてみて🌙</p>}
           </>;
         })()}
         <div style={{marginTop:20,marginBottom:40}}>
@@ -2927,7 +2913,7 @@ function App(){
         </div>
       </div>}
 
-      {/* ── 夢アーカイブ 詳細ページ ── */}
+      {/* ── 夢の記録 詳細ページ ── */}
       {page==="home"&&archivePage&&archivePage!=="list"&&isPremium&&(()=>{
         const entry=dreamArchive.find(e=>String(e.id)===archivePage);
         if(!entry)return null;
