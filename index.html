@@ -587,16 +587,29 @@ function analyzeDream(text,signIdx){
     mystery:{key:"mystery",label:"深層・謎",icon:"🔮",color:"#764ba2",grad:"linear-gradient(135deg,#764ba2,#553B7D)"}
   };
   const hasAnx=/(追|逃|怖|落|追いかけ|不安|焦|恐|泣|叫)/.test(text);
-  const hasLove=/(好き|恋|キス|告白|付き合|別れ|元カレ|元カノ|好|デート|ハグ|抱|触)/.test(text);
+  const hasLove=/(好き|恋|キス|告白|付き合|別れ|元カレ|元カノ|デート|ハグ)/.test(text);
   const hasFree=/(飛|空|逃げ|自由|旅|海外|鳥|翼|羽|走|広い)/.test(text);
   const hasWork=/(学校|仕事|試験|テスト|先生|成功|失敗|目標|挑戦|努力|練習)/.test(text);
-  const themeKey=hasAnx?"anx":hasLove?"love":hasFree?"free":hasWork?"work":"mystery";
-  const theme=T[themeKey];
 
+  // シンボル検出を先に行い、primarySymbolからテーマを決定する
   const symbolKeys=Object.keys(map);
   const detected=symbolKeys.filter(k=>text.includes(k));
   const primaryKey=detected[0]||(hasAnx?"追":hasLove?"好き":hasFree?"飛":hasWork?"学校":"知らない");
   const primaryPatterns=map[primaryKey]||map["知らない"];
+
+  // primarySymbol→テーママッピング（シンボルが検出された場合はそちらを優先）
+  const symbolThemeMap={
+    蛇:"mystery",歯:"anx",水:"anx",飛:"free",追:"anx",落:"anx",火:"love",
+    海:"mystery",花:"free",月:"mystery",猫:"free",犬:"love",魚:"mystery",
+    鳥:"free",雨:"anx",友:"love",家:"anx",学校:"work",車:"work",死:"mystery",
+    赤ちゃん:"free",好き:"love",元カレ:"love",元カノ:"love",知らない:"mystery",
+    怖:"anx",泣:"anx",笑:"love",走:"work",電車:"work",鏡:"mystery",お金:"work",子供:"free"
+  };
+  const detectedThemeKey=detected[0]&&symbolThemeMap[detected[0]]
+    ?symbolThemeMap[detected[0]]
+    :hasAnx?"anx":hasLove?"love":hasFree?"free":hasWork?"work":"mystery";
+  const themeKey=detectedThemeKey;
+  const theme=T[themeKey];
   const primaryPat=primaryPatterns[Math.floor(rng0()*primaryPatterns.length)];
 
   const symbols=[];
