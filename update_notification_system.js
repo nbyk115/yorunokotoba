@@ -46,6 +46,9 @@ function UpdateNotificationModal(props) {
     onClose();
   };
 
+  // ダークモード判定
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
   // モーダルHTML文字列を生成
   var modalHTML = `
     <div style="
@@ -63,7 +66,7 @@ function UpdateNotificationModal(props) {
       animation: fadeIn 0.3s ease-out;
     " onclick="window.closeUpdateModal()">
       <div style="
-        background-color: white;
+        background-color: ${isDark ? '#241828' : 'white'};
         border-radius: 25px;
         max-width: 500px;
         width: 100%;
@@ -71,7 +74,7 @@ function UpdateNotificationModal(props) {
         box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         animation: slideUp 0.4s ease-out;
       " onclick="event.stopPropagation()">
-        
+
         <!-- ヘッダー -->
         <div style="
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -83,7 +86,7 @@ function UpdateNotificationModal(props) {
             <div style="font-size: 64px; margin-bottom: 15px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
               🎉✨
             </div>
-            
+
             <div style="
               color: white;
               font-size: 28px;
@@ -102,7 +105,7 @@ function UpdateNotificationModal(props) {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333;
+            color: ${isDark ? '#e0d0e8' : '#333'};
             display: flex;
             align-items: center;
             gap: 10px;
@@ -117,14 +120,14 @@ function UpdateNotificationModal(props) {
               align-items: flex-start;
               margin-bottom: 18px;
               padding: 15px;
-              background-color: ${index % 2 === 0 ? '#f8f9fa' : '#fff'};
+              background-color: ${isDark ? (index % 2 === 0 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)') : (index % 2 === 0 ? '#f8f9fa' : '#fff')};
               border-radius: 12px;
-              border: 2px solid #e9ecef;
+              border: 2px solid ${isDark ? 'rgba(255,255,255,0.08)' : '#e9ecef'};
             ">
               <span style="font-size: 24px; margin-right: 12px; flex-shrink: 0;">
                 ${index === 0 ? '🐾' : index === 1 ? '⭐' : index === 2 ? '💕' : '✨'}
               </span>
-              <div style="font-size: 15px; line-height: 1.6; color: #333; font-weight: 500;">
+              <div style="font-size: 15px; line-height: 1.6; color: ${isDark ? '#d0c0d8' : '#333'}; font-weight: 500;">
                 ${feature}
               </div>
             </div>
@@ -134,16 +137,16 @@ function UpdateNotificationModal(props) {
           <div style="
             margin-top: 25px;
             padding: 20px;
-            background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
+            background: ${isDark ? 'linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(255,105,180,0.1) 100%)' : 'linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%)'};
             border-radius: 15px;
-            border: 2px solid #ffd700;
+            border: 2px solid ${isDark ? 'rgba(255,215,0,0.3)' : '#ffd700'};
             text-align: center;
           ">
             <div style="font-size: 32px; margin-bottom: 10px;">💎</div>
-            <div style="font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 8px;">
+            <div style="font-size: 16px; font-weight: bold; color: ${isDark ? '#f0d060' : '#d4af37'}; margin-bottom: 8px;">
               プレミアムプラン登場
             </div>
-            <div style="font-size: 13px; color: #666; line-height: 1.6;">
+            <div style="font-size: 13px; color: ${isDark ? '#b8a8c0' : '#666'}; line-height: 1.6;">
               二人の相性診断が無制限！<br/>
               初回7日間無料でお試しいただけます
             </div>
