@@ -27,14 +27,21 @@ var VERSION_HISTORY = [
 
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
-  // 常に表示（テスト用）
-  return true;
+  try {
+    var lastSeen = localStorage.getItem('lastSeenVersion');
+    if (!lastSeen) return true;
+    return lastSeen !== APP_VERSION.version;
+  } catch(e) {
+    return false;
+  }
 }
 
 // バージョン情報を記録
 function markVersionAsSeen() {
-  localStorage.setItem('lastSeenVersion', APP_VERSION.version);
-  localStorage.setItem('lastSeenDate', new Date().toISOString());
+  try {
+    localStorage.setItem('lastSeenVersion', APP_VERSION.version);
+    localStorage.setItem('lastSeenDate', new Date().toISOString());
+  } catch(e) {}
 }
 
 // UpdateNotificationModal（vanilla JS版）
@@ -223,8 +230,8 @@ function VersionBadge(onClick) {
   badge.innerHTML = `
     <div style="
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      right: calc(20px + env(safe-area-inset-right, 0px));
       background-color: rgba(102, 126, 234, 0.9);
       color: white;
       padding: 8px 15px;
