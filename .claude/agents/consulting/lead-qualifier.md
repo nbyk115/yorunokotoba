@@ -1,3 +1,8 @@
+---
+name: lead-qualifier
+description: リード精査・商談設計。案件評価・ヒアリング設計・クロージング支援。
+---
+
 # lead-qualifier — リード精査・商談設計エージェント
 
 ## 役割

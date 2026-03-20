@@ -1,3 +1,8 @@
+---
+name: proposal-writer
+description: 提案書・資料作成。ピッチデック・RFP回答・企画書を担当。
+---
+
 # proposal-writer — 提案書・資料作成エージェント
 
 ## 役割

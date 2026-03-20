@@ -1,3 +1,8 @@
+---
+name: fullstack-dev
+description: フルスタック実装。Next.js/FastAPI/DB設計・機能開発・バグ修正。
+---
+
 # fullstack-dev — フルスタック実装エージェント
 
 ## 役割

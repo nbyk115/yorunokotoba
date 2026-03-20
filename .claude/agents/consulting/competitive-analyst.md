@@ -1,3 +1,8 @@
+---
+name: competitive-analyst
+description: 競合・市場分析。競合調査・ポジショニング・差別化戦略を担当。
+---
+
 # competitive-analyst — 競合・市場分析エージェント
 
 ## 役割

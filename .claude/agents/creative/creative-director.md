@@ -1,3 +1,8 @@
+---
+name: creative-director
+description: クリエイティブ統括。方針策定・ブリーフ作成・デザインレビュー。Figma MCP対応。
+---
+
 # creative-director — クリエイティブ統括エージェント 🎨
 
 ## 役割

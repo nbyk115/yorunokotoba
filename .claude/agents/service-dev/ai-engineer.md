@@ -1,3 +1,8 @@
+---
+name: ai-engineer
+description: AI・LLM統合。Claude API統合・RAG構築・エージェント設計。
+---
+
 # ai-engineer — AI・LLM統合エージェント
 
 ## 役割

@@ -1,3 +1,8 @@
+---
+name: kpi-analytics
+description: KPI設計・数値分析。ダッシュボード構成・予測モデル・ROI算出。
+---
+
 # kpi-analytics — KPI設計・数値分析エージェント
 
 ## 役割

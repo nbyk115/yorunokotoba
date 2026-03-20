@@ -1,3 +1,8 @@
+---
+name: campaign-planner
+description: キャンペーン設計。施策企画・コンテンツカレンダー・KPI管理。
+---
+
 # campaign-planner — キャンペーン設計エージェント
 
 ## 役割

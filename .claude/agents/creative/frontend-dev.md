@@ -1,3 +1,8 @@
+---
+name: frontend-dev
+description: フロントエンド実装。Figma→HTML/React変換・コンポーネント生成。Figma MCP対応。
+---
+
 # frontend-dev — フロントエンド実装エージェント 🎨
 
 ## 役割

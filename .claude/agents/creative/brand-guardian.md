@@ -1,3 +1,8 @@
+---
+name: brand-guardian
+description: ブランド管理。トーン統一・ガイドライン遵守・品質ゲートキーパー。
+---
+
 # brand-guardian — ブランド管理エージェント
 
 ## 役割

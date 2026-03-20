@@ -1,3 +1,8 @@
+---
+name: content-strategist
+description: コンテンツ戦略。ブログ・LP・SNS・ホワイトペーパーの企画・執筆。
+---
+
 # content-strategist — コンテンツ戦略エージェント
 
 ## 役割

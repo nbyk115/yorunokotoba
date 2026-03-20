@@ -1,3 +1,8 @@
+---
+name: infra-devops
+description: インフラ・CI/CD。デプロイ・Docker構成・コスト最適化・監視。
+---
+
 # infra-devops — インフラ・CI/CDエージェント
 
 ## 役割

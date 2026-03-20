@@ -1,3 +1,8 @@
+---
+name: ux-designer
+description: UI/UX設計。UXフロー・ワイヤーフレーム・Figma仕様策定・LP設計。Figma MCP対応。
+---
+
 # ux-designer — UI/UX設計エージェント 🎨
 
 ## 役割

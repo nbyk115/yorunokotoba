@@ -1,3 +1,8 @@
+---
+name: agentic-content
+description: AIコンテンツ最適化。AIO対策・構造化データ・AIに選ばれるコンテンツ設計。
+---
+
 # agentic-content — AIコンテンツ最適化エージェント
 
 ## 役割
