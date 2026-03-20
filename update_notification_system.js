@@ -27,14 +27,20 @@ var VERSION_HISTORY = [
 
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
-  var lastSeen = localStorage.getItem('lastSeenVersion');
-  return lastSeen !== APP_VERSION.version;
+  try {
+    var lastSeen = localStorage.getItem('lastSeenVersion');
+    return lastSeen !== APP_VERSION.version;
+  } catch (e) {
+    return false;
+  }
 }
 
 // バージョン情報を記録
 function markVersionAsSeen() {
-  localStorage.setItem('lastSeenVersion', APP_VERSION.version);
-  localStorage.setItem('lastSeenDate', new Date().toISOString());
+  try {
+    localStorage.setItem('lastSeenVersion', APP_VERSION.version);
+    localStorage.setItem('lastSeenDate', new Date().toISOString());
+  } catch (e) {}
 }
 
 // UpdateNotificationModal（vanilla JS版）
