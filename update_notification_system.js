@@ -27,8 +27,8 @@ var VERSION_HISTORY = [
 
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
-  // 常に表示（テスト用）
-  return true;
+  var lastSeen = localStorage.getItem('lastSeenVersion');
+  return lastSeen !== APP_VERSION.version;
 }
 
 // バージョン情報を記録
@@ -63,7 +63,8 @@ function UpdateNotificationModal(props) {
       animation: fadeIn 0.3s ease-out;
     " onclick="window.closeUpdateModal()">
       <div style="
-        background-color: white;
+        background-color: var(--card, white);
+        color: var(--t1, #333);
         border-radius: 25px;
         max-width: 500px;
         width: 100%;
@@ -74,7 +75,7 @@ function UpdateNotificationModal(props) {
         
         <!-- ヘッダー -->
         <div style="
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #E8627C 0%, #D4506A 100%);
           padding: 40px 30px;
           text-align: center;
           position: relative;
@@ -102,7 +103,7 @@ function UpdateNotificationModal(props) {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 20px;
-            color: #333;
+            color: var(--t1, #333);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -117,14 +118,14 @@ function UpdateNotificationModal(props) {
               align-items: flex-start;
               margin-bottom: 18px;
               padding: 15px;
-              background-color: ${index % 2 === 0 ? '#f8f9fa' : '#fff'};
+              background-color: var(--bg, ${index % 2 === 0 ? '#f8f9fa' : '#fff'});
               border-radius: 12px;
-              border: 2px solid #e9ecef;
+              border: 2px solid var(--border, #e9ecef);
             ">
               <span style="font-size: 24px; margin-right: 12px; flex-shrink: 0;">
                 ${index === 0 ? '🐾' : index === 1 ? '⭐' : index === 2 ? '💕' : '✨'}
               </span>
-              <div style="font-size: 15px; line-height: 1.6; color: #333; font-weight: 500;">
+              <div style="font-size: 15px; line-height: 1.6; color: var(--t1, #333); font-weight: 500;">
                 ${feature}
               </div>
             </div>
@@ -143,7 +144,7 @@ function UpdateNotificationModal(props) {
             <div style="font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 8px;">
               プレミアムプラン登場
             </div>
-            <div style="font-size: 13px; color: #666; line-height: 1.6;">
+            <div style="font-size: 13px; color: var(--t3, #666); line-height: 1.6;">
               二人の相性診断が無制限！<br/>
               初回7日間無料でお試しいただけます
             </div>
@@ -155,14 +156,14 @@ function UpdateNotificationModal(props) {
           <button onclick="window.closeUpdateModal()" style="
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #E8627C 0%, #D4506A 100%);
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(232, 98, 124, 0.4);
           ">
             さっそく使ってみる！
           </button>
@@ -222,7 +223,7 @@ function VersionBadge(onClick) {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background-color: rgba(102, 126, 234, 0.9);
+      background-color: rgba(232, 98, 124, 0.9);
       color: white;
       padding: 8px 15px;
       border-radius: 20px;
@@ -256,7 +257,7 @@ function VersionBadge(onClick) {
       
       #version-badge:hover > div {
         transform: scale(1.05);
-        background-color: rgba(118, 75, 162, 0.9);
+        background-color: rgba(212, 80, 106, 0.9);
       }
     </style>
   `;
@@ -281,5 +282,3 @@ document.addEventListener('DOMContentLoaded', function() {
   // document.body.appendChild(versionBadge);
 });
 
-console.log('✅ アップデート通知システム読み込み完了');
-console.log('現在のバージョン: v' + APP_VERSION.version);

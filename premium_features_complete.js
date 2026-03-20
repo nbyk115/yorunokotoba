@@ -163,4 +163,3 @@ function calculateCompatibility(userCharacterId, partnerCharacterId, userZodiac,
   };
 }
 
-console.log('✅ プレミアム機能（相性アルゴリズム）を読み込みました');
