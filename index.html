@@ -322,8 +322,7 @@ var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
 if(isIOS){
 var dataUrl=cnv.toDataURL("image/png");
 var w=window.open("","_blank");
-if(w){w.document.write('<html><head><title>よるのことば</title><meta name="viewport" content="width=device-width"/><style>body{margin:0;background:#12101A;display:flex;flex-direction:column;align-items:center;padding:20px;box-sizing:border-box}img{max-width:100%;border-radius:16px}p{color:#fff;font-size:13px;margin-top:16px;text-align:center;font-family:sans-serif;line-height:1.8;opacity:0.7}</style></head><body><img src="'+dataUrl+'"/><p>長押しして「写真に保存」してね📸</p>
-</body></html>');w.document.close();setShareMsg("新しいタブで開いたよ！長押しで保存してね");}
+if(w){w.document.write('<html><head><title>よるのことば</title><meta name="viewport" content="width=device-width"/><style>body{margin:0;background:#12101A;display:flex;flex-direction:column;align-items:center;padding:20px;box-sizing:border-box}img{max-width:100%;border-radius:16px}p{color:#fff;font-size:13px;margin-top:16px;text-align:center;font-family:sans-serif;line-height:1.8;opacity:0.7}</style></head><body><img src="'+dataUrl+'"/><p>長押しして「写真に保存」してね📸</p></body></html>');w.document.close();setShareMsg("新しいタブで開いたよ！長押しで保存してね");}
 else{setShareMsg("ポップアップをブロックしてるかも。許可してから試してね");}
 }else{
 cnv.toBlob(function(blob){var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="yorunokotoba.png";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);setShareMsg("保存できたよ📸");},
@@ -441,8 +440,7 @@ var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
 if(isIOS){
 var dataUrl=cnv.toDataURL("image/png");
 var w=window.open("","_blank");
-if(w){w.document.write('<html><head><title>'+fileName+'</title><meta name="viewport" content="width=device-width"/><style>body{margin:0;background:#12101A;display:flex;flex-direction:column;align-items:center;padding:20px;box-sizing:border-box}img{max-width:100%;border-radius:16px}p{color:#fff;font-size:13px;margin-top:16px;text-align:center;font-family:sans-serif;line-height:1.8;opacity:0.7}</style></head><body><img src="'+dataUrl+'"/><p>\u9577\u62BC\u3057\u3057\u3066\u300C\u5199\u771F\u306B\u4FDD\u5B58\u300D\u3057\u3066\u306D\uD83D\uDCE9</p>
-</body></html>');
+if(w){w.document.write('<html><head><title>'+fileName+'</title><meta name="viewport" content="width=device-width"/><style>body{margin:0;background:#12101A;display:flex;flex-direction:column;align-items:center;padding:20px;box-sizing:border-box}img{max-width:100%;border-radius:16px}p{color:#fff;font-size:13px;margin-top:16px;text-align:center;font-family:sans-serif;line-height:1.8;opacity:0.7}</style></head><body><img src="'+dataUrl+'"/><p>\u9577\u62BC\u3057\u3057\u3066\u300C\u5199\u771F\u306B\u4FDD\u5B58\u300D\u3057\u3066\u306D\uD83D\uDCE9</p></body></html>');
 w.document.close();setToast("\u65B0\u3057\u3044\u30BF\u30D6\u3067\u958B\u3044\u305F\u3088\uFF01\u9577\u62BC\u3057\u3067\u4FDD\u5B58\u3057\u3066\u306D");}
 else{setToast("\u30DD\u30C3\u30D7\u30A2\u30C3\u30D7\u3092\u8A31\u53EF\u3057\u3066\u304B\u3089\u8A66\u3057\u3066\u306D");}}
 else{cnv.toBlob(function(blob){var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=fileName;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);setToast("\u4FDD\u5B58\u3067\u304D\u305F\u3088\uD83D\uDCE9");},"image/png");}
