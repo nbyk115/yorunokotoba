@@ -2,7 +2,7 @@
 
 ## システム概要
 **コンサル・サービス開発・プロダクト・クリエイティブ特化の4本柱マルチエージェントOS**
-21名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
+24名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
 
 ---
 
@@ -12,7 +12,7 @@
 複数部門にまたがる場合は、連携フローに従って順次起動する。
 
 ### 🔴 Consulting（コンサルティング）
-**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン
+**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -23,6 +23,7 @@
 | kpi-analytics | `.claude/agents/consulting/kpi-analytics.md` | KPIツリー・ダッシュボード・予測モデル |
 | ai-consultant | `.claude/agents/consulting/ai-consultant.md` | AI導入戦略・ROI試算・業務適用設計 |
 | client-success | `.claude/agents/consulting/client-success.md` | 顧客成功・LTV最大化・リテンション |
+| legal-compliance-checker | `.claude/agents/consulting/legal-compliance-checker.md` | 法務・コンプラ・契約チェック |
 
 ### 🟠 Service Dev（サービス開発）
 **トリガー**: コード, 実装, API, DB, インフラ, アーキテクチャ, AI機能, バグ, デプロイ, SaaS, Docker, CI/CD, テスト, LLM, RAG
@@ -38,14 +39,15 @@
 | infra-devops | `.claude/agents/service-dev/infra-devops.md` | デプロイ・Docker・コスト最適化 |
 
 ### 🟢 Product（プロダクト）
-**トリガー**: プロダクト, ロードマップ, PMF, 機能優先順位, バックログ, GTM, リリース計画, MVP
+**トリガー**: プロダクト, ロードマップ, PMF, 機能優先順位, バックログ, GTM, リリース計画, MVP, フィードバック, VOC, ユーザーの声
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
 | product-manager | `.claude/agents/product/product-manager.md` | プロダクト戦略・ロードマップ・PMF検証 |
+| feedback-synthesizer | `.claude/agents/product/feedback-synthesizer.md` | ユーザーフィードバック統合・インサイト抽出 |
 
 ### 🟣 Creative（クリエイティブ・コンテンツ）
-**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン
+**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン, グロース, A/Bテスト, ファネル, CVR
 
 > **Figma MCP対応エージェントには 🎨 を付与。**
 > FigmaリンクをURLとして渡すと自動でデザイン→コード変換が起動する。
@@ -59,6 +61,7 @@
 | campaign-planner | `.claude/agents/creative/campaign-planner.md` | 施策設計・コンテンツカレンダー・KPI |
 | brand-guardian | `.claude/agents/creative/brand-guardian.md` | トーン統一・ガイドライン・品質チェック |
 | agentic-content | `.claude/agents/creative/agentic-content.md` | AIO対策・AIに選ばれるコンテンツ設計 |
+| growth-hacker | `.claude/agents/creative/growth-hacker.md` | グロースハック・A/Bテスト・ファネル最適化 |
 
 ---
 
@@ -123,6 +126,24 @@ consulting/client-success → consulting/kpi-analytics → product/product-manag
 ```
 product/product-manager → service-dev/tech-lead → consulting/kpi-analytics
     （優先順位付け）           （技術実現性）          （PL試算）
+```
+
+### パターン9: CVR改善・グロース施策を回したい
+```
+creative/growth-hacker → consulting/kpi-analytics → product/feedback-synthesizer
+    （実験設計・A/Bテスト）     （計測・分析）            （ユーザー声との突合）
+```
+
+### パターン10: 新サービスの法務チェックをしたい
+```
+consulting/legal-compliance-checker → consulting/proposal-writer → consulting/strategy-lead
+       （法的リスク洗い出し）              （契約条件の整理）           （事業判断）
+```
+
+### パターン11: ユーザーフィードバックからプロダクト改善したい
+```
+product/feedback-synthesizer → product/product-manager → service-dev/tech-lead
+     （VOC分析・インサイト）         （優先順位付け）           （実装判断）
 ```
 
 ---
