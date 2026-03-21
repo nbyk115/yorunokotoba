@@ -1,8 +1,8 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・クリエイティブ特化の3本柱マルチエージェントOS**
-18名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ特化の4本柱マルチエージェントOS**
+21名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
 
 ---
 
@@ -12,7 +12,7 @@
 複数部門にまたがる場合は、連携フローに従って順次起動する。
 
 ### 🔴 Consulting（コンサルティング）
-**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング
+**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -21,6 +21,8 @@
 | proposal-writer | `.claude/agents/consulting/proposal-writer.md` | 提案書・ピッチデック・クライアント資料 |
 | lead-qualifier | `.claude/agents/consulting/lead-qualifier.md` | 案件評価・ヒアリング設計・クロージング |
 | kpi-analytics | `.claude/agents/consulting/kpi-analytics.md` | KPIツリー・ダッシュボード・予測モデル |
+| ai-consultant | `.claude/agents/consulting/ai-consultant.md` | AI導入戦略・ROI試算・業務適用設計 |
+| client-success | `.claude/agents/consulting/client-success.md` | 顧客成功・LTV最大化・リテンション |
 
 ### 🟠 Service Dev（サービス開発）
 **トリガー**: コード, 実装, API, DB, インフラ, アーキテクチャ, AI機能, バグ, デプロイ, SaaS, Docker, CI/CD, テスト, LLM, RAG
@@ -34,6 +36,13 @@
 | fullstack-dev | `.claude/agents/service-dev/fullstack-dev.md` | Next.js/FastAPI/DB実装・機能開発 |
 | ai-engineer | `.claude/agents/service-dev/ai-engineer.md` | Claude API統合・RAG・エージェント設計 |
 | infra-devops | `.claude/agents/service-dev/infra-devops.md` | デプロイ・Docker・コスト最適化 |
+
+### 🟢 Product（プロダクト）
+**トリガー**: プロダクト, ロードマップ, PMF, 機能優先順位, バックログ, GTM, リリース計画, MVP
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| product-manager | `.claude/agents/product/product-manager.md` | プロダクト戦略・ロードマップ・PMF検証 |
 
 ### 🟣 Creative（クリエイティブ・コンテンツ）
 **トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン
@@ -96,6 +105,24 @@ consulting/kpi-analytics → creative/content-strategist → creative/agentic-co
 ```
 consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-analytics
        （市場構造分析）              （戦略判断）               （PL試算）
+```
+
+### パターン6: AI導入コンサルを提案したい
+```
+consulting/ai-consultant → service-dev/ai-engineer → consulting/proposal-writer
+     （導入戦略・ROI）         （技術検証）              （提案書化）
+```
+
+### パターン7: SaaSの解約率を下げたい
+```
+consulting/client-success → consulting/kpi-analytics → product/product-manager
+    （解約分析・ヘルススコア）     （LTV/チャーン計測）       （機能改善計画）
+```
+
+### パターン8: プロダクトロードマップを作りたい
+```
+product/product-manager → service-dev/tech-lead → consulting/kpi-analytics
+    （優先順位付け）           （技術実現性）          （PL試算）
 ```
 
 ---
