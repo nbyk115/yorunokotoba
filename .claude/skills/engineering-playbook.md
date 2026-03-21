@@ -116,6 +116,51 @@ description: 変更内容（日本語OK）
 3. **テストで検証**: 生成されたコードは必ずテストで確認
 4. **レビューする**: 自動生成コードも必ず人間がレビュー
 
+### Claude Code 定期タスク（Scheduled Tasks）
+
+ローカル不要でクラウド上で自動実行できる定期タスク機能を活用する。
+
+#### セッション内スケジューリング（/loop）
+```text
+/loop 5m デプロイ状況を確認して結果を教えて
+/loop 20m /review-pr 1234
+/loop 1h テストスイートを実行して失敗があれば報告
+```
+- セッション中のみ有効（終了で消える）
+- 最大50タスク/セッション、3日で自動期限切れ
+- 間隔: `s`秒 `m`分 `h`時 `d`日
+
+#### ConsultingOS × 定期タスクの活用パターン
+
+| パターン | /loop設定例 | 起動エージェント |
+|---|---|---|
+| **競合モニタリング** | `/loop 1d 競合3社の価格・機能変更をチェック` | competitive-analyst |
+| **KPIアラート** | `/loop 1h 主要KPIの閾値超えを監視` | kpi-analytics |
+| **デプロイ監視** | `/loop 5m ステージング環境のヘルスチェック` | infra-devops |
+| **PR自動レビュー** | `/loop 30m 未レビューPRを確認してレビュー` | tech-lead |
+| **コンテンツ監査** | `/loop 1d 公開コンテンツのブランドガイドライン準拠チェック` | brand-guardian |
+| **法務チェック** | `/loop 1d 新規LPの景表法・特商法チェック` | legal-compliance-checker |
+| **グロース実験** | `/loop 1h A/Bテスト結果の統計的有意差を確認` | growth-hacker |
+| **フィードバック収集** | `/loop 1d 新着レビュー・問い合わせの分類・要約` | feedback-synthesizer |
+
+#### GitHub Actions 連携（完全自動化）
+```yaml
+# .github/workflows/scheduled-review.yml
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'  # 平日9時
+jobs:
+  daily-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: anthropics/claude-code-action@v1
+        with:
+          prompt: "過去24時間のコミットをレビューして、バグ・セキュリティ・パフォーマンスの問題を報告"
+```
+- クラウド実行（ローカル起動不要）
+- リポジトリ + スケジュール + プロンプトを設定するだけ
+- バッチ処理・監視・定期更新に最適
+
 ---
 
 ## 5. テスト戦略

@@ -75,6 +75,7 @@
 | engineering-playbook | `.claude/skills/engineering-playbook.md` | 開発プロセス・技術標準・Claude Code活用 |
 | creative-playbook | `.claude/skills/creative-playbook.md` | デザイン・コンテンツ・Figma MCP |
 | brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・品質基準・禁止表現 |
+| first-principles-breakdown | `.claude/skills/first-principles-breakdown.md` | 第一原理分解・前提剥がし・真理からの再構築 |
 
 ---
 
