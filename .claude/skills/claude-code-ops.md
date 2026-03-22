@@ -110,32 +110,26 @@ settings.jsonに定義する。
 
 | ルール | 内容 |
 |---|---|
-| **常時有効は5〜6個まで** | ツール総数80以下を目安 |
-| **プロジェクト単位で制御** | `disabledMcpServers` で不要なMCPを無効化 |
+| **全MCPデフォルト無効が原則** | MCPは追加しても `disabledMcpServers` に即登録。必要時のみ有効化 |
+| **有効化は最大5〜6個まで** | ツール総数80以下を目安。超過でコンテキスト壊滅 |
+| **タスク単位でON/OFF** | タスク開始時に有効化→完了時に無効化 |
 | **使っていないものは即オフ** | 定期的に `/mcp` で状態確認 |
-| **APIで足りるならMCP不要** | MCP=プロンプト駆動の柔軟連携。単純なAPI呼び出しならBashで十分 |
+| **APIやCLIで足りるならMCP不要** | `gh` CLI、`curl` 等で代替可能ならMCPは追加しない |
+| **無料運用が前提** | 有料APIを必要とするMCPは導入前にコスト確認必須 |
 
-### ConsultingOS推奨MCP構成
-
-| MCP | 用途 | 常時有効 |
-|---|---|---|
-| **Supabase** | DB操作・テーブル管理 | ✅（開発時） |
-| **Figma** | デザイン→コード変換 | ❌（Creative作業時のみ） |
-| **GitHub** | PR・Issue操作 | ✅ |
-| **Slack** | チーム通知 | ❌（必要時のみ） |
-| **Sentry** | エラー監視 | ❌（デバッグ時のみ） |
-| **Browser Use** | ブラウザ自動化・CDP直接接続 | ❌（調査・テスト時のみ） |
-
-### 設定例
-```json
-{
-  "mcpServers": {
-    "supabase": { "command": "npx", "args": ["-y", "@supabase/mcp"] },
-    "figma": { "command": "npx", "args": ["-y", "figma-developer-mcp"] }
-  },
-  "disabledMcpServers": ["figma", "slack", "sentry", "browser-use"]
-}
+### MCP導入判断フロー
 ```
+1. 本当にMCPが必要か？ → CLI/APIで代替できるなら不要
+2. 無料で使えるか？ → 有料なら導入しない（明示的な許可がない限り）
+3. 追加 → 即 disabledMcpServers に登録
+4. 使うとき → 有効化 → タスク完了 → 無効化
+```
+
+### 現在のMCP構成
+
+> **このプロジェクトではMCPを使用していません。**
+> GitHub操作は `gh` CLI、API呼び出しは `curl`/Bash で代替。
+> MCPが必要になった場合のみ、上記フローに従って導入する。
 
 ---
 

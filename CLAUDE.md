@@ -192,8 +192,10 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 ## Claude Code 運用鉄則
 
 ### コンテキスト管理（最重要）
-- **MCPは常時5〜6個まで**: ツール総数80以下。入れすぎると200k→70kに縮小
-- **使っていないMCP/Pluginは即オフ**: `disabledMcpServers` で制御
+- **MCPは全てデフォルト無効**: 追加時は即 `disabledMcpServers` に登録。タスク実行時のみ有効化→完了後に無効化
+- **有効化は最大5〜6個まで**: ツール総数80以下。入れすぎると200k→70kに縮小
+- **CLIで代替できるならMCP不要**: `gh` CLI、`curl` 等で十分なケースはMCPを導入しない
+- **無料運用が前提**: 有料APIを必要とするMCPは導入前にコスト確認必須
 - **長セッションでは /compact**: コンテキスト圧縮を手動実行
 - **コードマップ活用**: `/codemap` で `.claude/codemap.md` を生成し、巨大コードベースのナビゲーションコストを削減
 
