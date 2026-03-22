@@ -206,6 +206,15 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 - **クリエイティブ系**: Read + Edit + Write + WebFetch（コンテンツ生成・Figma連携）
 - **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
 
+### Agent Teams（セッション間チーム協調）★実験的機能
+- **チームメイト同士が直接通信**: サブエージェントと違い、発見の共有・仮説の反証が可能
+- **デバッグ**: 競合仮説パターンで複数の原因を同時調査→反証→収束
+- **コードレビュー**: セキュリティ/パフォーマンス/テストを並列で3観点チェック
+- **デザイン/UI検証**: UXフロー/レスポンシブ/ブランド整合/パフォーマンスを同時検証
+- **推奨チーム規模**: 3-5名。1メンバー5-6タスク
+- **有効化**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` をsettings.jsonに設定
+- 詳細は `.claude/skills/claude-code-ops.md` セクション3参照
+
 ### 並列実行
 - **/fork**: 会話を分岐して並列タスクを非干渉で実行
 - **git worktree**: ブランチごとに独立したチェックアウトで並列開発
