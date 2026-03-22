@@ -237,6 +237,18 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
+## スキル横断リファレンス
+
+| 状況 | 参照スキル |
+|---|---|
+| トーン・表現の品質チェック | → `brand-guidelines.md` |
+| AIに選ばれるコンテンツ設計 | → `prompt-engineering.md` §3 RAG設計 |
+| フロントエンドの品質ゲート | → `code-quality-gates.md` |
+| API連携画面の設計 | → `api-design-patterns.md` |
+| 収益に直結するコンテンツ | → `revenue-growth-framework.md` §3 アセット蓄積 |
+
+---
+
 ## 適用エージェント
 - `creative/creative-director` — デザイン方針・レビュー
 - `creative/ux-designer` — UX/UI設計

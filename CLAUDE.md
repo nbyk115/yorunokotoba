@@ -102,40 +102,48 @@
 
 ## エージェント連携パターン
 
+> 各パターンで使用するスキルを 📘 で明示。エージェントのシナリオ別プレイブックと組み合わせて使う。
+
 ### パターン1: 新サービスのLPを作りたい
 ```
 consulting/proposal-writer → creative/ux-designer → creative/frontend-dev
      （訴求整理）              （UX設計）              （実装）
+📘 consulting-playbook → creative-playbook → code-quality-gates
 ```
 
 ### パターン2: クライアントへの戦略提案書を作りたい
 ```
 consulting/competitive-analyst → consulting/strategy-lead → consulting/proposal-writer
        （市場分析）                   （戦略立案）               （資料化）
+📘 first-principles-breakdown → revenue-growth-framework → brand-guidelines
 ```
 
 ### パターン3: SaaSプロダクトの新機能を開発したい
 ```
 service-dev/tech-lead → service-dev/fullstack-dev → creative/frontend-dev
       （設計）                （実装）                    （UI）
+📘 api-design-patterns → engineering-playbook + migration-safety → code-quality-gates
 ```
 
 ### パターン4: コンテンツマーケティング戦略を立てたい
 ```
 consulting/kpi-analytics → creative/content-strategist → creative/agentic-content
      （KPI設計）                （コンテンツ戦略）            （AIO最適化）
+📘 digital-sales-intelligence → creative-playbook → prompt-engineering
 ```
 
 ### パターン5: 新規事業の参入判断をしたい
 ```
 consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-analytics
        （市場構造分析）              （戦略判断）               （PL試算）
+📘 first-principles-breakdown → revenue-growth-framework → consulting-playbook
 ```
 
 ### パターン6: AI導入コンサルを提案したい
 ```
 consulting/ai-consultant → service-dev/ai-engineer → consulting/proposal-writer
      （導入戦略・ROI）         （技術検証）              （提案書化）
+📘 prompt-engineering → engineering-playbook → consulting-playbook
 ```
 
 ### パターン7: SaaSの解約率を下げたい
