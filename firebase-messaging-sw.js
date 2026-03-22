@@ -12,20 +12,53 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Time-aware default messages
+function getDefaultMessage() {
+  const hour = new Date().getHours();
+  const messages = hour >= 22 || hour < 5
+    ? ['今夜のことば、届いてるよ 🌙', 'おやすみ前に、あなたの運勢を覗いてみて ✨', '今夜の夢、きっと意味があるよ 🔮']
+    : hour >= 17
+    ? ['そろそろ夜の時間。今日の運勢チェックした？ 🌙', 'キャラクターがあなたを待ってるよ ✨']
+    : ['今日の運勢が届いてるよ 🌟'];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+function getDefaultTitle() {
+  const hour = new Date().getHours();
+  if (hour >= 22 || hour < 5) return 'よるのことば 🌙';
+  if (hour >= 17) return 'よるのことば ✨';
+  return 'よるのことば';
+}
+
 messaging.onBackgroundMessage(function(payload) {
-  const title = payload.notification?.title || 'よるのことば';
+  const title = payload.notification?.title || getDefaultTitle();
+  const body = payload.notification?.body || getDefaultMessage();
   const options = {
-    body: payload.notification?.body || '今日の運勢が届いてるよ',
+    body: body,
     icon: '/icon-192.png',
     badge: '/icon-192.png',
-    data: { url: 'https://yorunokotoba.vercel.app' }
+    tag: 'yorunokotoba-daily',
+    renotify: true,
+    actions: [
+      { action: 'open', title: '占いを見る' }
+    ],
+    data: { url: payload.data?.url || 'https://yorunokotoba.vercel.app' }
   };
   return self.registration.showNotification(title, options);
 });
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
+  const url = event.notification.data?.url || 'https://yorunokotoba.vercel.app';
   event.waitUntil(
-    clients.openWindow(event.notification.data?.url || 'https://yorunokotoba.vercel.app')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
+      for (var i = 0; i < windowClients.length; i++) {
+        var client = windowClients[i];
+        if (client.url.includes('yorunokotoba') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      return clients.openWindow(url);
+    })
   );
 });
