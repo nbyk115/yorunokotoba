@@ -81,6 +81,9 @@
 | debug-methodology | `.claude/skills/debug-methodology.md` | 反証ベースデバッグ・根本原因特定・OODAループ |
 | migration-safety | `.claude/skills/migration-safety.md` | DB/APIマイグレーション安全手順・ゼロダウンタイム |
 | code-quality-gates | `.claude/skills/code-quality-gates.md` | PR前品質チェック・セルフレビュー・自動ゲート |
+| incident-response | `.claude/skills/incident-response.md` | 本番障害対応・SEV分類・ポストモーテム |
+| api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
+| prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 
 ---
 
