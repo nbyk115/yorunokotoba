@@ -1,6 +1,9 @@
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
+self.addEventListener('install', function() { self.skipWaiting(); });
+self.addEventListener('activate', function(event) { event.waitUntil(clients.claim()); });
+
 firebase.initializeApp({
   apiKey: "AIzaSyAMSAW3ez0Hir2Guv4ibbuxUgzRTuS14PI",
   authDomain: "yorunokotoba-5df51.firebaseapp.com",
@@ -18,8 +21,8 @@ function getDefaultMessage() {
   const messages = hour >= 22 || hour < 5
     ? ['今夜のことば、届いてるよ 🌙', 'おやすみ前に、あなたの運勢を覗いてみて ✨', '今夜の夢、きっと意味があるよ 🔮']
     : hour >= 17
-    ? ['そろそろ夜の時間。今日の運勢チェックした？ 🌙', 'キャラクターがあなたを待ってるよ ✨']
-    : ['今日の運勢が届いてるよ 🌟'];
+    ? ['夜が来る前に、今日のメッセージを受け取って 🌙', 'キャラクターがあなたを待ってるよ ✨']
+    : ['今日の運勢が届いてるよ 🌟', 'ふとした時間に、心の声を聴いてみて ✨'];
   return messages[Math.floor(Math.random() * messages.length)];
 }
 

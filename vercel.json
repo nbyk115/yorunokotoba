@@ -2,6 +2,14 @@
   "regions": ["hnd1"],
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
       "source": "/(icon-.*\\.png|ogp\\.png)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=2592000, immutable" }
@@ -17,7 +25,7 @@
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, s-maxage=60, stale-while-revalidate=300" }
       ]
     },
     {

@@ -9,7 +9,7 @@ var APP_VERSION = {
   features: [
     '新キャラクター12体追加（全24体に）',
     '日替わり運勢機能を追加',
-    'bestMatch詳細表示機能',
+    '相性マッチ詳細表示機能',
     'プレミアムプラン開始（相性診断）'
   ]
 };
@@ -98,7 +98,7 @@ function UpdateNotificationModal(props) {
               margin-bottom: 0;
               text-shadow: 0 2px 10px rgba(0,0,0,0.3);
             ">
-              新機能が追加されました
+              新しい夜が始まるよ
             </div>
           </div>
         </div>
@@ -151,8 +151,8 @@ function UpdateNotificationModal(props) {
               プレミアムプラン登場
             </div>
             <div style="font-size: 13px; color: var(--t3, #666); line-height: 1.6;">
-              二人の相性診断が無制限！<br/>
-              初回7日間無料でお試しいただけます
+              二人の相性診断を何度でも！<br/>
+              初回7日間無料で試せるよ
             </div>
           </div>
         </div>
