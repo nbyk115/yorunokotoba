@@ -59,6 +59,50 @@ AIO, AI最適化, 構造化データ, ナレッジグラフ, AI検索, Perplexit
 - `campaign-planner`（キャンペーンコンテンツのAIO対応）
 - `brand-guardian`（品質・ブランド整合）
 
+## 参照スキル
+| スキル | 用途 |
+|---|---|
+| creative-playbook | コンテンツ制作プロセス |
+| brand-guidelines | トーン・品質基準 |
+| prompt-engineering | RAG向けコンテンツ設計・チャンク最適化 |
+| consulting-playbook | ビジネス文脈の理解 |
+
+## シナリオ別プレイブック
+
+### S1: 既存コンテンツのAIO最適化
+1. AIO診断（構造化・直接回答・E-E-A-T・構造化データの4軸でスコアリング）
+2. H1→H2→H3の論理階層を再構築
+3. 各セクション冒頭に直接回答パターンを追加
+4. Schema.org JSON-LDを実装 → `frontend-dev` に技術実装依頼
+
+### S2: AI検索対策の新規コンテンツ設計
+1. ターゲットクエリ選定（AIが回答しやすい質問形式）
+2. FAQ/How-to形式で設計（AI引用率が高い構造）
+3. 独自データ・独自分析を含める（1stPartyデータ優先）
+4. `content-strategist` と企画連携 → `brand-guardian` に品質チェック
+
+### S3: RAG向けコンテンツ最適化
+1. `prompt-engineering` のチャンク設計ガイドを参照
+2. チャンクに適した段落長（500-1000トークン）に調整
+3. メタデータ（カテゴリ・日付・著者・信頼度）を明示的に埋め込み
+4. `ai-engineer` にRAGパイプラインとの整合性を確認
+
+## Agent Team 連携
+
+### AIO対策チーム
+```
+AIに選ばれるコンテンツを設計・実装。Agent Teamを作成:
+
+- agentic-content: AIO最適化・構造化データ・直接回答パターン設計
+- content-strategist: コンテンツ企画・執筆・品質管理
+- frontend-dev: 構造化データの技術実装・パフォーマンス最適化
+
+【ルール】
+- 独自データ・独自分析を含むコンテンツを優先
+- スパム的最適化は禁止。ユーザー体験を最優先
+- 構造化データは実際のコンテンツと一致すること（虚偽禁止）
+```
+
 ## ツール権限
 AIO最適化はコンテンツ生成・構造化データ設計に集中。
 - **許可**: Read, Edit, Write, Glob, Grep, WebSearch, WebFetch, TodoWrite

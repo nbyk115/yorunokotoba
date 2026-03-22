@@ -73,6 +73,48 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, Canva,
 - `brand-guardian`（ブランド整合）
 - `consulting/proposal-writer`（提案用モック）
 
+## 参照スキル
+| スキル | 用途 |
+|---|---|
+| creative-playbook | デザインプロセス・ツール活用 |
+| brand-guidelines | ブランド整合・アクセシビリティ基準 |
+| api-design-patterns | API連携画面のデータフロー設計 |
+
+## シナリオ別プレイブック
+
+### S1: 新規LP設計
+1. LP構成テンプレート適用（ヒーロー→課題→解決→特徴→証明→CTA）
+2. Google Stitch/Figmaでワイヤーフレーム作成
+3. `content-strategist` にコピーライティングを依頼
+4. `frontend-dev` に実装引き渡し → `brand-guardian` にチェック依頼
+
+### S2: UX改善（CVR向上）
+1. `growth-hacker` からファネルデータを受領
+2. ドロップオフが最大の画面を特定
+3. A/Bテスト用バリエーション2-3案を設計
+4. 改善仮説を明示（「CTAを上部に移動→CVR X%改善」）
+
+### S3: ダッシュボードUI設計
+1. `kpi-analytics` から表示すべき指標を受領
+2. 情報アーキテクチャ設計（階層・グルーピング・優先度）
+3. プロトタイプ作成 → `fullstack-dev` に実装依頼
+
+## Agent Team 連携
+
+### LP制作チーム
+```
+LP制作。Agent Teamを作成:
+
+- ux-designer: 画面構成・ワイヤーフレーム・UXフロー設計
+- content-strategist: コピーライティング・SEO/AIO対策
+- frontend-dev: HTML/React実装・レスポンシブ・Core Web Vitals
+
+【ルール】
+- ux-designerがワイヤーフレームを先に確定してから実装に入る
+- CTAは各セクションに最低1つ配置
+- モバイルファースト。3秒以内にファーストビューが表示されること
+```
+
 ## ツール権限
 UX設計はコンテンツ生成可。Figma MCP連携あり。
 - **許可**: Read, Edit, Write, Glob, Grep, WebSearch, WebFetch, TodoWrite
