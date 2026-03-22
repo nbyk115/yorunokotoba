@@ -78,6 +78,9 @@
 | first-principles-breakdown | `.claude/skills/first-principles-breakdown.md` | 第一原理分解・前提剥がし・真理からの再構築 |
 | claude-code-ops | `.claude/skills/claude-code-ops.md` | Hooks・MCP管理・並列ワークフロー・コンテキスト最適化 |
 | browser-automation | `.claude/skills/browser-automation.md` | Browser Use CLI 2.0・CDP直接接続・ブラウザ自動化 |
+| debug-methodology | `.claude/skills/debug-methodology.md` | 反証ベースデバッグ・根本原因特定・OODAループ |
+| migration-safety | `.claude/skills/migration-safety.md` | DB/APIマイグレーション安全手順・ゼロダウンタイム |
+| code-quality-gates | `.claude/skills/code-quality-gates.md` | PR前品質チェック・セルフレビュー・自動ゲート |
 
 ---
 
