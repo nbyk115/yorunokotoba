@@ -156,17 +156,22 @@ if('serviceWorker' in navigator){
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-functions-compat.js"></script>
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyAMSAW3ez0Hir2Guv4ibbuxUgzRTuS14PI",
-  authDomain:"yorunokotoba-5df51.firebaseapp.com",
-  projectId:"yorunokotoba-5df51",
-  storageBucket:"yorunokotoba-5df51.firebasestorage.app",
-  messagingSenderId:"133287391957",
-  appId:"1:133287391957:web:aafda69540c7359ba1a85c"
-});
-const db=firebase.firestore();
-const auth=firebase.auth();
-const googleProvider=new firebase.auth.GoogleAuthProvider();
+var db=null,auth=null,googleProvider=null;
+try{
+  if(typeof firebase!=='undefined'){
+    firebase.initializeApp({
+      apiKey:"AIzaSyAMSAW3ez0Hir2Guv4ibbuxUgzRTuS14PI",
+      authDomain:"yorunokotoba-5df51.firebaseapp.com",
+      projectId:"yorunokotoba-5df51",
+      storageBucket:"yorunokotoba-5df51.firebasestorage.app",
+      messagingSenderId:"133287391957",
+      appId:"1:133287391957:web:aafda69540c7359ba1a85c"
+    });
+    db=firebase.firestore();
+    auth=firebase.auth();
+    googleProvider=new firebase.auth.GoogleAuthProvider();
+  }else{console.warn('Firebase SDK not loaded');}
+}catch(e){console.warn('Firebase init failed:',e);}
 var fns;function getFns(){if(!fns){try{fns=firebase.app().functions("asia-northeast1")}catch(e){console.warn('getFns failed:',e)}}return fns}
 window.fbMessaging=null;
 async function initPush(){
