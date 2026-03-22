@@ -17,8 +17,9 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 | ツール | 最適な用途 | コスト | 強み |
 |---|---|---|---|
+| **Google Stitch** | UI/アプリ画面の0→1生成・高速プロトタイプ・デザインシステム | 無料（月350回） | AI自動生成・コードエクスポート・Figma連携・Claude Code MCP対応 |
 | **Canva** | SNS画像・バナー・簡易LP・名刺・プレゼン資料・ロゴ案 | 無料（Free） | テンプレート豊富・素材内蔵・高速制作 |
-| **Figma** | UI/UXデザイン・プロトタイプ・コンポーネント設計・LP詳細設計 | 無料（Starter） | Web/アプリUI特化・開発者連携・デザインシステム |
+| **Figma** | UIデザインの仕上げ・コンポーネント管理・デザインシステム運用 | 無料（Starter） | 手動編集の精度・開発者連携・デザインシステム管理 |
 | **Google Slides** | 提案書・ピッチデック・社内資料・ワークショップ資料 | 無料 | 共同編集・ビジネス標準・テキスト主体の資料 |
 
 ### 自動選定ロジック（creative-directorが判断）
@@ -27,11 +28,14 @@ Creative部門の全エージェントが参照するデザインプロセス・
 リクエスト受領
   ↓
 何を作るか？
+  ├── UI/アプリ画面（新規・ラフ） → Google Stitch（0→1生成）
+  │     → 仕上げが必要なら → Figma or frontend-dev
   ├── 提案書・ピッチデック・社内資料 → Google Slides
   ├── SNS画像・バナー・チラシ・簡易ビジュアル → Canva
-  ├── UI/UX・プロトタイプ・コンポーネント設計 → Figma
-  ├── LP（簡易・テンプレベース） → Canva
-  ├── LP（カスタム・インタラクション重視） → Figma → frontend-dev
+  ├── LP（高速プロトタイプ） → Google Stitch → frontend-dev
+  ├── LP（テンプレベース・ノンコード） → Canva
+  ├── LP（カスタム・仕上げ重視） → Figma → frontend-dev
+  ├── デザインシステム構築 → Google Stitch（生成）→ Figma（管理）
   ├── ロゴ案・ブランド素材（ラフ） → Canva
   ├── プレゼン（ビジュアル重視） → Canva
   ├── プレゼン（データ・テキスト主体） → Google Slides
@@ -42,18 +46,38 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 | ケース | 組み合わせ |
 |---|---|
-| 提案書 + デモUI | Google Slides（資料）+ Figma（UIモック） |
-| SNSキャンペーン + LP | Canva（SNS素材）+ Figma or frontend-dev（LP） |
+| UI新規制作 | Google Stitch（0→1生成）→ Figma（仕上げ）→ frontend-dev（実装） |
+| 提案書 + デモUI | Google Slides（資料）+ Google Stitch（UIモック） |
+| SNSキャンペーン + LP | Canva（SNS素材）+ Google Stitch or frontend-dev（LP） |
 | ピッチ + ブランド素材 | Google Slides（ピッチ）+ Canva（ロゴ・素材） |
-| LP + OGP画像 | Figma/frontend-dev（LP）+ Canva（OGP画像） |
+| LP + OGP画像 | Google Stitch/frontend-dev（LP）+ Canva（OGP画像） |
+| デザインシステム構築 | Google Stitch（DESIGN.md生成）→ Figma（運用・管理） |
 
 ### 各ツールの出力と納品
 
 | ツール | 主な出力形式 | 納品方法 |
 |---|---|---|
+| Google Stitch | HTML / CSS / React / Figmaエクスポート / DESIGN.md | 共有リンク / コードコピー |
 | Canva | PNG / PDF / SVG / MP4 | 共有リンク or ダウンロード |
 | Figma | デザイン仕様 → コード化 | 共有リンク / Dev Mode |
 | Google Slides | PDF / PPTX | 共有リンク or エクスポート |
+
+### Google Stitch 活用ガイド
+
+> **UI/アプリ画面の0→1はStitchが最速。仕上げはFigma。**
+> stitch.withgoogle.com にGoogleアカウントでサインイン。ブラウザだけで動作。
+
+| 機能 | 説明 |
+|---|---|
+| テキスト→UI生成 | 自然言語でUIを記述→完全なデザイン生成 |
+| 画像→UI変換 | スケッチ・スクショからUIを再生成 |
+| コードエクスポート | HTML/CSS/Reactコードを直接コピー |
+| Figmaエクスポート | 生成デザインをFigmaに直接送信 |
+| DESIGN.md | デザインシステムをファイルとして抽出・インポート |
+| 音声操作 | Voice Canvasで音声指示・リアルタイム修正 |
+| プロトタイプ | 画面遷移・インタラクションを自動生成 |
+
+**月間制限**: Standard（Gemini Flash）月350回 / Experimental（Gemini Pro）月50回
 
 ---
 
