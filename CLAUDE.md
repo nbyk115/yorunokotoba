@@ -76,6 +76,23 @@
 | global-business | `.claude/agents/global/global-business.md` | 海外事業運営・クロスボーダー取引・国際パートナーシップ |
 | business-translator | `.claude/agents/global/business-translator.md` | 多言語翻訳・ローカライゼーション・トランスクリエーション |
 
+### 🟡 Marketing & Research（マーケティング&リサーチ）
+**トリガー**: 広告, SEM, PPC, SEO, テクニカルSEO, SNS広告, ソーシャル広告, メディアバイイング, ROAS, アトリビューション, GA4, CDP, CRM, MA, マーケティングオートメーション, ナーチャリング, メールマーケ, インフルエンサー, PR, プレスリリース, メディアリレーション, 広報, 危機管理, 消費者調査, 市場調査, セグメンテーション, ペルソナ, 価格調査, コンジョイント, ブランドトラッキング, チャネルミックス, マーテク, リターゲティング, Cookie廃止
+
+> **高水準・グローバルトップレベルのマーケティング&リサーチ専門部門。**
+> 広告運用からSEO・CRM/MA・消費者リサーチ・PR広報まで、データドリブンなフルファネルマーケティングを担う。
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| marketing-director | `.claude/agents/marketing-research/marketing-director.md` | マーケティング統括・チャネルミックス・予算配分・マーテク |
+| performance-marketer | `.claude/agents/marketing-research/performance-marketer.md` | 広告運用・SEM/PPC・ROAS最適化・メディアバイイング |
+| seo-specialist | `.claude/agents/marketing-research/seo-specialist.md` | テクニカルSEO・CWV・サイト構造・国際SEO |
+| marketing-analyst | `.claude/agents/marketing-research/marketing-analyst.md` | GA4・アトリビューション・CDP・ダッシュボード・A/Bテスト |
+| crm-ma-strategist | `.claude/agents/marketing-research/crm-ma-strategist.md` | CRM・MA・ナーチャリング・メールマーケ・ABM |
+| social-media-strategist | `.claude/agents/marketing-research/social-media-strategist.md` | SNS戦略・ソーシャル広告・コミュニティ・インフルエンサー |
+| market-researcher | `.claude/agents/marketing-research/market-researcher.md` | 消費者リサーチ・定量/定性調査・セグメンテーション・価格戦略 |
+| pr-communications | `.claude/agents/marketing-research/pr-communications.md` | PR戦略・メディアリレーション・危機管理広報・効果測定 |
+
 ---
 
 ## スキルファイル（全エージェント参照）
@@ -97,6 +114,7 @@
 | incident-response | `.claude/skills/incident-response.md` | 本番障害対応・SEV分類・ポストモーテム |
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
+| marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
 
 ---
 
@@ -124,7 +142,8 @@
 ├─ 「作りたい・実装したい・直したい」 → 実行系（Step 2b）
 ├─ 「売りたい・伸ばしたい・改善したい」 → 成長系（Step 2c）
 ├─ 「確認したい・チェックしたい」 → 品質系（Step 2d）
-└─ 「海外に・グローバルに・翻訳したい」 → グローバル系（Step 2e）
+├─ 「海外に・グローバルに・翻訳したい」 → グローバル系（Step 2e）
+└─ 「広告・SEO・PR・SNS・CRM」 → マーケティング系（Step 2f）
 ```
 
 ### Step 2a: 調査系の振り分け
@@ -135,7 +154,9 @@
 ├─ 法務・契約 → legal-compliance-checker（起点）
 ├─ ユーザーの声 → feedback-synthesizer（起点）
 ├─ 技術的調査 → tech-lead（起点）
-└─ 海外動向・国際情勢 → global-journalist（起点）
+├─ 海外動向・国際情勢 → global-journalist（起点）
+├─ 消費者調査・セグメンテーション → market-researcher（起点）
+└─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
 ```
 
 ### Step 2b: 実行系の振り分け
@@ -180,6 +201,19 @@
 ├─ 海外拠点・オペレーション → global-business（起点）
 ├─ 翻訳・ローカライズ → business-translator（起点）
 └─ 海外法規制チェック → legal-compliance-checker（起点）+ global-business
+```
+
+### Step 2f: マーケティング系の振り分け
+```
+何をマーケティング？
+├─ 全体戦略・チャネルミックス・予算 → marketing-director（起点）
+├─ 広告運用・SEM/PPC・ROAS → performance-marketer（起点）
+├─ テクニカルSEO・サイト構造・CWV → seo-specialist（起点）
+├─ GA4・アトリビューション・CDP → marketing-analyst（起点）
+├─ CRM・MA・ナーチャリング・メール → crm-ma-strategist（起点）
+├─ SNS戦略・コミュニティ・インフルエンサー → social-media-strategist（起点）
+├─ 消費者調査・セグメンテーション・価格 → market-researcher（起点）
+└─ PR・広報・メディアリレーション → pr-communications（起点）
 ```
 
 ### Step 3: チーム編成の判断
