@@ -122,3 +122,17 @@ consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-a
 - **数値化**: 「大幅に」より「30%改善」「粗利XX万円増」
 - **禁止**: 抽象論・「様子を見る」・PLに落ちない提案
 - **言語**: 日本語優先
+
+---
+
+## Gitワークフロー（マストルール）
+
+### PRマージ方法
+- **必ず「Squash and merge」を使用する**（Create a merge commitは禁止）
+- マージ後は **ブランチを削除** する
+- mainのコミット履歴は「1コミット = 1機能/修正」を維持する
+
+### ブランチ運用
+- feature branchで開発 → PRを作成 → Squash and merge → ブランチ削除
+- mainへの直接pushは禁止
+- PRタイトルは変更内容を簡潔に日本語で記述する
