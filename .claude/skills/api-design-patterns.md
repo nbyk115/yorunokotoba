@@ -334,6 +334,19 @@ GET /api/v1/users?fields=id,name,email
 
 ---
 
+## アンチパターン（これをやるな）
+
+| ❌ やりがち | ✅ 正しい方法 |
+|---|---|
+| URLに動詞を使う `/api/getUsers` | リソース名詞 `/api/v1/users` + HTTPメソッドで表現 |
+| 全APIで200を返す | 適切なステータスコード（201, 400, 404, 422等）を使い分け |
+| エラーで内部情報を返す | RFC 9457形式で構造化。内部詳細はログのみ |
+| バージョニングなしで破壊的変更 | URLバージョニング + Deprecationヘッダー + 移行期間 |
+| 認証なしで公開API | 最低限API Key + レートリミット。決済系はBearer Token必須 |
+| ページネーションなしで全件返却 | デフォルトで20件。cursor-basedを推奨 |
+
+---
+
 ## 適用エージェント
 - `service-dev/tech-lead` — API設計方針の策定・レビュー
 - `service-dev/fullstack-dev` — API実装
