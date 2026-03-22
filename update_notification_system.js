@@ -27,8 +27,13 @@ var VERSION_HISTORY = [
 
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
-  // 常に表示（テスト用）
-  return true;
+  try {
+    const lastSeen = localStorage.getItem('lastSeenVersion');
+    if (!lastSeen) return true;
+    return lastSeen !== APP_VERSION.version;
+  } catch (e) {
+    return false;
+  }
 }
 
 // バージョン情報を記録
