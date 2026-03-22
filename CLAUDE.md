@@ -131,6 +131,7 @@ consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-a
 - **必ず「Squash and merge」を使用する**（Create a merge commitは禁止）
 - マージ後は **ブランチを削除** する
 - mainのコミット履歴は「1コミット = 1機能/修正」を維持する
+- **PRマージのURLを必ずユーザーに提示する**（形式: `https://github.com/nbyk115/yorunokotoba/compare/main...<branch-name>`）
 
 ### ブランチ運用
 - feature branchで開発 → PRを作成 → Squash and merge → ブランチ削除
