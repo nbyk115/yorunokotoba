@@ -1,8 +1,8 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・プロダクト・クリエイティブ特化の4本柱マルチエージェントOS**
-24名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
+28名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
 
 ---
 
@@ -63,6 +63,19 @@
 | agentic-content | `.claude/agents/creative/agentic-content.md` | AIO対策・AIに選ばれるコンテンツ設計 |
 | growth-hacker | `.claude/agents/creative/growth-hacker.md` | グロースハック・A/Bテスト・ファネル最適化 |
 
+### 🔵 Global（グローバル）
+**トリガー**: 海外, グローバル, 国際, 翻訳, ローカライズ, GTM, 市場参入, 海外展開, 越境, クロスボーダー, 海外ニュース, 海外事例, 規制動向, 多言語, i18n
+
+> **海外展開・グローバルビジネスの専門部門。**
+> リサーチからGTM設計・翻訳・現地オペレーションまでを担う。
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| gtm-consultant | `.claude/agents/global/gtm-consultant.md` | Go-to-Market戦略・海外市場参入・ローカライズ戦略 |
+| global-journalist | `.claude/agents/global/global-journalist.md` | 海外ニュース分析・メディアリサーチ・国際情勢構造化 |
+| global-business | `.claude/agents/global/global-business.md` | 海外事業運営・クロスボーダー取引・国際パートナーシップ |
+| business-translator | `.claude/agents/global/business-translator.md` | 多言語翻訳・ローカライゼーション・トランスクリエーション |
+
 ---
 
 ## スキルファイル（全エージェント参照）
@@ -110,7 +123,8 @@
 ├─ 「知りたい・調べたい・分析したい」 → 調査系（Step 2a）
 ├─ 「作りたい・実装したい・直したい」 → 実行系（Step 2b）
 ├─ 「売りたい・伸ばしたい・改善したい」 → 成長系（Step 2c）
-└─ 「確認したい・チェックしたい」 → 品質系（Step 2d）
+├─ 「確認したい・チェックしたい」 → 品質系（Step 2d）
+└─ 「海外に・グローバルに・翻訳したい」 → グローバル系（Step 2e）
 ```
 
 ### Step 2a: 調査系の振り分け
@@ -120,7 +134,8 @@
 ├─ 数値・KPI → kpi-analytics（起点）
 ├─ 法務・契約 → legal-compliance-checker（起点）
 ├─ ユーザーの声 → feedback-synthesizer（起点）
-└─ 技術的調査 → tech-lead（起点）
+├─ 技術的調査 → tech-lead（起点）
+└─ 海外動向・国際情勢 → global-journalist（起点）
 ```
 
 ### Step 2b: 実行系の振り分け
@@ -142,7 +157,8 @@
 ├─ 顧客維持・LTV → client-success（起点）
 ├─ リード・商談 → lead-qualifier（起点）
 ├─ AI導入・DX → ai-consultant（起点）
-└─ キャンペーン → campaign-planner（起点）
+├─ キャンペーン → campaign-planner（起点）
+└─ 海外市場・グローバル展開 → gtm-consultant（起点）
 ```
 
 ### Step 2d: 品質系の振り分け
@@ -154,6 +170,16 @@
 ├─ 法令準拠 → legal-compliance-checker
 ├─ UX・アクセシビリティ → ux-designer
 └─ SEO・AIO → agentic-content
+```
+
+### Step 2e: グローバル系の振り分け
+```
+何をグローバルに？
+├─ 海外市場参入・GTM → gtm-consultant（起点）
+├─ 海外ニュース・動向調査 → global-journalist（起点）
+├─ 海外拠点・オペレーション → global-business（起点）
+├─ 翻訳・ローカライズ → business-translator（起点）
+└─ 海外法規制チェック → legal-compliance-checker（起点）+ global-business
 ```
 
 ### Step 3: チーム編成の判断
@@ -193,6 +219,9 @@
 | Product → Service Dev | ユーザーストーリー・受け入れ基準・優先度 | 「この機能作って」だけ |
 | Product → Consulting | ユーザーインサイト・データ根拠・仮説 | 感覚ベースの要望 |
 | Creative → Service Dev | デザイントークン・コンポーネント仕様・レスポンシブ定義 | 「Figma見て」だけ |
+| Global → Consulting | 海外市場データ・競合情報・規制情報（ソース付き） | ソースなし・未検証データで渡す |
+| Global → Service Dev | i18n要件・多言語対応仕様・現地決済要件 | 「多言語対応して」だけ |
+| Consulting → Global | ターゲット市場の仮説・評価基準・PLシミュレーション条件 | 「海外展開したい」だけ |
 
 ### 品質ゲート: ハンドオフ前チェック
 - [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値）
@@ -278,6 +307,34 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
      （VOC分析・インサイト）         （優先順位付け）           （実装判断）
 ```
 
+### パターン12: SaaSプロダクトを海外展開したい
+```
+global/gtm-consultant → global/global-journalist → consulting/kpi-analytics
+     （GTM戦略設計）         （現地市場リサーチ）         （PL試算）
+📘 revenue-growth-framework → first-principles-breakdown → consulting-playbook
+```
+
+### パターン13: 海外規制変更のインパクトを分析したい
+```
+global/global-journalist → consulting/legal-compliance-checker → consulting/strategy-lead
+     （情報収集・構造化）          （法的影響評価）                  （事業判断）
+📘 first-principles-breakdown → consulting-playbook
+```
+
+### パターン14: マーケティング資料を多言語展開したい
+```
+global/business-translator → creative/brand-guardian → creative/content-strategist
+     （トランスクリエーション）      （ブランド整合確認）        （現地コンテンツ戦略）
+📘 brand-guidelines → creative-playbook
+```
+
+### パターン15: 海外拠点を設立したい
+```
+global/global-business → consulting/legal-compliance-checker → consulting/kpi-analytics
+     （オペレーション設計）        （現地法規制チェック）            （コスト試算）
+📘 revenue-growth-framework → consulting-playbook
+```
+
 ---
 
 ## 全エージェント共通の干渉原則
@@ -321,6 +378,7 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 - **開発系**: 全ツール（実装・テスト・デプロイ）
 - **クリエイティブ系**: Read + Edit + Write + WebFetch（コンテンツ生成・Figma連携）
 - **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
+- **グローバル系**: Read + Glob + Grep + WebSearch + WebFetch（海外リサーチ・分析に集中、翻訳系のみEdit + Write追加）
 
 ### Agent Teams（セッション間チーム協調）★実験的機能
 - **チームメイト同士が直接通信**: サブエージェントと違い、発見の共有・仮説の反証が可能
