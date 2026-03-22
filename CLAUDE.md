@@ -77,6 +77,7 @@
 | brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・品質基準・禁止表現 |
 | first-principles-breakdown | `.claude/skills/first-principles-breakdown.md` | 第一原理分解・前提剥がし・真理からの再構築 |
 | claude-code-ops | `.claude/skills/claude-code-ops.md` | Hooks・MCP管理・並列ワークフロー・コンテキスト最適化 |
+| browser-automation | `.claude/skills/browser-automation.md` | Browser Use CLI 2.0・CDP直接接続・ブラウザ自動化 |
 
 ---
 

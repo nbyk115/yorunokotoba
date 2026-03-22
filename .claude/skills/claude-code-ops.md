@@ -124,6 +124,7 @@ settings.jsonに定義する。
 | **GitHub** | PR・Issue操作 | ✅ |
 | **Slack** | チーム通知 | ❌（必要時のみ） |
 | **Sentry** | エラー監視 | ❌（デバッグ時のみ） |
+| **Browser Use** | ブラウザ自動化・CDP直接接続 | ❌（調査・テスト時のみ） |
 
 ### 設定例
 ```json
@@ -132,7 +133,7 @@ settings.jsonに定義する。
     "supabase": { "command": "npx", "args": ["-y", "@supabase/mcp"] },
     "figma": { "command": "npx", "args": ["-y", "figma-developer-mcp"] }
   },
-  "disabledMcpServers": ["figma", "slack", "sentry"]
+  "disabledMcpServers": ["figma", "slack", "sentry", "browser-use"]
 }
 ```
 
