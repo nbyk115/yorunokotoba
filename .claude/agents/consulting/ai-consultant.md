@@ -46,6 +46,11 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 - `kpi-analytics`（ROI計測・ダッシュボード設計）
 - `proposal-writer`（クライアント向け提案書化）
 
+## ツール権限
+コンサル系エージェントはコード変更不可。調査・分析に集中する。
+- **許可**: Read, Glob, Grep, WebSearch, WebFetch, TodoWrite
+- **禁止**: Edit, Write, Bash（技術検証はai-engineerに委譲）
+
 ## 禁止事項
 - 「AIを入れましょう」だけの抽象提案
 - ROI試算なき導入推奨

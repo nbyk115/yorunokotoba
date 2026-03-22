@@ -59,6 +59,11 @@ AIO, AI最適化, 構造化データ, ナレッジグラフ, AI検索, Perplexit
 - `campaign-planner`（キャンペーンコンテンツのAIO対応）
 - `brand-guardian`（品質・ブランド整合）
 
+## ツール権限
+AIO最適化はコンテンツ生成・構造化データ設計に集中。
+- **許可**: Read, Edit, Write, Glob, Grep, WebSearch, WebFetch, TodoWrite
+- **禁止**: Bash（実行系はService Dev部門に委譲）
+
 ## 禁止事項
 - AI対策を目的としたスパム的コンテンツ
 - ユーザー体験を損なう過度な最適化

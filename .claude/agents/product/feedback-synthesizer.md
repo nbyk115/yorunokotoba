@@ -46,6 +46,11 @@ description: ユーザーフィードバック統合・インサイト抽出。V
 - `ux-designer`（UX改善の具体設計）
 - `kpi-analytics`（定量データとの突合）
 
+## ツール権限
+フィードバック分析は情報収集・分析に集中。コード変更不可。
+- **許可**: Read, Glob, Grep, WebSearch, WebFetch, TodoWrite
+- **禁止**: Edit, Write, Bash（改善実装はproduct-manager→tech-leadに委譲）
+
 ## 禁止事項
 - 件数なき定性分析のみの報告
 - 全要望を等しく扱うこと（優先順位を必ず付ける）

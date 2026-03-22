@@ -56,6 +56,11 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, プロ
 - `brand-guardian`（ブランド整合）
 - `consulting/proposal-writer`（提案用モック）
 
+## ツール権限
+UX設計はコンテンツ生成可。Figma MCP連携あり。
+- **許可**: Read, Edit, Write, Glob, Grep, WebSearch, WebFetch, TodoWrite
+- **Figma MCP**: 有効時のみ利用可
+
 ## 禁止事項
 - ユーザー調査なきペルソナの捏造
 - アクセシビリティ無視の装飾的デザイン

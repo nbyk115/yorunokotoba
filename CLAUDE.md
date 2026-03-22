@@ -76,6 +76,20 @@
 | creative-playbook | `.claude/skills/creative-playbook.md` | デザイン・コンテンツ・Figma MCP |
 | brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・品質基準・禁止表現 |
 | first-principles-breakdown | `.claude/skills/first-principles-breakdown.md` | 第一原理分解・前提剥がし・真理からの再構築 |
+| claude-code-ops | `.claude/skills/claude-code-ops.md` | Hooks・MCP管理・並列ワークフロー・コンテキスト最適化 |
+
+---
+
+## コマンド（スラッシュコマンド）
+
+| コマンド | パス | 用途 |
+|---|---|---|
+| /refactor-clean | `.claude/commands/refactor-clean.md` | デッドコード除去・console.log削除・不要ファイル検出 |
+| /tdd | `.claude/commands/tdd.md` | テスト駆動開発サイクル（Red→Green→Refactor） |
+| /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
+| /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
+| /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
 
 ---
 
@@ -171,3 +185,31 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 - **数値化**: 「大幅に」より「30%改善」「粗利XX万円増」
 - **禁止**: 抽象論・「様子を見る」・PLに落ちない提案
 - **言語**: 日本語優先
+
+---
+
+## Claude Code 運用鉄則
+
+### コンテキスト管理（最重要）
+- **MCPは常時5〜6個まで**: ツール総数80以下。入れすぎると200k→70kに縮小
+- **使っていないMCP/Pluginは即オフ**: `disabledMcpServers` で制御
+- **長セッションでは /compact**: コンテキスト圧縮を手動実行
+- **コードマップ活用**: `/codemap` で `.claude/codemap.md` を生成し、巨大コードベースのナビゲーションコストを削減
+
+### サブエージェント運用
+- **ツール権限は絞る**: 権限を絞ることで集中力の高い専門エージェントになる
+- **コンサル系**: Read + WebSearch + WebFetch（調査・分析に集中、コード変更不可）
+- **開発系**: 全ツール（実装・テスト・デプロイ）
+- **クリエイティブ系**: Read + Edit + Write + WebFetch（コンテンツ生成・Figma連携）
+- **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
+
+### 並列実行
+- **/fork**: 会話を分岐して並列タスクを非干渉で実行
+- **git worktree**: ブランチごとに独立したチェックアウトで並列開発
+- **tmux**: 長時間コマンドのデタッチ
+
+### Hooks自動化
+- **PostToolUse**: .ts/.tsx 編集後にPrettier自動実行
+- **PreToolUse**: 長時間コマンド（dev server等）実行前にtmux警告
+- **Stop**: console.log残留チェック、ブランドガイドライン準拠確認
+- 詳細は `.claude/skills/claude-code-ops.md` 参照

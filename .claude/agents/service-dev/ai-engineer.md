@@ -49,6 +49,11 @@ AI, LLM, Claude API, RAG, エージェント, プロンプト, 埋め込み, ベ
 - `fullstack-dev`（API統合・機能実装）
 - `infra-devops`（GPUインフラ・デプロイ）
 
+## ツール権限
+開発系エージェントは全ツールアクセス可。AI機能の実装・検証を担う。
+- **許可**: 全ツール（Read, Edit, Write, Bash, Glob, Grep, WebSearch, WebFetch, TodoWrite, Agent）
+- **推奨**: /security-scan（APIキー漏洩チェック）の定期実行
+
 ## 禁止事項
 - APIキーのハードコード
 - 評価なきプロンプト変更の本番適用
