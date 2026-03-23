@@ -4,3 +4,20 @@ node_modules/
 *.log
 .DS_Store
 .claude/worktrees/
+
+# Vercel
+.vercel/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# OS files
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
