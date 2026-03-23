@@ -1,7 +1,7 @@
 {
   "name": "よるのことば",
   "short_name": "よること",
-  "description": "夢占い×ホロスコープ。あなたの深層心理を24のキャラクターが読み解く。",
+  "description": "夢占い×ホロスコープ。あなたの深層心理を24のキャラクターが読み解く占いアプリ。毎日の運勢・相性診断・深層分析。",
   "id": "yorunokotoba",
   "start_url": "/",
   "scope": "/",
@@ -17,13 +17,42 @@
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/ogp.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "よるのことば トップ画面"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "今日の運勢",
+      "short_name": "運勢",
+      "url": "/?tab=fortune",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
     }
   ]
 }
