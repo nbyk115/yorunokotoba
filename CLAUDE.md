@@ -116,6 +116,7 @@
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
+| frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | Reactフリーズ・バグ防御・実装前チェック・必須パターン集 |
 
 ---
 
@@ -402,9 +403,32 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 > **全てのアウトプットは反証モードによるトリプルチェックを通過しなければ最終出力としない。**
 > これはデバッグだけでなく、戦略提案・分析・コンテンツ・翻訳・設計・実装の全領域に適用される。
 
+### ⚡ 最重要ルール：実装前義務（新設）
+
+**コードを1行でも書く前に、以下を必ず出力すること。省略は禁止。**
+
+```
+【実装前チェック】
+🔴 失敗シナリオ1: [この実装が壊れる最も可能性の高いケース]
+🔴 失敗シナリオ2: [エッジケース（null/空配列/ネットワーク失敗/未認証）]
+🔴 失敗シナリオ3: [本番環境固有のリスク（パフォーマンス・競合・副作用）]
+✅ 対策: [各失敗シナリオへの防御コードを実装に含める]
+```
+
+**Reactコンポーネントを書く前は追加で:**
+```
+【フリーズチェック（frontend-quality-guard準拠）】
+- useEffectの依存配列にオブジェクト/関数を入れていないか？
+- 非同期処理のクリーンアップ（AbortController/React Query）を使うか？
+- loading/error/successの3状態を全て処理するか？
+- ErrorBoundaryで包まれる位置にあるか？
+```
+
+---
+
 ### 適用範囲
 - **全26エージェント**: Consulting / Service Dev / Product / Creative / Global の全エージェント
-- **全15スキルファイル**: consulting-playbook から prompt-engineering まで全スキル
+- **全スキルファイル**: consulting-playbook から frontend-quality-guard まで全スキル
 - **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
 
 ### トリプルチェック・プロセス
@@ -434,7 +458,7 @@ Step 3: 実用反証（Practical Falsification）
 | 部門 | Step 1 重点 | Step 2 重点 | Step 3 重点 |
 |---|---|---|---|
 | Consulting | 結論の前提は正しいか | PL数値・市場データの根拠 | クライアントが実行可能か |
-| Service Dev | 設計判断の代替案 | コードの正確性・セキュリティ | 本番環境で動くか |
+| Service Dev | **実装前チェック必須**（失敗シナリオ3つ） | コードの正確性・セキュリティ・型安全 | 本番環境で動くか（フリーズ・クラッシュ含む） |
 | Product | ユーザー仮説の反例 | 優先順位ロジックの根拠 | リソース内で実現可能か |
 | Creative | ターゲットに刺さらない可能性 | ブランド整合・トーン一貫性 | 制作・運用が回るか |
 | Global | 現地文化での誤解リスク | 翻訳精度・法規制の正確性 | 現地オペレーションで機能するか |
@@ -453,6 +477,7 @@ Step 3: 実用反証（Practical Falsification）
 
 ### 違反時の対応
 - トリプルチェックなしのアウトプットは**ドラフト扱い**（最終出力ではない）
+- **実装前チェックなしのコード生成は禁止**（コードの前に必ず失敗シナリオを出力する）
 - チェックで致命的な問題が見つかった場合は**修正してから出力**
 - 「時間がない」は省略理由にならない（簡易版でも3ステップは必須）
 
