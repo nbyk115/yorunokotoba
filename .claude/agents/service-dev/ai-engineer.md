@@ -57,6 +57,7 @@ AI, LLM, Claude API, RAG, エージェント, プロンプト, 埋め込み, ベ
 | api-design-patterns | REST/GraphQL設計標準・認証・冪等性 |
 | code-quality-gates | PR前品質ゲート・セルフレビュー |
 | debug-methodology | 反証ベースデバッグ・根本原因特定 |
+| **frontend-quality-guard** | **AIチャットUI等のReact実装時はフリーズ防御パターンを参照** |
 
 ## シナリオ別プレイブック
 
