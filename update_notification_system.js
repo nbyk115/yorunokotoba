@@ -28,7 +28,8 @@ var VERSION_HISTORY = [
 // アップデート通知の表示判定
 function shouldShowUpdateNotification() {
   try {
-    var lastSeen = localStorage.getItem('lastSeenVersion');
+    const lastSeen = localStorage.getItem('lastSeenVersion');
+    if (!lastSeen) return true;
     return lastSeen !== APP_VERSION.version;
   } catch (e) {
     return false;
