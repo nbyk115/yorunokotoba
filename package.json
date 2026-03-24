@@ -1,5 +1,8 @@
 {
   "name": "yorunokotoba",
   "version": "8.0.0",
-  "description": "よるのことば - 夢占い×星座占い"
+  "description": "よるのことば - 夢占い×星座占い",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
 }

@@ -1,11 +1,87 @@
-# Creative Playbook — デザイン・コンテンツ・Figma MCP
+# Creative Playbook — デザイン・コンテンツ・マルチツール連携
 
 ## 概要
-Creative部門の全エージェントが参照するデザインプロセス・コンテンツ標準・Figma MCP活用ガイド。
+Creative部門の全エージェントが参照するデザインプロセス・コンテンツ標準・デザインツール選定ガイド。
+**デザインツールはFigma一択ではなく、リクエストに応じて最適ツールを自動選定する。全ツール無料枠で運用。**
 
 ---
 
-## 1. デザインプロセス
+## 1. デザインツール選定（リクエスト駆動）
+
+### 鉄則: ニーズからツールを決める
+
+> デザインタスクを受けたら「何を作るか」でツールを決定する。
+> 全ツール無料枠で運用。有料プランは導入しない。
+
+### ツール選定マトリクス
+
+| ツール | 最適な用途 | コスト | 強み |
+|---|---|---|---|
+| **Google Stitch** | UI/アプリ画面の0→1生成・高速プロトタイプ・デザインシステム | 無料（月350回） | AI自動生成・コードエクスポート・Figma連携・Claude Code MCP対応 |
+| **Canva** | SNS画像・バナー・簡易LP・名刺・プレゼン資料・ロゴ案 | 無料（Free） | テンプレート豊富・素材内蔵・高速制作 |
+| **Figma** | UIデザインの仕上げ・コンポーネント管理・デザインシステム運用 | 無料（Starter） | 手動編集の精度・開発者連携・デザインシステム管理 |
+| **Google Slides** | 提案書・ピッチデック・社内資料・ワークショップ資料 | 無料 | 共同編集・ビジネス標準・テキスト主体の資料 |
+
+### 自動選定ロジック（creative-directorが判断）
+
+```
+リクエスト受領
+  ↓
+何を作るか？
+  ├── UI/アプリ画面（新規・ラフ） → Google Stitch（0→1生成）
+  │     → 仕上げが必要なら → Figma or frontend-dev
+  ├── 提案書・ピッチデック・社内資料 → Google Slides
+  ├── SNS画像・バナー・チラシ・簡易ビジュアル → Canva
+  ├── LP（高速プロトタイプ） → Google Stitch → frontend-dev
+  ├── LP（テンプレベース・ノンコード） → Canva
+  ├── LP（カスタム・仕上げ重視） → Figma → frontend-dev
+  ├── デザインシステム構築 → Google Stitch（生成）→ Figma（管理）
+  ├── ロゴ案・ブランド素材（ラフ） → Canva
+  ├── プレゼン（ビジュアル重視） → Canva
+  ├── プレゼン（データ・テキスト主体） → Google Slides
+  └── 不明・複合 → creative-directorが判断して分割
+```
+
+### ツール併用パターン
+
+| ケース | 組み合わせ |
+|---|---|
+| UI新規制作 | Google Stitch（0→1生成）→ Figma（仕上げ）→ frontend-dev（実装） |
+| 提案書 + デモUI | Google Slides（資料）+ Google Stitch（UIモック） |
+| SNSキャンペーン + LP | Canva（SNS素材）+ Google Stitch or frontend-dev（LP） |
+| ピッチ + ブランド素材 | Google Slides（ピッチ）+ Canva（ロゴ・素材） |
+| LP + OGP画像 | Google Stitch/frontend-dev（LP）+ Canva（OGP画像） |
+| デザインシステム構築 | Google Stitch（DESIGN.md生成）→ Figma（運用・管理） |
+
+### 各ツールの出力と納品
+
+| ツール | 主な出力形式 | 納品方法 |
+|---|---|---|
+| Google Stitch | HTML / CSS / React / Figmaエクスポート / DESIGN.md | 共有リンク / コードコピー |
+| Canva | PNG / PDF / SVG / MP4 | 共有リンク or ダウンロード |
+| Figma | デザイン仕様 → コード化 | 共有リンク / Dev Mode |
+| Google Slides | PDF / PPTX | 共有リンク or エクスポート |
+
+### Google Stitch 活用ガイド
+
+> **UI/アプリ画面の0→1はStitchが最速。仕上げはFigma。**
+> stitch.withgoogle.com にGoogleアカウントでサインイン。ブラウザだけで動作。
+
+| 機能 | 説明 |
+|---|---|
+| テキスト→UI生成 | 自然言語でUIを記述→完全なデザイン生成 |
+| 画像→UI変換 | スケッチ・スクショからUIを再生成 |
+| コードエクスポート | HTML/CSS/Reactコードを直接コピー |
+| Figmaエクスポート | 生成デザインをFigmaに直接送信 |
+| DESIGN.md | デザインシステムをファイルとして抽出・インポート |
+| 音声操作 | Voice Canvasで音声指示・リアルタイム修正 |
+| プロトタイプ | 画面遷移・インタラクションを自動生成 |
+
+**月間制限**: Standard（Gemini Flash）月350回 / Experimental（Gemini Pro）月50回
+
+---
+
+## 2. デザインプロセス
 
 ### ワークフロー
 ```
@@ -26,17 +102,20 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 2. Figma MCP 連携ガイド 🎨
+## 3. デザインツール連携ガイド
 
-### 対応エージェント
-- `creative-director` 🎨 — デザインレビュー・方針確認
-- `ux-designer` 🎨 — UXフロー・仕様策定
-- `frontend-dev` 🎨 — Figma→コード変換
+### 対応エージェントとツール
+| エージェント | Canva | Figma | Google Slides |
+|---|---|---|---|
+| `creative-director` 🎨 | ✅ 方針指示・レビュー | ✅ デザインレビュー | ✅ 資料レビュー |
+| `ux-designer` 🎨 | ✅ 簡易LP・モック | ✅ UX/UI設計 | — |
+| `frontend-dev` 🎨 | — | ✅ Figma→コード変換 | — |
+| `proposal-writer` | — | — | ✅ 提案書作成 |
 
-### Figma連携フロー
+### Figma連携フロー（UI/UX・コンポーネント設計時）
 ```
 1. FigmaリンクをURLで共有
-2. MCP経由でデザインデータを取得
+2. MCP経由でデザインデータを取得（MCP有効時のみ）
 3. コンポーネント構造を解析
 4. デザイントークン抽出（色・フォント・スペーシング）
 5. Reactコンポーネントとして実装
@@ -53,7 +132,7 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 3. コンポーネント設計
+## 4. コンポーネント設計
 
 ### Atomic Design階層
 ```
@@ -83,7 +162,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 4. レスポンシブデザイン
+## 5. レスポンシブデザイン
 
 ### ブレークポイント（Tailwind標準）
 | ブレークポイント | サイズ | デバイス |
@@ -102,7 +181,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 5. コンテンツ制作標準
+## 6. コンテンツ制作標準
 
 ### 文体ガイド
 - **トーン**: 専門的だが親しみやすい
@@ -127,7 +206,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 6. パフォーマンス基準
+## 7. パフォーマンス基準
 
 ### Core Web Vitals 目標
 | 指標 | 目標 |
@@ -145,7 +224,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 7. アクセシビリティ（WCAG 2.1 AA）
+## 8. アクセシビリティ（WCAG 2.1 AA）
 
 ### 必須対応項目
 - [ ] カラーコントラスト比 4.5:1 以上（テキスト）
@@ -158,6 +237,18 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
+## スキル横断リファレンス
+
+| 状況 | 参照スキル |
+|---|---|
+| トーン・表現の品質チェック | → `brand-guidelines.md` |
+| AIに選ばれるコンテンツ設計 | → `prompt-engineering.md` §3 RAG設計 |
+| フロントエンドの品質ゲート | → `code-quality-gates.md` |
+| API連携画面の設計 | → `api-design-patterns.md` |
+| 収益に直結するコンテンツ | → `revenue-growth-framework.md` §3 アセット蓄積 |
+
+---
+
 ## 適用エージェント
 - `creative/creative-director` — デザイン方針・レビュー
 - `creative/ux-designer` — UX/UI設計
@@ -166,3 +257,16 @@ Atoms → Molecules → Organisms → Templates → Pages
 - `creative/campaign-planner` — キャンペーンクリエイティブ
 - `creative/brand-guardian` — 品質チェック
 - `creative/agentic-content` — AIO最適化
+
+
+---
+
+## 🔺 反証モード（トリプルチェック必須）
+
+本スキルを適用する全アウトプットは、CLAUDE.md「反証モード」セクションに定義されたトリプルチェックを必ず実行すること。
+
+1. **自己反証**: 結論に対する反論・反例を最低3つ挙げ、確証バイアスを排除
+2. **構造反証**: ロジックの飛躍・数値の妥当性・抜け漏れを検証
+3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
+
+チェックなしのアウトプットはドラフト扱い。省略禁止。

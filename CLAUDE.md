@@ -1,8 +1,8 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・クリエイティブ特化の3本柱マルチエージェントOS**
-18名のエージェントが連携し、提案から実装・コンテンツまでを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
+26名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
 
 ---
 
@@ -12,7 +12,7 @@
 複数部門にまたがる場合は、連携フローに従って順次起動する。
 
 ### 🔴 Consulting（コンサルティング）
-**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング
+**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -21,6 +21,9 @@
 | proposal-writer | `.claude/agents/consulting/proposal-writer.md` | 提案書・ピッチデック・クライアント資料 |
 | lead-qualifier | `.claude/agents/consulting/lead-qualifier.md` | 案件評価・ヒアリング設計・クロージング |
 | kpi-analytics | `.claude/agents/consulting/kpi-analytics.md` | KPIツリー・ダッシュボード・予測モデル |
+| ai-consultant | `.claude/agents/consulting/ai-consultant.md` | AI導入戦略・ROI試算・業務適用設計 |
+| client-success | `.claude/agents/consulting/client-success.md` | 顧客成功・LTV最大化・リテンション |
+| legal-compliance-checker | `.claude/agents/consulting/legal-compliance-checker.md` | 法務・コンプラ・契約チェック |
 
 ### 🟠 Service Dev（サービス開発）
 **トリガー**: コード, 実装, API, DB, インフラ, アーキテクチャ, AI機能, バグ, デプロイ, SaaS, Docker, CI/CD, テスト, LLM, RAG
@@ -35,8 +38,16 @@
 | ai-engineer | `.claude/agents/service-dev/ai-engineer.md` | Claude API統合・RAG・エージェント設計 |
 | infra-devops | `.claude/agents/service-dev/infra-devops.md` | デプロイ・Docker・コスト最適化 |
 
+### 🟢 Product（プロダクト）
+**トリガー**: プロダクト, ロードマップ, PMF, 機能優先順位, バックログ, GTM, リリース計画, MVP, フィードバック, VOC, ユーザーの声
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| product-manager | `.claude/agents/product/product-manager.md` | プロダクト戦略・ロードマップ・PMF検証 |
+| feedback-synthesizer | `.claude/agents/product/feedback-synthesizer.md` | ユーザーフィードバック統合・インサイト抽出 |
+
 ### 🟣 Creative（クリエイティブ・コンテンツ）
-**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン
+**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン, グロース, A/Bテスト, ファネル, CVR
 
 > **Figma MCP対応エージェントには 🎨 を付与。**
 > FigmaリンクをURLとして渡すと自動でデザイン→コード変換が起動する。
@@ -50,6 +61,37 @@
 | campaign-planner | `.claude/agents/creative/campaign-planner.md` | 施策設計・コンテンツカレンダー・KPI |
 | brand-guardian | `.claude/agents/creative/brand-guardian.md` | トーン統一・ガイドライン・品質チェック |
 | agentic-content | `.claude/agents/creative/agentic-content.md` | AIO対策・AIに選ばれるコンテンツ設計 |
+| growth-hacker | `.claude/agents/creative/growth-hacker.md` | グロースハック・A/Bテスト・ファネル最適化 |
+
+### 🔵 Global（グローバル）
+**トリガー**: 海外, グローバル, 国際, 翻訳, ローカライズ, GTM, 市場参入, 海外展開, 越境, クロスボーダー, 海外ニュース, 海外事例, 規制動向, 多言語, i18n
+
+> **海外展開・グローバルビジネスの専門部門。**
+> リサーチからGTM設計・翻訳・現地オペレーションまでを担う。
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| gtm-consultant | `.claude/agents/global/gtm-consultant.md` | Go-to-Market戦略・海外市場参入・ローカライズ戦略 |
+| global-journalist | `.claude/agents/global/global-journalist.md` | 海外ニュース分析・メディアリサーチ・国際情勢構造化 |
+| global-business | `.claude/agents/global/global-business.md` | 海外事業運営・クロスボーダー取引・国際パートナーシップ |
+| business-translator | `.claude/agents/global/business-translator.md` | 多言語翻訳・ローカライゼーション・トランスクリエーション |
+
+### 🟡 Marketing & Research（マーケティング&リサーチ）
+**トリガー**: 広告, SEM, PPC, SEO, テクニカルSEO, SNS広告, ソーシャル広告, メディアバイイング, ROAS, アトリビューション, GA4, CDP, CRM, MA, マーケティングオートメーション, ナーチャリング, メールマーケ, インフルエンサー, PR, プレスリリース, メディアリレーション, 広報, 危機管理, 消費者調査, 市場調査, セグメンテーション, ペルソナ, 価格調査, コンジョイント, ブランドトラッキング, チャネルミックス, マーテク, リターゲティング, Cookie廃止
+
+> **高水準・グローバルトップレベルのマーケティング&リサーチ専門部門。**
+> 広告運用からSEO・CRM/MA・消費者リサーチ・PR広報まで、データドリブンなフルファネルマーケティングを担う。
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| marketing-director | `.claude/agents/marketing-research/marketing-director.md` | マーケティング統括・チャネルミックス・予算配分・マーテク |
+| performance-marketer | `.claude/agents/marketing-research/performance-marketer.md` | 広告運用・SEM/PPC・ROAS最適化・メディアバイイング |
+| seo-specialist | `.claude/agents/marketing-research/seo-specialist.md` | テクニカルSEO・CWV・サイト構造・国際SEO |
+| marketing-analyst | `.claude/agents/marketing-research/marketing-analyst.md` | GA4・アトリビューション・CDP・ダッシュボード・A/Bテスト |
+| crm-ma-strategist | `.claude/agents/marketing-research/crm-ma-strategist.md` | CRM・MA・ナーチャリング・メールマーケ・ABM |
+| social-media-strategist | `.claude/agents/marketing-research/social-media-strategist.md` | SNS戦略・ソーシャル広告・コミュニティ・インフルエンサー |
+| market-researcher | `.claude/agents/marketing-research/market-researcher.md` | 消費者リサーチ・定量/定性調査・セグメンテーション・価格戦略 |
+| pr-communications | `.claude/agents/marketing-research/pr-communications.md` | PR戦略・メディアリレーション・危機管理広報・効果測定 |
 
 ---
 
@@ -63,39 +105,268 @@
 | engineering-playbook | `.claude/skills/engineering-playbook.md` | 開発プロセス・技術標準・Claude Code活用 |
 | creative-playbook | `.claude/skills/creative-playbook.md` | デザイン・コンテンツ・Figma MCP |
 | brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・品質基準・禁止表現 |
+| first-principles-breakdown | `.claude/skills/first-principles-breakdown.md` | 第一原理分解・前提剥がし・真理からの再構築 |
+| claude-code-ops | `.claude/skills/claude-code-ops.md` | Hooks・MCP管理・並列ワークフロー・コンテキスト最適化 |
+| browser-automation | `.claude/skills/browser-automation.md` | Browser Use CLI 2.0・CDP直接接続・ブラウザ自動化 |
+| debug-methodology | `.claude/skills/debug-methodology.md` | 反証ベースデバッグ・根本原因特定・OODAループ |
+| migration-safety | `.claude/skills/migration-safety.md` | DB/APIマイグレーション安全手順・ゼロダウンタイム |
+| code-quality-gates | `.claude/skills/code-quality-gates.md` | PR前品質チェック・セルフレビュー・自動ゲート |
+| incident-response | `.claude/skills/incident-response.md` | 本番障害対応・SEV分類・ポストモーテム |
+| api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
+| prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
+| marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
+
+---
+
+## コマンド（スラッシュコマンド）
+
+| コマンド | パス | 用途 |
+|---|---|---|
+| /refactor-clean | `.claude/commands/refactor-clean.md` | デッドコード除去・console.log削除・不要ファイル検出 |
+| /tdd | `.claude/commands/tdd.md` | テスト駆動開発サイクル（Red→Green→Refactor） |
+| /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
+| /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
+| /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
+
+---
+
+## スマートルーティング判定ツリー
+
+> ユーザーの依頼が複数部門にまたがる場合、以下のフローで最適な起点エージェントを判定する。
+
+### Step 1: 依頼の本質を判定
+```
+依頼の核心は？
+├─ 「知りたい・調べたい・分析したい」 → 調査系（Step 2a）
+├─ 「作りたい・実装したい・直したい」 → 実行系（Step 2b）
+├─ 「売りたい・伸ばしたい・改善したい」 → 成長系（Step 2c）
+├─ 「確認したい・チェックしたい」 → 品質系（Step 2d）
+├─ 「海外に・グローバルに・翻訳したい」 → グローバル系（Step 2e）
+└─ 「広告・SEO・PR・SNS・CRM」 → マーケティング系（Step 2f）
+```
+
+### Step 2a: 調査系の振り分け
+```
+何を調査？
+├─ 市場・競合 → competitive-analyst（起点）
+├─ 数値・KPI → kpi-analytics（起点）
+├─ 法務・契約 → legal-compliance-checker（起点）
+├─ ユーザーの声 → feedback-synthesizer（起点）
+├─ 技術的調査 → tech-lead（起点）
+├─ 海外動向・国際情勢 → global-journalist（起点）
+├─ 消費者調査・セグメンテーション → market-researcher（起点）
+└─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
+```
+
+### Step 2b: 実行系の振り分け
+```
+何を作る？
+├─ コード・API・DB → fullstack-dev（起点）、tech-leadが設計レビュー
+├─ AI機能・RAG・プロンプト → ai-engineer（起点）
+├─ LP・UI・デザイン → creative-director（起点）→ ツール選定 → ux-designer → frontend-dev
+├─ コンテンツ・記事 → content-strategist（起点）
+├─ インフラ・CI/CD → infra-devops（起点）
+└─ 提案書・資料 → proposal-writer（起点）
+```
+
+### Step 2c: 成長系の振り分け
+```
+何を伸ばす？
+├─ 売上・事業 → strategy-lead（起点）
+├─ CVR・ファネル → growth-hacker（起点）
+├─ 顧客維持・LTV → client-success（起点）
+├─ リード・商談 → lead-qualifier（起点）
+├─ AI導入・DX → ai-consultant（起点）
+├─ キャンペーン → campaign-planner（起点）
+└─ 海外市場・グローバル展開 → gtm-consultant（起点）
+```
+
+### Step 2d: 品質系の振り分け
+```
+何をチェック？
+├─ コード品質 → tech-lead + code-quality-gates
+├─ セキュリティ → fullstack-dev + /security-scan
+├─ ブランド・トーン → brand-guardian + brand-guidelines
+├─ 法令準拠 → legal-compliance-checker
+├─ UX・アクセシビリティ → ux-designer
+└─ SEO・AIO → agentic-content
+```
+
+### Step 2e: グローバル系の振り分け
+```
+何をグローバルに？
+├─ 海外市場参入・GTM → gtm-consultant（起点）
+├─ 海外ニュース・動向調査 → global-journalist（起点）
+├─ 海外拠点・オペレーション → global-business（起点）
+├─ 翻訳・ローカライズ → business-translator（起点）
+└─ 海外法規制チェック → legal-compliance-checker（起点）+ global-business
+```
+
+### Step 2f: マーケティング系の振り分け
+```
+何をマーケティング？
+├─ 全体戦略・チャネルミックス・予算 → marketing-director（起点）
+├─ 広告運用・SEM/PPC・ROAS → performance-marketer（起点）
+├─ テクニカルSEO・サイト構造・CWV → seo-specialist（起点）
+├─ GA4・アトリビューション・CDP → marketing-analyst（起点）
+├─ CRM・MA・ナーチャリング・メール → crm-ma-strategist（起点）
+├─ SNS戦略・コミュニティ・インフルエンサー → social-media-strategist（起点）
+├─ 消費者調査・セグメンテーション・価格 → market-researcher（起点）
+└─ PR・広報・メディアリレーション → pr-communications（起点）
+```
+
+### Step 3: チーム編成の判断
+```
+単独で完結する？
+├─ Yes → 起点エージェント単体で実行
+└─ No → Agent Teamを編成
+    ├─ 2部門またがり → 起点 + 連携先1名
+    └─ 3部門以上 → 起点 + Agent Team（各エージェントのTeamプロンプトを使用）
+```
+
+---
+
+## ハンドオフプロトコル
+
+> エージェント間でタスクを引き継ぐ時の標準フォーマット。品質の断絶を防ぐ。
+
+### 引き継ぎテンプレート（全エージェント共通）
+```
+【From】送り元エージェント名
+【To】送り先エージェント名
+【タスク】依頼内容（1文）
+【背景】なぜこのタスクが必要か（2-3文）
+【インプット】提供するデータ・分析結果・ファイル
+【期待アウトプット】何を・どの形式で・いつまでに
+【制約】守るべきルール・使ってはいけない手法
+【参照スキル】このタスクで使うべきスキルファイル
+```
+
+### 部門間ハンドオフの注意点
+
+| From → To | 必ず渡すもの | よくある失敗 |
+|---|---|---|
+| Consulting → Service Dev | PLインパクト数値・優先順位・期限 | 「いい感じに作って」で丸投げ |
+| Consulting → Creative | ターゲットの文脈・訴求ポイント・トーン指定 | デザイン方針なしで依頼 |
+| Service Dev → Creative | API仕様・データ構造・技術制約 | フロントに必要な情報が不足 |
+| Product → Service Dev | ユーザーストーリー・受け入れ基準・優先度 | 「この機能作って」だけ |
+| Product → Consulting | ユーザーインサイト・データ根拠・仮説 | 感覚ベースの要望 |
+| Creative → Service Dev | デザイントークン・コンポーネント仕様・レスポンシブ定義 | 「Figma見て」だけ |
+| Global → Consulting | 海外市場データ・競合情報・規制情報（ソース付き） | ソースなし・未検証データで渡す |
+| Global → Service Dev | i18n要件・多言語対応仕様・現地決済要件 | 「多言語対応して」だけ |
+| Consulting → Global | ターゲット市場の仮説・評価基準・PLシミュレーション条件 | 「海外展開したい」だけ |
+
+### 品質ゲート: ハンドオフ前チェック
+- [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値）
+- [ ] 期待アウトプットの形式が明確か
+- [ ] 参照スキルを指定したか
+- [ ] 成功基準を定義したか
 
 ---
 
 ## エージェント連携パターン
 
+> 各パターンで使用するスキルを 📘 で明示。エージェントのシナリオ別プレイブックと組み合わせて使う。
+
 ### パターン1: 新サービスのLPを作りたい
 ```
 consulting/proposal-writer → creative/ux-designer → creative/frontend-dev
      （訴求整理）              （UX設計）              （実装）
+📘 consulting-playbook → creative-playbook → code-quality-gates
 ```
 
 ### パターン2: クライアントへの戦略提案書を作りたい
 ```
 consulting/competitive-analyst → consulting/strategy-lead → consulting/proposal-writer
        （市場分析）                   （戦略立案）               （資料化）
+📘 first-principles-breakdown → revenue-growth-framework → brand-guidelines
 ```
 
 ### パターン3: SaaSプロダクトの新機能を開発したい
 ```
 service-dev/tech-lead → service-dev/fullstack-dev → creative/frontend-dev
       （設計）                （実装）                    （UI）
+📘 api-design-patterns → engineering-playbook + migration-safety → code-quality-gates
 ```
 
 ### パターン4: コンテンツマーケティング戦略を立てたい
 ```
 consulting/kpi-analytics → creative/content-strategist → creative/agentic-content
      （KPI設計）                （コンテンツ戦略）            （AIO最適化）
+📘 digital-sales-intelligence → creative-playbook → prompt-engineering
 ```
 
 ### パターン5: 新規事業の参入判断をしたい
 ```
 consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-analytics
        （市場構造分析）              （戦略判断）               （PL試算）
+📘 first-principles-breakdown → revenue-growth-framework → consulting-playbook
+```
+
+### パターン6: AI導入コンサルを提案したい
+```
+consulting/ai-consultant → service-dev/ai-engineer → consulting/proposal-writer
+     （導入戦略・ROI）         （技術検証）              （提案書化）
+📘 prompt-engineering → engineering-playbook → consulting-playbook
+```
+
+### パターン7: SaaSの解約率を下げたい
+```
+consulting/client-success → consulting/kpi-analytics → product/product-manager
+    （解約分析・ヘルススコア）     （LTV/チャーン計測）       （機能改善計画）
+```
+
+### パターン8: プロダクトロードマップを作りたい
+```
+product/product-manager → service-dev/tech-lead → consulting/kpi-analytics
+    （優先順位付け）           （技術実現性）          （PL試算）
+```
+
+### パターン9: CVR改善・グロース施策を回したい
+```
+creative/growth-hacker → consulting/kpi-analytics → product/feedback-synthesizer
+    （実験設計・A/Bテスト）     （計測・分析）            （ユーザー声との突合）
+```
+
+### パターン10: 新サービスの法務チェックをしたい
+```
+consulting/legal-compliance-checker → consulting/proposal-writer → consulting/strategy-lead
+       （法的リスク洗い出し）              （契約条件の整理）           （事業判断）
+```
+
+### パターン11: ユーザーフィードバックからプロダクト改善したい
+```
+product/feedback-synthesizer → product/product-manager → service-dev/tech-lead
+     （VOC分析・インサイト）         （優先順位付け）           （実装判断）
+```
+
+### パターン12: SaaSプロダクトを海外展開したい
+```
+global/gtm-consultant → global/global-journalist → consulting/kpi-analytics
+     （GTM戦略設計）         （現地市場リサーチ）         （PL試算）
+📘 revenue-growth-framework → first-principles-breakdown → consulting-playbook
+```
+
+### パターン13: 海外規制変更のインパクトを分析したい
+```
+global/global-journalist → consulting/legal-compliance-checker → consulting/strategy-lead
+     （情報収集・構造化）          （法的影響評価）                  （事業判断）
+📘 first-principles-breakdown → consulting-playbook
+```
+
+### パターン14: マーケティング資料を多言語展開したい
+```
+global/business-translator → creative/brand-guardian → creative/content-strategist
+     （トランスクリエーション）      （ブランド整合確認）        （現地コンテンツ戦略）
+📘 brand-guidelines → creative-playbook
+```
+
+### パターン15: 海外拠点を設立したい
+```
+global/global-business → consulting/legal-compliance-checker → consulting/kpi-analytics
+     （オペレーション設計）        （現地法規制チェック）            （コスト試算）
+📘 revenue-growth-framework → consulting-playbook
 ```
 
 ---
@@ -122,6 +393,107 @@ consulting/competitive-analyst → consulting/strategy-lead → consulting/kpi-a
 - **数値化**: 「大幅に」より「30%改善」「粗利XX万円増」
 - **禁止**: 抽象論・「様子を見る」・PLに落ちない提案
 - **言語**: 日本語優先
+
+---
+
+## 🔺 反証モード — 全エージェント・全スキル必須（トリプルチェック）
+
+> **全てのアウトプットは反証モードによるトリプルチェックを通過しなければ最終出力としない。**
+> これはデバッグだけでなく、戦略提案・分析・コンテンツ・翻訳・設計・実装の全領域に適用される。
+
+### 適用範囲
+- **全26エージェント**: Consulting / Service Dev / Product / Creative / Global の全エージェント
+- **全15スキルファイル**: consulting-playbook から prompt-engineering まで全スキル
+- **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
+
+### トリプルチェック・プロセス
+
+```
+Step 1: 自己反証（Self-Falsification）
+├─ 自分のアウトプットに対して最低3つの反論・反例を挙げる
+├─ 「この結論が間違っている場合、どんな証拠が出るか？」を明示
+├─ 前提条件を列挙し、各前提が崩れた場合の影響を評価
+└─ 確証バイアスチェック: 都合の良いデータだけ拾っていないか
+
+Step 2: 構造反証（Structural Falsification）
+├─ ロジックの飛躍がないか（A→B→Cの各ステップに根拠があるか）
+├─ 数値の妥当性チェック（ソース・計算過程・単位・桁数）
+├─ 抜け漏れチェック（考慮すべきなのに無視している変数はないか）
+└─ 逆説テスト: 正反対の結論を主張するとしたら、どんな論拠を使うか
+
+Step 3: 実用反証（Practical Falsification）
+├─ 「これを実行したら何が起きるか」のシミュレーション
+├─ エッジケース・最悪シナリオの検証
+├─ 実装可能性・実行可能性の現実チェック
+└─ 「クライアント/ユーザーがこれを見たらどう反応するか」の視点
+```
+
+### 部門別チェック重点
+
+| 部門 | Step 1 重点 | Step 2 重点 | Step 3 重点 |
+|---|---|---|---|
+| Consulting | 結論の前提は正しいか | PL数値・市場データの根拠 | クライアントが実行可能か |
+| Service Dev | 設計判断の代替案 | コードの正確性・セキュリティ | 本番環境で動くか |
+| Product | ユーザー仮説の反例 | 優先順位ロジックの根拠 | リソース内で実現可能か |
+| Creative | ターゲットに刺さらない可能性 | ブランド整合・トーン一貫性 | 制作・運用が回るか |
+| Global | 現地文化での誤解リスク | 翻訳精度・法規制の正確性 | 現地オペレーションで機能するか |
+
+### 出力フォーマット（全エージェント共通）
+
+アウトプットの末尾に以下を付与:
+
+```
+【反証チェック結果】
+✅ Step 1（自己反証）: [検証した反論/反例の要約]
+✅ Step 2（構造反証）: [ロジック・数値・抜け漏れの検証結果]
+✅ Step 3（実用反証）: [実行可能性・エッジケースの検証結果]
+🔺 残存リスク: [トリプルチェック後も残るリスク・不確実性]
+```
+
+### 違反時の対応
+- トリプルチェックなしのアウトプットは**ドラフト扱い**（最終出力ではない）
+- チェックで致命的な問題が見つかった場合は**修正してから出力**
+- 「時間がない」は省略理由にならない（簡易版でも3ステップは必須）
+
+---
+
+## Claude Code 運用鉄則
+
+### コンテキスト管理（最重要）
+- **MCPは全てデフォルト無効**: 追加時は即 `disabledMcpServers` に登録。タスク実行時のみ有効化→完了後に無効化
+- **有効化は最大5〜6個まで**: ツール総数80以下。入れすぎると200k→70kに縮小
+- **CLIで代替できるならMCP不要**: `gh` CLI、`curl` 等で十分なケースはMCPを導入しない
+- **無料運用が前提**: 有料APIを必要とするMCPは導入前にコスト確認必須
+- **長セッションでは /compact**: コンテキスト圧縮を手動実行
+- **コードマップ活用**: `/codemap` で `.claude/codemap.md` を生成し、巨大コードベースのナビゲーションコストを削減
+
+### サブエージェント運用
+- **ツール権限は絞る**: 権限を絞ることで集中力の高い専門エージェントになる
+- **コンサル系**: Read + WebSearch + WebFetch（調査・分析に集中、コード変更不可）
+- **開発系**: 全ツール（実装・テスト・デプロイ）
+- **クリエイティブ系**: Read + Edit + Write + WebFetch（コンテンツ生成・Figma連携）
+- **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
+- **グローバル系**: Read + Glob + Grep + WebSearch + WebFetch（海外リサーチ・分析に集中、翻訳系のみEdit + Write追加）
+
+### Agent Teams（セッション間チーム協調）★実験的機能
+- **チームメイト同士が直接通信**: サブエージェントと違い、発見の共有・仮説の反証が可能
+- **デバッグ**: 競合仮説パターンで複数の原因を同時調査→反証→収束
+- **コードレビュー**: セキュリティ/パフォーマンス/テストを並列で3観点チェック
+- **デザイン/UI検証**: UXフロー/レスポンシブ/ブランド整合/パフォーマンスを同時検証
+- **推奨チーム規模**: 3-5名。1メンバー5-6タスク
+- **有効化**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` をsettings.jsonに設定
+- 詳細は `.claude/skills/claude-code-ops.md` セクション3参照
+
+### 並列実行
+- **/fork**: 会話を分岐して並列タスクを非干渉で実行
+- **git worktree**: ブランチごとに独立したチェックアウトで並列開発
+- **tmux**: 長時間コマンドのデタッチ
+
+### Hooks自動化
+- **PostToolUse**: .ts/.tsx 編集後にPrettier自動実行
+- **PreToolUse**: 長時間コマンド（dev server等）実行前にtmux警告
+- **Stop**: console.log残留チェック、ブランドガイドライン準拠確認
+- 詳細は `.claude/skills/claude-code-ops.md` 参照
 
 ---
 
