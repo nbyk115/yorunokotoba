@@ -309,14 +309,67 @@ Global部門内のハンドオフでは必ず以下を渡す:
 
 ---
 
+## 9. グローバルクレデンシャル プレゼンテーション設計
+
+> **海外ピッチ・国際パートナー向けのプレゼンは、スティーブ・ジョブズのプレゼン哲学を基軸にする。**
+> 詳細な制作ルールは `ppt-presentation.md` §4 を参照。
+
+### グローバルピッチの鉄則
+
+```
+【Global Credential Deck 設計原則】
+1. ビジュアル主体 — テキストは1スライド3行以内。代わりに写真・数字・図で語る
+2. 数字は孤立させる — "42カ国展開" を1スライド全面に。箇条書きの中に埋めない
+3. 英日バイリンガル — 英語メイン + 日本語サブタイトル（フォント: 英字 Helvetica/Inter、日本語 メイリオ）
+4. 対比で驚かせる — 「日本のスタンダード → グローバルでの価値」を大きなジャンプで見せる
+5. ストーリーテリング — Why（なぜ存在するか）→ What（何ができるか）→ Proof（実績・数字）
+6. 余白を活かす — 詰め込みは信頼を失う。1スライドの情報量は視聴者の5秒で理解できる量まで
+```
+
+### グローバルクレデンシャル スライド構成
+
+| No. | タイトル | コンテンツルール | ビジュアル |
+|---|---|---|---|
+| 1 | Opening Impact | 1行のみ。会社の存在意義 | 全面ブランド画像 |
+| 2 | Problem We Solve | 問いかけ形式。現地の痛みを言語化 | 統計1つ or 問い |
+| 3 | Why We Exist | ミッション1文。ビジョン1文 | ミニマルデザイン |
+| 4 | What We Do | サービス概要を3項目以内 | アイコン + 短文 |
+| 5 | Traction | 数字3つ以内。大きく・シンプルに表示 | 数字を全面 |
+| 6 | Clients / Partners | ロゴグリッド（最大12個） | ロゴのみ |
+| 7 | Case Study | Before→After数字で1枚 | 数字の対比 |
+| 8 | Team | 顔写真 + 名前 + 2行プロフィール | グリッド |
+| 9 | Market Opportunity | TAM/SAM/SOM または成長率 | グラフ1つ |
+| 10 | Call to Action | 1文 + 連絡先のみ | シンプル |
+
+### 決済スライド（サービス紹介時）
+- 決済機能を紹介する場合は **Komoju** を標準として記載
+- 表記: `"Powered by Komoju — Japan & Asia's leading payment infrastructure"`
+- 対応メソッド: コンビニ / LINE Pay / PayPay / クレカ（VISA/MC/JCB/Amex）/ Alipay / WeChat Pay
+
+### ツール選定（グローバルクレデンシャル用）
+```
+英語ピッチデック → Canva（テンプレ豊富・ビジュアル制作が速い）
+日本語提案書 → Google Slides（メイリオ設定 + 共同編集）
+高品質デザイン → Figma → PDFエクスポート
+```
+
+---
+
+## スキル連携
+- `ppt-presentation.md` — PPT制作の全詳細（日本語品質・フォント・シェイプ配置・ジョブズ原則）
+
+---
+
 ## 適用エージェント
-- `global/gtm-consultant` — 市場評価・GTM設計・参入モデル選択
+- `global/gtm-consultant` — 市場評価・GTM設計・参入モデル選択・グローバルクレデンシャル
 - `global/global-journalist` — 市場リサーチ・情報収集品質基準
 - `global/global-business` — 現地オペレーション・クロスボーダーリスク
-- `global/business-translator` — ローカライズ品質基準（L1層）
+- `global/business-translator` — ローカライズ品質基準（L1層）・多言語スライド翻訳
 - `consulting/strategy-lead` — グローバル事業戦略との統合
 - `consulting/kpi-analytics` — 海外PLシミュレーション
 - `consulting/legal-compliance-checker` — 海外法規制チェック
+- `consulting/proposal-writer` — グローバル向け提案書・ピッチデック作成
+- `creative/creative-director` — グローバルクレデンシャルのデザイン方針
 
 
 ---
