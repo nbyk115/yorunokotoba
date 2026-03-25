@@ -542,14 +542,21 @@ Step 3: 実用反証（Practical Falsification）
 - **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
 - **グローバル系**: Read + Glob + Grep + WebSearch + WebFetch（海外リサーチ・分析に集中、翻訳系のみEdit + Write追加）
 
-### Agent Teams（セッション間チーム協調）★実験的機能
+### Auto Mode（権限自動制御）— デフォルト有効化済み
+- **`.claude/settings.json` で設定済み**: `defaultMode: "auto"` が適用されている
+- **仕組み**: classifierが各ツールコールを検査し、安全なものだけ自動実行。危険な操作はブロック
+- **--dangerously-skip-permissions は禁止**: Auto Modeで代替する。本番DB削除事故の原因になる
+- **プロンプトインジェクション対策内蔵**: ファイル内・コマンド出力の悪意ある指示を自動ブロック
+- **長時間タスク向け**: 離席中も安全にエージェントを動かせる
+- 詳細は `.claude/skills/claude-code-ops.md` §3 参照
+
+### Agent Teams（セッション間チーム協調）— `.claude/settings.json` で有効化済み
 - **チームメイト同士が直接通信**: サブエージェントと違い、発見の共有・仮説の反証が可能
 - **デバッグ**: 競合仮説パターンで複数の原因を同時調査→反証→収束
 - **コードレビュー**: セキュリティ/パフォーマンス/テストを並列で3観点チェック
 - **デザイン/UI検証**: UXフロー/レスポンシブ/ブランド整合/パフォーマンスを同時検証
 - **推奨チーム規模**: 3-5名。1メンバー5-6タスク
-- **有効化**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` をsettings.jsonに設定
-- 詳細は `.claude/skills/claude-code-ops.md` セクション3参照
+- 詳細は `.claude/skills/claude-code-ops.md` §4 参照
 
 ### 並列実行
 - **/fork**: 会話を分岐して並列タスクを非干渉で実行
