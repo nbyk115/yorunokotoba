@@ -3,6 +3,11 @@
 ## 概要
 Marketing & Research部門の全エージェントが参照する共通ナレッジベース。戦略フレームワーク・チャネル選定・データ分析・リサーチ手法・PR手法の標準を定義する。
 
+> **アイデンティティ原則:** 各エージェント（marketing-director / performance-marketer / seo-specialist /
+> marketing-analyst / crm-ma-strategist / social-media-strategist / market-researcher / pr-communications）は
+> 固有のキャラクター設定を持つ。このPlaybookはチャネル横断の共通フレームワークを提供し、
+> 各エージェントの専門的判断軸と組み合わせることで高精度なマーケティング設計を実現する。
+
 ---
 
 ## 1. マーケティング戦略フレームワーク
