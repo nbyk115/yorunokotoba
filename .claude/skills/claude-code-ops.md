@@ -133,7 +133,98 @@ settings.jsonに定義する。
 
 ---
 
-## 3. Agent Teams（セッション間チーム協調）
+## 3. Auto Mode（自動権限制御）— 2026年最重要新機能
+
+> **--dangerously-skip-permissions の安全な代替。**
+> 分類器（classifier）が各ツールコールをリアルタイム検査し、安全なアクションだけ自動実行する。
+> 本プロジェクトでは `.claude/settings.json` で **デフォルト有効化済み**。
+
+### 仕組み
+
+```
+ツールコール発生
+  ↓
+① Allow/Denyルールと一致？ → 即決（ルール優先）
+  ↓
+② 読み取り専用 or ローカルファイル編集？ → 自動承認（classifier不要）
+  ↓
+③ それ以外 → classifierが危険度を評価
+  ├─ 安全 → 自動実行
+  └─ 危険 → ブロック or 手動確認プロンプト
+```
+
+### classifierがブロックするもの（デフォルト）
+
+| カテゴリ | 具体例 |
+|---|---|
+| **危険なコード実行** | `curl \| bash`、クローンしたスクリプトの即時実行 |
+| **機密データ流出** | .envの外部送信、認証情報の流出 |
+| **本番への直接デプロイ** | DBマイグレーション、本番インフラ変更 |
+| **大量削除** | クラウドストレージへの大量削除 |
+| **権限変更** | IAM・リポジトリ権限の付与 |
+| **破壊的ファイル操作** | 既存ファイルの上書き削除 |
+| **プロンプトインジェクション** | ファイル内・コマンド出力に仕込まれた悪意ある指示 |
+
+### classifierが自動承認するもの
+
+| カテゴリ | 具体例 |
+|---|---|
+| ローカルファイル操作 | ワーキングディレクトリ内の読み書き |
+| 依存パッケージインストール | npm install, pip install（宣言済みのもの） |
+| 読み取り専用HTTPリクエスト | WebFetch, WebSearch |
+| ブランチへのpush | `claude/*` ブランチへのpush（mainは除く） |
+
+### ConsultingOS用 settings.json（設定済み）
+
+```json
+{
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "autoMode": {
+    "environment": [
+      "Organization: ConsultingOS — AIコンサルティング・サービス開発プラットフォーム",
+      "Source control: github.com/nbyk115/yorunokotoba",
+      "Development branch: claude/* prefixed feature branches",
+      "Key constraint: main branch protected. PRのみでマージ（Squash and merge）"
+    ],
+    "soft_deny": [
+      "Never push to main branch directly",
+      "Never force push (--force) to any branch",
+      "Never delete production databases or tables",
+      "Never commit .env files, secrets, or credentials",
+      "Never run rm -rf outside working directory",
+      "Never bypass git hooks with --no-verify"
+    ]
+  }
+}
+```
+
+### フォールバック条件（auto mode → 手動に戻る）
+- 同じアクションが **3回連続ブロック** された場合
+- セッション内で **合計20回ブロック** された場合
+- → 手動確認プロンプトが再開。承認するとカウンタリセット
+
+### 設定確認コマンド
+```bash
+claude auto-mode defaults   # デフォルトのallow/soft_deny一覧
+claude auto-mode config     # 実際に適用されている設定確認
+claude auto-mode critique   # カスタムルールのAIフィードバック
+```
+
+### auto mode vs 他モード比較
+
+| モード | 安全性 | 利便性 | 用途 |
+|---|---|---|---|
+| `default` | ★★★ | ★☆☆ | 慎重な操作が必要な場面 |
+| **`auto`（推奨）** | **★★☆** | **★★★** | **日常の開発・長時間タスク** |
+| `bypassPermissions` | ★☆☆ | ★★★ | 禁止（危険すぎる） |
+
+> **--dangerously-skip-permissions は使用禁止。** auto modeで代替する。
+
+---
+
+## 4. Agent Teams（セッション間チーム協調）
 
 > **Agent Teams = 複数のClaude Codeセッションがチームとして協調動作する実験的機能。**
 > サブエージェントとの最大の違い: **チームメイト同士が直接メッセージをやり取りし、発見を共有し、互いの仮説を反証できる。**
@@ -249,7 +340,7 @@ Agent Teamを作成:
 
 ---
 
-## 4. 並列ワークフロー
+## 5. 並列ワークフロー
 
 ### /fork: 会話を分岐して並列タスクを非干渉で実行
 ```
@@ -288,7 +379,7 @@ tmux attach -t dev
 
 ---
 
-## 5. コンテキスト管理
+## 6. コンテキスト管理
 
 ### /compact: 手動コンテキスト圧縮
 長いセッションで応答が遅くなったら `/compact` を実行。
@@ -304,7 +395,7 @@ tmux attach -t dev
 
 ---
 
-## 6. ショートカット早見表
+## 7. ショートカット早見表
 
 | キー | 機能 |
 |---|---|

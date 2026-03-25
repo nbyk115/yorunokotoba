@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "autoMode": {
+    "environment": [
+      "Organization: ConsultingOS — AIコンサルティング・サービス開発・クリエイティブ・グローバル・マーケティング統合プラットフォーム",
+      "Primary use: software development, consulting strategy, content creation, global expansion research",
+      "Source control: github.com/nbyk115/yorunokotoba",
+      "Development branch: claude/* prefixed feature branches",
+      "Key constraint: main branch is protected. All changes via PR with Squash and merge only"
+    ],
+    "soft_deny": [
+      "Never push to main branch directly — all merges via PR with Squash and merge",
+      "Never force push (--force) to any branch",
+      "Never delete or drop production databases or tables",
+      "Never commit .env files, secrets, or credentials",
+      "Never run rm -rf on directories outside the working directory",
+      "Never bypass git hooks with --no-verify"
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
