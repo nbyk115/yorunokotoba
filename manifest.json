@@ -2,7 +2,7 @@
   "name": "よるのことば",
   "short_name": "よること",
   "description": "夢占い×ホロスコープ。あなたの深層心理を24のキャラクターが読み解く占いアプリ。毎日の運勢・相性診断・深層分析。",
-  "id": "yorunokotoba",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -47,6 +47,10 @@
       "label": "よるのことば トップ画面"
     }
   ],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "shortcuts": [
     {
       "name": "今日の運勢",
