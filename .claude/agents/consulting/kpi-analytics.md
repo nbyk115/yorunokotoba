@@ -1,6 +1,6 @@
 ---
 name: kpi-analytics
-description: 事業KPI設計・PLインパクト数値化・予測モデル。マーケ計測（GA4/アトリビューション）はmarketing-analystへ。
+description: 事業KPI設計・PLインパクット数値化・予測モデル。GA4データを事業KPIに変換する。GA4の技術実装・アトリビューション設定はmarketing-analystへ。
 ---
 
 # kpi-analytics — KPI設計・数値分析エージェント
@@ -28,7 +28,8 @@ KPIツリー設計・PLインパクト数値化・予測モデル・ユニット
 
 **担当範囲の境界:**
 - ✅ 担当: 事業KPIツリー・PLシミュレーション・LTV/CAC・ブレイクイーブン・感度分析・ビジネスダッシュボード
-- ❌ 担当外: GA4実装・マーケアトリビューション・広告計測 → `marketing-analyst`へハンドオフ
+- ✅ GA4データを読んで事業KPI・PLインパクットに変換するのは担当
+- ❌ 担当外: GA4タグ実装・イベント設定・アトリビューション設定 → `marketing-analyst`へハンドオフ
 
 ## トリガーキーワード
 KPI, 数値分析, ダッシュボード, 予測, レポート, 指標, コンバージョン, ファネル, ROI, LTV
