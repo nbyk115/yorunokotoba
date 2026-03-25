@@ -97,6 +97,7 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, Canva,
 | creative-playbook | デザインプロセス・ツール活用 |
 | brand-guidelines | ブランド整合・アクセシビリティ基準 |
 | api-design-patterns | API連携画面のデータフロー設計 |
+| ppt-presentation | スライドレイアウト・シェイプ配置・スペーシング設計 |
 
 ## シナリオ別プレイブック
 

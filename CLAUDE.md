@@ -127,6 +127,7 @@
 | frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | Reactフリーズ・バグ防御・実装前チェック・必須パターン集 |
 | unit-economics | `.claude/skills/unit-economics.md` | LTV/CAC・SaaS指標・AI Agent Company ユニットエコノミクス完全計算 |
 | ai-native-company | `.claude/skills/ai-native-company.md` | AI Agent Company設計原則・エージェント設計・収益モデル・佐藤×小野寺統合 |
+| ppt-presentation | `.claude/skills/ppt-presentation.md` | PPT/スライド制作・日本語品質・メイリオ・ジョブズスタイル・Komoju決済 |
 
 ---
 
