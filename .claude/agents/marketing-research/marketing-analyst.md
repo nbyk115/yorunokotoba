@@ -258,6 +258,7 @@ description: マーケ計測特化。GA4実装・アトリビューション・C
 | digital-sales-intelligence | データ分析・チャネル評価 | アトリビューション・チャネル分析時 | §1 CPC/CPA変革、§2 コンテクスチュアル広告 |
 | engineering-playbook | データパイプライン・BI設計 | GA4/CDP設計・ダッシュボード構築時 | §2 開発プロセス |
 | marketing-research-playbook | 分析インサイトの戦略接続 | KPI設計・ダッシュボード設計時 | §1 マーケティング戦略フレームワーク |
+| technical-accuracy | ハルシネーション防止・CLI優先・技術手順の正確性 | 技術手順・設定手順を出力するとき（必須） | §1 原則、§2 GitHub PR、§3 GA4、§4 Firebase |
 ---
 
 ## 🔺 反証モード（トリプルチェック必須）

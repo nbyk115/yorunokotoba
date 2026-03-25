@@ -77,6 +77,7 @@ AI, LLM, Claude API, RAG, エージェント, プロンプト, 埋め込み, ベ
 | code-quality-gates | PR前品質ゲート・セルフレビュー | 実装完了直前・PR作成前 | §1 セルフレビューチェックリスト |
 | debug-methodology | 反証ベースデバッグ・根本原因特定 | バグ・不具合発生時（即時参照） | §1 根本原因特定、§2 OODAループ |
 | **frontend-quality-guard** | **AIチャットUI等のReact実装時はフリーズ防御** | **ReactコンポーネントのUI実装前（必須）** | **§2 useEffectパターン、§3 非同期クリーンアップ** |
+| technical-accuracy | ハルシネーション防止・CLI優先・技術手順の正確性 | 技術手順・設定手順を出力するとき（必須） | §1 原則、§2 GitHub PR、§3 GA4、§4 Firebase |
 
 ## シナリオ別プレイブック
 
