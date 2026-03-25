@@ -11,7 +11,7 @@
 
 ---
 
-## 1. AI Agent Company の定義と判断基準
+## §1 AI Agent Company の定義と判断基準
 
 ### 定義
 
@@ -50,7 +50,7 @@ AI Agent Company（AI Native会社）の3条件:
 
 ---
 
-## 2. 組織設計原則
+## §2 組織設計原則
 
 ### 人員配置の原則
 
@@ -98,7 +98,7 @@ AI Agent Companyの目標:
 
 ---
 
-## 3. AIエージェント設計フレームワーク
+## §3 AIエージェント設計フレームワーク
 
 ### エージェント設計の5原則
 
@@ -153,7 +153,7 @@ AI Agent Companyの目標:
 
 ---
 
-## 4. AI Native Product 設計思想
+## §4 AI Native Product 設計思想
 
 ### プロダクトバリューの進化（佐藤裕介の知見を拡張）
 
@@ -202,7 +202,7 @@ AI Native ウイルス係数:
 
 ---
 
-## 5. AI Native Company の収益モデル
+## §5 AI Native Company の収益モデル
 
 ### 推奨収益モデル
 
@@ -255,7 +255,7 @@ AI Cost per Unit の管理:
 
 ---
 
-## 6. ConsultingOS のAI Native設計
+## §6 ConsultingOS のAI Native設計
 
 ### ConsultingOS = AI Agent Companyの実装例
 
@@ -291,7 +291,7 @@ ConsultingOSが実現しているAI Native原則:
 
 ---
 
-## 7. よくある失敗パターンと対策
+## §7 よくある失敗パターンと対策
 
 ### AI Native移行の落とし穴
 

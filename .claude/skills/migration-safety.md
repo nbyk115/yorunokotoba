@@ -5,7 +5,7 @@
 
 ---
 
-## 1. マイグレーション安全原則
+## §1 マイグレーション安全原則
 
 ### 絶対ルール
 1. **ロールバック不能な変更は禁止**: 全マイグレーションにdown（逆方向）を書く
@@ -23,7 +23,7 @@
 
 ---
 
-## 2. DBスキーマ変更パターン
+## §2 DBスキーマ変更パターン
 
 ### パターンA: カラム追加（安全）
 ```sql
@@ -74,7 +74,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 
 ---
 
-## 3. API破壊的変更パターン
+## §3 API破壊的変更パターン
 
 ### バージョニング戦略
 ```
@@ -108,7 +108,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 
 ---
 
-## 4. マイグレーション実行チェックリスト
+## §4 マイグレーション実行チェックリスト
 
 ### 実行前
 - [ ] downマイグレーション（ロールバック）が書かれている
@@ -134,7 +134,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 
 ---
 
-## 5. 緊急ロールバック手順
+## §5 緊急ロールバック手順
 
 ```
 【判断基準】以下のいずれかに該当したら即ロールバック
@@ -151,7 +151,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 
 ---
 
-## 6. Agent Team 連携プロンプト
+## §6 Agent Team 連携プロンプト
 
 ```
 [マイグレーション内容を記述]。Agent Teamを作成:

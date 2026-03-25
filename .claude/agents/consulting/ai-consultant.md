@@ -68,7 +68,7 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 
 | スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
 |---|---|---|---|
-| consulting-playbook | 提案構造・商談ロジック | AI導入提案書作成時 | §2 商談設計 |
+| consulting-playbook | 提案構造・商談ロジック | AI導入提案書作成時 | §8 商談・提案の標準プロセス |
 | revenue-growth-framework | ROI試算・PL思考 | AI導入ROI計算・投資回収試算時 | §1 PL思考 |
 
 ## シナリオ別プレイブック
