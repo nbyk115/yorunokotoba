@@ -1,8 +1,8 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
-26名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
+27名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
 
 ---
 
@@ -10,6 +10,13 @@
 
 ユーザーの入力を分析し、以下のトリガーキーワードに基づいて適切なエージェントにルーティングする。
 複数部門にまたがる場合は、連携フローに従って順次起動する。
+
+### ⚫ Orchestrator（司令塔）
+**トリガー**: 全体を見て, 複合的な依頼, 複数部門にまたがる, どうすればいいか, AI Agent Company, 全部やって, 総合的に判断, 新規事業立ち上げ（全工程）
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| orchestrator | `.claude/agents/orchestrator.md` | 3部門以上にまたがる複合タスク・全体統合・意思決定の調停 |
 
 ### 🔴 Consulting（コンサルティング）
 **トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約
@@ -117,6 +124,8 @@
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
 | frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | Reactフリーズ・バグ防御・実装前チェック・必須パターン集 |
+| unit-economics | `.claude/skills/unit-economics.md` | LTV/CAC・SaaS指標・AI Agent Company ユニットエコノミクス完全計算 |
+| ai-native-company | `.claude/skills/ai-native-company.md` | AI Agent Company設計原則・エージェント設計・収益モデル・佐藤×小野寺統合 |
 
 ---
 
@@ -369,6 +378,36 @@ global/business-translator → creative/brand-guardian → creative/content-stra
 global/global-business → consulting/legal-compliance-checker → consulting/kpi-analytics
      （オペレーション設計）        （現地法規制チェック）            （コスト試算）
 📘 revenue-growth-framework → consulting-playbook
+```
+
+### パターン16: 新規事業を全工程でゼロから立ち上げたい（オーケストレーター起動）
+```
+orchestrator（全体設計・タスク分解・統合）
+  ├─ 並列Phase 1:
+  │   competitive-analyst: 市場構造・参入障壁分析
+  │   global-journalist: 海外先行事例リサーチ
+  │   market-researcher: 顧客ニーズ・支払意思額調査
+  ├─ 直列Phase 2:
+  │   strategy-lead: Go/No-Go判定・参入戦略
+  │   kpi-analytics: 3年PL試算・感度分析
+  ├─ 直列Phase 3:
+  │   product-manager: MVP・ロードマップ
+  │   tech-lead: 技術アーキテクチャ
+  │   legal-compliance-checker: 法的リスク
+  └─ 最終Phase:
+      proposal-writer: 全結果を統合した提案書
+📘 unit-economics → ai-native-company → revenue-growth-framework → first-principles-breakdown
+```
+
+### パターン17: AI Agent Companyとして事業を再設計したい
+```
+orchestrator（全体統合）
+  ├─ ai-consultant: AI化優先業務・ROI試算
+  ├─ kpi-analytics: 現状PLとAI導入後インパクト比較
+  ├─ ai-engineer: エージェント設計・技術スタック
+  ├─ product-manager: Human-AIワークフロー設計
+  └─ strategy-lead: 収益化戦略・3年ロードマップ
+📘 ai-native-company → unit-economics → engineering-playbook
 ```
 
 ---
