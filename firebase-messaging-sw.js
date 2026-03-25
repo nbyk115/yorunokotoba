@@ -65,8 +65,8 @@ try {
 
   function getDefaultTitle() {
     var hour = new Date().getHours();
-    if (hour >= 22 || hour < 5) return 'よるのことば';
-    if (hour >= 17) return 'よるのことば';
+    if (hour >= 22 || hour < 5) return '🌙 よるのことば';
+    if (hour >= 17) return '🌆 よるのことば';
     return 'よるのことば';
   }
 
@@ -82,17 +82,21 @@ try {
       actions: [
         { action: 'open', title: '占いを見る' }
       ],
-      data: { url: (payload.data && payload.data.url) || 'https://yorunokotoba.vercel.app' }
+      data: { url: (payload.data && payload.data.url && payload.data.url.startsWith('https://yorunokotoba.vercel.app')) ? payload.data.url : 'https://yorunokotoba.vercel.app' }
     };
     return self.registration.showNotification(title, options);
   });
 } catch(e) {
-  console.warn('Firebase SW init error:', e);
+  // Firebase SW init error silenced in production
 }
 
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-  var url = (event.notification.data && event.notification.data.url) || 'https://yorunokotoba.vercel.app';
+  var allowedOrigin = 'https://yorunokotoba.vercel.app';
+  var url = (event.notification.data && event.notification.data.url) || allowedOrigin;
+  if (!url.startsWith(allowedOrigin)) {
+    url = allowedOrigin;
+  }
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
       for (var i = 0; i < windowClients.length; i++) {
