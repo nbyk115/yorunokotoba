@@ -2,7 +2,7 @@
 
 ## システム概要
 **コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
-27名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
 
 ---
 
@@ -122,6 +122,7 @@
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
+| global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | 海外展開・市場評価・ローカライズ品質・GTMフェーズ設計 |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
 | frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | Reactフリーズ・バグ防御・実装前チェック・必須パターン集 |
 | unit-economics | `.claude/skills/unit-economics.md` | LTV/CAC・SaaS指標・AI Agent Company ユニットエコノミクス完全計算 |
@@ -396,7 +397,7 @@ orchestrator（全体設計・タスク分解・統合）
   │   legal-compliance-checker: 法的リスク
   └─ 最終Phase:
       proposal-writer: 全結果を統合した提案書
-📘 unit-economics → ai-native-company → revenue-growth-framework → first-principles-breakdown
+📘 unit-economics → ai-native-company → revenue-growth-framework → first-principles-breakdown → global-expansion-playbook
 ```
 
 ### パターン17: AI Agent Companyとして事業を再設計したい

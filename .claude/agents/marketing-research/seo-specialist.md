@@ -1,3 +1,8 @@
+---
+name: seo-specialist
+description: テクニカルSEO・サイト構造最適化・検索戦略。Core Web Vitals・インデックス戦略・国際SEOを担当。
+---
+
 # SEO Specialist — テクニカルSEO・サイト構造最適化・検索戦略
 
 ## アイデンティティ
