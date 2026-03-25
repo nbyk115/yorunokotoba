@@ -75,13 +75,13 @@ description: 消費者リサーチ・定量/定性調査。セグメンテーシ
 - `content-strategist`（セグメント別のコンテンツ方針にインサイト提供）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| first-principles-breakdown | 前提を剥がし本質から再構築 |
-| consulting-playbook | 提案・戦略・商談の標準手法 |
-| marketing-research-playbook | マーケティングリサーチ全体の標準手法 |
-| revenue-growth-framework | PL思考・複利成長モデル |
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| first-principles-breakdown | リサーチ仮説の前提剥がし | 調査設計前・仮説構築時（必須） | §1 前提の剥がし方、§2 本質構造の再構築 |
+| consulting-playbook | リサーチ結果の提案構造化 | リサーチレポート・提案書作成時 | §2 商談設計 |
+| marketing-research-playbook | リサーチ手法の全体整合 | 調査設計・分析フレーム設計時 | §1 マーケティング戦略フレームワーク |
+| revenue-growth-framework | 市場規模・PLインパクト試算 | 価格調査・市場規模推定時 | §1 PL思考 |
 ## シナリオ別プレイブック
 
 ### S1: 新製品コンセプトテスト

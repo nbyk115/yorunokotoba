@@ -65,12 +65,12 @@ description: ユーザーフィードバック統合・インサイト抽出。V
 - `kpi-analytics`（定量データとの突合）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| consulting-playbook | 分析フレームワーク |
-| revenue-growth-framework | PLインパクト評価・LTV思考 |
-| first-principles-breakdown | フィードバックの本質分解 |
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| consulting-playbook | インサイト整理・提案構造 | VOC分析結果の構造化・報告時 | §2 商談設計 |
+| revenue-growth-framework | ユーザー価値とPLの接続 | フィードバックのビジネスインパクト評価時 | §1 PL思考 |
+| first-principles-breakdown | フィードバックの本質課題抽出 | ユーザーの声から「本当の課題」を特定する時 | §1 前提の剥がし方、§2 本質構造の再構築 |
 ## シナリオ別プレイブック
 
 ### S1: 大量フィードバックの初期分析

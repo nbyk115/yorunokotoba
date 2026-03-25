@@ -343,12 +343,14 @@ Phase 4 — 事後対応
   pr-communications → 公式ステートメント発出・メディア対応・事後フォロー計画
 ```
 
-## 適用スキル
-- `brand-guidelines` — トーン・品質基準
-- `consulting-playbook` — 提案・戦略の標準手法
-- `creative-playbook` — コンテンツ制作標準
-- `marketing-research-playbook` — マーケティング統合プレイブック
+## 参照スキル
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| brand-guidelines | ブランドトーン・禁止表現 | プレスリリース・メディア資料作成前（必須） | §1 ブランドトーン、§2 出力ルール、§3 禁止表現 |
+| consulting-playbook | PR提案構造・メディアブリーフ | メディアブリーフ・戦略提案時 | §2 商談設計 |
+| creative-playbook | プレスキット・ビジュアル整合 | プレスキット・イベント資料作成時 | §1 デザインツール選定 |
+| marketing-research-playbook | PR KPI設計・効果測定 | PR戦略立案・効果測定設計時 | §1 マーケティング戦略フレームワーク |
 ---
 
 ## 🔺 反証モード（トリプルチェック必須）

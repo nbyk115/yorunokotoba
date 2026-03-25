@@ -75,13 +75,13 @@ SNS, ソーシャル, X, Twitter, Instagram, LinkedIn, TikTok, YouTube, Threads,
 - `pr-communications`（PR施策とのソーシャル連携）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| creative-playbook | コンテンツ制作・デザイン基準 |
-| brand-guidelines | トーン・品質基準・禁止表現 |
-| digital-sales-intelligence | 広告・ファネル最適化の知見 |
-| marketing-research-playbook | マーケティングリサーチ全体の標準手法 |
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| creative-playbook | SNSビジュアル・クリエイティブ設計 | SNSコンテンツ制作時 | §1 デザインツール選定 |
+| brand-guidelines | ブランドトーン・禁止表現 | SNS投稿作成前・最終チェック（必須） | §1 ブランドトーン、§2 出力ルール、§3 禁止表現 |
+| digital-sales-intelligence | ソーシャル広告・文脈設計 | ソーシャル広告設計時 | §1 CPC/CPA変革、§2 コンテクスチュアル広告 |
+| marketing-research-playbook | SNS戦略の全体整合 | 戦略立案・KPI設計時 | §1 マーケティング戦略フレームワーク |
 ## シナリオ別プレイブック
 
 ### S1: SNS戦略立案（新規/リニューアル）

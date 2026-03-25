@@ -65,10 +65,11 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 - `proposal-writer`（クライアント向け提案書化）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| consulting-playbook | 提案・戦略・商談の標準手法 |
-| revenue-growth-framework | PL思考・複利成長モデル |
+
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| consulting-playbook | 提案構造・商談ロジック | AI導入提案書作成時 | §2 商談設計 |
+| revenue-growth-framework | ROI試算・PL思考 | AI導入ROI計算・投資回収試算時 | §1 PL思考 |
 
 ## シナリオ別プレイブック
 

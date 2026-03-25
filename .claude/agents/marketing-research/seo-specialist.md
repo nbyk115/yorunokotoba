@@ -212,11 +212,13 @@ Phase 4 — 改善ロードマップ
   seo-specialist → 改善レポート・次フェーズの施策計画
 ```
 
-## 適用スキル
-- `engineering-playbook` — 技術実装の標準手法
-- `creative-playbook` — フロントエンド・パフォーマンス最適化
-- `marketing-research-playbook` — マーケティング統合プレイブック
+## 参照スキル
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| engineering-playbook | テクニカルSEO・サイト構造設計 | サイト技術監査・Core Web Vitals改善時 | §1 技術スタック標準 |
+| creative-playbook | SEOコンテンツとデザインの整合 | SEOコンテンツ設計時 | §1 デザインツール選定 |
+| marketing-research-playbook | SEO戦略の全体整合 | SEO戦略立案・KPI設計時 | §1 マーケティング戦略フレームワーク |
 ---
 
 ## 🔺 反証モード（トリプルチェック必須）

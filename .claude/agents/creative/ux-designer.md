@@ -92,13 +92,13 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, Canva,
 - `consulting/proposal-writer`（提案用モック）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| creative-playbook | デザインプロセス・ツール活用 |
-| brand-guidelines | ブランド整合・アクセシビリティ基準 |
-| api-design-patterns | API連携画面のデータフロー設計 |
-| ppt-presentation | スライドレイアウト・シェイプ配置・スペーシング設計 |
 
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| creative-playbook | デザインツール・Figma連携 | UXフロー設計開始時 | §1 デザインツール選定 |
+| brand-guidelines | ブランドトーン・禁止表現 | ワイヤーフレーム・コピー確認時 | §1 ブランドトーン、§3 禁止表現 |
+| api-design-patterns | データ構造・API仕様理解 | フロントエンド連携設計時 | §1 REST API設計規約 |
+| ppt-presentation | スライド設計・UX提案の視覚化 | プレゼン用UX提案・デザインレビュー時 | §2 図・シェイプ内テキスト配置、§3 レイアウト設計 |
 ## シナリオ別プレイブック
 
 ### S1: 新規LP設計
