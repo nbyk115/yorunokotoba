@@ -47,7 +47,13 @@ brand-guardian
   ├─ タスク: ブランドガイドライン準拠確認・品質ゲート
   ├─ 参照スキル: brand-guidelines §1 §3 §6
   ├─ アウトプット: 承認 or 修正指示リスト
-  └─ → deliverable-checklist.md（LP/クリエイティブ）で納品前確認
+  └─ /peer-review file=[LP] reviewer=growth-hacker
+         ↓
+/peer-review（クロスレビュー）
+  ├─ growth-hacker: CVR・ファネル・CTAの有効性・A/Bテスト案を検証
+  ├─ brand-guardian: すでにQAフェーズで担当済み（二重確認）
+  └─ 問題あり → /handoff to=ux-designer or frontend-dev（修正依頼）
+     問題なし → deliverable-checklist.md で納品前確認（LP）
 [END]
 ```
 

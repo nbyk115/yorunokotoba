@@ -54,7 +54,13 @@ performance-marketer          seo-specialist           crm-ma-strategist
          ↓（全チャネル完了後）
 marketing-director（最終統合）
   ├─ タスク: 全チャネル施策を統合・KPIダッシュボード設計・実行カレンダー作成
-  └─ → deliverable-checklist.md で納品前確認
+  └─ /peer-review file=[マーケ施策設計] reviewer=kpi-analytics
+         ↓
+/peer-review（クロスレビュー）
+  ├─ kpi-analytics: KPI設計の妥当性・計測漏れ・PLインパクット試算を検証
+  ├─ legal-compliance-checker: 景表法・薬機法・広告規制への準拠を確認
+  └─ 問題あり → /handoff to=marketing-director（修正依頼）
+     問題なし → deliverable-checklist.md で納品前確認
 [END]
 ```
 

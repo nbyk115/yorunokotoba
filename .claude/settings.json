@@ -105,6 +105,22 @@
             "command": "if git status --short 2>/dev/null | grep -qE '^(M| M|A| A|\\?\\?)'; then echo 'REMINDER: 未コミットの変更があります。作業完了後はgit add & commitを忘れずに。'; fi"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); proj_dir=\"$root/.claude/projects\"; if [ -d \"$proj_dir\" ]; then missing=$(grep -rL '反証チェック結果' \"$proj_dir\"/*.md 2>/dev/null | grep -v template); if [ -n \"$missing\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔺 反証チェック未記入のプロジェクトファイル:\"; for f in $missing; do echo \"  → $(basename $f)\"; done; echo \"納品前に反証チェック結果を記入してください。\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); mem=\"$root/.claude/memory/core_memory.md\"; log=\"$root/.claude/memory/archival/$(date +%Y-%m-%d)_session.log\"; if [ -f \"$mem\" ]; then mkdir -p \"$(dirname $log)\"; echo \"[$(date '+%Y-%m-%d %H:%M')] セッション終了\" >> \"$log\"; git -C \"$root\" diff --name-only HEAD 2>/dev/null | head -10 >> \"$log\"; echo \"変更ファイル数: $(git -C $root diff --name-only HEAD 2>/dev/null | wc -l)\" >> \"$log\"; echo \"✅ Memory log updated: $log\"; fi"
+          }
+        ]
       }
     ]
   }

@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: ConsultingOS司令塔。複雑・複数部門にまたがるタスクを分解・配分・統合する最上位エージェント。単独エージェントでは解けない依頼の起点。
+description: ConsultingOS司令塔。タスク分解・エージェント配備・成果物統合に専念。戦略判断はstrategy-leadへ委譲。3部門以上にまたがる案件の起点。
 ---
 
 # orchestrator — ConsultingOS 司令塔エージェント

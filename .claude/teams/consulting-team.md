@@ -46,7 +46,13 @@ proposal-writer
   ├─ タスク: strategy-proposal.md テンプレートで最終提案書作成
   ├─ 参照スキル: consulting-playbook §8、ppt-presentation §4 スティーブ・ジョブズ プレゼン原則
   ├─ アウトプット: 最終提案書（クライアント納品物）
-  └─ → deliverable-checklist.md で納品前確認
+  └─ /peer-review file=[提案書] reviewer=kpi-analytics
+         ↓
+/peer-review（クロスレビュー）
+  ├─ kpi-analytics: 数値の妥当性・PL根拠・感度分析の適切性を検証
+  ├─ legal-compliance-checker: 施策の法的リスク・規制見落としを検証
+  └─ 問題あり → /handoff to=proposal-writer（修正依頼）
+     問題なし → deliverable-checklist.md で納品前確認
 [END]
 ```
 

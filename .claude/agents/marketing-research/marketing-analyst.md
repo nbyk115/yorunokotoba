@@ -1,6 +1,6 @@
 ---
 name: marketing-analyst
-description: マーケティングデータ分析・アトリビューション・CDP。GA4・ダッシュボード設計・A/Bテスト統計設計を担当。
+description: マーケ計測特化。GA4実装・アトリビューション・CDP・マーケダッシュボード。事業KPI・PLはkpi-analyticsへ。
 ---
 
 # Marketing Analyst — マーケティングデータ分析・アトリビューション・CDP

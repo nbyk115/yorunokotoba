@@ -56,7 +56,13 @@ business-translator
   ├─ タスク: 現地語へのトランスクリエーション（翻訳を超えた文化的適合）
   ├─ 参照スキル: global-expansion-playbook §3 ローカライズ品質基準
   ├─ アウトプット: ローカライズ済み資料（現地語）
-  └─ → deliverable-checklist.md で納品前確認
+  └─ /peer-review file=[海外展開計画] reviewer=legal-compliance-checker
+         ↓
+/peer-review（クロスレビュー）
+  ├─ legal-compliance-checker: 現地規制・コンプライアンスリスクの最終確認
+  ├─ kpi-analytics: グローバルPL試算の数値妥当性・為替リスク反映を確認
+  └─ 問題あり → /handoff to=gtm-consultant or global-business（修正依頼）
+     問題なし → deliverable-checklist.md で納品前確認
 [END]
 ```
 

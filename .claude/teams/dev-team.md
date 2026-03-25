@@ -57,7 +57,13 @@ infra-devops
   ├─ タスク: デプロイ設定・CI/CD・監視・コスト試算
   ├─ 参照スキル: engineering-playbook §4、incident-response §1
   ├─ アウトプット: デプロイ済み環境 + 監視設定 + README更新
-  └─ → deliverable-checklist.md で納品前確認（コード納品チェック）
+  └─ /peer-review file=[実装コード] reviewer=tech-lead
+         ↓
+/peer-review（クロスレビュー）
+  ├─ tech-lead: アーキテクチャ・セキュリティ・スケーラビリティを検証
+  ├─ fullstack-dev（別観点）: バグ・エッジケース・パフォーマンスを検証
+  └─ 問題あり → /handoff to=fullstack-dev（修正依頼）
+     問題なし → deliverable-checklist.md で納品前確認（コード）
 [END]
 ```
 
