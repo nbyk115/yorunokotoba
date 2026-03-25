@@ -1,6 +1,8 @@
 ---
 name: infra-devops
 description: インフラ・CI/CD。デプロイ・Docker構成・コスト最適化・監視。
+model: claude-sonnet-4-6
+tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # infra-devops — インフラ・CI/CDエージェント

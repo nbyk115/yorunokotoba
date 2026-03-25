@@ -1,6 +1,8 @@
 ---
 name: client-success
 description: 顧客成功・LTV最大化。オンボーディング・リテンション・アップセル設計を担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # client-success — 顧客成功エージェント

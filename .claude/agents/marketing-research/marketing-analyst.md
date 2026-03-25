@@ -1,6 +1,8 @@
 ---
 name: marketing-analyst
 description: マーケ計測特化。GA4実装・アトリビューション・CDP・マーケダッシュボード。事業KPI・PLはkpi-analyticsへ。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # Marketing Analyst — マーケティングデータ分析・アトリビューション・CDP

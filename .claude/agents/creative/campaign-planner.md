@@ -1,6 +1,8 @@
 ---
 name: campaign-planner
 description: キャンペーン設計。施策企画・コンテンツカレンダー・KPI管理。
+model: claude-sonnet-4-6
+tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # campaign-planner — キャンペーン設計エージェント

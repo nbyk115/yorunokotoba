@@ -1,6 +1,8 @@
 ---
 name: market-researcher
 description: 消費者リサーチ・定量/定性調査。セグメンテーション・ペルソナ開発・価格調査・ブランドトラッキングを担当。
+model: claude-haiku-4-5-20251001
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # market-researcher — 消費者リサーチエージェント

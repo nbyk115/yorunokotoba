@@ -1,6 +1,8 @@
 ---
 name: creative-director
 description: クリエイティブ統括。方針策定・ブリーフ作成・デザインツール選定・レビュー。Canva/Figma/Google Slides対応。
+model: claude-sonnet-4-6
+tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # creative-director — クリエイティブ統括エージェント 🎨

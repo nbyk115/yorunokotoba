@@ -165,6 +165,10 @@ Step 5: 成果物納品
 | unit-economics | `.claude/skills/unit-economics.md` | LTV/CAC・SaaS指標・AI Agent Company ユニットエコノミクス完全計算 |
 | ai-native-company | `.claude/skills/ai-native-company.md` | AI Agent Company設計原則・エージェント設計・収益モデル・佐藤×小野寺統合 |
 | ppt-presentation | `.claude/skills/ppt-presentation.md` | PPT/スライド制作・日本語品質・メイリオ・ジョブズスタイル・Komoju決済 |
+| sales-playbook | `.claude/skills/sales-playbook.md` | ICP定義・MEDDPICC商談設計・クロージング戦術・SaaS営業KPI |
+| product-management-playbook | `.claude/skills/product-management-playbook.md` | PMF検証・RICE優先順位付け・PRD設計・OKR連動ロードマップ |
+| compliance-playbook | `.claude/skills/compliance-playbook.md` | 法務リスク評価・契約レビュー・個人情報保護・景表法・コンプライアンス体制 |
+| technical-accuracy | `.claude/skills/technical-accuracy.md` | CLI優先原則・GA4/Firebase/GitHub PR実装の反ハルシネーションプロトコル |
 
 ---
 
@@ -412,9 +416,20 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 
 ### パターン12: SaaSプロダクトを海外展開したい
 ```
-global/gtm-consultant → global/global-journalist → consulting/kpi-analytics
-     （GTM戦略設計）         （現地市場リサーチ）         （PL試算）
-📘 revenue-growth-framework → first-principles-breakdown → consulting-playbook
+【3層フロー】
+Layer 1: 市場評価・情報収集（並列）
+  global/gtm-consultant: GTM戦略設計・参入モデル選定・市場スコアリング
+  global/global-journalist: 現地市場リサーチ・競合動向・規制動向（情報グレードB以上のみ）
+  legal-compliance-checker: 参入規制・ライセンス・データ保護法チェック
+
+Layer 2: 事業判断（直列・Layer 1完了後）
+  consulting/strategy-lead: 市場評価・Go/No-Go判定・参入優先順位（戦略判断のみ。PL構築は委託）
+  consulting/kpi-analytics: 海外展開PL試算（為替リスク込み・楽観/標準/悲観3シナリオ）
+
+Layer 3: 実行設計
+  global/global-business: オペレーション設計・現地パートナー条件・商習慣対応
+
+📘 global-expansion-playbook → revenue-growth-framework → first-principles-breakdown → consulting-playbook
 ```
 
 ### パターン13: 海外規制変更のインパクトを分析したい

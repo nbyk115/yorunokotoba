@@ -1,6 +1,8 @@
 ---
 name: growth-hacker
 description: グロースハック・実験ドリブン成長。A/Bテスト・ファネル最適化・バイラル設計を担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # growth-hacker — グロースハックエージェント

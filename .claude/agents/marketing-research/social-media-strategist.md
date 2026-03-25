@@ -1,6 +1,8 @@
 ---
 name: social-media-strategist
 description: SNS戦略・コミュニティ運営。プラットフォーム別戦術・インフルエンサー・ソーシャルリスニング・炎上対応を担当。
+model: claude-haiku-4-5-20251001
+tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # social-media-strategist — SNS戦略エージェント

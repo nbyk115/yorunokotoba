@@ -1,6 +1,8 @@
 ---
 name: legal-compliance-checker
 description: 法務・コンプライアンスチェック。契約・利用規約・個人情報保護・景表法対応を担当。
+model: claude-opus-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # legal-compliance-checker — 法務・コンプラエージェント

@@ -1,6 +1,8 @@
 ---
 name: tech-lead
 description: 技術選定・設計統括。アーキテクチャ設計・コードレビュー・品質管理。
+model: claude-opus-4-6
+tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # tech-lead — 技術選定・設計統括エージェント

@@ -1,6 +1,8 @@
 ---
 name: feedback-synthesizer
 description: ユーザーフィードバック統合・インサイト抽出。VOC分析・要望分類・優先順位付けを担当。
+model: claude-haiku-4-5-20251001
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # feedback-synthesizer — フィードバック統合エージェント

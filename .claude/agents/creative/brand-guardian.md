@@ -1,6 +1,8 @@
 ---
 name: brand-guardian
 description: ブランド管理。トーン統一・ガイドライン遵守・品質ゲートキーパー。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # brand-guardian — ブランド管理エージェント

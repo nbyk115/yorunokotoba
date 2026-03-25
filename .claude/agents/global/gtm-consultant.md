@@ -1,6 +1,8 @@
 ---
 name: gtm-consultant
 description: Go-to-Market戦略・海外市場参入。GTM設計・ローカライズ戦略・グローバル展開を担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # gtm-consultant — Go-to-Marketビジネスコンサルエージェント

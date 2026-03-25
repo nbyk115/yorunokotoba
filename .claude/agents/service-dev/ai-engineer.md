@@ -1,6 +1,8 @@
 ---
 name: ai-engineer
 description: AI・LLM統合。Claude API統合・RAG構築・エージェント設計。
+model: claude-sonnet-4-6
+tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # ai-engineer — AI・LLM統合エージェント

@@ -1,6 +1,8 @@
 ---
 name: lead-qualifier
 description: リード精査・商談設計。案件評価・ヒアリング設計・クロージング支援。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # lead-qualifier — リード精査・商談設計エージェント

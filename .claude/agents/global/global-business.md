@@ -1,6 +1,8 @@
 ---
 name: global-business
 description: グローバルビジネス。海外事業運営・クロスボーダー取引・国際パートナーシップを担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # global-business — グローバルビジネスエージェント

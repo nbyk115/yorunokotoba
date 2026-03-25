@@ -1,6 +1,8 @@
 ---
 name: business-translator
 description: ビジネス翻訳。高品質な多言語翻訳・ローカライゼーション・トランスクリエーションを担当。
+model: claude-haiku-4-5-20251001
+tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # business-translator — ビジネス翻訳エージェント

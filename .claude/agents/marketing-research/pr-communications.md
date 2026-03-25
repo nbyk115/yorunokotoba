@@ -1,6 +1,8 @@
 ---
 name: pr-communications
 description: PR戦略・メディアリレーション・危機管理広報・効果測定。プレスリリースからクライシス対応まで担当。
+model: claude-sonnet-4-6
+tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # PR & Communications — 広報・メディアリレーション・危機管理広報

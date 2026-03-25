@@ -1,6 +1,8 @@
 ---
 name: crm-ma-strategist
 description: CRM設計・MA戦略。リードナーチャリング・スコアリング・メールマーケティング・Sales-Marketing Alignmentを担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # crm-ma-strategist — CRM/MAストラテジストエージェント

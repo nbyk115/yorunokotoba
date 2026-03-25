@@ -1,6 +1,8 @@
 ---
 name: performance-marketer
 description: 広告運用・SEM/PPC・ROAS最適化・メディアバイイング。ペイドメディア戦略設計から運用最適化まで担当。
+model: claude-sonnet-4-6
+tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
 # Performance Marketer — 広告運用・ROAS最適化・メディアバイイング

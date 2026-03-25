@@ -1,6 +1,8 @@
 ---
 name: frontend-dev
 description: フロントエンド実装。Figma→HTML/React変換・コンポーネント生成。Figma MCP対応。
+model: claude-sonnet-4-6
+tools: Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
 # frontend-dev — フロントエンド実装エージェント 🎨
