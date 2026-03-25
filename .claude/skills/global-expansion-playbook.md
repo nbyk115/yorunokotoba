@@ -262,6 +262,53 @@ LTV/CAC（現地ベース）: ___倍
 
 ---
 
+## 8. Agent Team 連携パターン
+
+> Global部門の標準チーム編成。海外展開の各フェーズで使用する。
+
+### パターン一覧
+
+| チーム名 | 起点 | メンバー | 起動条件 |
+|---|---|---|---|
+| グローバルコンテンツ多言語展開チーム | business-translator | + content-strategist + brand-guardian | LP/広告/資料を複数言語展開 |
+| グローバル法務文書翻訳チーム | business-translator | + legal-compliance-checker + gtm-consultant | 契約書・利用規約・PP の現地語翻訳 |
+| 海外市場インテリジェンスチーム | global-journalist | + competitive-analyst + strategy-lead | 海外市場参入判断・競合把握 |
+| 海外規制変更インパクト分析チーム | global-journalist | + legal-compliance-checker + kpi-analytics | 法改正・規制変更の事業影響分析 |
+| 海外拠点設立チーム | global-business | + legal-compliance-checker + kpi-analytics | 現地法人/JV/代理店設立 |
+| 国際パートナーシップ設計チーム | global-business | + gtm-consultant + business-translator | 代理店・JV・アライアンス締結 |
+| 海外GTMフルチーム | gtm-consultant | + global-journalist + kpi-analytics | 新規市場参入の全工程設計 |
+
+### フェーズ別の推奨チーム構成
+```
+Phase 0（リサーチ）:
+  global-journalist + competitive-analyst → 海外市場インテリジェンスチーム
+  → 一次情報収集・市場構造分析・競合マップ
+
+Phase 1（テスト参入）:
+  gtm-consultant + global-business + business-translator → 海外GTMフルチーム
+  → PLGモデル or 代理店経由の最小MVP展開
+
+Phase 2（拡大）:
+  global-business + legal-compliance-checker + kpi-analytics → 海外拠点設立チーム
+  → オペレーション最適化・PL黒字化
+
+Phase 3（定着・ローカライズ深化）:
+  business-translator + content-strategist + brand-guardian → グローバルコンテンツ多言語展開チーム
+  → ブランドの現地化・コンテンツ資産の蓄積
+```
+
+### ハンドオフ品質基準
+```
+Global部門内のハンドオフでは必ず以下を渡す:
+1. 対象市場・参入フェーズ
+2. 収集済み一次情報（ソースグレード付き）
+3. 現地の制約条件（法規制/文化/言語）
+4. PLシミュレーションの前提条件
+5. 撤退基準（事前合意した閾値）
+```
+
+---
+
 ## 適用エージェント
 - `global/gtm-consultant` — 市場評価・GTM設計・参入モデル選択
 - `global/global-journalist` — 市場リサーチ・情報収集品質基準

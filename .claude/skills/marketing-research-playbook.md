@@ -314,6 +314,53 @@ BOFU（Bottom of Funnel）— 購買・決定
 
 ---
 
+## 9. Agent Team 連携パターン
+
+> Marketing & Research部門の標準チーム編成。各エージェントが単独で完結しないタスクに対して使用する。
+
+### パターン一覧
+
+| チーム名 | 起点 | メンバー | 起動条件 |
+|---|---|---|---|
+| フルファネル広告×コンテンツ統合グロースチーム | performance-marketer | + growth-hacker + marketing-analyst | 広告費増やしてもCPAが改善しない |
+| Cookie廃止対応1stパーティデータ基盤チーム | performance-marketer | + crm-ma-strategist + marketing-analyst | 3rdパーティCookie廃止対応 |
+| データドリブンマーケティング意思決定チーム | marketing-analyst | + performance-marketer + kpi-analytics | マーケ投資効果を経営層に可視化 |
+| CDP×パーソナライズ実装チーム | marketing-analyst | + crm-ma-strategist + fullstack-dev | ユーザーデータを統合してパーソナライズ実装 |
+| SEO×コンテンツ統合オーガニック成長チーム | seo-specialist | + content-strategist + agentic-content | オーガニックトラフィックを戦略的に伸ばす |
+| テクニカルSEO×フロントエンド改善チーム | seo-specialist | + frontend-dev + marketing-analyst | CWVがGoodに到達しない |
+| PR×SNS統合ブランドアンプリファイチーム | pr-communications | + social-media-strategist + brand-guardian | 重要ニュースを最大露出させたい |
+| 危機管理統合対応チーム | pr-communications | + legal-compliance-checker + strategy-lead | クライシス発生時（炎上/事故/情報漏洩） |
+| マーケティング統括×チャネル設計チーム | marketing-director | + performance-marketer + marketing-analyst | 年間予算配分・チャネルミックス最適化 |
+| CRM×MA統合ナーチャリングチーム | crm-ma-strategist | + marketing-analyst + content-strategist | リードナーチャリング基盤の設計・構築 |
+| 消費者リサーチ×戦略統合チーム | market-researcher | + competitive-analyst + strategy-lead | 参入判断・新製品開発のリサーチ起点 |
+| SNS×インフルエンサー×コンテンツチーム | social-media-strategist | + content-strategist + brand-guardian | SNSキャンペーン×UGC設計 |
+
+### チーム起動の判断基準
+```
+単独エージェントで完結する場合（以下は単独でOK）:
+- 特定チャネルの戦術改善（例: Google Adsの入札調整）
+- 単一レポートの作成（例: 月次SEOレポート）
+- 明確な専門タスク（例: プレスリリース1本の作成）
+
+Agent Teamが必要な場合:
+- 複数チャネルにまたがる施策設計
+- 戦略→実装→計測の一貫したフロー
+- 異なる専門性のクロスチェックが必要
+- 危機管理・法的リスクを含む判断
+```
+
+### ハンドオフ品質基準
+```
+Marketing部門内のハンドオフでは必ず以下を渡す:
+1. 目的・KPI（何のための施策か）
+2. 現状データ（ベースライン数値）
+3. 制約条件（予算/期間/リソース）
+4. 成功基準（何が達成されれば完了か）
+5. 参照すべきスキルファイル
+```
+
+---
+
 ## アンチパターン（全般）
 
 | ❌ やりがち | ✅ 正しい方法 |
