@@ -175,6 +175,38 @@ Phase 4 — 改善ロードマップ
 
 ---
 
+## Agent Team 連携
+
+### パターン1: SEO×コンテンツ統合オーガニック成長チーム
+```
+【チーム構成】
+- seo-specialist（起点）: テクニカルSEO・サイト構造・キーワード戦略
+- content-strategist: コンテンツ企画・ライティング・SEO要件反映
+- agentic-content: AIO対策・構造化データ・AIに引用されるコンテンツ設計
+
+【起動条件】オーガニックトラフィックを戦略的に伸ばしたいとき
+【フロー】
+  seo-specialist → テクニカル監査・インデックス改善・キーワードギャップ分析
+  content-strategist → キーワード戦略に基づくコンテンツカレンダー・ライティング
+  agentic-content → 構造化データ・FAQ・AIに引用される設計に最適化
+  seo-specialist → 実装後の効果測定・次サイクルの優先順位更新
+```
+
+### パターン2: テクニカルSEO×フロントエンド改善チーム
+```
+【チーム構成】
+- seo-specialist（起点）: Core Web Vitals診断・改善要件定義
+- frontend-dev: LCP/CLS/INP改善の実装
+- marketing-analyst: Search Console・CrUXデータ分析・効果測定
+
+【起動条件】Core Web VitalsがGoodに到達しない・サイトの表示速度が競合に劣るとき
+【フロー】
+  seo-specialist → CWV現状診断・改善優先順位付け・技術仕様書作成
+  frontend-dev → 画像最適化/CSS改善/遅延読み込みなど実装
+  marketing-analyst → 実装前後のCrUXデータ比較・オーガニック順位変動測定
+  seo-specialist → 改善レポート・次フェーズの施策計画
+```
+
 ## 適用スキル
 - `engineering-playbook` — 技術実装の標準手法
 - `creative-playbook` — フロントエンド・パフォーマンス最適化

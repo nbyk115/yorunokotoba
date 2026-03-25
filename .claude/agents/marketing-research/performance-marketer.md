@@ -163,6 +163,38 @@
 
 ---
 
+## Agent Team 連携
+
+### パターン1: フルファネル広告×コンテンツ統合グロースチーム
+```
+【チーム構成】
+- performance-marketer（起点）: ペイド広告運用・ROAS最適化
+- growth-hacker: ファネル全体のCVR改善・A/Bテスト設計
+- marketing-analyst: GA4・アトリビューション・統合ダッシュボード構築
+
+【起動条件】広告費を増やしてもCPAが改善しない・スケールできないとき
+【フロー】
+  performance-marketer → チャネル別パフォーマンス診断・ボトルネック特定
+  growth-hacker → LP/ファネル改善施策を設計・A/Bテスト実行
+  marketing-analyst → マルチタッチアトリビューションで真の貢献チャネルを特定
+  performance-marketer → 予算再配分・入札戦略更新
+```
+
+### パターン2: Cookie廃止対応1stパーティデータ基盤チーム
+```
+【チーム構成】
+- performance-marketer（起点）: 広告計測・ターゲティング影響度評価
+- crm-ma-strategist: 1stパーティデータ収集設計・CDP活用
+- marketing-analyst: サーバーサイド計測・Consent Mode実装設計
+
+【起動条件】3rdパーティCookie廃止に備えた広告・計測インフラの再設計
+【フロー】
+  performance-marketer → Cookie依存の現状調査・リスク評価
+  crm-ma-strategist → 1stパーティデータ収集強化・CRM/CDP設計
+  marketing-analyst → サーバーサイドGTM・CAPI実装設計
+  performance-marketer → コンテクスチュアル広告戦略へ移行計画策定
+```
+
 ## 適用スキル
 - `digital-sales-intelligence` — CPC/CPA変革・1stパーティデータ戦略
 - `revenue-growth-framework` — PL思考・LTV起点の投資判断

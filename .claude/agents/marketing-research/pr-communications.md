@@ -306,6 +306,38 @@ Phase 4 — 事後対応
 
 ---
 
+## Agent Team 連携
+
+### パターン1: PR×SNS統合ブランドアンプリファイチーム
+```
+【チーム構成】
+- pr-communications（起点）: プレスリリース・メディアリレーション・ピッチ設計
+- social-media-strategist: SNS同時展開・エンゲージメント最大化・拡散設計
+- brand-guardian: メッセージ一貫性・ブランドトーン品質ゲート
+
+【起動条件】新製品発表・事業発表・資金調達等の重要ニュースを最大露出させたいとき
+【フロー】
+  pr-communications → ニュースバリュー評価・メッセージング設計・プレスリリース作成
+  brand-guardian → ブランドガイドライン準拠チェック・トーン統一確認
+  social-media-strategist → プラットフォーム別コンテンツ展開・ハッシュタグ・UGC設計
+  pr-communications → メディアピッチ・効果測定・SOV/指名検索変動レポート
+```
+
+### パターン2: 危機管理統合対応チーム
+```
+【チーム構成】
+- pr-communications（起点）: 初動対応・ステートメント作成・メディア窓口一本化
+- legal-compliance-checker: 法的リスク評価・公表内容の法的整合性確認
+- strategy-lead: 事業への影響判断・経営判断への示唆
+
+【起動条件】炎上・不祥事・製品事故・情報漏洩等のクライシスが発生したとき
+【フロー】
+  pr-communications → 重大度判定（Level 1-3）・ゴールデンアワー初動対応
+  legal-compliance-checker → 法的リスク評価・開示義務・「言ってはいけないこと」確認
+  strategy-lead → 事業・ブランドへのダメージシミュレーション・経営方針を決定
+  pr-communications → 公式ステートメント発出・メディア対応・事後フォロー計画
+```
+
 ## 適用スキル
 - `brand-guidelines` — トーン・品質基準
 - `consulting-playbook` — 提案・戦略の標準手法

@@ -214,6 +214,38 @@
 
 ---
 
+## Agent Team 連携
+
+### パターン1: データドリブンマーケティング意思決定チーム
+```
+【チーム構成】
+- marketing-analyst（起点）: GA4・アトリビューション・ダッシュボード構築
+- performance-marketer: 広告データ・チャネル別ROAS解釈
+- kpi-analytics: ビジネスKPIとのブリッジ・PL連携
+
+【起動条件】マーケティング投資の効果を経営層に説明できる形で可視化したいとき
+【フロー】
+  marketing-analyst → マーケティングデータスタック設計・統合ダッシュボード構築
+  performance-marketer → チャネル別広告データ・アトリビューション評価
+  kpi-analytics → 営業利益・LTV・CAC等のビジネスKPIとの連動設計
+  marketing-analyst → 経営ダッシュボード最終版・意思決定ロジック文書化
+```
+
+### パターン2: CDP×パーソナライズ実装チーム
+```
+【チーム構成】
+- marketing-analyst（起点）: CDPデータ設計・セグメント定義・効果測定
+- crm-ma-strategist: CRM/MA連携・ナーチャリングシーケンス設計
+- fullstack-dev: CDPタグ実装・サーバーサイド連携・データパイプライン構築
+
+【起動条件】ユーザーデータを統合してパーソナライズ施策を実装したいとき
+【フロー】
+  marketing-analyst → CDPデータソース棚卸・ID統合設計・セグメント定義
+  crm-ma-strategist → セグメント別ナーチャリング・メールシーケンス設計
+  fullstack-dev → CDPイベント実装・MA連携API開発
+  marketing-analyst → 効果測定（セグメント別CVR/LTV比較）・継続改善
+```
+
 ## 適用スキル
 - `digital-sales-intelligence` — デジタルマーケティング指標体系
 - `engineering-playbook` — データパイプライン・実装標準
