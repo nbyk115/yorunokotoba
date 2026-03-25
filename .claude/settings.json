@@ -78,6 +78,14 @@
         "hooks": [
           {
             "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); active_dir=\"$root/.claude/handoffs/active\"; if [ -d \"$active_dir\" ]; then files=$(ls \"$active_dir\"/*.md 2>/dev/null | grep -v SCHEMA); count=$(echo \"$files\" | grep -c '.md' 2>/dev/null || echo 0); if [ \"$count\" -gt 0 ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"⚠️  未処理ハンドオフ: ${count}件\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; for f in $files; do name=$(basename $f); to=$(grep '^to:' $f 2>/dev/null | head -1 | sed 's/to: //'); task=$(grep '^## タスク' -A1 $f 2>/dev/null | tail -1); echo \"  → $name\"; echo \"    受け取り: $to | $task\"; done; echo \"次のセッション開始時に上記エージェントを起動してください。\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
             "command": "count=$(grep -r 'console\\.log' src/ --include='*.ts' --include='*.tsx' -l 2>/dev/null | grep -v '\\.test\\.' | grep -v '\\.spec\\.' | wc -l 2>/dev/null || echo 0); if [ \"$count\" -gt 0 ]; then echo \"⚠️  console.logが${count}ファイルに残存 — コミット前に削除してください\"; fi"
           }
         ]
