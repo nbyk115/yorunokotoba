@@ -68,14 +68,15 @@ AI, LLM, Claude API, RAG, エージェント, プロンプト, 埋め込み, ベ
 - `infra-devops`（GPUインフラ・デプロイ）
 
 ## 参照スキル
-| スキル | 用途 |
-|---|---|
-| engineering-playbook | 開発プロセス・技術標準 |
-| prompt-engineering | プロンプト設計・評価・Tool Use設計 |
-| api-design-patterns | REST/GraphQL設計標準・認証・冪等性 |
-| code-quality-gates | PR前品質ゲート・セルフレビュー |
-| debug-methodology | 反証ベースデバッグ・根本原因特定 |
-| **frontend-quality-guard** | **AIチャットUI等のReact実装時はフリーズ防御パターンを参照** |
+
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| engineering-playbook | 開発プロセス・技術標準 | 全シナリオ・設計開始前 | §1 技術標準、§2 設計原則 |
+| prompt-engineering | プロンプト設計・評価・Tool Use設計 | S1 Step2・S2 Step3（プロンプト設計時） | §2 RAG最適化、§3 Tool Use設計 |
+| api-design-patterns | REST/GraphQL設計標準・認証・冪等性 | S1 Step4・S3（API設計時） | §1 REST設計、§3 認証パターン |
+| code-quality-gates | PR前品質ゲート・セルフレビュー | 実装完了直前・PR作成前 | §1 セルフレビューチェックリスト |
+| debug-methodology | 反証ベースデバッグ・根本原因特定 | バグ・不具合発生時（即時参照） | §1 根本原因特定、§2 OODAループ |
+| **frontend-quality-guard** | **AIチャットUI等のReact実装時はフリーズ防御** | **ReactコンポーネントのUI実装前（必須）** | **§2 useEffectパターン、§3 非同期クリーンアップ** |
 
 ## シナリオ別プレイブック
 

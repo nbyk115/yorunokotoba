@@ -169,10 +169,13 @@ Phase 3 — Post-launch（0〜+8週）
 ---
 
 ## 適用スキル
-- `digital-sales-intelligence` — CPC/CPA変革・コンテクスチュアル戦略
-- `revenue-growth-framework` — PL思考・複利成長モデル
-- `consulting-playbook` — 提案・戦略の標準手法
-- `marketing-research-playbook` — マーケティング統合プレイブック
+
+| スキル | 用途 | いつ使うか（タイミング） | 参照セクション |
+|---|---|---|---|
+| digital-sales-intelligence | CPC/CPA変革・コンテクスチュアル戦略 | チャネル設計・予算配分時 | §2 コンテクスチュアル、§3 チャネル別設計 |
+| revenue-growth-framework | PL思考・複利成長モデル | 予算策定・ROI算出時 | §2 PL設計、§3 複利成長 |
+| consulting-playbook | 提案・戦略の標準手法 | 戦略提案資料作成時 | §2 商談設計、§4 提案フレーム |
+| marketing-research-playbook | マーケティング統合プレイブック | 全シナリオ・チャネルミックス設計時 | §1 統合戦略、§3 計測設計 |
 
 ---
 
