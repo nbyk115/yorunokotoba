@@ -6,6 +6,43 @@
 
 ---
 
+## 案件受付パイプライン（AI Agency フロー）
+
+> クライアントの依頼は必ずこのフローを通る。ルーティングに直行しない。
+
+```
+Step 1: インテーク
+  /new-project コマンドを起動
+  → .claude/intake/ の該当テンプレートで情報を収集
+
+Step 2: プロジェクトファイル生成
+  → .claude/projects/YYYY-MM-DD_[クライアント]_[概要].md を作成
+  → .claude/projects/template.md をベースに使用
+
+Step 3: エージェントチーム配備
+  → 下記ルーティングロジックで起点エージェントを特定
+  → ハンドオフプロトコルに従い各エージェントを起動
+
+Step 4: 品質ゲート（各フェーズ完了時）
+  → 人間の承認なしに次フェーズへ進まない
+  → .claude/projects/[案件ファイル].md の品質ゲートチェックを実施
+
+Step 5: 成果物納品
+  → .claude/templates/ の該当テンプレートで成果物を作成
+  → .claude/templates/deliverable-checklist.md で納品前確認
+```
+
+### インテークフォーム一覧
+| 案件種別 | フォーム | 主な成果物 |
+|---|---|---|
+| 戦略・提案・KPI・法務 | `.claude/intake/consulting-intake.md` | `.claude/templates/strategy-proposal.md` |
+| LP・UI・コンテンツ・ブランド | `.claude/intake/creative-intake.md` | `.claude/templates/lp-brief.md` |
+| コード・API・インフラ・AI機能 | `.claude/intake/dev-intake.md` | コードリポジトリ |
+| 海外展開・翻訳・GTM | `.claude/intake/global-intake.md` | `.claude/templates/market-research-report.md` |
+| 広告・SEO・CRM・SNS・PR | `.claude/intake/marketing-intake.md` | キャンペーン設計書 |
+
+---
+
 ## ルーティングロジック
 
 ユーザーの入力を分析し、以下のトリガーキーワードに基づいて適切なエージェントにルーティングする。
