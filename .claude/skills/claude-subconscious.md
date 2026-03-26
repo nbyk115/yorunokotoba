@@ -10,6 +10,21 @@ ConsultingOSの全26エージェントが共有する「記憶基盤」。
 
 ---
 
+## 実装ステータス
+
+> **現在のステータス**: Core Memory / Archival Memory は運用中。Letta連携は未実装（ロードマップ §8 参照）
+
+| 機能 | ステータス | 運用方法 |
+|---|---|---|
+| Core Memory（会話内） | ✅ 動作中 | Claude の会話コンテキスト内で維持 |
+| Archival Memory（.claude/memory/） | ✅ 動作中 | `.claude/memory/core-memory.md` に記録 |
+| Letta連携（外部メモリサーバー） | 🔲 未実装 | `.claude/memory/` ディレクトリへの手動書き込みで代替 |
+| セッション間自動同期 | ✅ 動作中 | SessionStart hook が `core-memory.md` を自動読込 |
+
+**現在の運用**: SessionStart hook でセッション開始時に `core-memory.md` を読み込み。終了時はエージェントが同ファイルを更新。
+
+---
+
 ## §1 メモリ階層
 
 ### 1. Core Memory（常時参照・最優先）

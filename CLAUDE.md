@@ -185,6 +185,23 @@ Step 5: 成果物納品
 
 ---
 
+### ⚡ クイック判定（30秒ルーティング）
+
+| ユーザーが言いたいこと | 起点エージェント |
+|---|---|
+| 「競合を調べたい」「差別化は？」「競合比較」 | competitive-analyst |
+| 「顧客に聞きたい」「セグメント」「ペルソナ」「価格感度」 | market-researcher |
+| 「海外事例」「グローバルトレンド」「規制動向」 | global-journalist |
+| 「戦略を考えたい」「どの方向に進むか」 | strategy-lead |
+| 「数字を出したい」「KPI」「PL試算」 | kpi-analytics |
+| 「コードを書きたい」「実装したい」「バグ修正」 | fullstack-dev |
+| 「LP/UI作りたい」「デザイン」「Figma」 | creative-director |
+| 「海外展開したい」「GTM」「ローカライズ」 | gtm-consultant |
+| 「広告を出したい」「ROAS改善」「SEM/PPC」 | performance-marketer |
+| 「SEO改善」「テクニカルSEO」「CWV」 | seo-specialist |
+| 「コンテンツ作りたい」「ブログ」「LP文章」 | content-strategist |
+| 「全体を俯瞰したい」「複数部門にまたがる」 | orchestrator |
+
 ## スマートルーティング判定ツリー
 
 > ユーザーの依頼が複数部門にまたがる場合、以下のフローで最適な起点エージェントを判定する。
@@ -203,14 +220,19 @@ Step 5: 成果物納品
 ### Step 2a: 調査系の振り分け
 ```
 何を調査？
-├─ 市場・競合 → competitive-analyst（起点）
+├─ 競合他社の機能・価格・戦略比較 → competitive-analyst（起点）
+├─ 市場全体の構造・参入障壁・TAM → competitive-analyst（起点）、必要に応じてmarket-researcherと並列
+├─ 消費者ニーズ・購買行動・セグメント・ペルソナ・価格感度 → market-researcher（起点）
+├─ 海外市場の最新動向・規制・事例 → global-journalist（起点）
 ├─ 数値・KPI → kpi-analytics（起点）
 ├─ 法務・契約 → legal-compliance-checker（起点）
 ├─ ユーザーの声 → feedback-synthesizer（起点）
 ├─ 技術的調査 → tech-lead（起点）
-├─ 海外動向・国際情勢 → global-journalist（起点）
-├─ 消費者調査・セグメンテーション → market-researcher（起点）
-└─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
+├─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
+├─ 市場分析3エージェントの使い分け:
+│   ├─「競合のXXXと比べてどうか」「差別化は」→ competitive-analyst
+│   ├─「顧客は何を望んでいるか」「誰に売るか」→ market-researcher
+│   └─「海外ではどうなっているか」「規制動向」→ global-journalist
 ```
 
 ### Step 2b: 実行系の振り分け
