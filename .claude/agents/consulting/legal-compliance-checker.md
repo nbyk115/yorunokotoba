@@ -75,6 +75,7 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 |---|---|---|---|
 | consulting-playbook | 法的観点の提案構造化 | 法務レポート・リスク整理時 | §8 商談・提案の標準プロセス |
 | brand-guidelines | 禁止表現・コンプライアンス | 資料・契約文書チェック時（必須） | §3 禁止表現 |
+| compliance-playbook | 景表法・個人情報・AI規制・契約審査の実務手順 | 全法務チェック時（必須） | §2 景表法、§3 PIPA、§4 AI規制、§5 契約書チェック |
 
 ## シナリオ別プレイブック
 

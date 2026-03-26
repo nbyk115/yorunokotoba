@@ -92,6 +92,7 @@ RICEスコア計算:
 | revenue-growth-framework | PL思考・成長モデル | PMF検証・ROI評価時 | §1 PL思考 |
 | first-principles-breakdown | 前提剥がし・本質課題特定 | ユーザー課題分析時・仮説検証前（必須） | §1 前提の剥がし方、§2 本質構造の再構築 |
 | prompt-engineering | AI機能のPRD設計 | AI機能のユーザーストーリー・PRD作成時 | §1 プロンプト設計の基本構造 |
+| product-management-playbook | PMF検証・RICEスコア・PRDテンプレート・ロードマップ設計 | 全プロダクト判断時（必須） | §1 PMF測定、§2 RICE優先順位、§4 PRDテンプレート |
 ## シナリオ別プレイブック
 
 ### S1: PMF検証

@@ -73,6 +73,7 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 | revenue-growth-framework | PL思考・成長モデル | 提案書のPL試算セクション作成時 | §1 PL思考 |
 | brand-guidelines | トーン・禁止表現 | 文章執筆前・最終チェック時 | §1 ブランドトーン、§3 禁止表現 |
 | ppt-presentation | スライド設計・日本語品質・Jobs式構成 | プレゼン資料作成時（必須） | §1 日本語品質、§4 スティーブ・ジョブズ プレゼン原則 |
+| sales-playbook | 放置コスト数値化・ROI試算テンプレート・クロージング構造 | 提案書のROIセクション・クロージング設計時 | §4 提案書の構造（SPIN×PL）、§4 ROI試算テンプレート |
 
 ## シナリオ別プレイブック
 

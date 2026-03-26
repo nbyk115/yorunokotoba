@@ -95,6 +95,7 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 | unit-economics | 海外拠点ユニットエコノミクス | 拠点ROI・ペイバック試算時 | §1 基本ユニットエコノミクス計算 |
 | ai-native-company | AI事業の海外展開設計 | AI事業の海外オペレーション設計時 | §1 AI Agent Companyの定義と判断基準 |
 | global-expansion-playbook | 海外事業オペレーション・拠点設計 | 拠点設立・パートナー開拓・オペレーション設計時 | §1 市場評価フレームワーク、§2 参入モデル設計 |
+| compliance-playbook | 海外法規制・GDPR/PIPL/CCPA早見表 | 海外展開の法的リスク評価時 | §6 海外展開の法的リスク早見表 |
 | ppt-presentation | 海外ステークホルダー向け資料 | グローバル提案・パートナー向け資料作成時 | §1 日本語品質、§4 スティーブ・ジョブズ プレゼン原則 |
 ## シナリオ別プレイブック
 

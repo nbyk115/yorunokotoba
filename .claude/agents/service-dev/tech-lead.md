@@ -77,6 +77,7 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 | debug-methodology | デバッグ手法・根本原因特定 | バグ調査・根本原因分析時（即時） | §1 OODAデバッグループ |
 | migration-safety | DB/API移行安全手順 | スキーマ変更・マイグレーション前 | §1 マイグレーション安全原則、§2 DBスキーマ変更 |
 | incident-response | 本番障害対応 | 障害発生時（即時参照） | §1 重大度分類(SEV)、§2 初動対応 |
+| product-management-playbook | ユーザーストーリー・受け入れ基準の読み方 | PRD受け取り・実装見積もり・スプリント設計時 | §4 PRDテンプレート、§2 RICE×PLスコア |
 | **frontend-quality-guard** | **Reactフリーズ防御・フロントレビュー** | **フロントエンド設計レビュー時** | **§1 フリーズ・クラッシュ原因TOP7** |
 ## シナリオ別プレイブック
 

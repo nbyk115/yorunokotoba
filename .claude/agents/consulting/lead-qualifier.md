@@ -70,6 +70,7 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 | consulting-playbook | 商談設計・クロージング手法 | ヒアリング設計・商談準備時 | §8 商談・提案の標準プロセス |
 | digital-sales-intelligence | デジタルセールス・文脈設計 | リード分析・文脈理解時 | §1 CPC/CPA変革、§2 コンテクスチュアル広告 |
 | revenue-growth-framework | PL思考・案件評価 | 案件のROI評価・優先順位付け時 | §1 PL思考 |
+| sales-playbook | ICP定義・MEDDPICC商談設計・クロージング戦術 | リード資格判定・商談設計・クロージング判断時（必須） | §2 ICPスコアリング、§3 MEDDPICC、§5 クロージング戦術 |
 
 ## シナリオ別プレイブック
 

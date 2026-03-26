@@ -72,6 +72,7 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 |---|---|---|---|
 | consulting-playbook | インサイト整理・提案構造 | VOC分析結果の構造化・報告時 | §8 商談・提案の標準プロセス |
 | revenue-growth-framework | ユーザー価値とPLの接続 | フィードバックのビジネスインパクト評価時 | §1 PL思考 |
+| product-management-playbook | VOCをロードマップに変換する優先順位フレーム | フィードバック整理→product-managerへの引き継ぎ時 | §2 機能優先順位付け（RICE×PL）、§3 ロードマップ設計 |
 | first-principles-breakdown | フィードバックの本質課題抽出 | ユーザーの声から「本当の課題」を特定する時 | §1 前提の剥がし方、§2 本質構造の再構築 |
 ## シナリオ別プレイブック
 

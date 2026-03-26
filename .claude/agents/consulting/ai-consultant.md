@@ -72,6 +72,7 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 |---|---|---|---|
 | consulting-playbook | 提案構造・商談ロジック | AI導入提案書作成時 | §8 商談・提案の標準プロセス |
 | revenue-growth-framework | ROI試算・PL思考 | AI導入ROI計算・投資回収試算時 | §1 PL思考 |
+| compliance-playbook | AI規制・AI利用の法的リスク | AI導入時のリスク評価・規制確認時 | §4 AI規制・AI利用の法的リスク |
 
 ## シナリオ別プレイブック
 

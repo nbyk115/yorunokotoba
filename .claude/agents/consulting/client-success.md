@@ -73,6 +73,7 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 | consulting-playbook | 顧客対応・QBR設計 | オンボーディング設計・QBR準備時 | §8 商談・提案の標準プロセス |
 | revenue-growth-framework | LTV最大化・複利成長 | LTV/チャーン分析・更新提案時 | §1 PL思考 |
 | digital-sales-intelligence | 1stPartyデータ活用 | ヘルススコア設計・文脈理解時 | §2 コンテクスチュアル広告 |
+| sales-playbook | アップセル・クロスセル設計・解約阻止の商談戦術 | 更新・拡張提案・解約リスク対応時 | §5 クロージング失敗パターンと対処、§6 NRR/GRR指標 |
 
 ## シナリオ別プレイブック
 
