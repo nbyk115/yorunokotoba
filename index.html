@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- build:1774229937 -->
+<!-- build:1774790400 -->
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link rel="dns-prefetch" href="https://www.gstatic.com"/>
@@ -41,7 +41,7 @@
 <link rel="manifest" href="/manifest.json"/>
 <title>よるのことば — 夢占い×ホロスコープで深層心理を読み解く</title>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"よるのことば","alternateName":"よること","url":"https://yorunokotoba.vercel.app","description":"夢占い×ホロスコープ。あなたの深層心理を24のキャラクターが読み解く、ナイトルーティン占いアプリ。","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","browserRequirements":"Requires JavaScript. Requires HTML5.","softwareVersion":"1.0","offers":[{"@type":"Offer","price":"0","priceCurrency":"JPY","description":"基本無料（夢占い・毎日の運勢・キャラクター診断）"},{"@type":"Offer","price":"480","priceCurrency":"JPY","description":"プレミアムプラン（相性診断・深層分析・AIレター）月額","priceValidUntil":"2027-03-31","availability":"https://schema.org/InStock"}],"featureList":["夢占い診断","ホロスコープ分析","24キャラクター性格診断","毎日の運勢","相性診断","深層心理分析","夢日記"],"screenshot":"https://yorunokotoba.vercel.app/ogp.png","image":"https://yorunokotoba.vercel.app/ogp.png","inLanguage":"ja","datePublished":"2026-03-02","dateModified":"2026-03-23","author":{"@type":"Organization","name":"よるのことば運営事務局","url":"https://yorunokotoba.vercel.app"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"よるのことば","alternateName":"よること","url":"https://yorunokotoba.vercel.app","description":"夢占い×ホロスコープ。あなたの深層心理を24のキャラクターが読み解く、ナイトルーティン占いアプリ。","applicationCategory":"EntertainmentApplication","operatingSystem":"Web","browserRequirements":"Requires JavaScript. Requires HTML5.","softwareVersion":"1.0","offers":[{"@type":"Offer","price":"0","priceCurrency":"JPY","description":"基本無料（夢占い・毎日の運勢・キャラクター診断）"},{"@type":"Offer","price":"480","priceCurrency":"JPY","description":"プレミアムプラン（相性診断・深層分析・AIレター）月額","priceValidUntil":"2027-03-31","availability":"https://schema.org/InStock"}],"featureList":["夢占い診断","ホロスコープ分析","24キャラクター性格診断","毎日の運勢","相性診断","深層心理分析","夢日記"],"screenshot":"https://yorunokotoba.vercel.app/ogp.png","image":"https://yorunokotoba.vercel.app/ogp.png","inLanguage":"ja","datePublished":"2026-03-02","dateModified":"2026-03-26","author":{"@type":"Organization","name":"よるのことば運営事務局","url":"https://yorunokotoba.vercel.app"}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"よるのことば","alternateName":"よること","url":"https://yorunokotoba.vercel.app","description":"夢占い×ホロスコープであなたの深層心理を24のキャラクターが読み解く占いアプリ","inLanguage":"ja","publisher":{"@type":"Organization","name":"よるのことば運営事務局"}}
@@ -177,7 +177,7 @@ if('serviceWorker' in navigator){
 
 <!-- AIO: Organization Schema -->
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Organization","name":"よるのことば運営事務局","alternateName":"よること","url":"https://yorunokotoba.vercel.app","logo":"https://yorunokotoba.vercel.app/icon-192.png","description":"夢占いとホロスコープを組み合わせた独自の占いサービス。24のキャラクターがあなたの深層心理を読み解きます。","foundingDate":"2026","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"n.onodera115@gmail.com","availableLanguage":"Japanese"}}
+{"@context":"https://schema.org","@type":"Organization","name":"よるのことば運営事務局","alternateName":"よること","url":"https://yorunokotoba.vercel.app","logo":"https://yorunokotoba.vercel.app/icon-192.png","description":"夢占いとホロスコープを組み合わせた独自の占いサービス。24のキャラクターがあなたの深層心理を読み解きます。","foundingDate":"2026","contactPoint":{"@type":"ContactPoint","contactType":"customer support","availableLanguage":"Japanese"}}
 </script>
 
 <!-- AIO: FAQPage Schema -->
@@ -202,8 +202,7 @@ if('serviceWorker' in navigator){
 
 </head>
 <body>
-<a href="#main-content" class="skip-link">メインコンテンツへ</a>
-<div id="main-content"></div>
+<a href="#root" class="skip-link">メインコンテンツへ</a>
 <div id="root" role="main" aria-label="よるのことば 占いアプリ"><div style="min-height:100vh;background:#FFF5F0;display:flex;align-items:center;justify-content:center;font-family:sans-serif"><p style="color:#E8627C;font-size:18px;letter-spacing:2px">🌙 よるのことば</p></div></div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" integrity="sha384-sEVIly94UBRLKWdkYoPpSG7GD/e79YHMrxVyZaOk712Ga7+EAw6w1EFi+xBzBdd+" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js" integrity="sha384-XtSlZdmg0Ad5zf0AX4W9TGdm+dGjaNK4KG3lNFjfgbnxkCEuT9ugWXkLExgQTJ+6" crossorigin="anonymous"></script>
@@ -237,7 +236,7 @@ async function initPush(){
       window.fbMessaging=messaging;
       await db.collection('tokens').doc(token).set({token:token,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),ua:navigator.userAgent.slice(0,100)},{merge:true});
     }
-  }catch(e){throw e}
+  }catch(e){}
 }
 window.addEventListener('error',function(e){try{gtag('event','exception',{description:e.message,fatal:true})}catch(x){}});
 window.addEventListener('unhandledrejection',function(e){try{gtag('event','exception',{description:'Promise: '+(e.reason&&e.reason.message||e.reason),fatal:false})}catch(x){}});
@@ -562,9 +561,9 @@ async function sendEmailLink(email){if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.tes
 <h3>SR</h3>
 <ul><li>ゆきの白鳥 — 孤高のエレガンス</li><li>つきのヒョウ — 冷静な戦略家</li><li>たいようのライオン — 輝く太陽のような存在感</li><li>まよなかのネコ — 静寂に隠された情熱</li></ul>
 <h3>R</h3>
-<ul><li>うみのラッコ</li><li>ひのトラ</li><li>かぜの馬</li><li>さくらのうさぎ</li><li>よぞらのフクロウ</li><li>ゆうやけのキツネ</li><li>あかつきのワシ</li></ul>
+<ul><li>うみのラッコ — 癒し系マイペース</li><li>ひのトラ — 情熱のチャレンジャー</li><li>かぜの馬 — 自由奔放な冒険家</li><li>さくらのうさぎ — 春風のように軽やかに</li><li>よぞらのフクロウ — 静かな夜に輝く知性</li><li>ゆうやけのキツネ — 夕暮れに輝く機転の持ち主</li><li>あかつきのワシ — 高く遠くを見据える</li></ul>
 <h3>N</h3>
-<ul><li>ゆめのこぶた</li><li>もりのリス</li><li>はなのパンダ</li><li>にじのコアラ</li><li>ほしのクマ</li><li>あめのイルカ</li><li>こもれびのシカ</li><li>しずくのペンギン</li><li>はなのプードル</li></ul>
+<ul><li>ゆめのこぶた — 天真爛漫な愛されキャラ</li><li>もりのリス — 好奇心旺盛な情報通</li><li>はなのパンダ — 平和主義のバランサー</li><li>にじのコアラ — のんびり哲学者</li><li>ほしのクマ — 包容力あふれる守護者</li><li>あめのイルカ — 雨上がりの虹を運ぶ</li><li>こもれびのシカ — 森の静けさに癒しを見つける</li><li>しずくのペンギン — 一歩ずつ着実に進む</li><li>はなのプードル — かわいいのに、ちょっぴり不器用</li></ul>
 </section>
 <section>
 <h2>主な機能</h2>
