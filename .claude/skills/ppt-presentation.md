@@ -21,6 +21,28 @@
 > **Canva**: テキスト → フォント検索 → 「Noto Sans JP」（メイリオの代替。Canvaにメイリオがない場合）
 > **PowerPoint**: デフォルトフォントをメイリオに設定。テーマフォントの日本語フォント欄に明示
 
+### python-pptx（Claude Code / Linux環境）でのフォント設定
+Linux環境（Claude Code・Claude.ai）ではメイリオが利用不可。以下の優先順位でフォントを指定する:
+
+```python
+# フォント優先順位（Linux環境）
+# 1. IPAGothic（IPAフォント）— apt install fonts-ipafont でインストール可能
+# 2. Noto Sans JP — apt install fonts-noto-cjk
+# 3. VL Gothic / TakaoGothic — フォールバック
+
+FONT_JP = "IPAGothic"  # Linux環境での標準指定
+
+# インストール確認コマンド:
+# fc-list | grep -i "ipa\|noto.*jp\|takao\|vl"
+```
+
+**実行前チェック（python-pptx使用時）:**
+```bash
+# フォントが存在するか確認してからスクリプト実行
+python3 -c "from pptx.util import Pt; print('pptx OK')"
+fc-list | grep -i ipa | head -3
+```
+
 ### 日本語誤字・文字化けチェック（必須）
 スライド生成後・出力前に以下を必ず確認する。
 
