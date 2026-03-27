@@ -2,7 +2,7 @@
 
 ## システム概要
 **コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
-34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。スキル38本・エージェント間連携スキル統合済み。
 
 ---
 
@@ -56,7 +56,7 @@ Step 5: 成果物納品
 | orchestrator | `.claude/agents/orchestrator.md` | 3部門以上にまたがる複合タスク・全体統合・意思決定の調停 |
 
 ### 🔴 Consulting（コンサルティング）
-**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約
+**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約, 深掘り, 深掘り調査, デューデリ, DD, 多角的に調べ, ソース付きで調べ
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -176,6 +176,9 @@ Step 5: 成果物納品
 | frontend-design | `.claude/skills/frontend-design.md` | プロダクショングレードUI設計・AIスロップ禁止・アクセシビリティ優先。frontend-dev/ux-designer必須 |
 | verification-loop | `.claude/skills/verification-loop.md` | 6フェーズ品質保証（ビルド→型→lint→テスト→セキュリティ→diff）。PR前・リリース前必須 |
 | deep-research | `.claude/skills/deep-research.md` | 15-30ソース多角調査・証拠ベースレポート生成。competitive-analyst/market-researcher/global-journalist必須 |
+| playwright-skill | `.claude/skills/playwright-skill.md` | Playwrightブラウザ自動化・E2Eテスト・レスポンシブ検証。fullstack-dev/frontend-dev/infra-devops |
+| security-scan | `.claude/skills/security-scan.md` | AgentShield 102ルール・設定セキュリティ監査。外部スキル取り込み前・月次必須 |
+| strategic-compact | `.claude/skills/strategic-compact.md` | 戦略的コンテキスト圧縮・フェーズ移行時の/compact設計。orchestrator/長時間タスク全般 |
 
 ---
 

@@ -178,3 +178,17 @@ UX設計はコンテンツ生成可。Figma MCP連携あり。
 - `creative_history`: 採用されたトーン・デザイン方針・コンテンツパターン
 - `client_context`: クライアントのブランドルール・禁止表現
 - `agent_learnings`: 成功/失敗したクリエイティブパターン
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| frontend-design | `.claude/skills/frontend-design.md` | UXフロー設計・LP設計・コンポーネント仕様策定 |
+| frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | インタラクション設計のバグ防止 |
+
+### frontend-design 適用ルール
+- ワイヤーフレーム・LP設計前に Phase 1（デザイン思考）を実行してトーンを確定する
+- アクセシビリティルール（Priority 1・2）は全設計に必須
+- 「AIスロップ禁止フォント・カラーリスト」を creative-director と共有する

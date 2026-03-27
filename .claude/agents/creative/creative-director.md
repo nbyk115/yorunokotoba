@@ -175,3 +175,17 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 - `creative_history`: 採用されたトーン・デザイン方針・コンテンツパターン
 - `client_context`: クライアントのブランドルール・禁止表現
 - `agent_learnings`: 成功/失敗したクリエイティブパターン
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| frontend-design | `.claude/skills/frontend-design.md` | デザイン方針確定・ブリーフ作成・クリエイティブレビュー |
+| brand-guidelines | `.claude/skills/brand-guidelines.md` | ブランド整合性確認 |
+
+### frontend-design 適用ルール
+- 全プロジェクトのデザイン方針確定時に Phase 1（トーン選択）を実施
+- ux-designer / frontend-dev へのハンドオフ時に採用トーン・フォント・カラーの方針書を渡す
+- 「AIスロップ禁止リスト」（Inter/Roboto/Arial/紫グラデ）をチーム全体に周知する

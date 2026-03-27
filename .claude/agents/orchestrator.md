@@ -330,3 +330,5 @@ orchestrator固有の追加チェック:
 - **月次**: claude-health でConsultingOS設定の診断を実行（Critical項目は即修正）
 - **3フェーズ以上の案件**: planning-with-files で .claude-plans/ に計画を永続化
 - **数値矛盾調停**: 並列エージェント間の20%乖離検出時は deep-research §3（品質基準）に従って出典確認
+| security-scan | `.claude/skills/security-scan.md` | 外部スキル取り込み前の事前チェック・月次セキュリティ監査 |
+| strategic-compact | `.claude/skills/strategic-compact.md` | 多フェーズ案件でのコンテキスト管理・フェーズ移行時の/compact設計 |
