@@ -252,3 +252,17 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - 海外市場調査はグレードB以上（信頼できるソース）のみ採用
 - 全情報にソース・日付・信頼度グレードを付与
 - 未検証情報は「未検証」と明示（ハンドオフ時の ERR-03 回避）
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| deep-research | `.claude/skills/deep-research.md` | 海外動向・規制・事例の多ソース深掘り調査 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 長期継続調査プロジェクトの計画・発見の永続化 |
+
+### deep-research 適用ルール
+- 海外市場調査はグレードB以上（信頼できるソース）のみ採用
+- 全情報にソース・日付・信頼度グレードを付与
+- 未検証情報は「未検証」と明示して渡す（ハンドオフ時の ERR-03 回避）
