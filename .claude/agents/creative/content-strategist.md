@@ -163,3 +163,18 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 - `creative_history`: 採用されたトーン・デザイン方針・コンテンツパターン
 - `client_context`: クライアントのブランドルール・禁止表現
 - `agent_learnings`: 成功/失敗したクリエイティブパターン
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| humanizer-ja | `.claude/skills/humanizer-ja.md` | 全コンテンツ執筆後の最終仕上げ。6カテゴリ30パターンのAI臭を検出・除去 |
+| brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・禁止表現チェック |
+| creative-playbook | `.claude/skills/creative-playbook.md` | コンテンツ設計の標準手法 |
+
+### humanizer-ja 適用タイミング
+- ブログ記事・LP文章・SNS投稿の執筆完了後、必ず本スキルを適用する
+- 「AI臭チェック」を明示的に依頼された場合は §1の30パターンを全件チェック
+- クライアント向け成果物は必ず適用（社内ドキュメントは任意）

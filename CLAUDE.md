@@ -169,6 +169,13 @@ Step 5: 成果物納品
 | product-management-playbook | `.claude/skills/product-management-playbook.md` | PMF検証・RICE優先順位付け・PRD設計・OKR連動ロードマップ |
 | compliance-playbook | `.claude/skills/compliance-playbook.md` | 法務リスク評価・契約レビュー・個人情報保護・景表法・コンプライアンス体制 |
 | technical-accuracy | `.claude/skills/technical-accuracy.md` | CLI優先原則・GA4/Firebase/GitHub PR実装の反ハルシネーションプロトコル |
+| humanizer-ja | `.claude/skills/humanizer-ja.md` | 日本語AI臭除去・6カテゴリ30パターン検出。content-strategist/business-translator/brand-guardian/pr-communications必須 |
+| superpowers | `.claude/skills/superpowers.md` | TDD・体系的デバッグ・実装前計画・完了前検証・サブエージェント協働。tech-lead/fullstack-dev必須 |
+| claude-health | `.claude/skills/claude-health.md` | Claude Code設定の6層診断（CLAUDE.md→rules→skills→hooks→subagents→verifiers）。orchestrator月次実行 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | Manusスタイルファイルベース計画管理・コンテキスト永続化。3ステップ以上の複合タスク必須 |
+| frontend-design | `.claude/skills/frontend-design.md` | プロダクショングレードUI設計・AIスロップ禁止・アクセシビリティ優先。frontend-dev/ux-designer必須 |
+| verification-loop | `.claude/skills/verification-loop.md` | 6フェーズ品質保証（ビルド→型→lint→テスト→セキュリティ→diff）。PR前・リリース前必須 |
+| deep-research | `.claude/skills/deep-research.md` | 15-30ソース多角調査・証拠ベースレポート生成。competitive-analyst/market-researcher/global-journalist必須 |
 
 ---
 

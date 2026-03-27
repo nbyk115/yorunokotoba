@@ -156,3 +156,17 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - `creative_history`: 採用されたトーン・デザイン方針・コンテンツパターン
 - `client_context`: クライアントのブランドルール・禁止表現
 - `agent_learnings`: 成功/失敗したクリエイティブパターン
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| humanizer-ja | `.claude/skills/humanizer-ja.md` | ブランドコンテンツのAI臭スキャン・品質ゲート |
+| brand-guidelines | `.claude/skills/brand-guidelines.md` | トーン・禁止表現の基準 |
+
+### humanizer-ja 適用ルール
+- ブランド品質ゲートの最終チェック項目として §1の6カテゴリを確認する
+- 特に「視覚記号（§1）」「マニュアル調（§3）」「AI定番フレーズ（§5）」は厳格に適用
+- NG検出時は修正案を必ず提示（却下のみは不可）

@@ -153,3 +153,17 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - `strategy_decisions`: 戦略判断の履歴（日付・根拠・採用/却下）
 - `client_context`: クライアント固有の意思決定スタイル・制約
 - `kpi_baseline`: KPIのベースライン・目標・実績推移
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| deep-research | `.claude/skills/deep-research.md` | 競合他社・市場構造の多ソース深掘り調査 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 大規模競合調査プロジェクトのファイルベース計画管理 |
+
+### deep-research 適用ルール
+- 競合分析依頼時は深度に応じて適用: 深掘り調査 → §2の5ステッププロセスを全実行
+- 全主張にソース帰属必須・クロスリファレンス必須
+- 「最新動向」は直近12ヶ月の情報を優先

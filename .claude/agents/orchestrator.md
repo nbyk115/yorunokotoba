@@ -315,3 +315,18 @@ orchestrator固有の追加チェック:
 - `orchestration_patterns`: どのエージェント組み合わせが最も効果的だったか
 - `quality_failures`: 品質チェックで引っかかった典型パターン（再発防止）
 - `client_complexity`: クライアント/案件ごとのタスク複雑度・依存関係の傾向
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| claude-health | `.claude/skills/claude-health.md` | ConsultingOS全体の定期ヘルスチェック（月次推奨） |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 複数部門・複数フェーズにまたがる案件管理 |
+| deep-research | `.claude/skills/deep-research.md` | 多ソース統合調査が必要なフェーズ1実行時 |
+
+### 適用ルール
+- **月次**: claude-health でConsultingOS設定の診断を実行（Critical項目は即修正）
+- **3フェーズ以上の案件**: planning-with-files で .claude-plans/ に計画を永続化
+- **数値矛盾調停**: 並列エージェント間の20%乖離検出時は deep-research §3（品質基準）に従って出典確認

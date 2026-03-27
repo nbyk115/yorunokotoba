@@ -251,3 +251,17 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 - `global_context`: 海外展開の現地情報・規制・パートナー情報
 - `competitive_intel`: 海外競合情報の更新履歴（日付付き）
 - `client_context`: 現地文化・商習慣・意思決定スタイル
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| humanizer-ja | `.claude/skills/humanizer-ja.md` | 日本語への翻訳後、AI臭を検出・除去して自然な文章に仕上げる |
+| brand-guidelines | `.claude/skills/brand-guidelines.md` | 翻訳後のブランドトーン整合確認 |
+
+### humanizer-ja 適用ルール
+- 英語→日本語翻訳の最終工程で必ず適用
+- 特に「ヘッジング・曖昧表現（§4）」「抽象語彙（§5）」を重点チェック
+- クライアント向け成果物は必須、社内参考資料は任意

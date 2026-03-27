@@ -238,3 +238,17 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - `global_context`: 海外展開の現地情報・規制・パートナー情報
 - `competitive_intel`: 海外競合情報の更新履歴（日付付き）
 - `client_context`: 現地文化・商習慣・意思決定スタイル
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| deep-research | `.claude/skills/deep-research.md` | 海外動向・規制・事例の多ソース深掘り調査 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 長期継続調査プロジェクトの計画・発見の永続化 |
+
+### deep-research 適用ルール
+- 海外市場調査はグレードB以上（信頼できるソース）のみ採用
+- 全情報にソース・日付・信頼度グレードを付与
+- 未検証情報は「未検証」と明示（ハンドオフ時の ERR-03 回避）

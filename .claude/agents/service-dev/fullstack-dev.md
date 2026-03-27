@@ -179,3 +179,21 @@ PRのコードレビュー。3観点で並列レビュー:
 - `tech_decisions`: 技術選定の根拠・アーキテクチャ判断・技術負債メモ
 - `agent_learnings`: バグパターン・成功した実装アプローチ
 - `client_context`: インフラ制約・セキュリティ要件・パフォーマンス基準
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| superpowers | `.claude/skills/superpowers.md` | TDD・体系的デバッグ・実装前計画・完了前検証 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 複雑な機能開発・バグ調査のファイルベース計画管理 |
+| verification-loop | `.claude/skills/verification-loop.md` | 機能実装完了後の6フェーズ品質保証 |
+| browser-automation | `.claude/skills/browser-automation.md` | Playwrightを使ったE2E検証・フォームテスト |
+
+### 適用ルール
+- **新機能実装前**: superpowers §1（Writing Plans）で計画書を作成する
+- **バグ修正時**: superpowers §2（Systematic Debugging）の4フェーズを遵守
+- **テスト**: superpowers §4（TDD）のRED-GREEN-REFACTORを厳守
+- **完了宣言前**: superpowers §3（Verification Before Completion）のゲートを通過させる
+- **大規模タスク**: planning-with-files で .claude-plans/ に計画を永続化する

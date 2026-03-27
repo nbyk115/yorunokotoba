@@ -326,3 +326,16 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - `kpi_baseline`: 広告KPI・SEO順位・CRM指標のベースライン
 - `agent_learnings`: 成功/失敗した施策パターン
 - `client_context`: クライアントの予算制約・承認プロセス
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| deep-research | `.claude/skills/deep-research.md` | 消費者ニーズ・価格感度・市場規模の多ソース調査 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 大規模リサーチプロジェクトの計画管理 |
+
+### deep-research 適用ルール
+- 市場規模・価格感度・消費者ニーズ調査は deep-research §2の5ステップを適用
+- 全主張にソース帰属必須。TAM/SAM/SOM の定義・根拠・出典を明記する

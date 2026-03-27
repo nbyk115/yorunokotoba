@@ -182,3 +182,20 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 - `tech_decisions`: 技術選定の根拠・アーキテクチャ判断・技術負債メモ
 - `agent_learnings`: バグパターン・成功した実装アプローチ
 - `client_context`: インフラ制約・セキュリティ要件・パフォーマンス基準
+
+---
+
+## 📚 参照スキル（拡張）
+
+| スキル | パス | 使用場面 |
+|---|---|---|
+| superpowers | `.claude/skills/superpowers.md` | TDD・体系的デバッグ・実装前計画・完了前検証・サブエージェント協働 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | 複雑な実装・設計プロジェクトのファイルベース計画管理 |
+| verification-loop | `.claude/skills/verification-loop.md` | PR前・リリース前の6フェーズ品質保証 |
+| engineering-playbook | `.claude/skills/engineering-playbook.md` | 開発プロセス標準 |
+
+### 適用ルール
+- **3ステップ以上の実装タスク**: planning-with-files §4 でセッション計画を作成してから着手
+- **実装完了時**: verification-loop の6フェーズを必ず実行
+- **デバッグ時**: superpowers §2（体系的デバッグ）の4フェーズに従う
+- **コードレビュー前**: superpowers §3（完了前検証）のゲートを通過させる
