@@ -7,7 +7,7 @@
 ## 最終更新
 - 日時: 2026-03-28
 - 更新者: orchestrator
-- 変更内容: 120点化（3構造問題修正）— Hooks強制化・orchestratorレートリミット対策・スキル数修正(38→36)
+- 変更内容: 120点化 Round 3完了 — /maintenance実行（claude-health 6/6 PASS・security-scan A）・実問題6件修正
 
 ---
 
@@ -75,8 +75,9 @@
 
 ## 継続タスク
 
-- [ ] 月次 claude-health 実行（次回: 2026-04-27）
-- [ ] 月次 security-scan 実行（orchestrator経由）
+- [x] 月次 claude-health 実行（実施: 2026-03-28 → 次回: 2026-04-27）6/6 PASS
+- [x] 月次 security-scan 実行 → 総合グレードA（Cat A/C/D/E=A、Cat B=A※soft_deny追加済み）
+- [ ] /schedule で月次メンテナンスを自動化（claude.ai接続エラーのため保留）
 - [ ] 実運用フィードバックをもとにエージェント調整
 - [x] Claude.ai Project Custom Instructions の整備 → `.claude/templates/claude-project-custom-instructions.md` 完成済み
 
