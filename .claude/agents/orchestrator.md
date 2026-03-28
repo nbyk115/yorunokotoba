@@ -68,6 +68,22 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 - エージェントD（B,Cの結果を受けて）: ___
 ```
 
+**並列上限ルール: 同時起動は最大3エージェントまで。**
+それ以上は直列化するか、planning-with-files でフェーズを分割する。
+
+### Phase 3.5: planning-with-files への記録（必須）
+
+エージェントを起動する前に `.claude-plans/` に計画を書く:
+```
+.claude-plans/YYYY-MM-DD-[案件スラッグ]/
+├── plan.md      ← エージェント配備計画・依存関係・成功基準
+├── findings.md  ← 各エージェントの出力結果を2アクションごとに記録
+└── progress.md  ← 完了フェーズ・ブロッカー・方針転換ログ
+```
+
+**2アクションルール**: エージェント2体の結果を受け取るたびに findings.md に書き出す。
+**フェーズ移行時**: strategic-compact §2 のチェックリストを実行してから /compact を検討する。
+
 ### Phase 4: 統合・品質判定
 
 全エージェントのアウトプットを受け取った後:
@@ -90,6 +106,10 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 | ai-native-company | AI Agent Company案件の全体設計 | パターンO2（AI Agent Company構築）時 | §1 AI Agent Companyの定義と判断基準 |
 | global-expansion-playbook | 海外展開案件の全体フェーズ設計 | 新規事業・海外展開案件のPhase 1設計時 | §1 市場評価フレームワーク、§2 参入モデル設計 |
 | ppt-presentation | 最終提案書・グローバルクレデンシャル | Phase 4（提案書化）時 | §4 スティーブ・ジョブズ プレゼン原則 |
+| planning-with-files | Phase 3.5・複合タスク計画管理 | 3ステップ超の複合タスク開始時（必須） | §1 計画ファイル構造、§2 2アクションルール |
+| strategic-compact | フェーズ移行時コンテキスト管理 | Phase 2→3・Phase 3→4の移行前 | §1 いつcompactするか、§3 pre-compactチェック |
+| claude-health | 月次設定診断（6層監査） | 月次メンテナンス・設定変更後 | §4 診断実行プロセス |
+| security-scan | 外部スキル取込前チェック・月次監査 | 新スキル/エージェント追加時・月次 | §3 スキャン手順、§6 スキャンタイミング |
 
 ---
 

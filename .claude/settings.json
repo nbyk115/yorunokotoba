@@ -52,6 +52,33 @@
             "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.py ]]; then python3 -m black \"$file\" 2>/dev/null && echo \"✅ Black: $file\"; fi"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then result=$(npx tsc --noEmit 2>&1 | tail -3); if echo \"$result\" | grep -q 'error TS'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 型エラー検出 (verification-loop Phase 2)\"; echo \"$result\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx || \"$file\" == *.js ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then base=$(basename \"$file\" | sed 's/\\.[^.]*$//'); root=$(git rev-parse --show-toplevel 2>/dev/null); test_exists=$(find \"$root\" -name \"${base}.test.*\" -o -name \"${base}.spec.*\" 2>/dev/null | head -1); if [ -z \"$test_exists\" ]; then echo \"⚠️  TDD警告: ${base} のテストファイルが見つかりません (superpowers §4)\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.md ]] && [[ \"$file\" != *CLAUDE* && \"$file\" != *README* && \"$file\" != *.claude/* ]]; then echo \"💬 humanizer-ja: 日本語コンテンツを編集しました。AI臭チェックを推奨します (.claude/skills/humanizer-ja.md §1)\"; fi"
+          }
+        ]
       }
     ],
     "PreToolUse": [
