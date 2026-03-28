@@ -5,9 +5,9 @@
 > 更新方法: 該当セクションを直接編集、または `.claude/memory/archival/` にセッションサマリーを追記。
 
 ## 最終更新
-- 日時: 2026-03-27
+- 日時: 2026-03-28
 - 更新者: orchestrator
-- 変更内容: スキル10本追加・エージェント14本更新・グローバルシンボリックリンク同期
+- 変更内容: 120点化（3構造問題修正）— Hooks強制化・orchestratorレートリミット対策・スキル数修正(38→36)
 
 ---
 
@@ -42,6 +42,9 @@
 | 2026-03-27 | 外部スキル10本統合（superpowers/humanizer-ja等） | Go | 調査→実装→全エージェント配線まで完遂 |
 | 2026-03-27 | グローバルシンボリックリンク修正 | Go | 他リポジトリでも新スキルが使えるよう修正 |
 | 2026-03-27 | security-scan / strategic-compact 追加 | Go | everything-claude-codeから最高価値スキルを選定 |
+| 2026-03-28 | 信頼→強制化: Hooks3本追加 | Go | TSチェック/TDD警告/humanizer-ja通知が自動トリガーに |
+| 2026-03-28 | orchestrator並列上限（max 3）+ Phase 3.5 | Go | レートリミット死亡を構造で防止 |
+| 2026-03-28 | スキル数38→36修正 | Fix | 実ファイル数と表記を一致させた |
 
 ---
 
@@ -75,7 +78,7 @@
 - [ ] 月次 claude-health 実行（次回: 2026-04-27）
 - [ ] 月次 security-scan 実行（orchestrator経由）
 - [ ] 実運用フィードバックをもとにエージェント調整
-- [ ] Claude.ai Project Custom Instructions の整備（CLAUDE.md非対応環境への対応）
+- [x] Claude.ai Project Custom Instructions の整備 → `.claude/templates/claude-project-custom-instructions.md` 完成済み
 
 ---
 
@@ -88,3 +91,6 @@
 - 新スキルをプロジェクト追加後、~/.claude/skills/ にシンボリックリンクを作らないと他リポジトリで使えない
 - everything-claude-code（50K★）はスキルの宝庫だが全取込は不要。ConsultingOSの文脈で価値あるものだけ選定する
 - フェイクコマンドリスト（/plan等）はラベルのみで中身がない。強さはプロセス設計にある
+- 「信頼ベース設計」は脆い。スキルの実行をHooksで強制することで初めて機能する
+- orchestratorは重くしすぎると自分がレートリミットで死ぬ。planning-with-filesで外部化が必須
+- スキル数の表記ズレは信頼性を損なう。ファイル数確認後に即修正する
