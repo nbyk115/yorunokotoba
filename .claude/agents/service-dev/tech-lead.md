@@ -193,9 +193,11 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 | planning-with-files | `.claude/skills/planning-with-files.md` | 複雑な実装・設計プロジェクトのファイルベース計画管理 |
 | verification-loop | `.claude/skills/verification-loop.md` | PR前・リリース前の6フェーズ品質保証 |
 | engineering-playbook | `.claude/skills/engineering-playbook.md` | 開発プロセス標準 |
+| **technical-accuracy** | **`.claude/skills/technical-accuracy.md`** | **CLIコマンド・GitHub PR・GA4・Firebase手順のハルシネーション防止（必須）** |
 
 ### 適用ルール
 - **3ステップ以上の実装タスク**: planning-with-files §4 でセッション計画を作成してから着手
 - **実装完了時**: verification-loop の6フェーズを必ず実行
 - **デバッグ時**: superpowers §2（体系的デバッグ）の4フェーズに従う
 - **コードレビュー前**: superpowers §3（完了前検証）のゲートを通過させる
+- **CLIコマンド・API手順を出力するとき**: technical-accuracy §1 原則を必ず適用（推測でコマンドを書かない）

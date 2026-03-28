@@ -79,6 +79,15 @@
             "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.md ]] && [[ \"$file\" != *CLAUDE* && \"$file\" != *README* && \"$file\" != *.claude/* ]]; then echo \"💬 humanizer-ja: 日本語コンテンツを編集しました。AI臭チェックを推奨します (.claude/skills/humanizer-ja.md §1)\"; fi"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); content=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.new_string // .content // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx || \"$file\" == *.py || \"$file\" == *.sh ]]; then if echo \"$content\" | grep -qiE '(gh pr|gh issue|gh run|firebase deploy|ga4|gtag|measurementId|analyticsId|supabase\\.from|prisma\\.\\$)'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"⚠️  technical-accuracy: CLI/API手順を含むコードを検出\"; echo \"推測でコマンドを書いていませんか？ .claude/skills/technical-accuracy.md §1 を確認してください\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -97,6 +106,15 @@
           {
             "type": "command",
             "command": "cmd=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -qE '(git push.*main|git push.*master|git push --force|push -f )'; then echo 'BLOCK: mainへの直接pushは禁止です。PRを作成してください。' >&2; exit 2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -qE 'git (add|commit)'; then root=$(git rev-parse --show-toplevel 2>/dev/null); secrets=$(git diff --cached 2>/dev/null | grep -iE '(sk-[a-z0-9]{32,}|AKIA[A-Z0-9]{16}|password\\s*=\\s*[\"\\x27][^\"\\x27]{6,}|api_key\\s*=\\s*[\"\\x27][^\"\\x27]{10,}|secret\\s*=\\s*[\"\\x27][^\"\\x27]{10,}|\\.env)' | head -3); if [ -n \"$secrets\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 BLOCK: シークレット疑いを検出。コミットを中止してください\"; echo \"$secrets\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; exit 2; fi; fi"
           }
         ]
       }

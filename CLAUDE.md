@@ -193,6 +193,7 @@ Step 5: 成果物納品
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
 | /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
 | /ppt | `.claude/commands/ppt.md` | python-pptxで.pptxファイルを直接生成
+| /maintenance | `.claude/commands/maintenance.md` | 月次健全性チェック（claude-health + security-scan）
 
 ---
 
