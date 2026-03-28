@@ -58,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then result=$(npx tsc --noEmit 2>&1 | tail -3); if echo \"$result\" | grep -q 'error TS'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 型エラー検出 (verification-loop Phase 2)\"; echo \"$result\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then root=$(git rev-parse --show-toplevel 2>/dev/null); if [ -f \"$root/tsconfig.json\" ]; then result=$(cd \"$root\" && npx tsc --noEmit 2>&1 | tail -3); if echo \"$result\" | grep -q 'error TS'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 型エラー検出 (verification-loop Phase 2)\"; echo \"$result\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi; fi"
           }
         ]
       },

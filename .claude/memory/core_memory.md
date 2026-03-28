@@ -17,7 +17,7 @@
 |---|---|
 | エージェント数 | 34（+ orchestrator） |
 | スキル数 | 36（プロジェクト）/ 37（グローバル） |
-| コマンド数 | 10 |
+| コマンド数 | 11 |
 | グローバル同期 | ✅ ~/.claude/skills/ → すべてシンボリックリンク |
 | ブランチ | claude/consulting-os-multiagent-YS5GK |
 

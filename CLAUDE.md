@@ -191,9 +191,12 @@ Step 5: 成果物納品
 | /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
-| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
-| /ppt | `.claude/commands/ppt.md` | python-pptxで.pptxファイルを直接生成
-| /maintenance | `.claude/commands/maintenance.md` | 月次健全性チェック（claude-health + security-scan）
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
+| /ppt | `.claude/commands/ppt.md` | python-pptxで.pptxファイルを直接生成 |
+| /new-project | `.claude/commands/new-project.md` | 案件受付・インテーク（インテークフォーム起動） |
+| /handoff | `.claude/commands/handoff.md` | エージェント間ハンドオフファイル生成 |
+| /peer-review | `.claude/commands/peer-review.md` | 別部門エージェントによるクロスレビュー |
+| /maintenance | `.claude/commands/maintenance.md` | 月次健全性チェック（claude-health + security-scan） |
 
 ---
 
