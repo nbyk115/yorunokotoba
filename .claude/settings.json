@@ -167,6 +167,14 @@
             "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); mem=\"$root/.claude/memory/core_memory.md\"; log=\"$root/.claude/memory/archival/$(date +%Y-%m-%d)_session.log\"; if [ -f \"$mem\" ]; then mkdir -p \"$(dirname $log)\"; echo \"[$(date '+%Y-%m-%d %H:%M')] セッション終了\" >> \"$log\"; git -C \"$root\" diff --name-only HEAD 2>/dev/null | head -10 >> \"$log\"; echo \"変更ファイル数: $(git -C $root diff --name-only HEAD 2>/dev/null | wc -l)\" >> \"$log\"; echo \"✅ Memory log updated: $log\"; fi"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "next_date=$(grep '次回:' ~/.claude/skills/../../../home/user/yorunokotoba/.claude/memory/core_memory.md 2>/dev/null | grep 'claude-health' | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1); if [ -n \"$next_date\" ]; then today=$(date +%Y-%m-%d); days=$(( ($(date -d \"$next_date\" +%s 2>/dev/null || date -j -f %Y-%m-%d \"$next_date\" +%s 2>/dev/null) - $(date +%s)) / 86400 )); if [ \"$days\" -le 7 ] 2>/dev/null; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔔 /maintenance まであと${days}日（次回: $next_date）\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
       }
     ]
   }
