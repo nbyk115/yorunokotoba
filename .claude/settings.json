@@ -175,6 +175,14 @@
             "command": "next_date=$(grep '次回:' ~/.claude/skills/../../../home/user/yorunokotoba/.claude/memory/core_memory.md 2>/dev/null | grep 'claude-health' | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1); if [ -n \"$next_date\" ]; then today=$(date +%Y-%m-%d); days=$(( ($(date -d \"$next_date\" +%s 2>/dev/null || date -j -f %Y-%m-%d \"$next_date\" +%s 2>/dev/null) - $(date +%s)) / 86400 )); if [ \"$days\" -le 7 ] 2>/dev/null; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔔 /maintenance まであと${days}日（次回: $next_date）\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); mem=\"$root/.claude/memory/core_memory.md\"; if [ -f \"$mem\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"📝 今回の訂正・学習事項を core_memory.md に記録しましたか？\"; echo \"  → .claude/memory/core_memory.md の 学習事項 セクションを更新\"; echo \"  （不要なら無視してください）\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi"
+          }
+        ]
       }
     ]
   }
