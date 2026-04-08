@@ -23,4 +23,4 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
-*.pptx
+# *.pptx  # ConsultingOSガイドをリポジトリに含めるため除外
