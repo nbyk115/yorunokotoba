@@ -1,3 +1,12 @@
+---
+name: analyze
+description: 第一原理分解クイック版。前提を剥がして本質から再構築し数値付きアクションを導出する。「なぜ」「本当に正しいか」「前提を疑え」「第一原理で分析して」「深く考えて」と言われたとき、または複雑な意思決定・戦略判断・事業仮説の検証が必要なとき。first-principles-breakdown §1-§5 を適用。
+argument-hint: [分析対象のテーマ・課題・問い]
+effort: high
+---
+
+ultrathink
+
 # /analyze — 第一原理分解（クイック版）
 
 引数: $ARGUMENTS（分析対象のテーマ・課題）

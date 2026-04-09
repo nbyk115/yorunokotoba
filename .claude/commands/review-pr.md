@@ -1,3 +1,20 @@
+---
+name: review-pr
+description: PRの自動コードレビュー（5軸評価）。「PRレビューして」「コードチェックして」「マージしていいか確認して」「差分レビュー」と言われたとき。正確性・セキュリティ・パフォーマンス・可読性・テストを評価してApprove/Request Changes/Commentを判定。具体的な修正コードを提示する。
+argument-hint: [PR番号 or ブランチ名]
+effort: high
+context: fork
+agent: Explore
+---
+
+ultrathink
+
+## PR差分（自動取得）
+!`gh pr diff $ARGUMENTS 2>/dev/null | head -600 || git diff HEAD~1 2>/dev/null | head -600`
+
+## PR概要（自動取得）
+!`gh pr view $ARGUMENTS --json title,body,additions,deletions,changedFiles 2>/dev/null || git log --oneline -5 2>/dev/null`
+
 # /review-pr — PR自動レビュー
 
 引数: $ARGUMENTS（PR番号 or ブランチ名）

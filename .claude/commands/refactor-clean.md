@@ -1,3 +1,10 @@
+---
+name: refactor-clean
+description: デッドコード除去・コード整理の一括実行。「クリーンアップして」「未使用コード消して」「console.log削除して」「コード整理して」「不要ファイルを消して」と言われたとき。未使用インポート・変数・関数・デバッグ出力・空ファイルを検出して削除する。削除前に対象一覧を表示してから実行する。
+effort: medium
+disable-model-invocation: true
+---
+
 # /refactor-clean — コード整理・デッドコード除去
 
 以下を順番に実行してください:

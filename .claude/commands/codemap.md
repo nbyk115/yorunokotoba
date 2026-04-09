@@ -1,3 +1,17 @@
+---
+name: codemap
+description: コードベースの構造マップを自動生成・更新して .claude/codemap.md に保存する。「コードマップ作って」「プロジェクト構造を把握したい」「ディレクトリ構造まとめて」「どこに何があるか整理して」と言われたとき。ディレクトリ構造・主要モジュール・依存関係・APIエンドポイントを出力。
+effort: low
+context: fork
+agent: Explore
+allowed-tools: Read Grep Glob Bash(find *) Bash(ls *) Write
+---
+
+## プロジェクト基本情報（自動取得）
+- ルートファイル: !`ls -la 2>/dev/null | head -30`
+- package.json name/version: !`cat package.json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'name: {d.get(\"name\",\"?\")}  version: {d.get(\"version\",\"?\")}  main: {d.get(\"main\",\"?\")}')  " 2>/dev/null`
+- Gitブランチ: !`git branch --show-current 2>/dev/null`
+
 # /codemap — コードマップ自動生成・更新
 
 プロジェクトのコードベースを分析し、ナビゲーション用のマップを生成・更新してください。

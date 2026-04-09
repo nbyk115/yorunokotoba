@@ -6,7 +6,7 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 1. デザインツール選定（リクエスト駆動）
+## §1 デザインツール選定（リクエスト駆動）
 
 ### 鉄則: ニーズからツールを決める
 
@@ -81,7 +81,24 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 2. デザインプロセス
+## §2 デザインプロセス
+
+### 🚫 着手前に必ず確認: AIデフォルト禁止パターン
+
+UI/UXを設計・実装する前に、brand-guidelines §5「AIデフォルトデザイン禁止パターン」を読み、以下を確認する:
+
+```
+□ 虹色メトリクスカード（カードごとに色ボーダー + プログレスバー）を使っていないか
+□ カラフルにすることが目的になっていないか（色 = 意味のみ）
+□ 同じカード構造の繰り返しで情報の優先度が失われていないか
+□ グラデーション背景ヒーロー + 左アイコン3点列挙を使っていないか
+□ データより見た目を優先した設計になっていないか
+```
+
+**デザインの判断基準:**
+- 「引いたとき（縮小表示）何が伝わるか」
+- 「色を白黒にしても情報は伝わるか」→ 伝わらなければ色が装飾になっている
+- 「このデザインを見てAIが作ったと思われないか」
 
 ### ワークフロー
 ```
@@ -102,7 +119,7 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 3. デザインツール連携ガイド
+## §3 デザインツール連携ガイド
 
 ### 対応エージェントとツール
 | エージェント | Canva | Figma | Google Slides |
@@ -130,9 +147,46 @@ Creative部門の全エージェントが参照するデザインプロセス・
 | Auto Layout | flex / grid |
 | Spacing | spacing scale (4px基準) |
 
+### Figma Make ワークフロー（AI生成→実装）
+
+Figma MakeはFigma無料プランで使用可能。AIがデザイン仕様からコードを生成する。
+
+**5層プロンプト構造（この順序で記述）:**
+
+| Layer | 内容 | 例 |
+|---|---|---|
+| 1. Outcome | ページの目的・ターゲット・トーンを宣言 | "Generate a Next.js LP for [Brand], targeting [audience]..." |
+| 2. Structure | コンポーネント階層を明示（PascalCase） | "<HeroSection> contains: headline, subheadline, CTAButton" |
+| 3. Interaction | 許可するインタラクションのみ列挙 | "Hover: translateY(-4px), 250ms ease. Do NOT add parallax." |
+| 4. Responsive | Mobile-firstで3ブレークポイントの挙動 | "FeatureGrid: 1col → 2col → 3col" |
+| 5. Quality | パフォーマンス・アクセシビリティ・出力形式 | "All images lazy-loaded. Semantic HTML required." |
+
+**Figma Make投入前チェックリスト:**
+- [ ] デザイントークン名（Color/Semantic/〜）が仕様書に記載されているか
+- [ ] コンポーネント名がPascalCaseで定義されているか
+- [ ] インタラクション仕様が動詞+数値で記述されているか
+- [ ] プロンプトは英語で記述されているか（精度が高い）
+- [ ] 「Do NOT add」で不要アニメーションを明示的に除外しているか
+
+### Figma Variables設計（無料プラン対応）
+
+Figma無料プランでVariables（デザイントークン）を使用可能。ただし**Modes（ダークモード切替）は無料プラン対象外**のため、静的トークン設計にする。
+
+```
+Collection: Color/Primitive   ← 原色（直接使わない）
+  └── Blue-500: #1A56DB
+
+Collection: Color/Semantic    ← 意味に基づくエイリアス（コンポーネントで使用）
+  └── Brand-Primary → Blue-500
+  └── Text-Primary → Gray-900
+  └── Surface-Default → White
+```
+
+**命名規則:** `[Category]/[Name]` — スラッシュでグループ化
+
 ---
 
-## 4. コンポーネント設計
+## §4 コンポーネント設計
 
 ### Atomic Design階層
 ```
@@ -160,9 +214,53 @@ Atoms → Molecules → Organisms → Templates → Pages
 - [ ] ダーク/ライトモード対応（該当する場合）
 - [ ] Storybook ストーリー（該当する場合）
 
+### UIステート設計（ELESパターン）— 全コンポーネント必須
+
+動的データを表示するコンポーネントは必ず全4状態を設計する。「完成形（Success）だけ」のデザインは未完成。
+
+| State | 定義 | Figmaフレーム命名 |
+|---|---|---|
+| **E**mpty | データ0件 / 初回利用 / フィルター結果ゼロ | `ComponentName/Empty` |
+| **L**oading | データ取得中 / スケルトン表示 | `ComponentName/Loading` |
+| **E**rror | 取得失敗 / 権限なし / ネットワークエラー | `ComponentName/Error` |
+| **S**uccess | 通常表示（理想データ + ストレステスト） | `ComponentName/Default` |
+
+**Empty Stateの3パターン:**
+- Pattern A: イラスト + CTA（初回オンボーディング）
+- Pattern B: アイコン + 説明文（検索結果ゼロ）
+- Pattern C: ゴーストプレースホルダー（「追加してください」誘導）
+
+**Loading Stateのルール:**
+- スケルトンは実際のコンテンツ形状に合わせる（汎用グレーバー禁止）
+- アニメーション: shimmer左→右、1.5s
+- 3秒タイムアウト → Error Stateへ自動遷移
+
+### Dev Mode代替アノテーション（Figma無料プラン）
+
+Figma無料プランではDev Modeが使用不可。以下のアノテーション設計で開発ハンドオフを代替する。
+
+**アノテーション命名規則:**
+- スペーシング: `space-4 (16px)` — トークン名 + px値
+- カラー: `Fill: Color/Semantic/Brand-Primary (#1A56DB)`
+- タイポグラフィ: `H2 / 32px / 1.4 / 600 / Noto Sans JP`
+- インタラクション: 矢印 → `Hover: translateY(-4px), 250ms ease`
+- アセット: `Export: hero.webp / 1200×800px / alt: [テキスト]`
+
+**Figmaページ構成（無料プラン推奨）:**
+```
+Page 1: 🎨 Design System（トークン・コンポーネントライブラリ）
+Page 2: 🖥 Desktop Screens
+Page 3: 📱 Mobile Screens
+Page 4: 🔄 States（ELESパターン全状態）
+Page 5: 📝 Handoff Notes（アノテーション付きフレーム）
+Page 6: 🗄 Archive（WIP・ボツ案）
+```
+
+**ハンドオフ共有設定:** "Anyone with link → can view"（edit権限は外部に渡さない）
+
 ---
 
-## 5. レスポンシブデザイン
+## §5 レスポンシブデザイン
 
 ### ブレークポイント（Tailwind標準）
 | ブレークポイント | サイズ | デバイス |
@@ -181,7 +279,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 6. コンテンツ制作標準
+## §6 コンテンツ制作標準
 
 ### 文体ガイド
 - **トーン**: 専門的だが親しみやすい
@@ -206,7 +304,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 7. パフォーマンス基準
+## §7 パフォーマンス基準
 
 ### Core Web Vitals 目標
 | 指標 | 目標 |
@@ -224,7 +322,7 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 8. アクセシビリティ（WCAG 2.1 AA）
+## §8 アクセシビリティ（WCAG 2.1 AA）
 
 ### 必須対応項目
 - [ ] カラーコントラスト比 4.5:1 以上（テキスト）

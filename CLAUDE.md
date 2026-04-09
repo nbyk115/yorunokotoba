@@ -1,8 +1,45 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
-26名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
+34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。スキル39本・エージェント間連携スキル統合済み。
+
+---
+
+## 案件受付パイプライン（AI Agency フロー）
+
+> クライアントの依頼は必ずこのフローを通る。ルーティングに直行しない。
+
+```
+Step 1: インテーク
+  /new-project コマンドを起動
+  → .claude/intake/ の該当テンプレートで情報を収集
+
+Step 2: プロジェクトファイル生成
+  → .claude/projects/YYYY-MM-DD_[クライアント]_[概要].md を作成
+  → .claude/projects/template.md をベースに使用
+
+Step 3: エージェントチーム配備
+  → 下記ルーティングロジックで起点エージェントを特定
+  → ハンドオフプロトコルに従い各エージェントを起動
+
+Step 4: 品質ゲート（各フェーズ完了時）
+  → 人間の承認なしに次フェーズへ進まない
+  → .claude/projects/[案件ファイル].md の品質ゲートチェックを実施
+
+Step 5: 成果物納品
+  → .claude/templates/ の該当テンプレートで成果物を作成
+  → .claude/templates/deliverable-checklist.md で納品前確認
+```
+
+### インテークフォーム一覧
+| 案件種別 | フォーム | 主な成果物 |
+|---|---|---|
+| 戦略・提案・KPI・法務 | `.claude/intake/consulting-intake.md` | `.claude/templates/strategy-proposal.md` |
+| LP・UI・コンテンツ・ブランド | `.claude/intake/creative-intake.md` | `.claude/templates/lp-brief.md` |
+| コード・API・インフラ・AI機能 | `.claude/intake/dev-intake.md` | コードリポジトリ |
+| 海外展開・翻訳・GTM | `.claude/intake/global-intake.md` | `.claude/templates/market-research-report.md` |
+| 広告・SEO・CRM・SNS・PR | `.claude/intake/marketing-intake.md` | キャンペーン設計書 |
 
 ---
 
@@ -11,8 +48,15 @@
 ユーザーの入力を分析し、以下のトリガーキーワードに基づいて適切なエージェントにルーティングする。
 複数部門にまたがる場合は、連携フローに従って順次起動する。
 
+### ⚫ Orchestrator（司令塔）
+**トリガー**: 全体を見て, 複合的な依頼, 複数部門にまたがる, どうすればいいか, AI Agent Company, 全部やって, 総合的に判断, 新規事業立ち上げ（全工程）
+
+| エージェント | ファイル | 起動条件 |
+|---|---|---|
+| orchestrator | `.claude/agents/orchestrator.md` | 3部門以上にまたがる複合タスク・全体統合・意思決定の調停 |
+
 ### 🔴 Consulting（コンサルティング）
-**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約
+**トリガー**: 戦略, 提案, 分析, KPI, 競合, 事業, 商談, リード, 予測, レポート, 計画, PL, 粗利, 市場, SWOT, ポジショニング, AI導入, 顧客フォロー, LTV, チャーン, 法務, コンプライアンス, 契約, 深掘り, 深掘り調査, デューデリ, DD, 多角的に調べ, ソース付きで調べ
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -115,7 +159,29 @@
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
+| global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | 海外展開・市場評価・ローカライズ品質・GTMフェーズ設計 |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
+| frontend-quality-guard | `.claude/skills/frontend-quality-guard.md` | Reactフリーズ・バグ防御・実装前チェック・必須パターン集 |
+| unit-economics | `.claude/skills/unit-economics.md` | LTV/CAC・SaaS指標・AI Agent Company ユニットエコノミクス完全計算 |
+| ai-native-company | `.claude/skills/ai-native-company.md` | AI Agent Company設計原則・エージェント設計・収益モデル・佐藤×小野寺統合 |
+| ppt-presentation | `.claude/skills/ppt-presentation.md` | PPT/スライド制作・日本語品質・メイリオ・ジョブズスタイル・Komoju決済 |
+| sales-playbook | `.claude/skills/sales-playbook.md` | ICP定義・MEDDPICC商談設計・クロージング戦術・SaaS営業KPI |
+| product-management-playbook | `.claude/skills/product-management-playbook.md` | PMF検証・RICE優先順位付け・PRD設計・OKR連動ロードマップ |
+| compliance-playbook | `.claude/skills/compliance-playbook.md` | 法務リスク評価・契約レビュー・個人情報保護・景表法・コンプライアンス体制 |
+| technical-accuracy | `.claude/skills/technical-accuracy.md` | CLI優先原則・GA4/Firebase/GitHub PR実装の反ハルシネーションプロトコル |
+| humanizer-ja | `.claude/skills/humanizer-ja.md` | 日本語AI臭除去・6カテゴリ30パターン検出。content-strategist/business-translator/brand-guardian/pr-communications必須 |
+| superpowers | `.claude/skills/superpowers.md` | TDD・体系的デバッグ・実装前計画・完了前検証・サブエージェント協働。tech-lead/fullstack-dev必須 |
+| claude-health | `.claude/skills/claude-health.md` | Claude Code設定の6層診断（CLAUDE.md→rules→skills→hooks→subagents→verifiers）。orchestrator月次実行 |
+| planning-with-files | `.claude/skills/planning-with-files.md` | Manusスタイルファイルベース計画管理・コンテキスト永続化。3ステップ以上の複合タスク必須 |
+| frontend-design | `.claude/skills/frontend-design.md` | プロダクショングレードUI設計・AIスロップ禁止・アクセシビリティ優先。frontend-dev/ux-designer必須 |
+| verification-loop | `.claude/skills/verification-loop.md` | 6フェーズ品質保証（ビルド→型→lint→テスト→セキュリティ→diff）。PR前・リリース前必須 |
+| deep-research | `.claude/skills/deep-research.md` | 15-30ソース多角調査・証拠ベースレポート生成。competitive-analyst/market-researcher/global-journalist必須 |
+| playwright-skill | `.claude/skills/playwright-skill.md` | Playwrightブラウザ自動化・E2Eテスト・レスポンシブ検証。fullstack-dev/frontend-dev/infra-devops |
+| security-scan | `.claude/skills/security-scan.md` | AgentShield 102ルール・設定セキュリティ監査。外部スキル取り込み前・月次必須 |
+| strategic-compact | `.claude/skills/strategic-compact.md` | 戦略的コンテキスト圧縮・フェーズ移行時の/compact設計。orchestrator/長時間タスク全般 |
+| agent-evaluation | `.claude/skills/agent-evaluation.md` | 5軸品質評価（証拠・ロジック・実用性・PLインパクト・反証）。orchestrator統合前・納品前必須 |
+| hypothesis-driven | `.claude/skills/hypothesis-driven.md` | McKinsey流仮説ドリブン問題解決・Issue Tree・ピラミッドストラクチャー。strategy-lead/competitive-analyst/kpi-analytics必須 |
+| human-moat-design | `.claude/skills/human-moat-design.md` | ASI時代のHuman Moat設計。Trust/Taste/Physical/Accountability 4成分の定義・計測・投資配分。orchestrator/strategy-lead/ai-consultant必須 |
 
 ---
 
@@ -128,9 +194,31 @@
 | /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
-| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
+| /ppt | `.claude/commands/ppt.md` | python-pptxで.pptxファイルを直接生成 |
+| /new-project | `.claude/commands/new-project.md` | 案件受付・インテーク（インテークフォーム起動） |
+| /handoff | `.claude/commands/handoff.md` | エージェント間ハンドオフファイル生成 |
+| /peer-review | `.claude/commands/peer-review.md` | 別部門エージェントによるクロスレビュー |
+| /maintenance | `.claude/commands/maintenance.md` | 月次健全性チェック（claude-health + security-scan） |
 
 ---
+
+### ⚡ クイック判定（30秒ルーティング）
+
+| ユーザーが言いたいこと | 起点エージェント |
+|---|---|
+| 「競合を調べたい」「差別化は？」「競合比較」 | competitive-analyst |
+| 「顧客に聞きたい」「セグメント」「ペルソナ」「価格感度」 | market-researcher |
+| 「海外事例」「グローバルトレンド」「規制動向」 | global-journalist |
+| 「戦略を考えたい」「どの方向に進むか」 | strategy-lead |
+| 「数字を出したい」「KPI」「PL試算」 | kpi-analytics |
+| 「コードを書きたい」「実装したい」「バグ修正」 | fullstack-dev |
+| 「LP/UI作りたい」「デザイン」「Figma」 | creative-director |
+| 「海外展開したい」「GTM」「ローカライズ」 | gtm-consultant |
+| 「広告を出したい」「ROAS改善」「SEM/PPC」 | performance-marketer |
+| 「SEO改善」「テクニカルSEO」「CWV」 | seo-specialist |
+| 「コンテンツ作りたい」「ブログ」「LP文章」 | content-strategist |
+| 「全体を俯瞰したい」「複数部門にまたがる」 | orchestrator |
 
 ## スマートルーティング判定ツリー
 
@@ -150,14 +238,19 @@
 ### Step 2a: 調査系の振り分け
 ```
 何を調査？
-├─ 市場・競合 → competitive-analyst（起点）
+├─ 競合他社の機能・価格・戦略比較 → competitive-analyst（起点）
+├─ 市場全体の構造・参入障壁・TAM → competitive-analyst（起点）、必要に応じてmarket-researcherと並列
+├─ 消費者ニーズ・購買行動・セグメント・ペルソナ・価格感度 → market-researcher（起点）
+├─ 海外市場の最新動向・規制・事例 → global-journalist（起点）
 ├─ 数値・KPI → kpi-analytics（起点）
 ├─ 法務・契約 → legal-compliance-checker（起点）
 ├─ ユーザーの声 → feedback-synthesizer（起点）
 ├─ 技術的調査 → tech-lead（起点）
-├─ 海外動向・国際情勢 → global-journalist（起点）
-├─ 消費者調査・セグメンテーション → market-researcher（起点）
-└─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
+├─ マーケティングデータ・アトリビューション → marketing-analyst（起点）
+├─ 市場分析3エージェントの使い分け:
+│   ├─「競合のXXXと比べてどうか」「差別化は」→ competitive-analyst
+│   ├─「顧客は何を望んでいるか」「誰に売るか」→ market-researcher
+│   └─「海外ではどうなっているか」「規制動向」→ global-journalist
 ```
 
 ### Step 2b: 実行系の振り分け
@@ -258,11 +351,73 @@
 | Global → Service Dev | i18n要件・多言語対応仕様・現地決済要件 | 「多言語対応して」だけ |
 | Consulting → Global | ターゲット市場の仮説・評価基準・PLシミュレーション条件 | 「海外展開したい」だけ |
 
-### 品質ゲート: ハンドオフ前チェック
-- [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値）
-- [ ] 期待アウトプットの形式が明確か
-- [ ] 参照スキルを指定したか
-- [ ] 成功基準を定義したか
+### 品質ゲート: ハンドオフ双方向チェック
+
+#### ✅ 送り出し側（From）— 渡す前に必ず確認
+- [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値・ソース付き）
+- [ ] 期待アウトプットの形式・分量・期限が明確か
+- [ ] 参照すべきスキルファイルを名指しで指定したか
+- [ ] 成功基準（何ができていれば完了か）を定義したか
+- [ ] 自分のアウトプットに反証モードを適用済みか（Deep/Standard/Light）
+- [ ] 次エージェントが「なぜこのタスクが必要か」を理解できるか
+- [ ] 制約（使ってはいけない手法・禁止表現・ツール制限）を明示したか
+- [ ] PLインパクトが関係する場合、数値で渡しているか
+
+#### ✅ 受け取り側（To）— 着手前に必ず確認
+- [ ] インプットは十分か（不足なら即座にFROM側に差し戻す）
+- [ ] 成功基準を理解したか（曖昧なら作業前に確認する）
+- [ ] 参照スキルを読んだか（スキル未参照での作業開始は禁止）
+- [ ] 自分の担当範囲と次へのハンドオフ先を把握したか
+- [ ] 前エージェントの反証チェック結果を引き継いだか
+
+#### 🚫 受け取り拒否基準（差し戻し条件）
+以下のいずれかに該当する場合、作業を開始せず即座に差し戻す:
+1. **数値なしのPL依頼**: 「粗利を改善したい」のみで根拠数値がない
+2. **ソースなしの海外情報**: 未検証・グレードD相当の情報のみ
+3. **反証未実施のアウトプット**: 前工程でトリプルチェックが省略されている
+
+### 差し戻し理由コード体系
+
+| コード | 意味 | 発動条件 | FROM側の対応 |
+|---|---|---|---|
+| ERR-01 | 数値根拠なし | PL試算・市場規模にソース付き根拠数値がない | ソース付きデータを添付して再送 |
+| ERR-02 | 反証未実施 | トリプルチェック完了マークがない | Deep/Standard/Lightいずれかを実施して再送 |
+| ERR-03 | 未検証情報 | 海外情報がグレードD（未検証）のみ | グレードB以上の情報を追加して再送 |
+| ERR-04 | 成功基準不明 | 「何ができれば完了か」が定義されていない | 完了条件を1文で明記して再送 |
+| ERR-05 | スコープ超過 | 要求が自エージェントの担当範囲を超える | 適切なエージェントへ再ルーティング |
+| ERR-06 | 数値矛盾 | 並列エージェント間の数値が20%超乖離 | orchestratorに調停を依頼（下記参照） |
+
+**差し戻し時フォーマット:**
+```
+【差し戻し】ERR-XX
+From: [受け取り拒否したエージェント名]
+To: [送り元エージェント名]
+理由: [具体的に何が不足しているか1文]
+必要な追加情報: [何を追記すれば受け取れるか]
+期限: [修正期限]
+```
+
+---
+
+## 並列エージェント数値矛盾解消プロトコル
+
+> 並列実行された複数エージェントのアウトプットを統合するとき、数値の矛盾が生じることがある。これを放置すると後段のPL試算・意思決定が狂う。以下で解消する。
+
+### 検出基準
+- 同一指標で2エージェント以上が算出した数値が **20%以上乖離** している場合に矛盾とみなす
+- 例: competitive-analyst「市場規模1,000億円」/ market-researcher「500億円」
+
+### 調停プロセス（orchestrator実行）
+1. **矛盾の明示**: 矛盾する数値を並べ、両エージェントに定義・算出根拠・ソースの提示を要求
+2. **定義確認**: 指標の定義（TAM/SAM/SOM・対象年度・地理範囲）が異なる場合は統一定義に揃え直す
+3. **数値再計算**: 統一定義で両エージェントが再計算 → 乖離が10%未満に収束すれば解決
+4. **収束しない場合**: 楽観/標準/悲観の3シナリオに組み込む（矛盾を「不確実性の幅」として可視化）
+5. **採用根拠の記録**: どの数値を採用し、なぜ他を棄却したかをプロジェクトファイルに記録
+
+### orchestratorの義務
+- 並列エージェント出力を受け取ったら **必ず20%乖離チェックを実施**（次フェーズ移行前）
+- 乖離検出 → 調停プロセス起動 → 収束確認の順で進める（乖離未解消のまま先に進まない）
+- 調停不能な場合は「数値不確実性が高い」と明記してユーザーに判断を委ねる
 
 ---
 
@@ -344,9 +499,20 @@ product/feedback-synthesizer → product/product-manager → service-dev/tech-le
 
 ### パターン12: SaaSプロダクトを海外展開したい
 ```
-global/gtm-consultant → global/global-journalist → consulting/kpi-analytics
-     （GTM戦略設計）         （現地市場リサーチ）         （PL試算）
-📘 revenue-growth-framework → first-principles-breakdown → consulting-playbook
+【3層フロー】
+Layer 1: 市場評価・情報収集（並列）
+  global/gtm-consultant: GTM戦略設計・参入モデル選定・市場スコアリング
+  global/global-journalist: 現地市場リサーチ・競合動向・規制動向（情報グレードB以上のみ）
+  legal-compliance-checker: 参入規制・ライセンス・データ保護法チェック
+
+Layer 2: 事業判断（直列・Layer 1完了後）
+  consulting/strategy-lead: 市場評価・Go/No-Go判定・参入優先順位（戦略判断のみ。PL構築は委託）
+  consulting/kpi-analytics: 海外展開PL試算（為替リスク込み・楽観/標準/悲観3シナリオ）
+
+Layer 3: 実行設計
+  global/global-business: オペレーション設計・現地パートナー条件・商習慣対応
+
+📘 global-expansion-playbook → revenue-growth-framework → first-principles-breakdown → consulting-playbook
 ```
 
 ### パターン13: 海外規制変更のインパクトを分析したい
@@ -370,24 +536,80 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 📘 revenue-growth-framework → consulting-playbook
 ```
 
+### パターン16: 新規事業を全工程でゼロから立ち上げたい（オーケストレーター起動）
+```
+orchestrator（全体設計・タスク分解・統合）
+  ├─ 並列Phase 1:
+  │   competitive-analyst: 市場構造・参入障壁分析
+  │   global-journalist: 海外先行事例リサーチ
+  │   market-researcher: 顧客ニーズ・支払意思額調査
+  ├─ 直列Phase 2:
+  │   strategy-lead: Go/No-Go判定・参入戦略
+  │   kpi-analytics: 3年PL試算・感度分析
+  ├─ 直列Phase 3:
+  │   product-manager: MVP・ロードマップ
+  │   tech-lead: 技術アーキテクチャ
+  │   legal-compliance-checker: 法的リスク
+  └─ 最終Phase:
+      proposal-writer: 全結果を統合した提案書
+📘 unit-economics → ai-native-company → revenue-growth-framework → first-principles-breakdown → global-expansion-playbook
+```
+
+### パターン17: AI Agent Companyとして事業を再設計したい
+```
+orchestrator（全体統合）
+  ├─ ai-consultant: AI化優先業務・ROI試算
+  ├─ kpi-analytics: 現状PLとAI導入後インパクト比較
+  ├─ ai-engineer: エージェント設計・技術スタック
+  ├─ product-manager: Human-AIワークフロー設計
+  └─ strategy-lead: 収益化戦略・3年ロードマップ
+📘 ai-native-company → unit-economics → engineering-playbook
+```
+
 ---
 
 ## 全エージェント共通の干渉原則
 
-### 【小野寺信行（電通デジタル）の知見】
-- **指標を疑う**: クライアントが「CPA改善したい」と言っても、本質的な課題を先に確認
-- **フロー×ストック統合**: 単発施策 + 資産蓄積施策を常にセットで提案
-- **文脈設計**: ターゲットを「今どんな状況にある人か」で定義
-- **指標の目的別設計**: ブランディング・育成・獲得・リテンションで異なるKPI
-- **1stPartyデータ中心**: 外部データ依存はリスクとして明示
+> 以下は実際の発言・記事スニペットから確認した内容のみ記載。推測・補完は排除済み。
 
-### 【佐藤裕介（フリークアウト/STORES）の知見】
-- **PL思考必須**: 粗利インパクト・ブレイクイーブンを数字で示す
-- **市場構造から入る**: 「どういう構造を持つプレイヤーが勝つか」を分解
-- **プロダクトバリューを疑う**: 2年以内に陳腐化する前提で次を準備
-- **アセット優先**: 消耗施策より積み上がる資産を優先
-- **売りつけない**: 属人営業ではなく構造・再現性で売る
-- **新市場挑戦**: 「参入できる力があるのに挑戦しない」を最大リスクとして指摘
+### 【佐藤裕介（FreakOut共同創業・STORES/Hey代表）の実際の思想】
+
+出典確認済みの発言・概念のみ:
+
+- **やめない力（最重要）**: 「スタートアップが消える原因は資金不足でなく、起業家の心が折れること」「投資基準も『やめなさそうかどうか』」（STARTUP DB）
+- **挑戦しないことが最大リスク**: 「参入できる力があったにもかかわらず、新しい市場に挑戦しなかったことが最大の失敗」（ダイヤモンド 2020）
+- **プロダクトバリューは幻想**: 「技術も市場構造も刻々と変化する。一貫したプロダクトバリューはただの幻想」。FreakOutは7年で4回バリューを変えた（キャリアハック #887）
+- **バリューチェーン位置が持続価値を決める**: 持続的プロダクトバリューが発揮できる条件は「川上（インフラ/プラットフォーム）」「垂直統合」「川下」「特定市場の独占（LINE・楽天等）」。プロダクトの外側（市場選定・ポジション）にある（同記事）
+- **変化の3軸を重ねて見る**: プロダクトバリューを変化させるタイミングは「技術の変遷」「ユーザー環境の変化」「市場構造の変化」の重なり合う部分。産業のバリューチェーンを立体的に把握し、どのプレーヤーが強くなり・弱まっているかをリアルタイムで把握する（同記事）
+- **成功体験を捨て去る**: 「これまでのプロダクトの成功・成果にとらわれてはいけない。意図して変化を設計し、各ファンクションの活動指針に落とし込む」（同記事）
+- **マーケットとタイミングが全て**: 「みんなが来ると言っているのにやらない市場」への先行参入が勝ち筋（STARTUP DB）
+- **ピン立て**: 1つの分野を集中的に深掘りして短期間で「誰よりも詳しい人」になる手法。OKRと相性が良い（SELECK）
+- **普通にちゃんとした人の価値**: 「普通にちゃんとやれる人がいっぱい集まって毎日少しずつ改善できる組織が長期的に強い。抽象度だけ高く実務が追いつかない人材に懐疑的」（ログミー Business）
+- **アセット優先（中小事業者）**: 「中小事業者にアセットが貯まることを第一に考えながらプロダクト開発をしている」（Digiday Japan）
+- **情熱が希少財になる**: 「AGI実用化後は経営的な技術・事業管理はコモディティ化し、情熱こそが希少財になる」（ECのミカタ 2025）
+- **複利的成長**: 「25歳で70点の仕事でも30歳で150点になる。若いうちの小さな差分が複利計算のように膨らむ」（type就活）
+- **審美眼（過小評価を拾う）**: 「投資の大原則はみんなが過小評価している時に買い、過大評価している時に売ること。定量では証明できない生煮えの可能性を追う」（キャリアハック）
+- **マイメン文化・100人リピート哲学**: 「10万人に薄く届けるより100人が何度もリピートするつながりを優先する。身近な仲間（マイメン）と楽しくやることが大きなムーブメントの起点になる」（FastGrow・STARTUP DB）
+- **楽しみのための経済**: 「こだわりや熱量・楽しいという気持ちで駆動している人たちが報われる社会が理想。純度の高い楽しさを守り抜くことが最強の優位性になる可能性を秘めている」（WORK MILL 2019）
+- **我の弱い人同士の組織力**: スター個人の能力ではなく、自我の弱い人同士が補い合う組織力を武器にする。「我の強いスター採用」より「ビジョンに共感するコアファン採用」が合理的（Business Insider Japan 2020）
+- **プロダクト統合フェーズ論**: 「複数プロダクトをバラまいた5年から、それらを統合してひとつの新プロダクトを届ける次の5年へ。日本でそれができている会社はあまりない」（STORES note 2023）
+- **経済の民主化**: 「個人や中小事業者のパワーはまだ過小評価されている。インターネットのおかげで規模が小さいから不利になるという状況が少しずつ是正されつつある」（日経ビジネス 2019）
+- **極振り意思決定論**: バランスを取ろうとした決断・微調整が中途半端を生む。「右か左かどちらでもいいが、極端にやった方が早くフィードバックが得られる。ちょっとだけ左に行くとまだ左に切れるからもうちょい左だったかもという状態が続く」。コロナ対応で「一気にリモートにして一気に戻した会社」が上手くいった。（高木新平×佐藤裕介 魂の対話 2026）
+- **溶けた系 vs パキッと型経営者**: 経営者には2種類ある。①パキッと型：経営者の役割と個人の価値観を完全分離（川部型）。②溶けた型：個人の価値観が経営スタイルに溶け込む（佐藤型・イエ型）。溶けた型は「自分らしく実行しないと競争力がない」が、構造が見えすぎると中途半端になるリスクがある。（同上）
+- **リアクティブ型経営（意思がないことが強み）**: 「意思がないからこそ良さそうな場面・人を見つける能力が高い。面白そうな人たちがいいタイミングで誘ってくれた」。ルールが明示されたゲームでは弱いが、ルールが変わる瞬間・隠れた構造を読むのが得意。「薬草を使わない縛りプレイをしてるとアピールして、その縛りが好きな人を仲間にしないと勝負にならない」（同上）
+- **AI時代＝ルール変化期の出番**: 「AIの登場で12〜18ヶ月先が見通せない。1-2-3までルールが明示されていたのに以降が全部隠れた。この半年間むちゃくちゃやる気がある」。構造から逆算して、ルールが明示されていない間に動けるのが強み。（同上）
+- **コンテクスト（つながり）渇望**: 「自分がたまたま入った店が自分と何か繋がっていてほしい。STORESが5倍になれば毎日その体験ができる」。友達が作ったものは特別になる。これが幸福に暮らすための基盤であり、STORESのビジョンの根源。（同上）
+- **ソフトウェアの再配布コスト0**: 「ソフトウェアは再配布のコストがほぼ0。粗利が85〜90%出るビジネスはこれまで存在しなかった。強い構造を持っている場所にいた方が楽しい」。GoogleもFreakOutもこの構造に乗っかった。（同上）
+
+### 【小野寺信行（電通デジタル グローバルセンター）の実際の思想】
+
+※記事本文は全サイト403でアクセス不可。以下は確認できた検索スニペットのみ。
+
+- **ユーザー体験起点**: 「インプレッションやクリック数の数値目標が優先されるがあまり、ユーザーの広告体験が十分に配慮されていない」（電通デジタル×フォーエム対談 2024）
+- **意味のある繋がり**: 「情報があふれる今、ユーザーの生活や価値観に寄り添い、意味のあるつながりを築く視点が重要」（同）
+- **コンテクスチュアル広告**: クッキーレス後のブランディング手法として推進。ウェブ電通報でコラム執筆（2020年〜）
+- **ファーストパーティ・ゼロパーティデータ**: パブリッシャーの1stPartyデータ、ユーザーが自発的に提供するゼロパーティデータを活用した広告コミュニケーションを提唱（同対談）
+- **代理店の役割**: 「高いROIにつながる施策・新しい取り組み手法を提示しリードすることも代理店の重要な役割」（MarkeZine 2022）
 
 ### ブランドルール
 - **出力順序**: 結論 → 根拠 → 具体アクション
@@ -402,9 +624,32 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 > **全てのアウトプットは反証モードによるトリプルチェックを通過しなければ最終出力としない。**
 > これはデバッグだけでなく、戦略提案・分析・コンテンツ・翻訳・設計・実装の全領域に適用される。
 
+### ⚡ 最重要ルール：実装前義務（新設）
+
+**コードを1行でも書く前に、以下を必ず出力すること。省略は禁止。**
+
+```
+【実装前チェック】
+🔴 失敗シナリオ1: [この実装が壊れる最も可能性の高いケース]
+🔴 失敗シナリオ2: [エッジケース（null/空配列/ネットワーク失敗/未認証）]
+🔴 失敗シナリオ3: [本番環境固有のリスク（パフォーマンス・競合・副作用）]
+✅ 対策: [各失敗シナリオへの防御コードを実装に含める]
+```
+
+**Reactコンポーネントを書く前は追加で:**
+```
+【フリーズチェック（frontend-quality-guard準拠）】
+- useEffectの依存配列にオブジェクト/関数を入れていないか？
+- 非同期処理のクリーンアップ（AbortController/React Query）を使うか？
+- loading/error/successの3状態を全て処理するか？
+- ErrorBoundaryで包まれる位置にあるか？
+```
+
+---
+
 ### 適用範囲
 - **全26エージェント**: Consulting / Service Dev / Product / Creative / Global の全エージェント
-- **全15スキルファイル**: consulting-playbook から prompt-engineering まで全スキル
+- **全スキルファイル**: consulting-playbook から frontend-quality-guard まで全スキル
 - **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
 
 ### トリプルチェック・プロセス
@@ -434,10 +679,39 @@ Step 3: 実用反証（Practical Falsification）
 | 部門 | Step 1 重点 | Step 2 重点 | Step 3 重点 |
 |---|---|---|---|
 | Consulting | 結論の前提は正しいか | PL数値・市場データの根拠 | クライアントが実行可能か |
-| Service Dev | 設計判断の代替案 | コードの正確性・セキュリティ | 本番環境で動くか |
+| Service Dev | **実装前チェック必須**（失敗シナリオ3つ） | コードの正確性・セキュリティ・型安全 | 本番環境で動くか（フリーズ・クラッシュ含む） |
 | Product | ユーザー仮説の反例 | 優先順位ロジックの根拠 | リソース内で実現可能か |
 | Creative | ターゲットに刺さらない可能性 | ブランド整合・トーン一貫性 | 制作・運用が回るか |
 | Global | 現地文化での誤解リスク | 翻訳精度・法規制の正確性 | 現地オペレーションで機能するか |
+| Marketing | KPI設計の前提は正しいか | チャネル・計測・ターゲット根拠 | 予算内・法規制内で実行可能か |
+
+### チェック深度設定（部門×タスク複雑度）
+
+> タスクの複雑度に応じてチェック深度を調整する。**ただし省略は禁止。**
+
+| 深度 | 適用条件 | 各Stepの実行基準 | 所要時間目安 |
+|---|---|---|---|
+| **Deep（深度3）** | 戦略立案・コード実装・法務判断・海外参入・PL試算 | 全Stepをフルに実行。反論3つ以上・数値根拠必須 | 長め |
+| **Standard（深度2）** | 通常分析・コンテンツ制作・翻訳・マーケ施策 | 各Stepを簡略版で実行。重点項目のみ | 中程度 |
+| **Light（深度1）** | 情報整理・データ集約・FAQ回答・単純タスク | チェックリスト形式で全Step確認 | 短め |
+
+```
+深度判定フロー:
+タスクが「クライアント向け最終成果物」か「本番環境への影響あり」か「法的リスクあり」
+→ どれか1つでもYES → Deep（深度3）
+
+タスクが「中間アウトプット」か「内部検討材料」か「コンテンツ制作」
+→ どれか1つでもYES → Standard（深度2）
+
+上記以外（情報整理・要約・単純なデータ変換）
+→ Light（深度1）
+```
+
+**部門別デフォルト深度:**
+- Consulting / Global / Legal: Deep（深度3）
+- Service Dev: Deep（深度3）— **実装前チェック必須**
+- Product / Marketing: Standard（深度2）
+- Creative: Standard（深度2）— ブランド判断時はDeep
 
 ### 出力フォーマット（全エージェント共通）
 
@@ -453,6 +727,7 @@ Step 3: 実用反証（Practical Falsification）
 
 ### 違反時の対応
 - トリプルチェックなしのアウトプットは**ドラフト扱い**（最終出力ではない）
+- **実装前チェックなしのコード生成は禁止**（コードの前に必ず失敗シナリオを出力する）
 - チェックで致命的な問題が見つかった場合は**修正してから出力**
 - 「時間がない」は省略理由にならない（簡易版でも3ステップは必須）
 
@@ -476,14 +751,21 @@ Step 3: 実用反証（Practical Falsification）
 - **プロダクト系**: Read + Grep + WebSearch（情報収集・分析に集中）
 - **グローバル系**: Read + Glob + Grep + WebSearch + WebFetch（海外リサーチ・分析に集中、翻訳系のみEdit + Write追加）
 
-### Agent Teams（セッション間チーム協調）★実験的機能
+### Auto Mode（権限自動制御）— デフォルト有効化済み
+- **`.claude/settings.json` で設定済み**: `defaultMode: "auto"` が適用されている
+- **仕組み**: classifierが各ツールコールを検査し、安全なものだけ自動実行。危険な操作はブロック
+- **--dangerously-skip-permissions は禁止**: Auto Modeで代替する。本番DB削除事故の原因になる
+- **プロンプトインジェクション対策内蔵**: ファイル内・コマンド出力の悪意ある指示を自動ブロック
+- **長時間タスク向け**: 離席中も安全にエージェントを動かせる
+- 詳細は `.claude/skills/claude-code-ops.md` §3 参照
+
+### Agent Teams（セッション間チーム協調）— `.claude/settings.json` で有効化済み
 - **チームメイト同士が直接通信**: サブエージェントと違い、発見の共有・仮説の反証が可能
 - **デバッグ**: 競合仮説パターンで複数の原因を同時調査→反証→収束
 - **コードレビュー**: セキュリティ/パフォーマンス/テストを並列で3観点チェック
 - **デザイン/UI検証**: UXフロー/レスポンシブ/ブランド整合/パフォーマンスを同時検証
 - **推奨チーム規模**: 3-5名。1メンバー5-6タスク
-- **有効化**: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` をsettings.jsonに設定
-- 詳細は `.claude/skills/claude-code-ops.md` セクション3参照
+- 詳細は `.claude/skills/claude-code-ops.md` §4 参照
 
 ### 並列実行
 - **/fork**: 会話を分岐して並列タスクを非干渉で実行

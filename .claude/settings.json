@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "autoMode": {
+    "environment": [
+      "Organization: ConsultingOS — AIコンサルティング・サービス開発・クリエイティブ・グローバル・マーケティング統合プラットフォーム",
+      "Primary use: software development, consulting strategy, content creation, global expansion research",
+      "Source control: github.com/nbyk115/yorunokotoba",
+      "Development branch: claude/* prefixed feature branches",
+      "Key constraint: main branch is protected. All changes via PR with Squash and merge only"
+    ],
+    "soft_deny": [
+      "Never push to main branch directly — all merges via PR with Squash and merge",
+      "Never force push (--force) to any branch",
+      "Never delete or drop production databases or tables",
+      "Never commit .env files, secrets, or credentials",
+      "Never run rm -rf on directories outside the working directory",
+      "Never bypass git hooks with --no-verify"
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "memory_file=\"$(git rev-parse --show-toplevel 2>/dev/null)/.claude/memory/core_memory.md\"; if [ -f \"$memory_file\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🧠 ConsultingOS Memory Loaded\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; cat \"$memory_file\"; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/quality_scores.log\"; if [ -f \"$log\" ]; then recent=$(tail -8 \"$log\" 2>/dev/null); if [ -n \"$recent\" ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo '📈 直近の品質スコア履歴 (agent-evaluation):'; echo \"$recent\"; d_count=$(echo \"$recent\" | grep -c '\\[D\\]' 2>/dev/null || echo 0); c_count=$(echo \"$recent\" | grep -c '\\[C\\]' 2>/dev/null || echo 0); if [ \"$d_count\" -gt 0 ]; then echo \"⚠️  グレードD: ${d_count}件 — 今セッションで改善を検討してください\"; fi; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *\"/.claude/agents/\"* || \"$file\" == *\"/.claude/skills/\"* || \"$file\" == *\"/.claude/commands/\"* || \"$file\" == *\"/.claude/memory/core_memory\"* ]]; then root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/config_changes.log\"; mkdir -p \"$(dirname $log)\"; section=$(echo \"$file\" | grep -oE '(agents|skills|commands|memory)' | head -1); basename=$(basename \"$file\"); echo \"[$(date '+%Y-%m-%d %H:%M')] [$section] $basename\" >> \"$log\"; echo \"📝 ConsultingOS変更ログ記録: [$section] $basename\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]]; then npx prettier --write \"$file\" 2>/dev/null && echo \"✅ Prettier: $file\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.py ]]; then python3 -m black \"$file\" 2>/dev/null && echo \"✅ Black: $file\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then root=$(git rev-parse --show-toplevel 2>/dev/null); if [ -f \"$root/tsconfig.json\" ]; then result=$(cd \"$root\" && npx tsc --noEmit 2>&1 | tail -3); if echo \"$result\" | grep -q 'error TS'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 型エラー検出 (verification-loop Phase 2)\"; echo \"$result\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx || \"$file\" == *.js ]] && [[ \"$file\" != *.test.* && \"$file\" != *.spec.* ]]; then base=$(basename \"$file\" | sed 's/\\.[^.]*$//'); root=$(git rev-parse --show-toplevel 2>/dev/null); test_exists=$(find \"$root\" -name \"${base}.test.*\" -o -name \"${base}.spec.*\" 2>/dev/null | head -1); if [ -z \"$test_exists\" ]; then echo \"⚠️  TDD警告: ${base} のテストファイルが見つかりません (superpowers §4)\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.md ]] && [[ \"$file\" != *CLAUDE* && \"$file\" != *README* && \"$file\" != *.claude/* ]]; then echo \"💬 humanizer-ja: 日本語コンテンツを編集しました。AI臭チェックを推奨します (.claude/skills/humanizer-ja.md §1)\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); content=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.new_string // .content // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx || \"$file\" == *.py || \"$file\" == *.sh ]]; then if echo \"$content\" | grep -qiE '(gh pr|gh issue|gh run|firebase deploy|ga4|gtag|measurementId|analyticsId|supabase\\.from|prisma\\.\\$)'; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"⚠️  technical-accuracy: CLI/API手順を含むコードを検出\"; echo \"推測でコマンドを書いていませんか？ .claude/skills/technical-accuracy.md §1 を確認してください\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -qE '(npm run dev|yarn dev|next dev|uvicorn|gunicorn|python -m|flask run|fastapi run)'; then echo 'WARN: 長時間コマンドです。tmux内での実行を推奨します: tmux new-session -d -s dev \"<command>\"' >&2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -qE '(git push.*main|git push.*master|git push --force|push -f )'; then echo 'BLOCK: mainへの直接pushは禁止です。PRを作成してください。' >&2; exit 2; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); if echo \"$cmd\" | grep -qE 'git (add|commit)'; then root=$(git rev-parse --show-toplevel 2>/dev/null); secrets=$(git diff --cached 2>/dev/null | grep -iE '(sk-[a-z0-9]{32,}|AKIA[A-Z0-9]{16}|password\\s*=\\s*[\"\\x27][^\"\\x27]{6,}|api_key\\s*=\\s*[\"\\x27][^\"\\x27]{10,}|secret\\s*=\\s*[\"\\x27][^\"\\x27]{10,}|\\.env)' | head -3); if [ -n \"$secrets\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔴 BLOCK: シークレット疑いを検出。コミットを中止してください\"; echo \"$secrets\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; exit 2; fi; fi"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/quality_scores.log\"; if [ -f \"$log\" ]; then today=$(date +%Y-%m-%d); today_entries=$(grep \"^$today\" \"$log\" 2>/dev/null); if [ -n \"$today_entries\" ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo '📊 本日の評価スコア (agent-evaluation):'; echo \"$today_entries\"; low=$(echo \"$today_entries\" | grep -E '\\[D\\]|\\[C\\]' | head -5); if [ -n \"$low\" ]; then echo '🔴 改善推奨エージェント:'; echo \"$low\"; echo '  → core_memory.md の 学習事項 に改善方針を記録してください'; fi; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); changed_code=$(git diff HEAD --name-only 2>/dev/null | grep -cE '\\.(ts|tsx|py|js|jsx)$' 2>/dev/null || echo 0); if [ \"$changed_code\" -gt 0 ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo \"🔍 verification-loop: コードファイル${changed_code}件変更を検出\"; if [ -f \"$root/tsconfig.json\" ] && [ \"$changed_code\" -lt 20 ]; then ts_errors=$(cd \"$root\" && npx tsc --noEmit 2>&1 | grep -c 'error TS' 2>/dev/null || echo 0); if [ \"$ts_errors\" -gt 0 ]; then echo \"🔴 Phase2 型エラー${ts_errors}件 — コミット前に修正必須\"; else echo '✅ Phase2 型チェック PASS'; fi; fi; has_lint=$(cat \"$root/package.json\" 2>/dev/null | python3 -c \"import json,sys; d=json.load(sys.stdin); print('yes' if 'lint' in d.get('scripts',{}) else '')\" 2>/dev/null); if [ -n \"$has_lint\" ]; then echo '   ▷ npm run lint でPhase3 リントを確認してください'; fi; echo '   参照: .claude/skills/verification-loop.md'; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); active_dir=\"$root/.claude/handoffs/active\"; if [ -d \"$active_dir\" ]; then files=$(ls \"$active_dir\"/*.md 2>/dev/null | grep -v SCHEMA); count=$(echo \"$files\" | grep -c '.md' 2>/dev/null || echo 0); if [ \"$count\" -gt 0 ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"⚠️  未処理ハンドオフ: ${count}件\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; for f in $files; do name=$(basename $f); to=$(grep '^to:' $f 2>/dev/null | head -1 | sed 's/to: //'); task=$(grep '^## タスク' -A1 $f 2>/dev/null | tail -1); echo \"  → $name\"; echo \"    受け取り: $to | $task\"; done; echo \"次のセッション開始時に上記エージェントを起動してください。\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "count=$(grep -r 'console\\.log' src/ --include='*.ts' --include='*.tsx' -l 2>/dev/null | grep -v '\\.test\\.' | grep -v '\\.spec\\.' | wc -l 2>/dev/null || echo 0); if [ \"$count\" -gt 0 ]; then echo \"⚠️  console.logが${count}ファイルに残存 — コミット前に削除してください\"; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if git diff --cached --name-only 2>/dev/null | grep -qE '\\.(md|html|tsx|ts)$'; then echo 'REMINDER: コンテンツ/コードファイルが変更されています。brand-guidelines準拠を確認してください。'; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if git status --short 2>/dev/null | grep -qE '^(M| M|A| A|\\?\\?)'; then echo 'REMINDER: 未コミットの変更があります。作業完了後はgit add & commitを忘れずに。'; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); proj_dir=\"$root/.claude/projects\"; if [ -d \"$proj_dir\" ]; then missing=$(grep -rL '反証チェック結果' \"$proj_dir\"/*.md 2>/dev/null | grep -v template); if [ -n \"$missing\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔺 反証チェック未記入のプロジェクトファイル:\"; for f in $missing; do echo \"  → $(basename $f)\"; done; echo \"納品前に反証チェック結果を記入してください。\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); mem=\"$root/.claude/memory/core_memory.md\"; log=\"$root/.claude/memory/archival/$(date +%Y-%m-%d)_session.log\"; if [ -f \"$mem\" ]; then mkdir -p \"$(dirname $log)\"; echo \"[$(date '+%Y-%m-%d %H:%M')] セッション終了\" >> \"$log\"; git -C \"$root\" diff --name-only HEAD 2>/dev/null | head -10 >> \"$log\"; echo \"変更ファイル数: $(git -C $root diff --name-only HEAD 2>/dev/null | wc -l)\" >> \"$log\"; echo \"✅ Memory log updated: $log\"; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "next_date=$(grep '次回:' ~/.claude/skills/../../../home/user/yorunokotoba/.claude/memory/core_memory.md 2>/dev/null | grep 'claude-health' | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1); if [ -n \"$next_date\" ]; then today=$(date +%Y-%m-%d); days=$(( ($(date -d \"$next_date\" +%s 2>/dev/null || date -j -f %Y-%m-%d \"$next_date\" +%s 2>/dev/null) - $(date +%s)) / 86400 )); if [ \"$days\" -le 7 ] 2>/dev/null; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🔔 /maintenance まであと${days}日（次回: $next_date）\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi; fi"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); mem=\"$root/.claude/memory/core_memory.md\"; if [ -f \"$mem\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"📝 今回の訂正・学習事項を core_memory.md に記録しましたか？\"; echo \"  → .claude/memory/core_memory.md の 学習事項 セクションを更新\"; echo \"  （不要なら無視してください）\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

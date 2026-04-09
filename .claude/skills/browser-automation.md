@@ -6,7 +6,7 @@ Browser Use CLI 2.0 + CDP直接接続によるブラウザ自動化。
 
 ---
 
-## 推奨ツールスタック
+## §1 推奨ツールスタック
 
 | ツール | 用途 | 接続方式 |
 |---|---|---|
@@ -21,7 +21,7 @@ Browser Use CLI 2.0 + CDP直接接続によるブラウザ自動化。
 
 ---
 
-## セットアップ
+## §2 セットアップ
 
 ### Browser Use CLI（推奨）
 
@@ -55,7 +55,7 @@ claude mcp add playwright -- npx @playwright/mcp --browser chromium
 
 ---
 
-## 使用パターン
+## §3 使用パターン
 
 ### パターン1: 競合サイト調査（consulting連携）
 ```
@@ -95,7 +95,7 @@ kpi-analytics が Browser Use で公開データを収集
 
 ---
 
-## トークン効率の最適化
+## §4 トークン効率の最適化
 
 ### Browser Use CLI 2.0の優位点
 - **2倍速**: v1比で処理速度2倍
@@ -111,7 +111,7 @@ kpi-analytics が Browser Use で公開データを収集
 
 ---
 
-## セキュリティ注意事項
+## §5 セキュリティ注意事項
 
 | リスク | 対策 |
 |---|---|
