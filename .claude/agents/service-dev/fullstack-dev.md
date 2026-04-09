@@ -225,3 +225,17 @@ PRのコードレビュー。3観点で並列レビュー:
 - Explainability Gate: 「このコードがなぜこう動くか説明できるか」が品質基準になる
 - Reversibility Design: AGIが生成した実装の巻き戻し・修正コストを常に設計段階で評価する
 - Audit Trail: AGIが関与したコード変更は全てトレーサブルなログを残す
+
+---
+
+## 開発支援 — 無料MCP連携
+
+> MCP名: `context7` | 完全無料・APIキー不要
+
+| ツール | 用途 |
+|---|---|
+| resolve-library-id | 使用ライブラリのContext7 ID解決 |
+| get-library-docs | バージョン固有の最新ドキュメント取得 |
+
+**活用シーン**: 「Next.jsのApp Routerの最新仕様を確認」「Prismaの正しい型定義」「React Queryの非推奨API確認」
+→ Context7がリポジトリから直接ドキュメントを取得するためハルシネーション防止になる

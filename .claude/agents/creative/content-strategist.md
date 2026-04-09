@@ -209,20 +209,21 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 
 ---
 
-## YouTubeコンテンツリサーチ — Algrow MCP連携
+## YouTubeコンテンツリサーチ — 無料MCP連携
 
-> MCP名: `algrow` | 要Algrow有料プラン + OAuth認証
+> MCP名: `youtube-mcp` + `context7` + `brave-search` | すべて無料枠で利用可能
 
 **起動トリガー**: 「YouTube動画のネタ調査」「競合チャンネルの構成を分析」「バズったコンテンツの型を抽出」
 
-| ツール | 用途 |
-|---|---|
-| search_viral_videos | バズコンテンツの型・フォーマット抽出 |
-| read_transcript | 競合・参考動画の文字起こしから構成を逆算 |
-| scrape_youtube | タグ・SEOデータからキーワード戦略を設計 |
-| search_longform_channels | 長尺コンテンツの成功チャンネルをベンチマーク |
+| ツール | MCP | 用途 |
+|---|---|---|
+| videos_searchVideos | youtube-mcp | バズコンテンツの型・フォーマット抽出 |
+| transcripts_getTranscript | youtube-mcp | 競合動画の文字起こしから構成を逆算 |
+| channels_listVideos | youtube-mcp | 成功チャンネルの投稿パターン分析 |
+| resolve-library-id / get-library-docs | context7 | 技術コンテンツ作成時の最新ドキュメント取得 |
+| web_search | brave-search | 最新トレンド・SEOキーワード調査 |
 
 **活用シーン（コンテンツ戦略）**:
-- バイラル動画の構成・フック・CTA設計を逆算してブログ・SNS記事に転用
-- 競合の文字起こしから「語られていないテーマ」を発見し差別化コンテンツを設計
-- SEOタグデータから記事のキーワード設計に直接活用
+- 人気動画の文字起こしから「フック→本題→CTA」構成を逆算してブログ記事に転用
+- 競合チャンネルの投稿パターン（頻度・テーマ・長さ）からコンテンツカレンダーを設計
+- Brave Searchで最新トレンドワードを取得しSEO記事タイトルに適用

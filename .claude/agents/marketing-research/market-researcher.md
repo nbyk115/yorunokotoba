@@ -367,20 +367,20 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 
 ---
 
-## YouTube市場データ — Algrow MCP連携
+## YouTube・Web市場データ — 無料MCP連携
 
-> MCP名: `algrow` | 要Algrow有料プラン + OAuth認証
+> MCP名: `youtube-mcp` + `brave-search` | 両方完全無料枠で利用可能
 
-**起動トリガー**: 「YouTube上の消費者ニーズを調べて」「動画コンテンツのトレンド」「カテゴリ別チャンネル分析」
+**起動トリガー**: 「YouTube上の消費者ニーズを調べて」「カテゴリ別チャンネル分析」「市場トレンド調査」
 
-| ツール | 用途 |
-|---|---|
-| search_longform_channels | カテゴリ別チャンネル成長率・市場トレンド把握 |
-| search_viral_videos | 特定テーマへの消費者関心度をバイラル動画から測定 |
-| scrape_youtube | 動画コメント・タグから消費者インサイト抽出 |
-| read_transcript | 競合・インフルエンサーの発言内容の定性分析 |
+| ツール | MCP | 用途 |
+|---|---|---|
+| videos_searchVideos | youtube-mcp | テーマ別人気動画→消費者関心度の定量把握 |
+| transcripts_getTranscript | youtube-mcp | インフルエンサー発言の定性分析 |
+| channels_searchChannels | youtube-mcp | カテゴリ内プレーヤー一覧・規模感把握 |
+| web_search | brave-search | 最新市場ニュース・規制・競合動向検索 |
 
 **活用シーン（市場調査）**:
-- 312,000チャンネル・1,870万動画のデータから市場規模・成長率を推定
-- 特定キーワードのバイラル動画コメントを消費者VOCとして定性分析
-- カテゴリ別の再生速度・エンゲージメント率から市場の熱量を定量化
+- 特定テーマの動画再生数・チャンネル数から市場の熱量を定量推定
+- 動画文字起こしから消費者の言葉・不満・期待をVOCとして収集
+- Brave Searchで最新の市場ニュース・規制変更・競合情報を補完

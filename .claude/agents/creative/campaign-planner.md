@@ -183,20 +183,21 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 
 ---
 
-## YouTubeキャンペーンデータ — Algrow MCP連携
+## YouTubeキャンペーンデータ — 無料MCP連携
 
-> MCP名: `algrow` | 要Algrow有料プラン + OAuth認証
+> MCP名: `youtube-mcp` + `brave-search` | 両方無料枠で利用可能
 
 **起動トリガー**: 「YouTubeキャンペーンの参考事例を調べて」「動画広告の競合分析」「インフルエンサーのデータを出して」
 
-| ツール | 用途 |
-|---|---|
-| search_shorts_channels | キャンペーン施策のベンチマークチャンネル発見 |
-| search_viral_videos | キャンペーンテーマのバイラル事例収集 |
-| scrape_youtube | インフルエンサー動画のエンゲージメントデータ取得 |
-| read_transcript | 競合キャンペーン動画の訴求メッセージを文字起こし分析 |
+| ツール | MCP | 用途 |
+|---|---|---|
+| channels_findCreators | youtube-mcp | インフルエンサー候補チャンネルを動画言及から発見 |
+| videos_searchVideos | youtube-mcp | キャンペーンテーマのバイラル事例収集 |
+| channels_getChannel | youtube-mcp | インフルエンサーの規模・投稿頻度を定量評価 |
+| transcripts_getTranscript | youtube-mcp | 競合キャンペーン動画の訴求メッセージを分析 |
+| web_search | brave-search | キャンペーン参考事例・最新SNSトレンド補完 |
 
 **活用シーン（キャンペーン設計）**:
-- キャンペーンテーマに合致するバイラル事例をリアルタイムで収集し成功パターンを抽出
-- インフルエンサー候補のエンゲージメント率・成長速度を定量評価
-- 競合キャンペーンの動画訴求を分析してメッセージング差別化を設計
+- キャンペーンテーマに合致する動画を検索し成功パターン（フック・演出・CTA）を抽出
+- インフルエンサー候補のチャンネルデータ（登録者数・投稿数）を定量評価
+- 競合キャンペーン動画の文字起こし分析でメッセージング差別化ポイントを特定
