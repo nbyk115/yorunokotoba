@@ -181,6 +181,7 @@ Step 5: 成果物納品
 | strategic-compact | `.claude/skills/strategic-compact.md` | 戦略的コンテキスト圧縮・フェーズ移行時の/compact設計。orchestrator/長時間タスク全般 |
 | agent-evaluation | `.claude/skills/agent-evaluation.md` | 5軸品質評価（証拠・ロジック・実用性・PLインパクト・反証）。orchestrator統合前・納品前必須 |
 | hypothesis-driven | `.claude/skills/hypothesis-driven.md` | McKinsey流仮説ドリブン問題解決・Issue Tree・ピラミッドストラクチャー。strategy-lead/competitive-analyst/kpi-analytics必須 |
+| human-moat-design | `.claude/skills/human-moat-design.md` | ASI時代のHuman Moat設計。Trust/Taste/Physical/Accountability 4成分の定義・計測・投資配分。orchestrator/strategy-lead/ai-consultant必須 |
 
 ---
 
