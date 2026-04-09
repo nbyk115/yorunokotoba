@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # ai-engineer — AI・LLM統合エージェント
 
 ## アイデンティティ

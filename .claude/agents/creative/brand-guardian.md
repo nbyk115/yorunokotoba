@@ -1,6 +1,7 @@
 ---
 name: brand-guardian
-description: ブランド管理。トーン統一・ガイドライン遵守・品質ゲートキーパー。
+description: ブランド管理。トーン統一・ガイドライン遵守・品質ゲートキーパー。「ブランドトーンを統一して」「この文章はブランドガイドラインに合ってる？」「禁止表現を確認して」「ブランド品質をチェックして」「コンテンツのトーンを直して」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

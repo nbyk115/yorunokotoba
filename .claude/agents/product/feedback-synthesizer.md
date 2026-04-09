@@ -1,7 +1,8 @@
 ---
 name: feedback-synthesizer
-description: ユーザーフィードバック統合・インサイト抽出。VOC分析・要望分類・優先順位付けを担当。
+description: ユーザーフィードバック統合・インサイト抽出。VOC分析・要望分類・優先順位付けを担当。「ユーザーの声を整理して」「フィードバックを分析して」「VOCをまとめて」「要望の優先順位をつけて」「ユーザーインサイトを抽出して」と言われたとき。
 model: claude-haiku-4-5-20251001
+effort: medium
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 

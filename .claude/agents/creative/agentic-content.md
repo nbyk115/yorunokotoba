@@ -1,6 +1,7 @@
 ---
 name: agentic-content
-description: AIコンテンツ最適化。AIO対策・構造化データ・AIに選ばれるコンテンツ設計。
+description: AIコンテンツ最適化。AIO対策・構造化データ・AIに選ばれるコンテンツ設計。「AIに選ばれるコンテンツを作って」「AIO対策して」「構造化データを設計して」「Perplexityに引用されたい」「AIレスポンス最適化して」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

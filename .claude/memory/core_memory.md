@@ -7,7 +7,7 @@
 ## 最終更新
 - 日時: 2026-04-09
 - 更新者: orchestrator
-- 変更内容: 超最強版完成 / 自己改善ループ（Stop hook品質表示＋SessionStart品質履歴）/ deep-research brave-search MCP連携（§2a追加）/ orchestrator自己改善プロトコル追加 / maintenance.mdにスコアトレンド分析Step 2b追加 / claude-project-custom-instructions.md最新化（agent-evaluation + ultrathink + 深掘り調査モード）
+- 変更内容: 全エージェント最強化完成 / 全34エージェントにeffort+trigger-phrase+ultrathink追加 / §番号乱れ修正（engineering/revenue/consulting playbooks）/ 新スキルhypothesis-driven.md追加（スキル39本）/ CLAUDE.md+globalCLAUDE.md更新
 
 ---
 
@@ -16,7 +16,7 @@
 | 項目 | 値 |
 |---|---|
 | エージェント数 | 34（+ orchestrator） |
-| スキル数 | 38（プロジェクト）/ 38（グローバル） |
+| スキル数 | 39（プロジェクト）/ 39（グローバル） |
 | コマンド数 | 11 |
 | グローバル同期 | ✅ ~/.claude/skills/ → すべてシンボリックリンク |
 | ブランチ | claude/consulting-os-multiagent-YS5GK |
@@ -93,6 +93,7 @@
 - [x] Skills記事踏襲強化 → 全11コマンドfrontmatter追加 / 14エージェントtrigger-phrase+effort追加
 - [x] ConsultingOS最強化 → ultrathink(orchestrator+strategy-lead) / verification-loop Stopフック / PostToolUse設定変更ログ / brave-search MCP統合(3エージェント) / agent-evaluation.md新規作成(スキル38本)
 - [x] 超最強版実装 → 自己改善ループ(Hooks2本追加) / deep-research §2a / orchestrator自己改善プロトコル / maintenance.md Step2b / template更新 / ultrathink 6エージェント追加 → Stop hooks計10本・SessionStart 2本
+- [x] 全エージェント最強化 → 全34エージェントeffort+trigger-phrase+ultrathink追加 / §番号乱れ修正(engineering/revenue/consulting) / hypothesis-driven.md新規作成(スキル39本) / グローバルリンク同期
 
 ---
 
@@ -108,3 +109,5 @@
 - 「信頼ベース設計」は脆い。スキルの実行をHooksで強制することで初めて機能する
 - orchestratorは重くしすぎると自分がレートリミットで死ぬ。planning-with-filesで外部化が必須
 - スキル数の表記ズレは信頼性を損なう。ファイル数確認後に即修正する
+- §番号の順序ミスはファイルのグレップで一発で検出できる（grep -n "^## §"）。新セクション追加時は必ず順序確認する
+- 全エージェントのfrontmatterにeffort/trigger-phrase/ultrathinkを付与することで、エージェント起動精度と思考品質が構造的に向上する

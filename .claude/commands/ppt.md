@@ -1,3 +1,9 @@
+---
+name: ppt
+description: PPTスライド生成コマンド。python-pptxで.pptxファイルを直接生成する。「スライドを作って」「PPTを作って」「提案資料を作って」「プレゼン資料が欲しい」と言われたとき。
+effort: medium
+---
+
 # /ppt — PPTスライド生成コマンド
 
 引数: $ARGUMENTS（テーマ・タイトル・枚数など）

@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # fullstack-dev — フルスタック実装エージェント
 
 ## アイデンティティ

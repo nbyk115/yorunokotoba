@@ -1,6 +1,6 @@
 ---
 name: legal-compliance-checker
-description: 法務・コンプライアンスチェック。契約・利用規約・個人情報保護・景表法対応を担当。
+description: 法務・コンプライアンスチェック。契約・利用規約・個人情報保護・景表法対応を担当。「契約書をチェックして」「利用規約を確認して」「法的リスクを洗い出して」「景表法に違反していないか」「個人情報の取り扱いを確認して」と言われたとき。
 model: claude-opus-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

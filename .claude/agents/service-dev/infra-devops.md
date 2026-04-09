@@ -1,9 +1,12 @@
 ---
 name: infra-devops
-description: インフラ・CI/CD。デプロイ・Docker構成・コスト最適化・監視。
+description: インフラ・CI/CD。デプロイ・Docker構成・コスト最適化・監視。「デプロイ環境を整えて」「Docker構成を作って」「CI/CDを設計して」「インフラコストを最適化して」「監視・アラートを設定して」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
+
+ultrathink
 
 # infra-devops — インフラ・CI/CDエージェント
 

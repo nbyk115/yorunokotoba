@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # proposal-writer — 提案書・資料作成エージェント
 
 ## アイデンティティ

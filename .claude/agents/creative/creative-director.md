@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # creative-director — クリエイティブ統括エージェント 🎨
 
 ## アイデンティティ

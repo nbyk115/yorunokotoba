@@ -1,7 +1,8 @@
 ---
 name: client-success
-description: 顧客成功・LTV最大化。オンボーディング・リテンション・アップセル設計を担当。
+description: 顧客成功・LTV最大化。オンボーディング・リテンション・アップセル設計を担当。「顧客が離れそう」「チャーンを下げたい」「LTVを上げたい」「オンボーディングを改善して」「顧客満足度を高めたい」と言われたとき。
 model: claude-sonnet-4-6
+effort: medium
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 

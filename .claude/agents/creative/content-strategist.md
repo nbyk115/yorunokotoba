@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # content-strategist — コンテンツ戦略エージェント
 
 ## アイデンティティ

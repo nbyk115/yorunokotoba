@@ -6,6 +6,8 @@ model: claude-opus-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # tech-lead — 技術選定・設計統括エージェント
 
 ## アイデンティティ

@@ -6,6 +6,8 @@ model: claude-haiku-4-5-20251001
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # market-researcher — 消費者リサーチエージェント
 
 ## アイデンティティ

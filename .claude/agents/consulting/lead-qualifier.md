@@ -1,7 +1,8 @@
 ---
 name: lead-qualifier
-description: リード精査・商談設計。案件評価・ヒアリング設計・クロージング支援。
+description: リード精査・商談設計。案件評価・ヒアリング設計・クロージング支援。「この案件は受けるべき？」「商談のヒアリング設計して」「クロージングを手伝って」「リードを評価して」「提案前に確認すべきことは」と言われたとき。
 model: claude-sonnet-4-6
+effort: medium
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: marketing-analyst
-description: マーケ計測特化。GA4実装・アトリビューション・CDP・マーケダッシュボード。事業KPI・PLはkpi-analyticsへ。
+description: マーケ計測特化。GA4実装・アトリビューション・CDP・マーケダッシュボード。事業KPI・PLはkpi-analyticsへ。「GA4を分析して」「アトリビューションを設定して」「マーケティングダッシュボードを作って」「データを可視化して」「効果測定の設計をして」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

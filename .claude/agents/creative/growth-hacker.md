@@ -1,9 +1,12 @@
 ---
 name: growth-hacker
-description: グロースハック・実験ドリブン成長。A/Bテスト・ファネル最適化・バイラル設計を担当。
+description: グロースハック・実験ドリブン成長。A/Bテスト・ファネル最適化・バイラル設計を担当。「CVRを上げたい」「A/Bテストを設計して」「ファネルを最適化して」「グロース施策を考えて」「バイラルの仕組みを作って」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
+
+ultrathink
 
 # growth-hacker — グロースハックエージェント
 

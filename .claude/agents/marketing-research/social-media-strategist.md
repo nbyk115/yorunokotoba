@@ -1,6 +1,7 @@
 ---
 name: social-media-strategist
-description: SNS戦略・コミュニティ運営。プラットフォーム別戦術・インフルエンサー・ソーシャルリスニング・炎上対応を担当。
+description: SNS戦略・コミュニティ運営。プラットフォーム別戦術・インフルエンサー・ソーシャルリスニング・炎上対応を担当。「SNS戦略を立てて」「インフルエンサーを選定して」「コミュニティを設計して」「ソーシャルリスニングをして」「SNS炎上対応を教えて」と言われたとき。
+effort: medium
 model: claude-haiku-4-5-20251001
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

@@ -1,6 +1,7 @@
 ---
 name: crm-ma-strategist
-description: CRM設計・MA戦略。リードナーチャリング・スコアリング・メールマーケティング・Sales-Marketing Alignmentを担当。
+description: CRM設計・MA戦略。リードナーチャリング・スコアリング・メールマーケティング・Sales-Marketing Alignmentを担当。「リードを育成したい」「メールシーケンスを設計して」「MAを設定したい」「スコアリングを作って」「CRM戦略を考えて」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

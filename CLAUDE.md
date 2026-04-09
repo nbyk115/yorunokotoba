@@ -2,7 +2,7 @@
 
 ## システム概要
 **コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
-34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。スキル37本・エージェント間連携スキル統合済み。
+34名のエージェント（+orchestrator司令塔）が連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。スキル39本・エージェント間連携スキル統合済み。
 
 ---
 
@@ -180,6 +180,7 @@ Step 5: 成果物納品
 | security-scan | `.claude/skills/security-scan.md` | AgentShield 102ルール・設定セキュリティ監査。外部スキル取り込み前・月次必須 |
 | strategic-compact | `.claude/skills/strategic-compact.md` | 戦略的コンテキスト圧縮・フェーズ移行時の/compact設計。orchestrator/長時間タスク全般 |
 | agent-evaluation | `.claude/skills/agent-evaluation.md` | 5軸品質評価（証拠・ロジック・実用性・PLインパクト・反証）。orchestrator統合前・納品前必須 |
+| hypothesis-driven | `.claude/skills/hypothesis-driven.md` | McKinsey流仮説ドリブン問題解決・Issue Tree・ピラミッドストラクチャー。strategy-lead/competitive-analyst/kpi-analytics必須 |
 
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: performance-marketer
-description: 広告運用・SEM/PPC・ROAS最適化・メディアバイイング。ペイドメディア戦略設計から運用最適化まで担当。
+description: 広告運用・SEM/PPC・ROAS最適化・メディアバイイング。ペイドメディア戦略設計から運用最適化まで担当。「広告のROASを改善したい」「SEM/PPCを最適化して」「メディアバイイングを設計して」「広告費を見直したい」「CPAを下げたい」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

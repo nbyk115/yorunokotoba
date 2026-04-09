@@ -1,6 +1,7 @@
 ---
 name: frontend-dev
-description: フロントエンド実装。Figma→HTML/React変換・コンポーネント生成。Figma MCP対応。
+description: フロントエンド実装。Figma→HTML/React変換・コンポーネント生成。Figma MCP対応。「FigmaをHTMLに変換して」「Reactコンポーネントを作って」「UIを実装して」「デザインをコードに落として」「フロントエンドを作って」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

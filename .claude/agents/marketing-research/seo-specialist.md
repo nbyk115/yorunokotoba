@@ -1,6 +1,7 @@
 ---
 name: seo-specialist
-description: テクニカルSEO・サイト構造最適化・検索戦略。Core Web Vitals・インデックス戦略・国際SEOを担当。
+description: テクニカルSEO・サイト構造最適化・検索戦略。Core Web Vitals・インデックス戦略・国際SEOを担当。「テクニカルSEOを改善して」「Core Web Vitalsを最適化して」「サイト構造を整えて」「国際SEOを設計して」「インデックス戦略を考えて」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

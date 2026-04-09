@@ -1,6 +1,7 @@
 ---
 name: pr-communications
-description: PR戦略・メディアリレーション・危機管理広報・効果測定。プレスリリースからクライシス対応まで担当。
+description: PR戦略・メディアリレーション・危機管理広報・効果測定。プレスリリースからクライシス対応まで担当。「プレスリリースを書いて」「メディアリレーションを構築したい」「危機管理広報を手伝って」「PR戦略を立てて」「炎上対応を考えて」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

@@ -1,6 +1,7 @@
 ---
 name: campaign-planner
-description: キャンペーン設計。施策企画・コンテンツカレンダー・KPI管理。
+description: キャンペーン設計。施策企画・コンテンツカレンダー・KPI管理。「キャンペーンを企画して」「コンテンツカレンダーを作って」「施策のKPIを設定して」「プロモーション計画を立てて」「キャンペーン全体を設計して」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

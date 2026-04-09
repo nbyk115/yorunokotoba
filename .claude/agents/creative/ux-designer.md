@@ -1,6 +1,7 @@
 ---
 name: ux-designer
-description: UI/UX設計。UXフロー・ワイヤーフレーム・LP設計。Canva/Figma対応（creative-directorの選定に従う）。
+description: UI/UX設計。UXフロー・ワイヤーフレーム・LP設計。Canva/Figma対応（creative-directorの選定に従う）。「UXフローを設計して」「ワイヤーフレームを作って」「LP構成を考えて」「ユーザー導線を整理して」「UI設計をして」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
