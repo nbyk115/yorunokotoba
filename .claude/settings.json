@@ -40,6 +40,15 @@
         "hooks": [
           {
             "type": "command",
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *\"/.claude/agents/\"* || \"$file\" == *\"/.claude/skills/\"* || \"$file\" == *\"/.claude/commands/\"* || \"$file\" == *\"/.claude/memory/core_memory\"* ]]; then root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/config_changes.log\"; mkdir -p \"$(dirname $log)\"; section=$(echo \"$file\" | grep -oE '(agents|skills|commands|memory)' | head -1); basename=$(basename \"$file\"); echo \"[$(date '+%Y-%m-%d %H:%M')] [$section] $basename\" >> \"$log\"; echo \"📝 ConsultingOS変更ログ記録: [$section] $basename\"; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
             "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // empty' 2>/dev/null); if [[ \"$file\" == *.ts || \"$file\" == *.tsx ]]; then npx prettier --write \"$file\" 2>/dev/null && echo \"✅ Prettier: $file\"; fi"
           }
         ]
@@ -120,6 +129,14 @@
       }
     ],
     "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); changed_code=$(git diff HEAD --name-only 2>/dev/null | grep -cE '\\.(ts|tsx|py|js|jsx)$' 2>/dev/null || echo 0); if [ \"$changed_code\" -gt 0 ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo \"🔍 verification-loop: コードファイル${changed_code}件変更を検出\"; if [ -f \"$root/tsconfig.json\" ] && [ \"$changed_code\" -lt 20 ]; then ts_errors=$(cd \"$root\" && npx tsc --noEmit 2>&1 | grep -c 'error TS' 2>/dev/null || echo 0); if [ \"$ts_errors\" -gt 0 ]; then echo \"🔴 Phase2 型エラー${ts_errors}件 — コミット前に修正必須\"; else echo '✅ Phase2 型チェック PASS'; fi; fi; has_lint=$(cat \"$root/package.json\" 2>/dev/null | python3 -c \"import json,sys; d=json.load(sys.stdin); print('yes' if 'lint' in d.get('scripts',{}) else '')\" 2>/dev/null); if [ -n \"$has_lint\" ]; then echo '   ▷ npm run lint でPhase3 リントを確認してください'; fi; echo '   参照: .claude/skills/verification-loop.md'; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi"
+          }
+        ]
+      },
       {
         "hooks": [
           {

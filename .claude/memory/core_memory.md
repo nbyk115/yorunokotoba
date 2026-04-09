@@ -7,7 +7,7 @@
 ## 最終更新
 - 日時: 2026-04-09
 - 更新者: orchestrator
-- 変更内容: Skills記事踏襲強化完了 / 全11コマンドにYAML frontmatter追加（effort/disable-model-invocation/context:fork/shell injection） / 14エージェントにtrigger-phrase形式description追加+effort level設定 / 対象: orchestrator/competitive-analyst/strategy-lead/market-researcher/fullstack-dev/tech-lead/content-strategist/ai-consultant/kpi-analytics/proposal-writer/gtm-consultant/global-journalist/creative-director/ai-engineer
+- 変更内容: ConsultingOS最強化完了 / ultrathink追加（orchestrator+strategy-lead）/ verification-loop Stopフック追加 / PostToolUse設定変更ログフック追加 / brave-search MCPプロトコル追加（competitive-analyst/market-researcher/global-journalist）/ agent-evaluation.md新規作成（スキル38本）/ CLAUDE.md+orchestratorに評価スキル追記
 
 ---
 
@@ -16,7 +16,7 @@
 | 項目 | 値 |
 |---|---|
 | エージェント数 | 34（+ orchestrator） |
-| スキル数 | 37（プロジェクト）/ 37（グローバル） |
+| スキル数 | 38（プロジェクト）/ 38（グローバル） |
 | コマンド数 | 11 |
 | グローバル同期 | ✅ ~/.claude/skills/ → すべてシンボリックリンク |
 | ブランチ | claude/consulting-os-multiagent-YS5GK |
@@ -90,6 +90,7 @@
 - [ ] 実運用フィードバックをもとにエージェント調整（副業案件受注後）
 - [x] Claude.ai Project Custom Instructions の整備 → `.claude/templates/claude-project-custom-instructions.md` 完成済み
 - [x] Skills記事踏襲強化 → 全11コマンドfrontmatter追加 / 14エージェントtrigger-phrase+effort追加
+- [x] ConsultingOS最強化 → ultrathink(orchestrator+strategy-lead) / verification-loop Stopフック / PostToolUse設定変更ログ / brave-search MCP統合(3エージェント) / agent-evaluation.md新規作成(スキル38本)
 
 ---
 

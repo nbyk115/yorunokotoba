@@ -85,6 +85,26 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 | consulting-playbook | リサーチ結果の提案構造化 | リサーチレポート・提案書作成時 | §8 商談・提案の標準プロセス |
 | marketing-research-playbook | リサーチ手法の全体整合 | 調査設計・分析フレーム設計時 | §1 マーケティング戦略フレームワーク |
 | revenue-growth-framework | 市場規模・PLインパクト試算 | 価格調査・市場規模推定時 | §1 PL思考 |
+
+## リアルタイムリサーチ強化プロトコル（brave-search MCP）
+
+WebSearchより **brave-search MCP** を優先すべきケース:
+
+| ユースケース | 使用ツール | パラメータ例 |
+|---|---|---|
+| 消費者トレンド・最新調査レポート | `mcp__brave-search__brave_news_search` | `freshness="pm"`, `count=10` |
+| 価格帯・競合製品の市場相場 | `mcp__brave-search__brave_web_search` | `freshness="py"`, `count=10` |
+| ユーザーレビュー・VOC収集 | `mcp__brave-search__brave_web_search` | `query="[製品] レビュー 評判"` |
+| 業界レポートのAIサマリー | `mcp__brave-search__brave_summarizer` | URL直接指定 |
+
+**リサーチフロー（推奨順序）:**
+1. `brave_news_search` → 直近の消費者行動変化・市場トレンドニュース
+2. `brave_web_search` → 既存調査レポート・学術データの探索
+3. `WebFetch` → 調査レポート全文・政府統計の詳細取得
+4. ソースグレード付与（A:政府統計/学術、B:シンクタンク、C:業界紙、D:ブログ/SNS）
+
+---
+
 ## シナリオ別プレイブック
 
 ### S1: 新製品コンセプトテスト

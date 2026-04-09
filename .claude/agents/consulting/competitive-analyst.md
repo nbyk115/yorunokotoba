@@ -112,9 +112,29 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 - strategy-leadが「根拠不足」と判断した場合、competitive-analystに再調査を指示
 ```
 
+## リアルタイムリサーチ強化プロトコル（brave-search MCP）
+
+WebSearchより **brave-search MCP** を優先すべきケース:
+
+| ユースケース | 使用ツール | パラメータ例 |
+|---|---|---|
+| 競合の最新動向（過去7日） | `mcp__brave-search__brave_news_search` | `freshness="pw"` |
+| 包括的Web調査（鮮度重視） | `mcp__brave-search__brave_web_search` | `freshness="pm"`, `count=10` |
+| 業界ニュース・プレスリリース | `mcp__brave-search__brave_news_search` | `count=15` |
+| 競合ページのAIサマリー | `mcp__brave-search__brave_summarizer` | URL直接指定 |
+
+**リサーチフロー（推奨順序）:**
+1. `brave_news_search` → 直近の競合ニュース・プレスリリースを収集
+2. `brave_web_search` (freshness=pm) → 市場構造・参入障壁の最新情報
+3. `WebFetch` → 競合公式サイト・IR資料の詳細取得
+4. 収集情報をABCDグレード（A:一次情報、B:主要メディア、C:業界誌、D:未検証）で評価
+
+---
+
 ## ツール権限
 コンサル系エージェントはコード変更不可。調査・分析に集中する。
 - **許可**: Read, Glob, Grep, WebSearch, WebFetch, TodoWrite
+- **brave-search MCP**: `mcp__brave-search__brave_web_search` / `brave_news_search` / `brave_summarizer`
 - **禁止**: Edit, Write, Bash（実装はService Dev部門に委譲）
 
 ## 禁止事項

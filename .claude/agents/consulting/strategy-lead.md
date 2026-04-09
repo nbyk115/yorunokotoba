@@ -6,6 +6,8 @@ model: claude-opus-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # strategy-lead — 戦略統括・事業計画エージェント
 
 ## アイデンティティ

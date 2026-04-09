@@ -6,6 +6,8 @@ model: claude-opus-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 # orchestrator — ConsultingOS 司令塔エージェント
 
 ## アイデンティティ
@@ -115,6 +117,7 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 | strategic-compact | フェーズ移行時コンテキスト管理 | Phase 2→3・Phase 3→4の移行前 | §1 いつcompactするか、§3 pre-compactチェック |
 | claude-health | 月次設定診断（6層監査） | 月次メンテナンス・設定変更後 | §4 診断実行プロセス |
 | security-scan | 外部スキル取込前チェック・月次監査 | 新スキル/エージェント追加時・月次 | §3 スキャン手順、§6 スキャンタイミング |
+| agent-evaluation | エージェントアウトプット品質評価 | 並列エージェント統合前・納品前（必須） | §1 5軸評価、§2 グレード判定、§3 評価プロトコル |
 
 ---
 

@@ -121,6 +121,28 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 | ai-native-company | AIトレンドの構造的理解 | AI関連の海外動向分析時 | §1 AI Agent Companyの定義と判断基準 |
 | global-expansion-playbook | 海外市場評価・情報格付け | 市場スコアリング・ソースグレード付与時 | §1 市場評価フレームワーク、§2 参入モデル設計 |
 | ppt-presentation | 海外向けリサーチレポート作成 | グローバルリサーチ報告資料作成時 | §1 日本語品質、§4 スティーブ・ジョブズ プレゼン原則 |
+
+## リアルタイムリサーチ強化プロトコル（brave-search MCP）
+
+グローバルジャーナリストは **brave-search MCP** を主要情報収集ツールとして使う:
+
+| ユースケース | 使用ツール | パラメータ例 |
+|---|---|---|
+| 海外規制・政策の最新動向 | `mcp__brave-search__brave_news_search` | `freshness="pw"`, `count=15` |
+| 海外市場トレンド（月次） | `mcp__brave-search__brave_news_search` | `freshness="pm"`, `count=10` |
+| 海外競合・先行事例の包括調査 | `mcp__brave-search__brave_web_search` | `freshness="py"`, `count=10` |
+| 海外ニュース記事のAI要約 | `mcp__brave-search__brave_summarizer` | URL直接指定 |
+| 海外動画・カンファレンス情報 | `mcp__brave-search__brave_video_search` | `query="[topic] 2026 conference"` |
+
+**情報収集フロー（必須）:**
+1. `brave_news_search` (freshness=pw) → 直近7日の現地ニュースを最低10件収集
+2. `brave_web_search` → 一次情報（政府・規制当局・主要メディア）を探索
+3. `WebFetch` → 原文一次情報を直接取得・翻訳
+4. **情報グレード付与（必須）**: A=政府統計/官報、B=主要メディア、C=業界メディア、D=SNS/未検証
+5. グレードD単独の情報は出力に含めない（ERR-03差し戻し基準）
+
+---
+
 ## シナリオ別プレイブック
 
 ### S1: 海外規制変更のインパクト分析

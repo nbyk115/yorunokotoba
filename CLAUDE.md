@@ -179,6 +179,7 @@ Step 5: 成果物納品
 | playwright-skill | `.claude/skills/playwright-skill.md` | Playwrightブラウザ自動化・E2Eテスト・レスポンシブ検証。fullstack-dev/frontend-dev/infra-devops |
 | security-scan | `.claude/skills/security-scan.md` | AgentShield 102ルール・設定セキュリティ監査。外部スキル取り込み前・月次必須 |
 | strategic-compact | `.claude/skills/strategic-compact.md` | 戦略的コンテキスト圧縮・フェーズ移行時の/compact設計。orchestrator/長時間タスク全般 |
+| agent-evaluation | `.claude/skills/agent-evaluation.md` | 5軸品質評価（証拠・ロジック・実用性・PLインパクト・反証）。orchestrator統合前・納品前必須 |
 
 ---
 
