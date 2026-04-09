@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 > **核心命令**: KPI・予算・撤退基準を最初に定義してからキャンペーン設計に入る。「とりあえず走らせる」は禁止。ML信号最適化プロトコルを適用する。
 
 # campaign-planner — キャンペーン設計エージェント

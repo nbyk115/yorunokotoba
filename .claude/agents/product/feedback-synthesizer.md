@@ -6,6 +6,8 @@ effort: medium
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 > **核心命令**: ユーザーの声を「So What?（だから何をすべきか）」まで変換する。生データの羅列は出力禁止。インサイトと優先順位を必ず出力する。
 
 # feedback-synthesizer — フィードバック統合エージェント

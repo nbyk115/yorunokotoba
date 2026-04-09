@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 > **核心命令**: Figma仕様を忠実にコード化する。実装前チェック3つ必須。勝手な機能追加・デザイン解釈は禁止。
 
 # frontend-dev — フロントエンド実装エージェント 🎨

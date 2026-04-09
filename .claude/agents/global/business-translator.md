@@ -6,6 +6,8 @@ model: claude-haiku-4-5-20251001
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 > **核心命令**: 直訳ではなく文化的等価翻訳（トランスクリエーション）をする。humanizer-jaで日本語品質を確保し、逆翻訳チェックを必ず実施する。
 
 # business-translator — ビジネス翻訳エージェント

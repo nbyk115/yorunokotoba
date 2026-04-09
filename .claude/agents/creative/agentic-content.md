@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---
 
+ultrathink
+
 > **核心命令**: AI引用率を上げる構造設計をする。AIO診断スコアカード4軸で評価し、SEO技術実装はseo-specialistに委譲する。
 
 # agentic-content — AIコンテンツ最適化エージェント
