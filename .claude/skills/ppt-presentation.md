@@ -22,25 +22,71 @@
 > **PowerPoint**: デフォルトフォントをメイリオに設定。テーマフォントの日本語フォント欄に明示
 
 ### python-pptx（Claude Code / Linux環境）でのフォント設定
-Linux環境（Claude Code・Claude.ai）ではメイリオが利用不可。以下の優先順位でフォントを指定する:
+
+**【最重要】中国語フォント混入の根本原因と完全対策**
+
+python-pptxでフォントを設定する際、`run.font.name = "..."` だけでは **`<a:latin>`（英字）** しか設定されない。
+日本語・漢字などのCJK文字は **`<a:ea>`（East Asian フォント）** が使われるが、これを明示しないと
+OSのデフォルトCJKフォント（中国語 SC / TC など）に自動フォールバックする。
+
+**必須: `<a:latin>` と `<a:ea>` の両方を明示設定すること。**
 
 ```python
-# フォント優先順位（Linux環境）
-# 1. IPAGothic（IPAフォント）— apt install fonts-ipafont でインストール可能
-# 2. Noto Sans JP — apt install fonts-noto-cjk
-# 3. VL Gothic / TakaoGothic — フォールバック
+from pptx.oxml.ns import qn
+from lxml import etree
+import subprocess
 
-FONT_JP = "IPAGothic"  # Linux環境での標準指定
+def _detect_jp_font():
+    """インストール済みの日本語フォントを自動検出（JPバリアントを優先）"""
+    candidates = [
+        ("Noto Sans CJK JP",  ["notosanscjkjp"]),   # ← SC(中国語)でなくJP(日本語)
+        ("IPAPGothic",        ["ipapgothic"]),
+        ("IPAGothic",         ["ipagothic"]),
+        ("TakaoPGothic",      ["takaopgothic"]),
+    ]
+    try:
+        r = subprocess.run(["fc-list", "--format=%{family[0]}\n"],
+                           capture_output=True, text=True, timeout=5)
+        avail = r.stdout.replace(" ", "").lower()
+        for name, keys in candidates:
+            if any(k in avail for k in keys):
+                return name
+    except Exception:
+        pass
+    # フォントなし → インストール
+    subprocess.run(["apt-get", "install", "-y", "fonts-noto-cjk"],
+                   capture_output=True, timeout=120)
+    subprocess.run(["fc-cache", "-fv"], capture_output=True)
+    return "Noto Sans CJK JP"
 
-# インストール確認コマンド:
-# fc-list | grep -i "ipa\|noto.*jp\|takao\|vl"
+FONT_JP = _detect_jp_font()
+
+def _apply_jp_font(run, font_name=None):
+    """
+    中国語フォント混入を防ぐ核心処理。
+    <a:latin>: 英字フォント
+    <a:ea>:    東アジア文字（日本語・漢字）フォント ← これが省略されると中国語になる
+    <a:cs>:    複合文字（念のため設定）
+    """
+    f = font_name or FONT_JP
+    rPr = run._r.get_or_add_rPr()
+    for tag in ('a:latin', 'a:ea', 'a:cs'):
+        el = rPr.find(qn(tag))
+        if el is None:
+            el = etree.SubElement(rPr, qn(tag))
+        el.set('typeface', f)
+
+# 使い方（全テキストに必ず適用）:
+# run = paragraph.add_run()
+# run.text = "日本語テキスト"
+# _apply_jp_font(run)  ← この1行で中国語混入を完全防止
 ```
 
-**実行前チェック（python-pptx使用時）:**
+**インストール確認コマンド:**
 ```bash
-# フォントが存在するか確認してからスクリプト実行
-python3 -c "from pptx.util import Pt; print('pptx OK')"
-fc-list | grep -i ipa | head -3
+fc-list --format="%{family[0]}\n" | grep -i "noto\|ipa\|takao"
+# "Noto Sans CJK JP" が表示されればOK。"SC"（中国語）のみの場合は再インストール
+apt-get install -y fonts-noto-cjk && fc-cache -fv
 ```
 
 ### 日本語誤字・文字化けチェック（必須）
@@ -71,12 +117,31 @@ fc-list | grep -i ipa | head -3
 
 ```
 【シェイプ内テキスト配置チェックリスト】
-□ 水平方向: 中央揃え（左揃えは例外的に使用）
-□ 垂直方向: 中央揃え（上揃え・下揃えは禁止、特別な理由がある場合を除く）
-□ 内側の余白（パディング）: 上下左右 最低8px以上（小さいシェイプは比率で）
+□ 水平方向: 中央揃え（PP_ALIGN.CENTER）
+□ 垂直方向: 中央揃え（MSO_ANCHOR.MIDDLE）← python-pptxではこれを必ず設定
+□ 内側の余白（パディング）: 上下左右 最低8px相当（Inches(0.08)以上）
 □ テキストがシェイプからはみ出していないか
 □ フォントサイズはシェイプの大きさに合わせてスケール（最小10pt）
 ```
+
+**python-pptx での上下中央設定（必須）:**
+```python
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+
+shape = slide.shapes.add_shape(1, left, top, width, height)
+tf = shape.text_frame
+tf.vertical_anchor = MSO_ANCHOR.MIDDLE  # 上下中央（これを忘れると上寄りになる）
+tf.margin_left   = Inches(0.15)
+tf.margin_right  = Inches(0.15)
+tf.margin_top    = Inches(0.08)
+tf.margin_bottom = Inches(0.08)
+
+p = tf.paragraphs[0]
+p.alignment = PP_ALIGN.CENTER  # 左右中央
+```
+
+> **注意**: `add_textbox()` で作成したテキストボックスは `vertical_anchor` が効きにくい。
+> 上下中央揃えが必要なカード・ボタン・ヘッダーには `add_shape()` を使うこと。
 
 **Google Slides での設定:**
 1. シェイプを選択 → 右クリック → 「テキストの書式設定」
