@@ -356,3 +356,4 @@ orchestrator固有の追加チェック:
 - **数値矛盾調停**: 並列エージェント間の20%乖離検出時は deep-research §3（品質基準）に従って出典確認
 | security-scan | `.claude/skills/security-scan.md` | 外部スキル取り込み前の事前チェック・月次セキュリティ監査 |
 | strategic-compact | `.claude/skills/strategic-compact.md` | 多フェーズ案件でのコンテキスト管理・フェーズ移行時の/compact設計 |
+| claude-code-ops | `.claude/skills/claude-code-ops.md` | Hooks設定・MCP管理・並列ワークフロー設計・コンテキスト最適化 |
