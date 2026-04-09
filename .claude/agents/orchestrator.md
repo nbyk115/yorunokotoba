@@ -250,6 +250,39 @@ Phase 3: 実行
   - 該当するService Dev / Creative / Marketingエージェント
 ```
 
+### パターンO4: 副業案件受注（ConsultingOS収益化）
+```
+【トリガー】「副業で稼ぎたい」「案件を取りたい」「サービス化したい」
+
+Phase 1: サービス設計（1日）
+  📘 monetization-playbook §2 サービスカタログ参照
+  - orchestrator: Tier 1サービスを選定（競合調査/AI導入/SEO改善が即効性高）
+  - proposal-writer: クライアント向けサービス提案書を作成（§4テンプレート使用）
+  - kpi-analytics: 価格設定・月次収益シミュレーション（月1-3件→5-15万/月）
+
+Phase 2: プラットフォーム展開（並列）
+  📘 monetization-playbook §3 プラットフォーム別戦略参照
+  - content-strategist: ランサーズ/ココナラ出品文・プロフィール文の作成
+  - social-media-strategist: X（Twitter）発信戦略・投稿テンプレート設計
+  - brand-guardian: 差別化メッセージの整合性チェック
+
+Phase 3: 案件実行・納品（案件ごと）
+  📘 monetization-playbook §7 アウトプット品質基準参照
+  - 対応エージェント（競合分析→competitive-analyst / SEO→seo-specialist 等）
+  - humanizer-ja: AI臭除去（全納品物に必須）
+  - orchestrator: エグゼクティブサマリー・次のアクション3つを最終確認
+
+Phase 4: 実績→単価引き上げ
+  - 初案件納品後: クライアントの声を収集 → ランサーズ/ココナラの評価を活用
+  - 5件実績後: 単価を相場+20-30%に引き上げ
+  - 月30万超え後: Tier 2（マーケ全体設計・LP制作）へ移行
+
+【成功基準】
+□ Month 1-2: 5-15万円（競合調査2-3件）
+□ Month 3-4: 15-30万円（戦略提案追加）
+□ Month 5-6: 30-60万円（継続契約獲得）
+```
+
 ---
 
 ## ハンドオフ管理テンプレート

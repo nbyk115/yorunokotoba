@@ -7,7 +7,7 @@
 ## 最終更新
 - 日時: 2026-04-09
 - 更新者: orchestrator
-- 変更内容: effortLevel:high + showThinkingSummaries:true 設定 / CLAUDE.md「読んでいないコードは変更するな」ルール追加 / Algrow YouTube MCP統合（user scope）
+- 変更内容: 副業収益化リストラクチャリング完了 / monetization-playbook.md追加（スキル37本） / 9エージェントに副業収益化ガイド追加 / 7エージェントにASI時代セクション追加 / MCPをAlgrow→無料スタック（context7/youtube-mcp/brave-search）に刷新 / orchestratorにパターンO4追加
 
 ---
 
@@ -16,7 +16,7 @@
 | 項目 | 値 |
 |---|---|
 | エージェント数 | 34（+ orchestrator） |
-| スキル数 | 36（プロジェクト）/ 37（グローバル） |
+| スキル数 | 37（プロジェクト）/ 37（グローバル） |
 | コマンド数 | 11 |
 | グローバル同期 | ✅ ~/.claude/skills/ → すべてシンボリックリンク |
 | ブランチ | claude/consulting-os-multiagent-YS5GK |
@@ -38,7 +38,8 @@
 
 | 日付 | 内容 | 判断 | 根拠 |
 |---|---|---|---|
-| 2026-04-09 | Algrow YouTube MCP統合 | Go | 19ツールでリアルタイムYouTubeデータ取得。social-media-strategist/market-researcher/content-strategist/campaign-plannerに配線済み |
+| 2026-04-09 | 副業収益化リストラクチャリング | Go | monetization-playbook.md新設・9エージェント副業ガイド追加・7エージェントASI時代追加・orchestratorパターンO4追加 |
+| 2026-04-09 | AlgrowをFreeスタックに刷新 | Go | context7（無料）+ youtube-mcp（無料枠）+ brave-search（2,000/月無料）に移行 |
 | 2026-04-09 | effortLevel:high をデフォルト設定 | Go | 複雑タスクでの調査不足・即編集問題を構造で防止 |
 | 2026-03-25 | 決済をStripe→Komojuに統一 | Go | 日本・アジア特化・手数料優位 |
 | 2026-03-25 | Auto Mode実装 | Go | 長時間タスクの安全な自律実行 |
@@ -82,8 +83,11 @@
 
 - [x] 月次 claude-health 実行（実施: 2026-03-28 → 次回: 2026-04-27）6/6 PASS
 - [x] 月次 security-scan 実行 → 総合グレードA（Cat A/C/D/E=A、Cat B=A※soft_deny追加済み）
+- [x] 副業収益化システム構築 → monetization-playbook.md + 9エージェント更新 + orchestratorパターンO4
+- [x] MCPスタック無料化 → Algrow廃止・context7/youtube-mcp/brave-search導入
+- [ ] YouTube API key / Brave API key の本番キー発行（現在はプレースホルダー）
 - [ ] /schedule で月次メンテナンスを自動化（claude.ai接続エラーのため保留）
-- [ ] 実運用フィードバックをもとにエージェント調整
+- [ ] 実運用フィードバックをもとにエージェント調整（副業案件受注後）
 - [x] Claude.ai Project Custom Instructions の整備 → `.claude/templates/claude-project-custom-instructions.md` 完成済み
 
 ---
