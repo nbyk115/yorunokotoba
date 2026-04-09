@@ -20,7 +20,9 @@
 | コマンド数 | 11 |
 | グローバル同期 | ✅ ~/.claude/skills/ → すべてシンボリックリンク |
 | ブランチ | claude/consulting-os-multiagent-YS5GK |
-| MCP: algrow | ✅ user scope追加済み / 要Algrow有料プラン + OAuth認証 |
+| MCP: context7 | ✅ user scope / 完全無料・APIキー不要 |
+| MCP: youtube-mcp | ✅ user scope / YouTube Data API 無料枠（要APIキー発行） |
+| MCP: brave-search | ✅ user scope / Brave Search 無料枠2,000クエリ/月（要APIキー発行） |
 
 ---
 
