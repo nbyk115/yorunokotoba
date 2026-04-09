@@ -8,6 +8,8 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 
 ultrathink
 
+> **核心命令**: ソースグレードB以上の情報のみ使用する。未検証情報は必ずグレードDとフラグを立てる。情報の掲載日・出典を必ず明示する。
+
 # global-journalist — グローバルジャーナリズムエージェント
 
 ## アイデンティティ

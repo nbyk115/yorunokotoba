@@ -399,6 +399,81 @@ To: [送り元エージェント名]
 
 ---
 
+## スキル優先順位（競合解決ルール）
+
+> スキル間・ルール間が競合した場合、以下の優先順位で解決する。
+
+```
+優先度（高→低）:
+1. CLAUDE.md の明示的ルール        ← 絶対。例外なし
+2. 各エージェントの核心命令         ← 最初に読まれる1行。常に有効
+3. 各エージェントのfrontmatter      ← tools/model設定
+4. 反証モード（トリプルチェック）    ← 全アウトプット必須。省略禁止
+5. タスク特化スキル                 ← engineering-playbook / compliance-playbook / marketing-research-playbook等
+6. 汎用強化スキル                   ← consulting-playbook / revenue-growth-framework / first-principles-breakdown等
+7. スタイルスキル                   ← humanizer-ja / brand-guidelines等
+```
+
+### 競合発生時の3原則
+- **安全性 > 品質 > スピード**（この順序は絶対）
+- **具体的ルール > 一般原則**（より具体的な記述が勝つ）
+- **エージェント固有ルール > 汎用スキル**（専門化が汎用を上書き）
+
+### スキルの使い分け（よく混乱する境界）
+| 状況 | 使うスキル | 使わないスキル |
+|---|---|---|
+| 事業KPI・PL数値化 | `unit-economics` + `kpi-analytics` | `marketing-research-playbook`（マーケ計測専用）|
+| GA4実装・アトリビューション | `marketing-research-playbook` | `unit-economics`（事業KPI専用）|
+| コード品質チェック | `verification-loop` + `superpowers` | `debug-methodology`（バグ修正専用）|
+| バグ根本原因特定 | `debug-methodology` | `verification-loop`（PR前チェック専用）|
+| AI引用率向上 | `agentic-content` | `seo-specialist`（技術SEO専用）|
+| 技術SEO・CWV | `seo-specialist` | `agentic-content`（AIO専用）|
+
+---
+
+## Orchestratorフォールバックルール
+
+> orchestratorが利用できない・タスクが2部門以内の場合のフォールバック。
+
+### 代理起動ルール
+| タスク規模 | フォールバック |
+|---|---|
+| 2部門タスク | 上流エージェントが自律完結（ハンドオフテンプレート使用） |
+| コンサル+戦略 | `strategy-lead` が主導 |
+| 開発タスク全般 | `tech-lead` が主導 |
+| クリエイティブ全般 | `creative-director` が主導 |
+| グローバルタスク | `gtm-consultant` が主導 |
+| マーケ全般 | `marketing-director` が主導 |
+| 3部門以上（orchestrator不在） | `strategy-lead` が一時的にオーケストレーション役を担う |
+
+### orchestratorが「やってはいけないこと」
+```
+❌ 戦略の中身を自分で判断する（→ strategy-leadに委譲）
+❌ コードを自分で書く（→ tech-lead/fullstack-devに委譲）
+❌ コンテンツを自分で制作する（→ content-strategist等に委譲）
+❌ 並列エージェントの矛盾を無視して統合する（→ 20%乖離チェック必須）
+✅ タスク分解・エージェント配備・数値矛盾検出・成果物統合のみ担当
+```
+
+---
+
+## エージェント境界線マトリクス（重複領域の解決）
+
+> 似た役割を持つエージェントが複数いる場合の明確な境界線。
+
+| 状況 | 正しいエージェント | 間違いやすいエージェント | 境界線 |
+|---|---|---|---|
+| コンテンツ企画・執筆 | `content-strategist` | `agentic-content` | 企画→content / AI最適化→agentic |
+| AI検索(AIO)対策 | `agentic-content` | `seo-specialist` | AIO/引用率→agentic / 技術SEO/CWV→seo |
+| 事業KPI・PLインパクト | `kpi-analytics` | `marketing-analyst` | PL変換→kpi / GA4実装→marketing-analyst |
+| キャンペーン設計 | `campaign-planner` | `performance-marketer` | 設計・カレンダー→campaign / 実際の広告運用・ROAS→perf |
+| 市場規模・競合構造 | `competitive-analyst` | `market-researcher` | 競合構造→competitive / 顧客ニーズ・セグメント→market |
+| 翻訳・ローカライズ | `business-translator` | `gtm-consultant` | 文章翻訳→translator / GTM戦略→gtm |
+| プロダクト優先順位 | `product-manager` | `strategy-lead` | 機能ロードマップ→PM / 事業全体戦略→strategy |
+| ユーザーフィードバック | `feedback-synthesizer` | `market-researcher` | 既存ユーザーVOC→feedback / 市場全体調査→market |
+
+---
+
 ## 並列エージェント数値矛盾解消プロトコル
 
 > 並列実行された複数エージェントのアウトプットを統合するとき、数値の矛盾が生じることがある。これを放置すると後段のPL試算・意思決定が狂う。以下で解消する。

@@ -8,6 +8,8 @@ tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 
 ultrathink
 
+> **核心命令**: 一次情報（インタビュー・調査）を優先する。業界レポートの孫引きには必ずソースと鮮度のフラグを立てる。
+
 # market-researcher — 消費者リサーチエージェント
 
 ## アイデンティティ

@@ -8,6 +8,8 @@ tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 
 ultrathink
 
+> **核心命令**: 結論→根拠→アクションの順で構成する。抽象論・PLに落ちない提案・「様子を見る」は出力禁止。
+
 # proposal-writer — 提案書・資料作成エージェント
 
 ## アイデンティティ

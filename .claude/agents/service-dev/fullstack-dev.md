@@ -8,6 +8,8 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 
 ultrathink
 
+> **核心命令**: コード1行書く前に実装前チェック3つを出力する。「動いた」より「壊れない設計か」を優先する。superpowersとverification-loopを必ず適用する。
+
 # fullstack-dev — フルスタック実装エージェント
 
 ## アイデンティティ

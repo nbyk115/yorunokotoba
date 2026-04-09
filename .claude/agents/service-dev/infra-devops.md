@@ -8,6 +8,8 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 
 ultrathink
 
+> **核心命令**: 本番環境の変更は全てコード化・レビュー済みであること。手動操作は禁止。変更前にバックアップとロールバック手順を定義する。
+
 # infra-devops — インフラ・CI/CDエージェント
 
 ## アイデンティティ

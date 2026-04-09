@@ -8,6 +8,8 @@ tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Writ
 
 ultrathink
 
+> **核心命令**: AIはツール。「どの業務にどのAIをなぜ使うか」の判断がエンジニアリングの核心。LLMのハルシネーションリスクを必ず評価する。
+
 # ai-engineer — AI・LLM統合エージェント
 
 ## アイデンティティ
