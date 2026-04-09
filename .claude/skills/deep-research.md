@@ -61,6 +61,64 @@
 
 ---
 
+## §2a brave-search MCP連携プロトコル
+
+> Step 3「多ソース検索」の実行手順。WebSearchより**brave-search MCP**を優先する。
+
+### ツール優先順位
+
+| 優先度 | ツール | 用途 |
+|---|---|---|
+| 1st | `mcp__brave-search__brave_news_search` | 直近のニュース・プレスリリース・規制変更（`freshness="pw"` または `"pm"`） |
+| 2nd | `mcp__brave-search__brave_web_search` | 包括的Web調査・業界レポート・公式サイト（`freshness="pm"`, `count=10`） |
+| 3rd | `mcp__brave-search__brave_summarizer` | 競合公式ページ・IR資料・長文のAIサマリー（URL直接指定） |
+| 4th | `WebFetch` | ターゲットページの全文取得（ファクトチェック用） |
+| Fallback | `WebSearch` | brave-search MCPが利用不可の場合のみ |
+
+### Step 3 実行フロー（推奨順序）
+
+```
+【Phase A: 速報・最新動向】
+1. brave_news_search（freshness="pw"）× 2〜3クエリ
+   → 直近1週間のニュース・プレスリリース・規制変更を収集
+
+2. brave_news_search（freshness="pm"）× 2〜3クエリ
+   → 過去1ヶ月の重要動向を補完
+
+【Phase B: 構造的情報収集】
+3. brave_web_search（freshness="pm", count=10）× 3〜5クエリ
+   → 市場構造・競合情報・業界レポート・公式サイト
+
+4. WebFetch × 3〜5ページ
+   → 主要ソースの全文精読（§2 Step 4の深読みと統合）
+
+【Phase C: まとめ確認】
+5. brave_summarizer（URL指定）× 2〜3件
+   → 重要な長文ページをAIサマリーで効率的に把握
+```
+
+### ソース信頼性グレーディング
+
+| グレード | 定義 | 使用方針 |
+|---|---|---|
+| A | 一次情報（公式IR・政府発表・査読論文） | そのまま引用可 |
+| B | 主要メディア（日経・TechCrunch・Reuters） | 単独引用可。クロスリファレンス推奨 |
+| C | 業界専門誌・アナリストレポート | 複数ソースで裏付け必須 |
+| D | 未検証・匿名・SNS | 使用禁止。参考程度に留める |
+
+> **ルール**: グレードD情報のみに基づく主張は禁止。B以上で裏付けること。
+
+### クエリ最適化テクニック
+
+```
+日本市場調査: "[企業名] 売上 2024 OR 2025 site:ir.nikkei.co.jp OR site:prtimes.jp"
+英語圏調査:  "[topic] market share 2025 -site:wikipedia.org"
+規制動向:    "[業界] 規制 OR ガイドライン 2025 freshness="pm""
+競合採用情報: "[競合名] 採用 エンジニア 2025"（次の注力領域を推測）
+```
+
+---
+
 ## §3 品質基準
 
 | 基準 | 内容 |

@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # ai-consultant — AI導入戦略エージェント
 
 ## アイデンティティ

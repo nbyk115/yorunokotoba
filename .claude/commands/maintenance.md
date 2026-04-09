@@ -60,6 +60,34 @@ Layer 6 verifiers:     ✅ / ⚠️  / 🔴  [所見]
 要対応: [修正が必要な項目リスト]
 ```
 
+### Step 2b: 品質スコアトレンド分析（agent-evaluation）
+
+`.claude/memory/archival/quality_scores.log` を読んで、エージェント品質の推移を分析する。
+
+```bash
+# 直近30件のスコアを確認
+tail -30 .claude/memory/archival/quality_scores.log 2>/dev/null || echo "(ログなし)"
+```
+
+分析ポイント:
+```
+1. グレード分布: S/A/B/C/D の件数を集計
+2. 低スコアエージェント: グレードC以下のエージェントを特定
+3. トレンド: 改善 / 維持 / 悪化 を判定
+4. 軸別弱点: 証拠品質/ロジック/実用性/PL/反証のどの軸が低いか
+```
+
+出力フォーマット:
+```
+【品質スコアトレンド】YYYY-MM-DD
+総評価件数: [N]件
+グレード分布: S:[n] A:[n] B:[n] C:[n] D:[n]
+最低スコアエージェント: [エージェント名] [スコア] [グレード]
+改善推奨: [原因] → [対処]
+```
+
+ログが空の場合: 「評価実績なし — 次のエージェント出力時に agent-evaluation.md §4 で記録開始」と記載する。
+
 ### Step 3: security-scan 実行（AgentShield 102ルール）
 
 `.claude/skills/security-scan.md` に従い、以下の5カテゴリを監査する:
@@ -96,6 +124,11 @@ Cat E (Hooks):            [A/B/C/D/E/F] [所見]
 ```
 
 次回実行日 = 今日から30日後。
+
+品質スコアで改善が必要な場合は「学習事項」セクションにも追記:
+```markdown
+- [YYYY-MM-DD] [エージェント名]: [問題軸] スコア低下 → [対処] （/maintenance 品質レビュー由来）
+```
 
 ### Step 5: 問題があれば即修正
 

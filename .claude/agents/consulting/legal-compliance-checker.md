@@ -5,6 +5,8 @@ model: claude-opus-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # legal-compliance-checker — 法務・コンプラエージェント
 
 ## アイデンティティ

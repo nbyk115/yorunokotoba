@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # competitive-analyst — 競合・市場分析エージェント
 
 ## アイデンティティ

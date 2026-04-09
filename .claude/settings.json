@@ -32,6 +32,14 @@
             "command": "memory_file=\"$(git rev-parse --show-toplevel 2>/dev/null)/.claude/memory/core_memory.md\"; if [ -f \"$memory_file\" ]; then echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; echo \"🧠 ConsultingOS Memory Loaded\"; echo \"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\"; cat \"$memory_file\"; fi"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/quality_scores.log\"; if [ -f \"$log\" ]; then recent=$(tail -8 \"$log\" 2>/dev/null); if [ -n \"$recent\" ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo '📈 直近の品質スコア履歴 (agent-evaluation):'; echo \"$recent\"; d_count=$(echo \"$recent\" | grep -c '\\[D\\]' 2>/dev/null || echo 0); c_count=$(echo \"$recent\" | grep -c '\\[C\\]' 2>/dev/null || echo 0); if [ \"$d_count\" -gt 0 ]; then echo \"⚠️  グレードD: ${d_count}件 — 今セッションで改善を検討してください\"; fi; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi; fi"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -129,6 +137,14 @@
       }
     ],
     "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "root=$(git rev-parse --show-toplevel 2>/dev/null); log=\"$root/.claude/memory/archival/quality_scores.log\"; if [ -f \"$log\" ]; then today=$(date +%Y-%m-%d); today_entries=$(grep \"^$today\" \"$log\" 2>/dev/null); if [ -n \"$today_entries\" ]; then echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; echo '📊 本日の評価スコア (agent-evaluation):'; echo \"$today_entries\"; low=$(echo \"$today_entries\" | grep -E '\\[D\\]|\\[C\\]' | head -5); if [ -n \"$low\" ]; then echo '🔴 改善推奨エージェント:'; echo \"$low\"; echo '  → core_memory.md の 学習事項 に改善方針を記録してください'; fi; echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'; fi; fi"
+          }
+        ]
+      },
       {
         "hooks": [
           {

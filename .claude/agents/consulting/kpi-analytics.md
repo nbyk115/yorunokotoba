@@ -6,6 +6,8 @@ model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---
 
+ultrathink
+
 # kpi-analytics — KPI設計・数値分析エージェント
 
 ## アイデンティティ
