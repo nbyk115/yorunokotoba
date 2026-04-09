@@ -1,6 +1,7 @@
 ---
 name: orchestrator
-description: ConsultingOS司令塔。タスク分解・エージェント配備・成果物統合に専念。戦略判断はstrategy-leadへ委譲。3部門以上にまたがる案件の起点。
+description: ConsultingOS司令塔。タスク分解・エージェント配備・成果物統合に専念。戦略判断はstrategy-leadへ委譲。3部門以上にまたがる案件の起点。「全体を俯瞰して」「複数部門にまたがる」「全部やって」「新規事業を立ち上げたい」「AI Agent Companyとして動いて」と言われたとき。
+effort: high
 model: claude-opus-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

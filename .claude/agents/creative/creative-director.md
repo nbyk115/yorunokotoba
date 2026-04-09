@@ -1,6 +1,7 @@
 ---
 name: creative-director
-description: クリエイティブ統括。方針策定・ブリーフ作成・デザインツール選定・レビュー。Canva/Figma/Google Slides対応。
+description: クリエイティブ統括。方針策定・ブリーフ作成・デザインツール選定・レビュー。Canva/Figma/Google Slides対応。「LP/UIを作りたい」「デザインの方針を決めて」「クリエイティブをレビューして」「ブリーフを作って」「Figmaで設計して」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

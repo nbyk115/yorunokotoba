@@ -1,3 +1,11 @@
+---
+name: tdd
+description: テスト駆動開発（TDD）サイクルの実行支援。「テスト書いてから実装して」「TDDで進めて」「Red→Green→Refactorで」「テストファーストで」と言われたとき。失敗するテストを先に書き、最小実装で通し、リファクタリングまで一気通貫。各ステップでテスト実行結果を必ず確認する。
+argument-hint: [実装したい機能の説明]
+effort: high
+disable-model-invocation: true
+---
+
 # /tdd — テスト駆動開発サイクル
 
 引数: $ARGUMENTS（実装したい機能の説明）

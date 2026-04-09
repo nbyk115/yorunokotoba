@@ -1,6 +1,7 @@
 ---
 name: tech-lead
-description: 技術選定・設計統括。アーキテクチャ設計・コードレビュー・品質管理。
+description: 技術選定・設計統括。アーキテクチャ設計・コードレビュー・品質管理。「技術を選定して」「アーキテクチャを設計して」「コードレビューして」「技術負債を解消したい」「スケールするか確認して」と言われたとき。
+effort: high
 model: claude-opus-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

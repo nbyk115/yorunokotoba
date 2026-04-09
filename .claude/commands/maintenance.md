@@ -1,3 +1,16 @@
+---
+name: maintenance
+description: ConsultingOSの月次健全性チェック一括実行。「月次メンテナンス」「システム診断して」「claude-healthとsecurity-scan実行して」「OSの状態確認して」と言われたとき。6層診断（CLAUDE.md/rules/skills/hooks/subagents/verifiers）+ 102ルールセキュリティ監査を実施してシステムグレードを出力しメモリを更新する。
+argument-hint: [health-only / security-only（省略時は両方実行）]
+effort: high
+disable-model-invocation: true
+---
+
+## システム現状（自動取得）
+- スキル数: !`ls ~/.claude/skills/ 2>/dev/null | wc -l || ls .claude/skills/ 2>/dev/null | wc -l`
+- エージェント数: !`find ~/.claude/agents/ .claude/agents/ -name "*.md" 2>/dev/null | wc -l`
+- 最終メンテナンス日: !`grep -m1 "月次 claude-health" .claude/memory/core_memory.md 2>/dev/null | head -1`
+
 # /maintenance — 月次メンテナンス実行
 
 ConsultingOS の月次健全性チェックを一括実行する。
@@ -26,7 +39,7 @@ claude-health（6層診断）+ security-scan（102ルール監査）をまとめ
 ```
 Layer 1: CLAUDE.md — ルーティング・反証モード・ブランドルールの完全性
 Layer 2: rules — settings.json の permissions / soft_deny の有効性
-Layer 3: skills — 全36スキルのシンボリックリンク・§番号・エージェント配線
+Layer 3: skills — 全37スキルのシンボリックリンク・§番号・エージェント配線
 Layer 4: hooks — SessionStart / PostToolUse / PreToolUse / Stop の動作確認
 Layer 5: subagents — 全34エージェントの参照スキル・ハンドオフ接続
 Layer 6: verifiers — 反証チェック・品質ゲート・差し戻し基準の実効性

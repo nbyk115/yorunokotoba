@@ -1,6 +1,7 @@
 ---
 name: ai-engineer
-description: AI・LLM統合。Claude API統合・RAG構築・エージェント設計。
+description: AI・LLM統合。Claude API統合・RAG構築・エージェント設計。「AI機能を実装したい」「RAGを構築したい」「Claude APIを使いたい」「エージェントを設計したい」「LLMを組み込みたい」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

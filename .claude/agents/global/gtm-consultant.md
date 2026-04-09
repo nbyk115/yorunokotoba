@@ -1,6 +1,7 @@
 ---
 name: gtm-consultant
-description: Go-to-Market戦略・海外市場参入。GTM設計・ローカライズ戦略・グローバル展開を担当。
+description: Go-to-Market戦略・海外市場参入。GTM設計・ローカライズ戦略・グローバル展開を担当。「海外展開したい」「GTM戦略を作って」「ローカライズしたい」「海外市場に参入したい」「グローバル展開の戦略を立てて」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

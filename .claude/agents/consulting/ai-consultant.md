@@ -1,6 +1,7 @@
 ---
 name: ai-consultant
-description: AI導入戦略・ROI試算。AI活用診断・導入ロードマップ・効果測定を担当。
+description: AI導入戦略・ROI試算。AI活用診断・導入ロードマップ・効果測定を担当。「AIを導入したい」「DX推進したい」「AI活用のROIを試算して」「どの業務をAI化するか」「AI導入提案を作って」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

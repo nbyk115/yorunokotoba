@@ -37,6 +37,14 @@ apt-get install -y fonts-noto-cjk && fc-cache -fv
 以下のPythonスクリプトを `/tmp/generate_ppt.py` として生成し、実行する:
 
 ```python
+---
+name: ppt
+description: PPTスライド（.pptx）のコード生成。「プレゼン作って」「スライド作成」「提案書をPPTで」「ピッチデック作って」と言われたとき。python-pptxで日本語フォント完全対応（中国語フォント混入防止・<a:ea>タグ明示設定）・上下左右中央揃え・ジョブズスタイルの美しいスライドを生成して /tmp/ に保存する。
+argument-hint: [テーマ・タイトル・枚数・用途]
+effort: medium
+disable-model-invocation: true
+---
+
 # ============================================================
 # ConsultingOS PPT Generator
 # 中国語フォント完全排除・上下左右中央揃え完全対応版

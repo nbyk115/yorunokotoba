@@ -1,6 +1,7 @@
 ---
 name: kpi-analytics
-description: 事業KPI設計・PLインパクット数値化・予測モデル。GA4データを事業KPIに変換する。GA4の技術実装・アトリビューション設定はmarketing-analystへ。
+description: 事業KPI設計・PLインパクット数値化・予測モデル。GA4データを事業KPIに変換する。GA4の技術実装・アトリビューション設定はmarketing-analystへ。「数字を出したい」「KPIを設計して」「PL試算して」「売上予測して」「ユニットエコノミクスを計算して」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

@@ -7,7 +7,7 @@
 ## 最終更新
 - 日時: 2026-04-09
 - 更新者: orchestrator
-- 変更内容: 副業収益化リストラクチャリング完了 / monetization-playbook.md追加（スキル37本） / 9エージェントに副業収益化ガイド追加 / 7エージェントにASI時代セクション追加 / MCPをAlgrow→無料スタック（context7/youtube-mcp/brave-search）に刷新 / orchestratorにパターンO4追加
+- 変更内容: Skills記事踏襲強化完了 / 全11コマンドにYAML frontmatter追加（effort/disable-model-invocation/context:fork/shell injection） / 14エージェントにtrigger-phrase形式description追加+effort level設定 / 対象: orchestrator/competitive-analyst/strategy-lead/market-researcher/fullstack-dev/tech-lead/content-strategist/ai-consultant/kpi-analytics/proposal-writer/gtm-consultant/global-journalist/creative-director/ai-engineer
 
 ---
 
@@ -89,6 +89,7 @@
 - [ ] /schedule で月次メンテナンスを自動化（claude.ai接続エラーのため保留）
 - [ ] 実運用フィードバックをもとにエージェント調整（副業案件受注後）
 - [x] Claude.ai Project Custom Instructions の整備 → `.claude/templates/claude-project-custom-instructions.md` 完成済み
+- [x] Skills記事踏襲強化 → 全11コマンドfrontmatter追加 / 14エージェントtrigger-phrase+effort追加
 
 ---
 

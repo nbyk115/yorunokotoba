@@ -1,6 +1,7 @@
 ---
 name: market-researcher
-description: 消費者リサーチ・定量/定性調査。セグメンテーション・ペルソナ開発・価格調査・ブランドトラッキングを担当。
+description: 消費者リサーチ・定量/定性調査。セグメンテーション・ペルソナ開発・価格調査・ブランドトラッキングを担当。「顧客に聞きたい」「ペルソナを作って」「誰に売るか」「価格感度を調べて」「セグメンテーションして」と言われたとき。
+effort: high
 model: claude-haiku-4-5-20251001
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

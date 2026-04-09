@@ -1,6 +1,7 @@
 ---
 name: content-strategist
-description: コンテンツ戦略。ブログ・LP・SNS・ホワイトペーパーの企画・執筆。
+description: コンテンツ戦略。ブログ・LP・SNS・ホワイトペーパーの企画・執筆。「コンテンツを作りたい」「ブログ記事を書いて」「LP文章を書いて」「SNS投稿を作って」「ホワイトペーパーを書いて」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

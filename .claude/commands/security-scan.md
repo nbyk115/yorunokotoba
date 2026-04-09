@@ -1,3 +1,17 @@
+---
+name: security-scan
+description: コードベースのセキュリティ一括監査（OWASP/シークレット/CVE）。「セキュリティチェックして」「脆弱性スキャン」「シークレットが漏れてないか確認」「セキュリティ監査」と言われたとき。ハードコードシークレット・OWASP Top 10・依存関係CVE・設定ファイルを検出してリスクレポートを出力する。
+effort: high
+context: fork
+agent: Explore
+allowed-tools: Read Grep Glob Bash(find *) Bash(cat *) Bash(grep *)
+---
+
+## スキャン前情報（自動取得）
+- .envファイル一覧: !`find . -name ".env*" -not -path "*/node_modules/*" -maxdepth 4 2>/dev/null | head -15`
+- シークレット候補ファイル: !`grep -rl "password\|secret\|api_key\|token\|private_key" --include="*.js" --include="*.ts" --include="*.py" --include="*.env" . 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec" | head -15`
+- package.json 依存関係: !`cat package.json 2>/dev/null | python3 -c "import json,sys; d=json.load(sys.stdin); deps={**d.get('dependencies',{}),**d.get('devDependencies',{})}; [print(f'{k}@{v}') for k,v in deps.items()]" 2>/dev/null | head -30`
+
 # /security-scan — セキュリティスキャン
 
 コードベース全体をスキャンし、以下のセキュリティリスクを検出・報告してください。

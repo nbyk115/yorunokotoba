@@ -1,6 +1,7 @@
 ---
 name: global-journalist
-description: グローバルジャーナリズム。海外ニュース分析・メディアリサーチ・国際情勢の構造化を担当。
+description: グローバルジャーナリズム。海外ニュース分析・メディアリサーチ・国際情勢の構造化を担当。「海外事例を調べて」「グローバルトレンドを教えて」「規制動向を調べて」「海外ニュースを分析して」「海外市場の最新情報を集めて」と言われたとき。
+effort: high
 model: claude-haiku-4-5-20251001
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

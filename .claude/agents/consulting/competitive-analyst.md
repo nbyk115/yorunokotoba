@@ -1,6 +1,7 @@
 ---
 name: competitive-analyst
-description: 競合・市場分析。競合調査・ポジショニング・差別化戦略を担当。
+description: 競合・市場分析。競合調査・ポジショニング・差別化戦略を担当。「競合を調べたい」「差別化は」「市場構造を分析して」「参入障壁を調べて」「SWOT分析して」「競合比較レポートを作って」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Glob, Grep, Read, TodoWrite, WebFetch, WebSearch
 ---

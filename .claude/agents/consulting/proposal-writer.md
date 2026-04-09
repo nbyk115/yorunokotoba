@@ -1,6 +1,7 @@
 ---
 name: proposal-writer
-description: 提案書・資料作成。ピッチデック・RFP回答・企画書を担当。
+description: 提案書・資料作成。ピッチデック・RFP回答・企画書を担当。「提案書を作って」「ピッチデックを作りたい」「クライアント資料を作って」「RFPに回答して」「企画書を書いて」と言われたとき。
+effort: medium
 model: claude-sonnet-4-6
 tools: Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

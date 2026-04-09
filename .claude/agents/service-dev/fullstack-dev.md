@@ -1,6 +1,7 @@
 ---
 name: fullstack-dev
-description: フルスタック実装。Next.js/FastAPI/DB設計・機能開発・バグ修正。
+description: フルスタック実装。Next.js/FastAPI/DB設計・機能開発・バグ修正。「コードを書きたい」「実装したい」「バグを修正して」「APIを作って」「DBを設計して」「SaaSを作りたい」と言われたとき。
+effort: high
 model: claude-sonnet-4-6
 tools: Agent, Bash, Edit, Glob, Grep, Read, TodoWrite, WebFetch, WebSearch, Write
 ---

@@ -1,3 +1,13 @@
+---
+name: peer-review
+description: 別部門エージェントによるクロスアジェントレビュー。「クロスレビューして」「別の視点でチェックして」「バイアスを除いてレビューして」「品質保証して」と言われたとき。戦略→kpi-analytics、コード→tech-lead、クリエイティブ→brand-guardian など最適なレビュアーを自動選定し、PASS/CONDITIONAL PASS/REJECTを判定する。
+argument-hint: [file=対象ファイルパス] [reviewer=レビュアーエージェント名（省略可）]
+effort: high
+disable-model-invocation: true
+---
+
+ultrathink
+
 # /peer-review — クロスエージェントレビュー
 
 別部門のエージェントが成果物を交差レビューする。
