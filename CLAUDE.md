@@ -1,8 +1,9 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
-26名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
+34名のエージェントが連携し、提案から実装・コンテンツ・海外展開・マーケティングまでを一気通貫で担う。
+**自己進化機能搭載**: エージェントが自らの成果を評価し、スキルファイルをA/Bテストで自動改善する。
 
 ---
 
@@ -114,8 +115,12 @@
 | incident-response | `.claude/skills/incident-response.md` | 本番障害対応・SEV分類・ポストモーテム |
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
+| app-design-patterns | `.claude/skills/app-design-patterns.md` | iOS HIG・Material Design・モバイルナビゲーション・ASO・アプリKPI |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
-| claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
+| global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | グローバル展開・市場評価・ローカライズ・現地オペレーション |
+| claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・ファイルベースメモリ |
+| agent-evaluation | `.claude/skills/agent-evaluation.md` | 自己評価・フィードバックループ・自動改善・品質スコアリング |
+| skill-evolution | `.claude/skills/skill-evolution.md` | スキルA/Bテスト・バージョン管理・自動採用・ロールバック |
 
 ---
 
@@ -128,7 +133,8 @@
 | /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
-| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
+| /evolve | `.claude/commands/evolve.md` | スキル進化サイクル実行（診断→原因分析→改善→記録） |
 
 ---
 
@@ -257,6 +263,11 @@
 | Global → Consulting | 海外市場データ・競合情報・規制情報（ソース付き） | ソースなし・未検証データで渡す |
 | Global → Service Dev | i18n要件・多言語対応仕様・現地決済要件 | 「多言語対応して」だけ |
 | Consulting → Global | ターゲット市場の仮説・評価基準・PLシミュレーション条件 | 「海外展開したい」だけ |
+| Marketing → Consulting | チャネル別ROAS・LTV分析・ファネルデータ（ソース付き） | 加工済みデータだけで生データなし |
+| Marketing → Creative | ターゲットペルソナ・チャネル特性・広告フォーマット要件 | 「バナー作って」だけ |
+| Marketing → Service Dev | GA4設計書・GTM仕様・CDP連携要件・計測タグ一覧 | 「計測入れて」だけ |
+| Consulting → Marketing | 事業KPI・ターゲットセグメント・予算制約・PLシミュレーション条件 | 「広告回して」だけ |
+| Product → Marketing | リリース日程・機能説明・ターゲットペルソナ・差別化ポイント | ローンチ直前に丸投げ |
 
 ### 品質ゲート: ハンドオフ前チェック
 - [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値）
@@ -370,9 +381,87 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 📘 revenue-growth-framework → consulting-playbook
 ```
 
+### パターン16: 広告ROAS改善・チャネルミックス最適化
+```
+marketing-research/marketing-director → marketing-research/performance-marketer → marketing-research/marketing-analyst
+          （全体戦略・予算配分）              （広告運用最適化）                    （アトリビューション分析）
+📘 digital-sales-intelligence → revenue-growth-framework → marketing-research-playbook
+```
+
+### パターン17: リード獲得→ナーチャリング→商談化パイプライン構築
+```
+marketing-research/crm-ma-strategist → consulting/lead-qualifier → creative/content-strategist
+       （MA設計・スコアリング）            （商談化基準・SLA）         （ナーチャリングコンテンツ）
+📘 marketing-research-playbook → consulting-playbook → creative-playbook
+```
+
+### パターン18: PR・広報戦略で認知拡大したい
+```
+marketing-research/pr-communications → marketing-research/social-media-strategist → creative/brand-guardian
+         （PR戦略・メディアリレーション）        （ソーシャル連携）                    （ブランド整合）
+📘 marketing-research-playbook → brand-guidelines → creative-playbook
+```
+
 ---
 
 ## 全エージェント共通の干渉原則
+
+### アーキテクチャ: 佐藤・小野寺 → 各専門担当者
+
+> **佐藤裕介と小野寺信行が経営判断・方針を統制し、各エージェントがその方針の下で自分の専門家としての思想を最大限発揮してAI駆動する。**
+
+```
+佐藤裕介（事業構造・PL・プロダクト価値）──┐
+小野寺信行（デジタル・メディア・指標設計）──┤
+                                          ↓ 干渉原則として全体を統制
+┌─────────────────────────────────────────────────────────────┐
+│ Consulting                                                   │
+│  strategy-lead      = ピーター・ティール（独占戦略）          │
+│  competitive-analyst = マイケル・ポーター（競争戦略）          │
+│  proposal-writer     = バーバラ・ミント（ピラミッド原則）      │
+│  lead-qualifier      = MEDDIC/BANT（構造化商談）              │
+│  kpi-analytics       = デミング + ベゾス（計測駆動経営）      │
+│  ai-consultant       = ダリオ・アモデイ（責任あるAI）         │
+│  client-success      = リンカーン・マーフィー（CS）           │
+│  legal-compliance    = リスク×リターンバランス                │
+├─────────────────────────────────────────────────────────────┤
+│ Creative                                                     │
+│  creative-director   = アイブ（Apple）+ ハットフィールド（Jordan）│
+│  ux-designer         = ドン・ノーマン + シュピーゲル（Snap）  │
+│  frontend-dev        = ラウチ（Vercel）+ Osmani（Google）     │
+│  content-strategist  = HubSpot + ハンドリー                   │
+│  campaign-planner    = コトラー（ファネル）                   │
+│  brand-guardian      = フィル・ナイト（Nike）+ アイブ（Apple）│
+│  agentic-content     = Perplexity/SGE + E-E-A-T              │
+│  growth-hacker       = ショーン・エリス + パーカー（Facebook） │
+├─────────────────────────────────────────────────────────────┤
+│ Global                                                       │
+│  gtm-consultant      = オスターワルダー（BMC）               │
+│  global-journalist   = Reuters/FT（ファクトベース）           │
+│  global-business     = ホフステード（異文化）+ ゲマワット     │
+│  business-translator = ナイダ（動的等価翻訳）                │
+├─────────────────────────────────────────────────────────────┤
+│ Marketing & Research                                         │
+│  marketing-director  = CMOレベル統合                          │
+│  performance-marketer = ジェフ・グリーン（TTD）+ パパロ       │
+│  seo-specialist      = Google QRG + Fishkin                   │
+│  marketing-analyst   = コーシック（Google）+ パパロ           │
+│  crm-ma-strategist   = HubSpot/Salesforce MA                 │
+│  social-media-strat. = ヴェイナーチャック + パーカー          │
+│  market-researcher   = カーネマン + クリステンセン（JTBD）    │
+│  pr-communications   = シュルツ（Starbucks）+ ゴールデンアワー│
+├─────────────────────────────────────────────────────────────┤
+│ Product                                                      │
+│  product-manager     = ケーガン（Inspired）+ ドーシー（Square）│
+│  feedback-synthesizer = クリステンセン（JTBD）+ シュピーゲル  │
+├─────────────────────────────────────────────────────────────┤
+│ Service Dev                                                  │
+│  tech-lead           = ファウラー + ドーシー + 12-Factor App  │
+│  fullstack-dev       = ケント・ベック（TDD）+ YAGNI          │
+│  ai-engineer         = アモデイ（Anthropic）+ Claude API BP  │
+│  infra-devops        = IaC + Google SRE                      │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ### 【小野寺信行（電通デジタル）の知見】
 - **指標を疑う**: クライアントが「CPA改善したい」と言っても、本質的な課題を先に確認
@@ -403,8 +492,8 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 > これはデバッグだけでなく、戦略提案・分析・コンテンツ・翻訳・設計・実装の全領域に適用される。
 
 ### 適用範囲
-- **全26エージェント**: Consulting / Service Dev / Product / Creative / Global の全エージェント
-- **全15スキルファイル**: consulting-playbook から prompt-engineering まで全スキル
+- **全34エージェント**: Consulting / Service Dev / Product / Creative / Global / Marketing & Research の全エージェント
+- **全21スキルファイル**: consulting-playbook から skill-evolution まで全スキル
 - **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
 
 ### トリプルチェック・プロセス
@@ -438,6 +527,7 @@ Step 3: 実用反証（Practical Falsification）
 | Product | ユーザー仮説の反例 | 優先順位ロジックの根拠 | リソース内で実現可能か |
 | Creative | ターゲットに刺さらない可能性 | ブランド整合・トーン一貫性 | 制作・運用が回るか |
 | Global | 現地文化での誤解リスク | 翻訳精度・法規制の正確性 | 現地オペレーションで機能するか |
+| Marketing | ターゲット仮説の検証不足 | ROAS・アトリビューションの計算根拠 | 予算内で実行可能か・計測基盤があるか |
 
 ### 出力フォーマット（全エージェント共通）
 
@@ -455,6 +545,91 @@ Step 3: 実用反証（Practical Falsification）
 - トリプルチェックなしのアウトプットは**ドラフト扱い**（最終出力ではない）
 - チェックで致命的な問題が見つかった場合は**修正してから出力**
 - 「時間がない」は省略理由にならない（簡易版でも3ステップは必須）
+
+---
+
+## 🔄 自己進化システム — エージェントが自ら進化する
+
+> **全エージェントが自分の成果を評価し、スキルファイルを自動改善する。人間の介在なしでフィードバックループが回る。**
+
+### 進化の3本柱
+
+| 柱 | スキルファイル | 概要 |
+|---|---|---|
+| 自己評価 | `agent-evaluation.md` | 全アウトプットに品質スコア（25点満点）を付け、成果データを蓄積 |
+| A/Bテスト | `skill-evolution.md` | 同じタスクを別バージョンのスキルで実行し、品質が高い方を自動採用 |
+| 進化実行 | `/evolve` コマンド | 診断→原因分析→改善案生成→実行→記録の全サイクルを起動 |
+
+### 自動進化フロー
+
+```
+1. タスク完了 → 評価カード記録（品質スコア5項目 × 5段階）
+2. 週次レビュー → スコア下降スキルを自動検知
+3. 原因分析 → debug-methodologyの反証ベースで仮説検証
+4. 改善実行:
+   ├─ Level 1（微修正）: 即時適用
+   ├─ Level 2（セクション改訂）: A/Bテストで検証後採用
+   └─ Level 3（構造変更）: strategy-lead承認後実行
+5. 効果測定 → 修正前後のスコア比較
+6. evolution-log に全過程を記録
+```
+
+### 自動検知トリガー
+- **スコア急落**: 平均スコアが前週比 -3以上 → 即座に原因分析
+- **連続低評価**: 同一スキルでC判定（14-17点）が3回連続 → A/Bテスト候補
+- **却下率上昇**: アウトプット却下率が30%以上 → 根本原因分解
+- **成果未達**: 数値成果が目標の50%未満 → 戦略レベルで再検討
+
+### A/Bテストプロトコル
+- 1テスト = 1変数（複数変更は禁止）
+- 最低5回の実行比較で判定
+- スコア差1.5ポイント以上 AND 勝率80%以上 → 新バージョン採用
+- 採用後もモニタリング継続。悪化したら即ロールバック
+
+### 進化の記録
+- 全変更履歴: `.claude/memory/evolution-log.md`
+- エージェント別成績: `Archival Memory` の評価カード
+- スキル別バージョン履歴: 各スキルファイル末尾
+
+---
+
+### Advisor Strategy（コスト最適化）
+
+> **Opus をアドバイザー、Sonnet/Haiku を実行役にペアリングし、Opus同等の知能を低コストで実現する。**
+
+#### モデルペアリング設計
+
+| 役割 | モデル | 呼び出し | 用途 |
+|---|---|---|---|
+| Executor（実行役） | Sonnet 4.6 | 毎ターン | ファイル操作・コード生成・定型タスク |
+| Advisor（戦略役） | Opus 4.6 | オンデマンド | 戦略判断・設計レビュー・品質ゲート |
+
+#### ConsultingOS への適用
+
+| 部門 | Executor（Sonnet） | Advisor（Opus）呼び出し条件 |
+|---|---|---|
+| Consulting | 情報収集・データ整理・フォーマット | 戦略判断・PL試算・Go/No-Go判定 |
+| Service Dev | コード実装・テスト・バグ修正 | アーキテクチャ設計・セキュリティレビュー |
+| Product | バックログ整理・VOC分類 | PMF判定・ロードマップ優先順位 |
+| Creative | コンテンツ生成・デザイン実装 | ブランド戦略・クリエイティブ方針 |
+| Global | 翻訳・データ収集 | GTM戦略・市場参入判断 |
+| Marketing | レポート生成・データ集計 | チャネルミックス・予算配分判断 |
+
+#### 設定方法
+エージェントファイルの `model` フロントマターで指定:
+```yaml
+---
+name: strategy-lead
+model: opus    # 戦略判断はOpus
+---
+```
+```yaml
+---
+name: fullstack-dev
+model: sonnet  # 実装はSonnet
+---
+```
+サブエージェント起動時の `model` パラメータでも指定可能。
 
 ---
 
@@ -489,6 +664,23 @@ Step 3: 実用反証（Practical Falsification）
 - **/fork**: 会話を分岐して並列タスクを非干渉で実行
 - **git worktree**: ブランチごとに独立したチェックアウトで並列開発
 - **tmux**: 長時間コマンドのデタッチ
+
+### Monitor（イベント駆動型監視）
+- **sleepポーリング禁止**: `sleep`ループでログを確認する代わりにMonitorを使う
+- **用途**: ログ監視・デプロイ監視・CI結果待ち・エラー検知
+- **トークン節約**: 何も起きていない間はトークンを消費しない
+- **障害対応時必須**: 修正デプロイ後はMonitorで30分間再発監視
+- 詳細は `.claude/skills/claude-code-ops.md` セクション4.5参照
+
+### Cowork（バックグラウンド自律実行）
+- **Coworkとは**: Claudeがバックグラウンドで自律的にタスクを実行する機能
+- **ConsultingOSとの相性**: 34エージェントの107シナリオプレイブック+50禁止事項が定義済みのため、人間が監視しなくても安全に自律実行できる
+- **活用パターン**:
+  - 「新規事業の参入判断をして」→ competitive-analyst→kpi-analytics→strategy-leadがバックグラウンドで連携
+  - 「このLPを作って」→ creative-director→ux-designer→frontend-devがバックグラウンドで制作
+  - 「海外市場を調査して」→ gtm-consultant→global-journalistがバックグラウンドでリサーチ
+- **安全性**: 反証モード6層品質ガード+評価カード自動記録により、自律実行でも品質を担保
+- **注意**: Cowork完了後は必ず結果を確認し、評価カードのスコアを検証する
 
 ### Hooks自動化
 - **PostToolUse**: .ts/.tsx 編集後にPrettier自動実行

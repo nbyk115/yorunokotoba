@@ -288,6 +288,72 @@ tmux attach -t dev
 
 ---
 
+## 4.5 Monitor（イベント駆動型バックグラウンド監視）
+
+> **`sleep`ポーリングを廃止し、イベント発火で即反応する効率的な監視。トークンを大幅に節約する。**
+
+### Monitorとは
+バックグラウンドでプロセスの出力（stdout）を監視し、**条件に合致した行が出た瞬間にClaudeを起こす**仕組み。
+`sleep`ループや`/loop`によるポーリングと違い、何も起きていない間はトークンを消費しない。
+
+### 基本パターン
+
+```
+# Monitorの起動イメージ
+Monitor({
+  command: "tail -f /var/log/app.log",        # 監視対象コマンド
+  pattern: "ERROR|CRITICAL|FATAL",             # 通知条件（正規表現）
+  description: "アプリログのエラー監視"
+})
+```
+
+### ConsultingOS活用シーン
+
+| シーン | 監視コマンド | パターン | 起動エージェント |
+|---|---|---|---|
+| デプロイ監視 | `tail -f deploy.log` | `ERROR\|FAILED\|ROLLBACK` | infra-devops |
+| テスト実行 | `npm test 2>&1` | `FAIL\|Error` | fullstack-dev |
+| ビルド監視 | `npm run build 2>&1` | `error\|BUILD FAILED` | frontend-dev |
+| CI/CD結果 | `gh run watch` | `completed\|failure` | infra-devops |
+| サーバーログ | `docker logs -f app` | `500\|503\|timeout` | tech-lead |
+| DB監視 | `tail -f slow-query.log` | `Query_time: [0-9]{2,}` | fullstack-dev |
+
+### Monitor vs 従来手法の比較
+
+| 項目 | sleep ループ | /loop | Monitor |
+|---|---|---|---|
+| トークン消費 | 毎回フル消費 | 定期的に消費 | イベント時のみ |
+| 反応速度 | sleepの間隔に依存 | 間隔に依存 | 即時（行単位） |
+| CPU使用率 | 高い | 中 | 低い |
+| 用途 | 汎用 | 定期チェック | ログ・ストリーム監視 |
+| 推奨 | 非推奨 | 定期レポート向き | リアルタイム監視向き |
+
+### 使い分けガイド
+
+```
+監視タスクが来たら:
+├─ 「定期的に結果を見たい」（毎5分のレポート等）
+│   └─ /loop を使う
+├─ 「何か起きたら即教えて」（エラー検知・完了通知等）
+│   └─ Monitor を使う
+└─ 「1回だけ完了を待ちたい」（ビルド完了待ち等）
+    └─ Bash の run_in_background を使う
+```
+
+### 障害対応での活用（infra-devops / tech-lead 連携）
+
+```
+1. 障害発生 → tech-lead が SEV判定
+2. Monitor起動:
+   - Monitor(command: "kubectl logs -f pod/app", pattern: "ERROR|OOM|CrashLoop")
+   - Monitor(command: "curl -s -o /dev/null -w '%{http_code}' https://app.example.com", pattern: "^[45]")
+3. Monitorが異常を検知 → 即座に原因仮説の検証に入る
+4. 修正デプロイ後もMonitorを継続 → 再発がないことを確認
+5. 30分間異常なし → Monitor停止 → ポストモーテム実施
+```
+
+---
+
 ## 5. コンテキスト管理
 
 ### /compact: 手動コンテキスト圧縮
@@ -319,17 +385,15 @@ tmux attach -t dev
 ---
 
 ## 適用エージェント
-全26エージェント共通（運用基盤）
+全34エージェント共通（運用基盤）
 
 
+
+> 反証モード（トリプルチェック）の共通ルールは CLAUDE.md を参照。
 ---
 
-## 🔺 反証モード（トリプルチェック必須）
+## バージョン履歴
 
-本スキルを適用する全アウトプットは、CLAUDE.md「反証モード」セクションに定義されたトリプルチェックを必ず実行すること。
-
-1. **自己反証**: 結論に対する反論・反例を最低3つ挙げ、確証バイアスを排除
-2. **構造反証**: ロジックの飛躍・数値の妥当性・抜け漏れを検証
-3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
-
-チェックなしのアウトプットはドラフト扱い。省略禁止。
+| Ver | 日付 | 変更内容 | 根拠 | 効果 |
+|---|---|---|---|---|
+| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
