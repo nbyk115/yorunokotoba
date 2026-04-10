@@ -88,6 +88,13 @@ model: sonnet
 3. `kpi-analytics` にトラクション（MRR推移・成長率・LTV/CAC）を整理依頼
 4. 10〜15枚以内で「問題→解決→市場→プロダクト→トラクション→チーム→Ask」の流れ
 
+### S5: PPTX納品（デザイン付き提案書）
+1. S1-S4いずれかのシナリオで提案内容を確定
+2. `creative-director` にDESIGN.md準拠のビジュアル方針を確認
+3. HTMLスライドを生成（1スライド=1メッセージ原則を維持）
+4. html2pptx.app でPPTXに変換
+5. `brand-guardian` にブランド整合性チェック → 納品
+
 ## Agent Team 連携
 
 ### 提案書作成チーム

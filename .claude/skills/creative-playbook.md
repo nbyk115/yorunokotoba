@@ -105,12 +105,19 @@ Creative部門の全エージェントが参照するデザインプロセス・
 ## 3. デザインツール連携ガイド
 
 ### 対応エージェントとツール
-| エージェント | Canva | Figma | Google Slides |
-|---|---|---|---|
-| `creative-director` 🎨 | ✅ 方針指示・レビュー | ✅ デザインレビュー | ✅ 資料レビュー |
-| `ux-designer` 🎨 | ✅ 簡易LP・モック | ✅ UX/UI設計 | — |
-| `frontend-dev` 🎨 | — | ✅ Figma→コード変換 | — |
-| `proposal-writer` | — | — | ✅ 提案書作成 |
+| エージェント | Canva | Figma | Google Slides | html2pptx |
+|---|---|---|---|---|
+| `creative-director` 🎨 | ✅ 方針指示・レビュー | ✅ デザインレビュー | ✅ 資料レビュー | ✅ PPTX出力指示 |
+| `ux-designer` 🎨 | ✅ 簡易LP・モック | ✅ UX/UI設計 | — | — |
+| `frontend-dev` 🎨 | — | ✅ Figma→コード変換 | — | — |
+| `proposal-writer` | — | — | ✅ 提案書作成 | ✅ 提案書PPTX変換 |
+
+### html2pptx（HTML→PowerPoint変換）
+> **HTMLスライドをPPTXに変換。提案書・ピッチデックをデザイン付きで納品可能に。**
+
+- **サービス**: html2pptx.app（MCP/API/Skills対応）
+- **フロー**: proposal-writerが構成→HTMLスライド生成→html2pptxでPPTX変換→納品
+- **DESIGN.md連携**: HTMLスライドにDESIGN.mdのカラー・フォントを適用→ブランド準拠PPTX
 
 ### Figma連携フロー（UI/UX・コンポーネント設計時）
 ```
