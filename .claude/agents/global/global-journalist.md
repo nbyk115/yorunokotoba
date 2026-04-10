@@ -110,7 +110,7 @@ model: sonnet
 ### S1: 海外規制変更のインパクト分析
 1. 規制原文（一次情報）をWebSearch/WebFetchで直接取得
 2. `business-translator`で正確な翻訳
-3. 5W1Hフレームで構造化
+3. Reuters/FTの原則: ファクトベース・バイアス明示・クロスリファレンス必須。5W1Hフレームで構造化し、佐藤の「構造変化を読む」視点で長期インパクトを評価
 4. 影響範囲を業界×地域×時間軸で整理
 5. `legal-compliance-checker`に法的影響の評価を依頼
 

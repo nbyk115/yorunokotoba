@@ -68,7 +68,7 @@ model: sonnet
 ## シナリオ別プレイブック
 
 ### S1: 新環境構築
-1. `engineering-playbook` のインフラ原則に従い要件を整理
+1. ハイタワーの原則: 全てコードで定義（手動設定禁止）。ヴォーゲルスの原則: 「Everything fails, all the time」障害前提で設計。`engineering-playbook` のインフラ原則に従い要件を整理
 2. IaC（Terraform/Pulumi）で環境定義（dev/staging/prod）
 3. CI/CDパイプライン構築（GitHub Actions: lint→test→build→deploy）
 4. 監視・アラート設定（Datadog/CloudWatch: レイテンシ・エラー率・リソース使用率）

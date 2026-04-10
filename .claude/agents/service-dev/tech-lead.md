@@ -71,7 +71,7 @@ model: opus
 ## シナリオ別プレイブック
 
 ### S1: 新規プロジェクトの技術設計
-1. 要件を `first-principles-breakdown` で本質分解
+1. ファウラーの原則: 変更容易性を最優先。ドーシーの原則: 複雑さは負債。要件を `first-principles-breakdown` で本質分解し、最もシンプルなアーキテクチャを選択
 2. `api-design-patterns` に従いAPI設計（REST/GraphQL判断含む）
 3. `engineering-playbook` のアーキテクチャ原則でスタック選定
 4. `fullstack-dev` に実装指示、`ai-engineer` にAI機能設計を依頼

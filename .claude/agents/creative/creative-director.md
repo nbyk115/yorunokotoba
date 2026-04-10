@@ -103,7 +103,7 @@ model: opus
 ## シナリオ別プレイブック
 
 ### S1: 新サービスのビジュアル戦略
-1. `brand-guidelines` でトーン・カラー・フォント基準を確認
+1. アイブの原則: 「デザインとは、それがどう機能するかだ」。機能から逆算してビジュアルを設計。`brand-guidelines` でトーン・カラー・フォント基準を確認
 2. ターゲットの文脈を定義（誰が・いつ・どの状況で見るか）
 3. ツール選定（LP→Stitch/Figma、資料→Google Slides、SNS→Canva）
 4. `ux-designer` にブリーフ→`frontend-dev` に実装指示→`brand-guardian` に最終チェック
