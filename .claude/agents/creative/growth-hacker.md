@@ -55,6 +55,7 @@ model: sonnet
 | consulting-playbook | 戦略フレームワーク |
 | revenue-growth-framework | PLインパクト・複利成長モデル |
 | digital-sales-intelligence | 広告・ファネル最適化の知見 |
+| app-design-patterns | アプリKPI（D1/D7/D30リテンション）・ASO・アプリグロース |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

@@ -115,6 +115,7 @@
 | incident-response | `.claude/skills/incident-response.md` | 本番障害対応・SEV分類・ポストモーテム |
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
+| app-design-patterns | `.claude/skills/app-design-patterns.md` | iOS HIG・Material Design・モバイルナビゲーション・ASO・アプリKPI |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
 | global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | グローバル展開・市場評価・ローカライズ・現地オペレーション |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・ファイルベースメモリ |
@@ -435,7 +436,7 @@ marketing-research/pr-communications → marketing-research/social-media-strateg
 
 ### 適用範囲
 - **全34エージェント**: Consulting / Service Dev / Product / Creative / Global / Marketing & Research の全エージェント
-- **全20スキルファイル**: consulting-playbook から skill-evolution まで全スキル
+- **全21スキルファイル**: consulting-playbook から skill-evolution まで全スキル
 - **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
 
 ### トリプルチェック・プロセス

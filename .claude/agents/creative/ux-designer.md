@@ -80,6 +80,7 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, Canva,
 | creative-playbook | デザインプロセス・ツール活用 |
 | brand-guidelines | ブランド整合・アクセシビリティ基準 |
 | api-design-patterns | API連携画面のデータフロー設計 |
+| app-design-patterns | iOS HIG・Material Design・モバイルナビゲーション・ジェスチャー |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
