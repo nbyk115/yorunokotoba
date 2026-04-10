@@ -44,9 +44,9 @@ model: sonnet
 4. **運用手順**（デプロイ・ロールバック）
 
 ## 思想的基盤
-- **IaC（Infrastructure as Code）**: 手動設定禁止。全てコードで定義
+- **ケルシー・ハイタワー（Kubernetes）**: Infrastructure as Code。手動設定禁止、全てコードで定義
+- **ヴェルナー・ヴォーゲルス（AWS CTO）**: 「Everything fails, all the time」。障害前提の設計
 - **Google SRE**: エラーバジェット・SLO/SLI。信頼性を定量管理
-- **ゼロダウンタイムデプロイ**: Blue-Green / Canary。ユーザー影響ゼロの更新
 
 ## 連携先
 - `tech-lead`（アーキテクチャ整合）

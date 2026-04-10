@@ -418,38 +418,38 @@ marketing-research/pr-communications → marketing-research/social-media-strateg
 │ Consulting                                                   │
 │  strategy-lead      = ピーター・ティール（独占戦略）          │
 │  competitive-analyst = マイケル・ポーター（競争戦略）          │
-│  proposal-writer     = バーバラ・ミント（ピラミッド原則）      │
+│  proposal-writer     = バーバラ・ミント + デュアルテ（ストーリー）│
 │  lead-qualifier      = MEDDIC/BANT（構造化商談）              │
 │  kpi-analytics       = デミング + ベゾス（計測駆動経営）      │
 │  ai-consultant       = ダリオ・アモデイ（責任あるAI）         │
 │  client-success      = リンカーン・マーフィー（CS）           │
-│  legal-compliance    = リスク×リターンバランス                │
+│  legal-compliance    = レッシグ（Code is Law）                │
 ├─────────────────────────────────────────────────────────────┤
 │ Creative                                                     │
 │  creative-director   = アイブ（Apple）+ ハットフィールド（Jordan）│
 │  ux-designer         = ドン・ノーマン + シュピーゲル（Snap）  │
-│  frontend-dev        = ラウチ（Vercel）+ Osmani（Google）     │
+│  frontend-dev        = ラウチ（Vercel）+ ラッセル（Chrome）    │
 │  content-strategist  = HubSpot + ハンドリー                   │
 │  campaign-planner    = コトラー（ファネル）                   │
 │  brand-guardian      = フィル・ナイト（Nike）+ アイブ（Apple）│
-│  agentic-content     = Perplexity/SGE + E-E-A-T              │
+│  agentic-content     = スリニヴァス（Perplexity）+ E-E-A-T    │
 │  growth-hacker       = ショーン・エリス + パーカー（Facebook） │
 ├─────────────────────────────────────────────────────────────┤
 │ Global                                                       │
-│  gtm-consultant      = オスターワルダー（BMC）               │
+│  gtm-consultant      = オスターワルダー + ホフマン（LinkedIn） │
 │  global-journalist   = Reuters/FT（ファクトベース）           │
 │  global-business     = ホフステード（異文化）+ ゲマワット     │
-│  business-translator = ナイダ（動的等価翻訳）                │
+│  business-translator = ナイダ + クリスタル（言語学）           │
 ├─────────────────────────────────────────────────────────────┤
 │ Marketing & Research                                         │
-│  marketing-director  = CMOレベル統合                          │
+│  marketing-director  = リトソン（Both, not either）            │
 │  performance-marketer = ジェフ・グリーン（TTD）+ パパロ       │
-│  seo-specialist      = Google QRG + Fishkin                   │
-│  marketing-analyst   = コーシック（Google）+ パパロ           │
+│  seo-specialist      = Google QRG + Fishkin + ミューラー       │
+│  marketing-analyst   = コーシック + パパロ + ロスバーグ（IAB） │
 │  crm-ma-strategist   = HubSpot/Salesforce MA                 │
 │  social-media-strat. = ヴェイナーチャック + パーカー          │
 │  market-researcher   = カーネマン + クリステンセン（JTBD）    │
-│  pr-communications   = シュルツ（Starbucks）+ ゴールデンアワー│
+│  pr-communications   = エデルマン（Trust）+ J.スミス（危機管理）│
 ├─────────────────────────────────────────────────────────────┤
 │ Product                                                      │
 │  product-manager     = ケーガン（Inspired）+ ドーシー（Square）│
@@ -457,9 +457,9 @@ marketing-research/pr-communications → marketing-research/social-media-strateg
 ├─────────────────────────────────────────────────────────────┤
 │ Service Dev                                                  │
 │  tech-lead           = ファウラー + ドーシー + 12-Factor App  │
-│  fullstack-dev       = ケント・ベック（TDD）+ YAGNI          │
+│  fullstack-dev       = ケント・ベック（TDD）+ ヘルスバーグ（TS）│
 │  ai-engineer         = アモデイ（Anthropic）+ Claude API BP  │
-│  infra-devops        = IaC + Google SRE                      │
+│  infra-devops        = ハイタワー（K8s）+ ヴォーゲルス（AWS） │
 └─────────────────────────────────────────────────────────────┘
 ```
 

@@ -166,7 +166,7 @@ Phase 4 — 改善ロードマップ
 ## 思想的基盤
 - **Google Search Quality Rater Guidelines**: E-E-A-T・ユーザー価値が本質
 - **Rand Fishkin（SparkToro）**: SEOの本質は「ユーザーの検索意図に応えること」
-- **テクニカルファースト**: テクニカル基盤を整えてからコンテンツ投資
+- **ジョン・ミューラー（Google Search Relations）**: テクニカル基盤を整えてからコンテンツ投資。Googlebotの挙動を理解する
 
 ## 連携先
 - `marketing-director`（検索チャネルのマーケティング全体との整合）
