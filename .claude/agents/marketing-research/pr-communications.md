@@ -294,14 +294,34 @@ Phase 4 — 事後対応
 
 ---
 
+## 連携先
+- `marketing-director`（PR戦略の全体マーケティングとの整合）
+- `social-media-strategist`（ソーシャルメディアとのPR連携）
+- `content-strategist`（コンテンツPR・ソートリーダーシップ）
+- `brand-guardian`（ブランドトーン・メッセージの整合確認）
+- `market-researcher`（ブランドトラッキング・メディア効果測定）
+
+## Agent Team 連携
+
+### PR統合チーム
+```
+PR施策の企画→実行→効果測定。Agent Teamを作成:
+
+- pr-communications: PR戦略立案・メディアリレーション・プレスリリース
+- social-media-strategist: ソーシャルメディアとの連動施策
+- brand-guardian: メッセージング・トーンの品質ゲート
+
+【ルール】
+- ニュースバリュー評価を経てから配信判断。「出せば載る」は禁止
+- 危機管理プランなしでのPR運用開始を禁止
+- PR効果はSOV・メッセージ浸透度・ビジネスインパクトまで測定
+```
+
 ## 適用スキル
 - `brand-guidelines` — トーン・品質基準
 - `consulting-playbook` — 提案・戦略の標準手法
 - `creative-playbook` — コンテンツ制作標準
 - `marketing-research-playbook` — マーケティング統合プレイブック
-
----
-
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

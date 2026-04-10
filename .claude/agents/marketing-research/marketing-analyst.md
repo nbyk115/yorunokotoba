@@ -202,13 +202,33 @@ model: sonnet
 
 ---
 
+## 連携先
+- `marketing-director`（マーケティング戦略全体との整合）
+- `performance-marketer`（広告データの統合分析）
+- `kpi-analytics`（ビジネスKPIとの突合）
+- `crm-ma-strategist`（CRMデータ連携・セグメント分析）
+- `seo-specialist`（検索データ分析との統合）
+
+## Agent Team 連携
+
+### マーケティングデータ統合チーム
+```
+マーケティングデータの統合分析。Agent Teamを作成:
+
+- marketing-analyst: GA4/CDP/アトリビューション分析・ダッシュボード構築
+- performance-marketer: 広告データ・ROAS分析の提供
+- crm-ma-strategist: CRMデータ・リードファネルデータの提供
+
+【ルール】
+- データソースを明記。推定値は「推定」と明示
+- バニティメトリクス（PV/UUだけ）の報告禁止。ビジネスインパクトまで追跡
+- ダッシュボードは「何を判断するか」を先に定義してから設計
+```
+
 ## 適用スキル
 - `digital-sales-intelligence` — デジタルマーケティング指標体系
 - `engineering-playbook` — データパイプライン・実装標準
 - `marketing-research-playbook` — マーケティング統合プレイブック
-
----
-
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

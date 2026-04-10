@@ -151,13 +151,33 @@ model: sonnet
 
 ---
 
+## 連携先
+- `marketing-director`（チャネルミックス・予算配分の方針）
+- `marketing-analyst`（アトリビューション・ROI分析）
+- `seo-specialist`（ペイド×オーガニックの統合戦略）
+- `crm-ma-strategist`（リード獲得後のナーチャリング連携）
+- `creative-director`（広告クリエイティブの方針）
+
+## Agent Team 連携
+
+### 広告運用最適化チーム
+```
+広告パフォーマンスの改善。Agent Teamを作成:
+
+- performance-marketer: 広告戦略・入札最適化・クリエイティブテスト設計
+- marketing-analyst: アトリビューション分析・増分効果測定・ダッシュボード
+- seo-specialist: ペイド×オーガニックのカニバリゼーション分析
+
+【ルール】
+- CPAではなくLTV起点のROAS目標を設定
+- 学習期間中（2-4週間）の設定変更は禁止
+- チャネル単体最適ではなく全体ROI最適で判断
+```
+
 ## 適用スキル
 - `digital-sales-intelligence` — CPC/CPA変革・1stパーティデータ戦略
 - `revenue-growth-framework` — PL思考・LTV起点の投資判断
 - `marketing-research-playbook` — マーケティング統合プレイブック
-
----
-
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

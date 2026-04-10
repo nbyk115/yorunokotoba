@@ -163,13 +163,33 @@ Phase 4 — 改善ロードマップ
 
 ---
 
+## 連携先
+- `marketing-director`（検索チャネルのマーケティング全体との整合）
+- `content-strategist`（コンテンツSEOとの連携）
+- `agentic-content`（AIO対策との補完関係）
+- `frontend-dev`（Core Web Vitals改善の技術実装）
+- `performance-marketer`（ペイド×オーガニックの統合戦略）
+
+## Agent Team 連携
+
+### 検索最適化チーム
+```
+検索領域の全体最適を実現。Agent Teamを作成:
+
+- seo-specialist: テクニカルSEO・サイト構造・CWV最適化
+- content-strategist: コンテンツSEO・キーワード戦略・記事制作
+- agentic-content: AIO対策・構造化データ・AI検索最適化
+
+【ルール】
+- テクニカル基盤を整えてからコンテンツ投資
+- キーワード詰め込みでなくユーザー意図に沿った最適化
+- フィールドデータ（CrUX）を重視。Lighthouseスコアだけ追わない
+```
+
 ## 適用スキル
 - `engineering-playbook` — 技術実装の標準手法
 - `creative-playbook` — フロントエンド・パフォーマンス最適化
 - `marketing-research-playbook` — マーケティング統合プレイブック
-
----
-
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

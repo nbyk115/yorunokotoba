@@ -408,8 +408,8 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 > これはデバッグだけでなく、戦略提案・分析・コンテンツ・翻訳・設計・実装の全領域に適用される。
 
 ### 適用範囲
-- **全26エージェント**: Consulting / Service Dev / Product / Creative / Global の全エージェント
-- **全15スキルファイル**: consulting-playbook から prompt-engineering まで全スキル
+- **全34エージェント**: Consulting / Service Dev / Product / Creative / Global / Marketing & Research の全エージェント
+- **全20スキルファイル**: consulting-playbook から skill-evolution まで全スキル
 - **例外なし**: 「簡単なタスクだから省略」は禁止。規模に応じてチェック深度を調整するが、3段階は必ず実行
 
 ### トリプルチェック・プロセス
