@@ -397,6 +397,62 @@ npx claude-mem install
 
 ---
 
+## 5.5 推奨settings.json設定
+
+> **settings.jsonは4層ある。User（全プロジェクト共通）→ Project（チーム共有）→ Local（個人gitignore）→ Managed（組織ポリシー）の順で上書き。**
+
+### 思考予算（最も体感が変わる設定）
+```json
+{
+  "extendedThinking": true,
+  "effortLevel": "high"
+}
+```
+- デフォルトがmediumに変更されている。high常時ONにすると修正のやり直しが減り、結果的にトークン節約
+- 環境変数 `MAX_THINKING_TOKENS=31999` で上限を引き上げ
+
+### Tool Search（MCP多すぎ対策）
+```json
+{
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto:5"
+  }
+}
+```
+- MCPツール定義がコンテキストの5%を超えたら自動有効化
+- ツールは名前だけコンテキストに入り、使用時にスキーマを動的取得
+
+### セッション管理
+```json
+{
+  "cleanupPeriodDays": 365
+}
+```
+- デフォルト30日 → 365日に延長。過去セッションの検索が可能に
+
+### 危険操作のdenyリスト
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(chmod 777 *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)"
+    ]
+  }
+}
+```
+
+### 必須環境変数
+```bash
+export MAX_THINKING_TOKENS=31999
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+```
+- Agent Teams: 複数Claudeインスタンスの並列協調作業を有効化
+
+---
+
 ## 6. ショートカット早見表
 
 | キー | 機能 |

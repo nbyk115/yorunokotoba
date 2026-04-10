@@ -1,5 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "extendedThinking": true,
+  "effortLevel": "high",
+  "cleanupPeriodDays": 365,
+  "env": {
+    "MAX_THINKING_TOKENS": "31999",
+    "ENABLE_TOOL_SEARCH": "auto:5",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "hooks": {
     "Stop": [
       {
@@ -12,16 +20,35 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CMD=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.command // empty' 2>/dev/null); case \"$CMD\" in *'curl -X POST'*|*'git push'*|*'npx vercel deploy'*) echo \"⚠️ 外部送信検知: $CMD\" ;; esac; exit 0"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // .filePath // empty' 2>/dev/null); if [ -n \"$file\" ]; then case \"$file\" in *.ts|*.tsx) npx prettier --write \"$file\" 2>/dev/null;; esac; fi"
+            "command": "file=$(echo \"$CLAUDE_TOOL_INPUT\" | jq -r '.file_path // .filePath // empty' 2>/dev/null); if [ -n \"$file\" ]; then case \"$file\" in *.ts|*.tsx|*.js|*.jsx) npx prettier --write \"$file\" 2>/dev/null;; esac; fi"
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(chmod 777 *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)"
     ]
   }
 }
