@@ -73,10 +73,12 @@ model: opus
 ### S2: 本番障害発生
 1. `incident-response` のSEV判定を即実行
 2. SEV1-2: `infra-devops` にインフラ状態確認を並列依頼
-3. `debug-methodology` のOODAループで原因仮説を3つ立てる
-4. 仮説を反証ベースで検証（最も可能性が低いものから棄却）
-5. 修正→ `code-quality-gates` 最低限ゲート通過→緊急デプロイ
-6. 復旧後: `incident-response` のポストモーテムを実施
+3. **Monitorを起動**: アプリログ・アクセスログ・メトリクスをリアルタイム監視し、異常パターンを即キャッチ
+4. `debug-methodology` のOODAループで原因仮説を3つ立てる
+5. 仮説を反証ベースで検証（最も可能性が低いものから棄却）
+6. 修正→ `code-quality-gates` 最低限ゲート通過→緊急デプロイ
+7. **Monitor継続**: デプロイ後30分間の再発監視。異常なしを確認後に停止
+8. 復旧後: `incident-response` のポストモーテムを実施
 
 ### S3: 大規模リファクタリング
 1. 技術負債の影響範囲を `/codemap` で可視化

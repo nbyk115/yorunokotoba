@@ -607,6 +607,13 @@ model: sonnet  # 実装はSonnet
 - **git worktree**: ブランチごとに独立したチェックアウトで並列開発
 - **tmux**: 長時間コマンドのデタッチ
 
+### Monitor（イベント駆動型監視）
+- **sleepポーリング禁止**: `sleep`ループでログを確認する代わりにMonitorを使う
+- **用途**: ログ監視・デプロイ監視・CI結果待ち・エラー検知
+- **トークン節約**: 何も起きていない間はトークンを消費しない
+- **障害対応時必須**: 修正デプロイ後はMonitorで30分間再発監視
+- 詳細は `.claude/skills/claude-code-ops.md` セクション4.5参照
+
 ### Hooks自動化
 - **PostToolUse**: .ts/.tsx 編集後にPrettier自動実行
 - **PreToolUse**: 長時間コマンド（dev server等）実行前にtmux警告
