@@ -56,6 +56,7 @@ model: sonnet
 | revenue-growth-framework | PLインパクト・複利成長モデル |
 | digital-sales-intelligence | 広告・ファネル最適化の知見 |
 | app-design-patterns | アプリKPI（D1/D7/D30リテンション）・ASO・アプリグロース |
+| brand-guidelines | トーン・品質基準・禁止表現・英語ダッシュ禁止 |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

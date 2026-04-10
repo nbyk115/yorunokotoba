@@ -229,6 +229,7 @@ model: sonnet
 - `digital-sales-intelligence` — デジタルマーケティング指標体系
 - `engineering-playbook` — データパイプライン・実装標準
 - `marketing-research-playbook` — マーケティング統合プレイブック
+- `brand-guidelines` — トーン・品質基準・禁止表現・英語ダッシュ禁止
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

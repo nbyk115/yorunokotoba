@@ -72,6 +72,7 @@ model: sonnet
 | revenue-growth-framework | PL思考・市場構造分析 |
 | consulting-playbook | クライアント提案の標準手法 |
 | first-principles-breakdown | オペレーション課題の本質分解 |
+| brand-guidelines | トーン・品質基準・禁止表現・英語ダッシュ禁止 |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

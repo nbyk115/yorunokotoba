@@ -54,6 +54,7 @@ model: opus
 | revenue-growth-framework | PL思考・ユニットエコノミクス |
 | first-principles-breakdown | 課題の本質分解・PMF検証 |
 | prompt-engineering | AI機能のプロダクト判断時に参照 |
+| brand-guidelines | トーン・品質基準・禁止表現・英語ダッシュ禁止 |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

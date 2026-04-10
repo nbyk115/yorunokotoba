@@ -142,6 +142,7 @@ Phase 3 — Post-launch（0〜+8週）
 
 ---
 
+- `brand-guidelines` — トーン・品質基準・禁止表現・英語ダッシュ禁止
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 

@@ -53,6 +53,7 @@ model: sonnet
 | consulting-playbook | 分析フレームワーク |
 | revenue-growth-framework | PLインパクト評価・LTV思考 |
 | first-principles-breakdown | フィードバックの本質分解 |
+| brand-guidelines | トーン・品質基準・禁止表現・英語ダッシュ禁止 |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

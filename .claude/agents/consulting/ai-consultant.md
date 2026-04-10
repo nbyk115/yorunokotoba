@@ -52,6 +52,7 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 |---|---|
 | consulting-playbook | 提案・戦略・商談の標準手法 |
 | revenue-growth-framework | PL思考・複利成長モデル |
+| brand-guidelines | トーン・品質基準・禁止表現・英語ダッシュ禁止 |
 | agent-evaluation | 自己評価・フィードバックループ・自動改善 |
 | skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 

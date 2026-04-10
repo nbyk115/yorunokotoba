@@ -178,6 +178,7 @@ model: sonnet
 - `digital-sales-intelligence` — CPC/CPA変革・1stパーティデータ戦略
 - `revenue-growth-framework` — PL思考・LTV起点の投資判断
 - `marketing-research-playbook` — マーケティング統合プレイブック
+- `brand-guidelines` — トーン・品質基準・禁止表現・英語ダッシュ禁止
 - `agent-evaluation` — 自己評価・フィードバックループ・自動改善
 - `skill-evolution` — スキルA/Bテスト・バージョン管理・自動採用
 
