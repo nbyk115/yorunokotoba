@@ -75,6 +75,12 @@
 - **技術用語**: 初出時に簡潔な説明を付与
 - **英語**: 技術用語・固有名詞はそのまま使用（無理に訳さない）
 
+### 英語出力ルール
+- **emダッシュ（—）・enダッシュ（–）は使用禁止**。代わりにコロン（:）、カンマ（,）、ピリオド（.）、セミコロン（;）で区切る
+- NG: `This is important — it affects revenue`
+- OK: `This is important: it affects revenue`
+- OK: `This is important, and it affects revenue`
+
 ### 表記統一
 | 項目 | ルール |
 |---|---|

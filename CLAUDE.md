@@ -615,6 +615,16 @@ model: sonnet  # 実装はSonnet
 - **障害対応時必須**: 修正デプロイ後はMonitorで30分間再発監視
 - 詳細は `.claude/skills/claude-code-ops.md` セクション4.5参照
 
+### Cowork（バックグラウンド自律実行）
+- **Coworkとは**: Claudeがバックグラウンドで自律的にタスクを実行する機能
+- **ConsultingOSとの相性**: 34エージェントの107シナリオプレイブック+50禁止事項が定義済みのため、人間が監視しなくても安全に自律実行できる
+- **活用パターン**:
+  - 「新規事業の参入判断をして」→ competitive-analyst→kpi-analytics→strategy-leadがバックグラウンドで連携
+  - 「このLPを作って」→ creative-director→ux-designer→frontend-devがバックグラウンドで制作
+  - 「海外市場を調査して」→ gtm-consultant→global-journalistがバックグラウンドでリサーチ
+- **安全性**: 反証モード6層品質ガード+評価カード自動記録により、自律実行でも品質を担保
+- **注意**: Cowork完了後は必ず結果を確認し、評価カードのスコアを検証する
+
 ### Hooks自動化
 - **PostToolUse**: .ts/.tsx 編集後にPrettier自動実行
 - **PreToolUse**: 長時間コマンド（dev server等）実行前にtmux警告
