@@ -262,6 +262,11 @@
 | Global → Consulting | 海外市場データ・競合情報・規制情報（ソース付き） | ソースなし・未検証データで渡す |
 | Global → Service Dev | i18n要件・多言語対応仕様・現地決済要件 | 「多言語対応して」だけ |
 | Consulting → Global | ターゲット市場の仮説・評価基準・PLシミュレーション条件 | 「海外展開したい」だけ |
+| Marketing → Consulting | チャネル別ROAS・LTV分析・ファネルデータ（ソース付き） | 加工済みデータだけで生データなし |
+| Marketing → Creative | ターゲットペルソナ・チャネル特性・広告フォーマット要件 | 「バナー作って」だけ |
+| Marketing → Service Dev | GA4設計書・GTM仕様・CDP連携要件・計測タグ一覧 | 「計測入れて」だけ |
+| Consulting → Marketing | 事業KPI・ターゲットセグメント・予算制約・PLシミュレーション条件 | 「広告回して」だけ |
+| Product → Marketing | リリース日程・機能説明・ターゲットペルソナ・差別化ポイント | ローンチ直前に丸投げ |
 
 ### 品質ゲート: ハンドオフ前チェック
 - [ ] インプットデータは具体的か（「市場データ」ではなく実際の数値）
@@ -375,6 +380,27 @@ global/global-business → consulting/legal-compliance-checker → consulting/kp
 📘 revenue-growth-framework → consulting-playbook
 ```
 
+### パターン16: 広告ROAS改善・チャネルミックス最適化
+```
+marketing-research/marketing-director → marketing-research/performance-marketer → marketing-research/marketing-analyst
+          （全体戦略・予算配分）              （広告運用最適化）                    （アトリビューション分析）
+📘 digital-sales-intelligence → revenue-growth-framework → marketing-research-playbook
+```
+
+### パターン17: リード獲得→ナーチャリング→商談化パイプライン構築
+```
+marketing-research/crm-ma-strategist → consulting/lead-qualifier → creative/content-strategist
+       （MA設計・スコアリング）            （商談化基準・SLA）         （ナーチャリングコンテンツ）
+📘 marketing-research-playbook → consulting-playbook → creative-playbook
+```
+
+### パターン18: PR・広報戦略で認知拡大したい
+```
+marketing-research/pr-communications → marketing-research/social-media-strategist → creative/brand-guardian
+         （PR戦略・メディアリレーション）        （ソーシャル連携）                    （ブランド整合）
+📘 marketing-research-playbook → brand-guidelines → creative-playbook
+```
+
 ---
 
 ## 全エージェント共通の干渉原則
@@ -443,6 +469,7 @@ Step 3: 実用反証（Practical Falsification）
 | Product | ユーザー仮説の反例 | 優先順位ロジックの根拠 | リソース内で実現可能か |
 | Creative | ターゲットに刺さらない可能性 | ブランド整合・トーン一貫性 | 制作・運用が回るか |
 | Global | 現地文化での誤解リスク | 翻訳精度・法規制の正確性 | 現地オペレーションで機能するか |
+| Marketing | ターゲット仮説の検証不足 | ROAS・アトリビューションの計算根拠 | 予算内で実行可能か・計測基盤があるか |
 
 ### 出力フォーマット（全エージェント共通）
 
