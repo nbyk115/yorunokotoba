@@ -1,20 +1,35 @@
 # コードマップ — よるのことば
 
-> 最終更新: 2026-03-25
+> 最終更新: 2026-04-10
 
 ## ファイル構成
 
 | ファイル | サイズ | 役割 |
 |---|---|---|
-| `index.html` | 631KB | メインアプリ（HTML+CSS+JS全てインライン） |
+| `index.html` | 634KB | メインアプリ（HTML+CSS+JS全てインライン） |
 | `firebase-messaging-sw.js` | 6.5KB | Service Worker（キャッシュ+Push通知） |
 | `vercel.json` | 2.7KB | デプロイ設定（ヘッダー・CSP・キャッシュ） |
-| `manifest.json` | 1.4KB | PWAマニフェスト |
+| `manifest.json` | 1.5KB | PWAマニフェスト |
 | `robots.txt` | 364B | クローラー制御 |
 | `sitemap.xml` | 1.1KB | サイトマップ（4ページ） |
-| `legal.html` | 3.4KB | 特定商取引法に基づく表記 |
-| `privacy.html` | 4.3KB | プライバシーポリシー |
-| `terms.html` | 4.7KB | 利用規約 |
+| `legal.html` | 4.4KB | 特定商取引法に基づく表記 |
+| `privacy.html` | 6.0KB | プライバシーポリシー |
+| `terms.html` | 6.1KB | 利用規約 |
+| `CLAUDE.md` | 636行 | ConsultingOS司令塔（ルーティング・スキル・運用鉄則） |
+
+### ConsultingOS構成（.claude/配下）
+
+| ディレクトリ | ファイル数 | 内容 |
+|---|---|---|
+| `agents/consulting/` | 8 | 戦略・提案・KPI・法務・AI導入 |
+| `agents/creative/` | 8 | デザイン・UX・コンテンツ・グロース |
+| `agents/global/` | 4 | GTM・翻訳・海外事業 |
+| `agents/marketing-research/` | 8 | 広告・SEO・CRM・PR・リサーチ |
+| `agents/product/` | 2 | PM・フィードバック |
+| `agents/service-dev/` | 4 | 技術・実装・AI・インフラ |
+| `skills/` | 20 | 全エージェント共有のナレッジベース |
+| `commands/` | 7 | スラッシュコマンド |
+| `memory/` | 3 | セッション間メモリ・進化ログ |
 
 ## index.html 構造
 

@@ -117,7 +117,7 @@
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
 | global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | グローバル展開・市場評価・ローカライズ・現地オペレーション |
-| claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
+| claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・ファイルベースメモリ |
 | agent-evaluation | `.claude/skills/agent-evaluation.md` | 自己評価・フィードバックループ・自動改善・品質スコアリング |
 | skill-evolution | `.claude/skills/skill-evolution.md` | スキルA/Bテスト・バージョン管理・自動採用・ロールバック |
 
