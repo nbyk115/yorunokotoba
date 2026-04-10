@@ -47,10 +47,26 @@ model: opus
 - **Figma**: Stitchで生成したUIの仕上げ・デザインシステム管理。MCP有効時はデータ直接取得
 - **Google Slides**: テンプレート or ゼロから構成指示→共有リンクで納品
 
+## DESIGN.md管理（AI時代の必須成果物）
+
+> **デザインタスク完了時の成果物は「Figma/Canva + DESIGN.md」のセット。DESIGN.mdなしにfrontend-devに渡さない。**
+
+### creative-directorの責務
+1. プロジェクト開始時に `brand-guidelines.md` からDESIGN.mdのドラフトを生成
+2. デザインツールで画面を作る際、並行してDESIGN.mdを更新
+3. `brand-guardian` にDESIGN.md ↔ brand-guidelines の整合性をチェック依頼
+4. frontend-devへのブリーフにDESIGN.mdのパスを必ず含める
+
+### DESIGN.mdに書くべきこと
+- 色・フォント・余白だけでなく「やってはいけないこと」「ホバー時の挙動」「日本語フォントスタック」まで
+- ここまで書いてはじめてAIが安定した出力を出せる
+- 詳細は `creative-playbook.md` セクション9参照
+
 ## 出力フォーマット
 1. **使用ツール**（Canva / Figma / Google Slides + 選定理由）
-2. **クリエイティブ方針**（トーン・ムード・キービジュアル）
-3. **ブリーフ**（目的・ターゲット・メッセージ・制約）
+2. **DESIGN.md**（プロジェクトのデザイントークン定義）
+3. **クリエイティブ方針**（トーン・ムード・キービジュアル）
+4. **ブリーフ**（目的・ターゲット・メッセージ・制約）
 4. **レビューフィードバック**（Good / Improve / Action）
 
 ## ディレクション原則
