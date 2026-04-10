@@ -1,8 +1,9 @@
 # 🧠 ConsultingOS — 司令塔
 
 ## システム概要
-**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル特化の5本柱マルチエージェントOS**
-26名のエージェントが連携し、提案から実装・コンテンツ・海外展開までを一気通貫で担う。
+**コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
+35名のエージェントが連携し、提案から実装・コンテンツ・海外展開・マーケティングまでを一気通貫で担う。
+**自己進化機能搭載**: エージェントが自らの成果を評価し、スキルファイルをA/Bテストで自動改善する。
 
 ---
 
@@ -115,7 +116,10 @@
 | api-design-patterns | `.claude/skills/api-design-patterns.md` | REST/GraphQL設計標準・認証・冪等性 |
 | prompt-engineering | `.claude/skills/prompt-engineering.md` | プロンプト設計・RAG最適化・Tool Use設計 |
 | marketing-research-playbook | `.claude/skills/marketing-research-playbook.md` | マーケティング戦略・チャネル選定・データ分析・リサーチ・PR |
+| global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | グローバル展開・市場評価・ローカライズ・現地オペレーション |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・Letta連携 |
+| agent-evaluation | `.claude/skills/agent-evaluation.md` | 自己評価・フィードバックループ・自動改善・品質スコアリング |
+| skill-evolution | `.claude/skills/skill-evolution.md` | スキルA/Bテスト・バージョン管理・自動採用・ロールバック |
 
 ---
 
@@ -128,7 +132,8 @@
 | /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
-| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版
+| /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
+| /evolve | `.claude/commands/evolve.md` | スキル進化サイクル実行（診断→原因分析→改善→記録） |
 
 ---
 
@@ -455,6 +460,91 @@ Step 3: 実用反証（Practical Falsification）
 - トリプルチェックなしのアウトプットは**ドラフト扱い**（最終出力ではない）
 - チェックで致命的な問題が見つかった場合は**修正してから出力**
 - 「時間がない」は省略理由にならない（簡易版でも3ステップは必須）
+
+---
+
+## 🔄 自己進化システム — エージェントが自ら進化する
+
+> **全エージェントが自分の成果を評価し、スキルファイルを自動改善する。人間の介在なしでフィードバックループが回る。**
+
+### 進化の3本柱
+
+| 柱 | スキルファイル | 概要 |
+|---|---|---|
+| 自己評価 | `agent-evaluation.md` | 全アウトプットに品質スコア（25点満点）を付け、成果データを蓄積 |
+| A/Bテスト | `skill-evolution.md` | 同じタスクを別バージョンのスキルで実行し、品質が高い方を自動採用 |
+| 進化実行 | `/evolve` コマンド | 診断→原因分析→改善案生成→実行→記録の全サイクルを起動 |
+
+### 自動進化フロー
+
+```
+1. タスク完了 → 評価カード記録（品質スコア5項目 × 5段階）
+2. 週次レビュー → スコア下降スキルを自動検知
+3. 原因分析 → debug-methodologyの反証ベースで仮説検証
+4. 改善実行:
+   ├─ Level 1（微修正）: 即時適用
+   ├─ Level 2（セクション改訂）: A/Bテストで検証後採用
+   └─ Level 3（構造変更）: strategy-lead承認後実行
+5. 効果測定 → 修正前後のスコア比較
+6. evolution-log に全過程を記録
+```
+
+### 自動検知トリガー
+- **スコア急落**: 平均スコアが前週比 -3以上 → 即座に原因分析
+- **連続低評価**: 同一スキルでC判定（14-17点）が3回連続 → A/Bテスト候補
+- **却下率上昇**: アウトプット却下率が30%以上 → 根本原因分解
+- **成果未達**: 数値成果が目標の50%未満 → 戦略レベルで再検討
+
+### A/Bテストプロトコル
+- 1テスト = 1変数（複数変更は禁止）
+- 最低5回の実行比較で判定
+- スコア差1.5ポイント以上 AND 勝率80%以上 → 新バージョン採用
+- 採用後もモニタリング継続。悪化したら即ロールバック
+
+### 進化の記録
+- 全変更履歴: `.claude/memory/evolution-log.md`
+- エージェント別成績: `Archival Memory` の評価カード
+- スキル別バージョン履歴: 各スキルファイル末尾
+
+---
+
+### Advisor Strategy（コスト最適化）
+
+> **Opus をアドバイザー、Sonnet/Haiku を実行役にペアリングし、Opus同等の知能を低コストで実現する。**
+
+#### モデルペアリング設計
+
+| 役割 | モデル | 呼び出し | 用途 |
+|---|---|---|---|
+| Executor（実行役） | Sonnet 4.6 | 毎ターン | ファイル操作・コード生成・定型タスク |
+| Advisor（戦略役） | Opus 4.6 | オンデマンド | 戦略判断・設計レビュー・品質ゲート |
+
+#### ConsultingOS への適用
+
+| 部門 | Executor（Sonnet） | Advisor（Opus）呼び出し条件 |
+|---|---|---|
+| Consulting | 情報収集・データ整理・フォーマット | 戦略判断・PL試算・Go/No-Go判定 |
+| Service Dev | コード実装・テスト・バグ修正 | アーキテクチャ設計・セキュリティレビュー |
+| Product | バックログ整理・VOC分類 | PMF判定・ロードマップ優先順位 |
+| Creative | コンテンツ生成・デザイン実装 | ブランド戦略・クリエイティブ方針 |
+| Global | 翻訳・データ収集 | GTM戦略・市場参入判断 |
+| Marketing | レポート生成・データ集計 | チャネルミックス・予算配分判断 |
+
+#### 設定方法
+エージェントファイルの `model` フロントマターで指定:
+```yaml
+---
+name: strategy-lead
+model: opus    # 戦略判断はOpus
+---
+```
+```yaml
+---
+name: fullstack-dev
+model: sonnet  # 実装はSonnet
+---
+```
+サブエージェント起動時の `model` パラメータでも指定可能。
 
 ---
 
