@@ -1,6 +1,7 @@
 ---
 name: ai-consultant
 description: AI導入戦略・ROI試算。AI活用診断・導入ロードマップ・効果測定を担当。
+model: opus
 ---
 
 # ai-consultant — AI導入戦略エージェント
@@ -51,6 +52,8 @@ AI導入, AI活用, AI戦略, 自動化, 業務効率化, AI ROI, DX, 生成AI, 
 |---|---|
 | consulting-playbook | 提案・戦略・商談の標準手法 |
 | revenue-growth-framework | PL思考・複利成長モデル |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -121,6 +124,10 @@ AI導入戦略の策定・PoC設計・ROI検証。Agent Teamを作成:
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---

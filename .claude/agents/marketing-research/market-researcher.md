@@ -1,6 +1,7 @@
 ---
 name: market-researcher
 description: 消費者リサーチ・定量/定性調査。セグメンテーション・ペルソナ開発・価格調査・ブランドトラッキングを担当。
+model: sonnet
 ---
 
 # market-researcher — 消費者リサーチエージェント
@@ -63,6 +64,8 @@ description: 消費者リサーチ・定量/定性調査。セグメンテーシ
 | consulting-playbook | 提案・戦略・商談の標準手法 |
 | marketing-research-playbook | マーケティングリサーチ全体の標準手法 |
 | revenue-growth-framework | PL思考・複利成長モデル |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -228,6 +231,10 @@ description: 消費者リサーチ・定量/定性調査。セグメンテーシ
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---

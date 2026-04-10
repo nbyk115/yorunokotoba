@@ -1,6 +1,7 @@
 ---
 name: ai-engineer
 description: AI・LLM統合。Claude API統合・RAG構築・エージェント設計。
+model: opus
 ---
 
 # ai-engineer — AI・LLM統合エージェント
@@ -57,6 +58,8 @@ AI, LLM, Claude API, RAG, エージェント, プロンプト, 埋め込み, ベ
 | api-design-patterns | REST/GraphQL設計標準・認証・冪等性 |
 | code-quality-gates | PR前品質ゲート・セルフレビュー |
 | debug-methodology | 反証ベースデバッグ・根本原因特定 |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -143,6 +146,10 @@ AI機能の開発。Agent Teamを作成:
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---

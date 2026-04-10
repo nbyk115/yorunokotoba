@@ -1,6 +1,7 @@
 ---
 name: agentic-content
 description: AIコンテンツ最適化。AIO対策・構造化データ・AIに選ばれるコンテンツ設計。
+model: sonnet
 ---
 
 # agentic-content — AIコンテンツ最適化エージェント
@@ -66,6 +67,8 @@ AIO, AI最適化, 構造化データ, ナレッジグラフ, AI検索, Perplexit
 | brand-guidelines | トーン・品質基準 |
 | prompt-engineering | RAG向けコンテンツ設計・チャンク最適化 |
 | consulting-playbook | ビジネス文脈の理解 |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -126,6 +129,10 @@ AIO最適化はコンテンツ生成・構造化データ設計に集中。
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---

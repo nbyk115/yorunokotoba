@@ -1,6 +1,7 @@
 ---
 name: feedback-synthesizer
 description: ユーザーフィードバック統合・インサイト抽出。VOC分析・要望分類・優先順位付けを担当。
+model: sonnet
 ---
 
 # feedback-synthesizer — フィードバック統合エージェント
@@ -52,6 +53,8 @@ description: ユーザーフィードバック統合・インサイト抽出。V
 | consulting-playbook | 分析フレームワーク |
 | revenue-growth-framework | PLインパクト評価・LTV思考 |
 | first-principles-breakdown | フィードバックの本質分解 |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -111,6 +114,10 @@ description: ユーザーフィードバック統合・インサイト抽出。V
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---

@@ -1,6 +1,7 @@
 ---
 name: ux-designer
 description: UI/UX設計。UXフロー・ワイヤーフレーム・LP設計。Canva/Figma対応（creative-directorの選定に従う）。
+model: sonnet
 ---
 
 # ux-designer — UI/UX設計エージェント 🎨
@@ -79,6 +80,8 @@ UX, UI, ワイヤーフレーム, ユーザーフロー, LP設計, Figma, Canva,
 | creative-playbook | デザインプロセス・ツール活用 |
 | brand-guidelines | ブランド整合・アクセシビリティ基準 |
 | api-design-patterns | API連携画面のデータフロー設計 |
+| agent-evaluation | 自己評価・フィードバックループ・自動改善 |
+| skill-evolution | スキルA/Bテスト・バージョン管理・自動採用 |
 
 ## シナリオ別プレイブック
 
@@ -137,6 +140,10 @@ UX設計はコンテンツ生成可。Figma MCP連携あり。
 3. **実用反証**: 実行可能性・エッジケース・最悪シナリオを検証
 
 チェックなしのアウトプットはドラフト扱い。省略禁止。
+
+### 評価カード記録（必須）
+タスク完了後、`.claude/skills/agent-evaluation.md` の評価カードを `Archival Memory` に書き込むこと。
+品質スコア（Q1-Q5 各1-5点）を記録し、C判定（14-17点）以下の場合は `/evolve` で改善サイクルを起動する。
 
 
 ---
