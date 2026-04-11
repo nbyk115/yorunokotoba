@@ -462,6 +462,20 @@ npx claude-mem install
 }
 ```
 
+### /advisor（公式Advisor Strategy）★推奨
+
+> **Opusがセカンドオピニオンとしてメインエージェントの作業をレビューする公式機能。**
+
+```bash
+/advisor opus    # Opusをアドバイザーに設定（推奨）
+/advisor sonnet  # Sonnetをアドバイザーに
+/advisor off     # アドバイザー無効化
+```
+
+- **発火タイミング**: 作業開始前・タスク完了時・エラー解決不能時に自動レビュー
+- **ConsultingOSとの関係**: エージェントファイルの`model: opus/sonnet`は「どのモデルで動くか」の設定。`/advisor`はそれに加えて「Opusが上位からレビューする」機能。併用する
+- **推奨**: `/advisor opus` を常時ON。Sonnetで実行→Opusがレビュー→品質ガードが1層追加される
+
 ### 必須環境変数
 ```bash
 export MAX_THINKING_TOKENS=31999
