@@ -682,7 +682,7 @@ model: sonnet  # 実装はSonnet
   - 「新規事業の参入判断をして」→ competitive-analyst→kpi-analytics→strategy-leadがバックグラウンドで連携
   - 「このLPを作って」→ creative-director→ux-designer→frontend-devがバックグラウンドで制作
   - 「海外市場を調査して」→ gtm-consultant→global-journalistがバックグラウンドでリサーチ
-- **安全性**: 反証モード6層品質ガード+評価カード自動記録により、自律実行でも品質を担保
+- **安全性**: 反証モード7層品質ガード+評価カード自動記録により、自律実行でも品質を担保
 - **注意**: Cowork完了後は必ず結果を確認し、評価カードのスコアを検証する
 
 ### Hooks自動化
