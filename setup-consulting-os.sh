@@ -26,7 +26,7 @@ echo ""
 # .claude/ ディレクトリをコピー
 if [ -d "$SCRIPT_DIR/.claude" ]; then
   cp -r "$SCRIPT_DIR/.claude" "$TARGET/.claude"
-  echo "✅ .claude/ (agents + skills) をコピーしました"
+  echo "✅ .claude/ (agents + skills + settings.json) をコピーしました"
 else
   echo "❌ .claude/ がソースに見つかりません"
   exit 1
