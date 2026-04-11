@@ -135,6 +135,7 @@
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
 | /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
+| /review-agent-essence | `.claude/commands/review-agent-essence.md` | エージェント本質レビュー（設計の矛盾・形骸化・過剰を検出） |
 | /evolve | `.claude/commands/evolve.md` | スキル進化サイクル実行（診断→原因分析→改善→記録） |
 
 ---
