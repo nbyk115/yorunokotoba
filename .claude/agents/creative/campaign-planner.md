@@ -71,7 +71,7 @@ model: sonnet
 ## シナリオ別プレイブック
 
 ### S1: ローンチキャンペーン
-1. `product-manager` からGTM戦略を受領
+1. コトラーの原則: ファネル全体（認知→購入→推奨）を設計してからチャネルを選ぶ。`product-manager` からGTM戦略を受領
 2. ファネル別施策設計（認知→興味→検討→購入→推奨）
 3. `content-strategist` にコンテンツ制作依頼
 4. `kpi-analytics` にKPI設計 + 計測基盤を依頼
