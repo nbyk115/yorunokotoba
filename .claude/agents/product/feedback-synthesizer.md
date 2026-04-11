@@ -71,7 +71,11 @@ model: sonnet
 4. `product-manager` に優先順位付きレポートを提出
 
 ### S2: 解約者フィードバック緊急分析
-1. 解約理由をパターン分類（価格/機能不足/UX/競合乗換/担当者変更）
+1. クリステンセンのJTBD: 解約者が「雇い直した代替手段」を特定する。解約理由をパターン分類（価格/機能不足/UX/競合乗換/担当者変更）
+   → パターン別の対策分岐:
+   - 価格 → pricing strategy見直し（market-researcher PSM分析依頼）
+   - 機能不足 → product-manager ロードマップに緊急反映
+   - 競合乗換 → competitive-analyst に競合の優位点を即調査
 2. 各パターンのPLインパクト（失注LTV）を算出
 3. `client-success` + `product-manager` に緊急報告
 4. 即時対応可能な改善策と中期対応策を分離して提案
