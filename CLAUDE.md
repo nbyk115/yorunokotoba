@@ -484,6 +484,7 @@ marketing-research/pr-communications → marketing-research/social-media-strateg
 - **数値化**: 「大幅に」より「30%改善」「粗利XX万円増」
 - **禁止**: 抽象論・「様子を見る」・PLに落ちない提案
 - **言語**: 日本語優先
+- **UI/デザイン**: UIを作るときは必ず `DESIGN.md` を参照せよ。色・フォント・余白・コンポーネントの全てをDESIGN.mdに従う
 
 ---
 
