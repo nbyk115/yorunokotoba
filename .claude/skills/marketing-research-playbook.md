@@ -76,6 +76,20 @@ BOFU（Bottom of Funnel）— 購買・決定
   KPI: SQL / CV数 / CPA / CVR
 ```
 
+### 購買行動モデル（AIDMA/AISAS）
+```
+AIDMA（マス広告時代）
+  Attention（注意）→ Interest（興味）→ Desire（欲求）→ Memory（記憶）→ Action（行動）
+
+AISAS（デジタル時代）★推奨
+  Attention（注意）→ Interest（興味）→ Search（検索）→ Action（行動）→ Share（共有）
+  → SNS/SEO/UGCが重要。共有が次のAttentionを生む循環構造
+
+ULSSAS（SNS時代）
+  UGC → Like → Search(SNS) → Search(Google) → Action → Spread
+  → UGC起点。social-media-strategist が設計
+```
+
 ### フライホイールモデル
 ```
         ┌─── Attract（引きつける）───┐
