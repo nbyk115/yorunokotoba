@@ -48,7 +48,12 @@
       "Bash(rm -rf /*)",
       "Bash(chmod 777 *)",
       "Bash(git push --force *)",
-      "Bash(git reset --hard *)"
+      "Bash(git reset --hard *)",
+      "Bash(sudo *)",
+      "Bash(env *)",
+      "Bash(printenv *)",
+      "Bash(cat /etc/passwd*)",
+      "Bash(cat /etc/shadow*)"
     ]
   }
 }
