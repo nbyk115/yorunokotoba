@@ -78,7 +78,10 @@ model: sonnet
 5. タイムラインと予算配分を策定
 
 ### S2: リード獲得キャンペーン
-1. `content-strategist` にホワイトペーパー/ウェビナー企画を依頼
+1. コトラーのファネル判定: ボトルネックはTOFU（認知不足）かBOFU（CVR不足）かを先に特定
+   → TOFU → PR/SNS/コンテンツに予算集中
+   → BOFU → LP最適化/リターゲティング/CRM連携に集中
+2. `content-strategist` にホワイトペーパー/ウェビナー企画を依頼
 2. LP制作 → `ux-designer` + `frontend-dev` に依頼
 3. `digital-sales-intelligence` の知見で広告チャネル選定
 4. CPA目標を設定しROI追跡
