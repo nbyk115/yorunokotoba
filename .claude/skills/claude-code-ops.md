@@ -461,6 +461,58 @@ npm install notebooklm
 
 ---
 
+## 4.8 OpenDataLoader PDF（ローカルPDF高精度抽出）
+
+> **用途**: Claude Code 標準の Read では扱いきれない長文・表・OCR対象 PDF を Markdown/JSON/HTML に変換する。
+> **出典**: https://github.com/adlnet/OpenDataLoader-PDF（Apache 2.0・GPU不要・無料）
+
+### 何ができるか
+- **100ページ/秒** の高速パース
+- **テーブル抽出 92.8% 精度**（#1 benchmark・200 real-world PDFs）
+- **OCR対応**（80+言語、300 DPI scan にも対応）
+- **LaTeX数式・画像・チャート** 抽出
+- **RAG向け構造化Markdown** 出力（bounding box 付き JSON も可）
+- **LangChain統合** 済み
+
+### 導入
+```bash
+pip install opendataloader-pdf
+# 3行で使える
+```
+
+### Claude Code からの呼び出し
+```bash
+# Bashツール経由で実行
+opendataloader-pdf input.pdf --format markdown > output.md
+# その後 Claude Code の Read で output.md を読む
+```
+
+### ConsultingOSでの活用シーン
+
+| エージェント | 活用場面 |
+|---|---|
+| `competitive-analyst` | 競合の annual report / IR資料の一括パース |
+| `global-journalist` | WEF / McKinsey / Edelman 等の長文レポート |
+| `market-researcher` | 市場調査 PDF の表データ抽出 |
+| `legal-compliance-checker` | 契約書・利用規約 PDF の構造化 |
+| `proposal-writer` | 過去提案書からの要素再利用 |
+| `ai-consultant` | 技術ホワイトペーパーの精読 |
+
+### Claude Code 標準 Read との使い分け
+| PDFサイズ/複雑度 | 推奨 |
+|---|---|
+| 1-20ページ・単純レイアウト | Claude Code 標準 Read |
+| 20ページ超 または 表重視 | OpenDataLoader → Markdown化 → Read |
+| OCR必要（scan PDF） | OpenDataLoader のみ |
+| RAG構築・bounding box必要 | OpenDataLoader の JSON出力 |
+
+### 効果
+- 長文 PDF のコンテキスト消費を大幅削減（構造化後は必要な章だけ読める）
+- テーブルが表として保持される（Claude Code Read では崩れがち）
+- コストゼロ・API非依存・ローカル完結
+
+---
+
 ## 5. コンテキスト管理
 
 ### rtk（コマンド出力圧縮）★Service Dev / Creative部門で推奨
@@ -744,3 +796,4 @@ Be more specific, more opinionated, and show tradeoffs.
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
 | 1.1.0 | 2026-04-12 | §5.7 Anthropic公式5パターン対応表・§5.8 反復改善プロンプト追加 | Anthropic "Building Effective Agents" / claude.com/blog/multi-agent-coordination-patterns | 公式パターンとの差分可視化・Voting/Gate未実装を特定 |
 | 1.2.0 | 2026-04-12 | 4層アーキテクチャメタフレーム・Hook exit code仕様・Plan Mode/doctor追加 | Claude Code Workflow Cheatsheet 2026 Edition | L1-L4の役割混同防止・安全ゲート明確化 |
+| 1.3.0 | 2026-04-12 | §4.8 OpenDataLoader PDF追加 | github.com/adlnet/OpenDataLoader-PDF (#1 PDF benchmark, Apache 2.0) | 長文/表/OCR PDFをローカル高精度パースしコンテキスト消費削減 |
