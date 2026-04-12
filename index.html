@@ -165,6 +165,15 @@ a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
 .tab-item:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
 /* ── Reduced motion ── */
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms !important;transition-duration:0.01ms !important}}
+/* ── 震え防止 override ── React inline animation が親 re-render で再適用されても視覚的に震えないよう、問題の keyframes を no-op 化 */
+@keyframes pulse{0%,100%{transform:none}}
+@keyframes float{0%,100%{transform:none}}
+@keyframes rarityReveal{0%,100%{transform:none;opacity:1}}
+@keyframes holoShimmer{0%,100%{background-position:0 0}}
+@keyframes rarityGlow{0%,100%{box-shadow:0 0 14px rgba(232,98,124,0.22)}}
+@keyframes shimmer{0%,100%{background-position:0 0}}
+/* GPU layer 昇格でサブピクセル揺れを抑制 */
+img,h1,h2,.ftue-card,.tab-item,.hover-lift{transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 </style>
 
 <!-- SW更新＆キャッシュクリア v2 -->
