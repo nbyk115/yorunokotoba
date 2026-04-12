@@ -1,0 +1,40 @@
+name: Design Validation
+
+on:
+  pull_request:
+    paths:
+      - '**/*.html'
+      - '**/*.css'
+      - '**/*.tsx'
+      - '**/*.jsx'
+      - '**/*.ts'
+      - '**/*.js'
+      - 'design/contracts/**'
+      - 'DESIGN.md'
+  push:
+    branches:
+      - main
+
+jobs:
+  design-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '20'
+
+      - name: Install ts-node
+        run: npm install -g ts-node typescript
+
+      - name: Validate design contracts
+        run: npx ts-node scripts/design/validate.ts
+
+      - name: Check DESIGN.md exists
+        run: test -f DESIGN.md
+
+      - name: Check contracts exist
+        run: |
+          test -f design/contracts/tokens.json
+          test -f design/contracts/rules.json

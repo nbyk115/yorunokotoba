@@ -1,0 +1,130 @@
+{
+  "$schema": "./rules.schema.json",
+  "version": "1.0.0",
+  "project": "よるのことば",
+  "description": "デザイン禁止ルール。ID + severity + detector形式。validate.tsが自動検証。",
+  "rules": [
+    {
+      "id": "COLOR-001",
+      "severity": "error",
+      "category": "colors",
+      "description": "純粋な黒(#000)を文字色に使用禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "color:\\s*['\"]?#000(000)?['\"]?",
+        "files": ["*.html", "*.css", "*.tsx", "*.jsx"]
+      },
+      "fix": "--t1 (#3A2830) を使用",
+      "why": "純粋な黒は冷たい印象。温かみのある濃茶で統一"
+    },
+    {
+      "id": "COLOR-002",
+      "severity": "error",
+      "category": "colors",
+      "description": "純粋な白(#fff)を背景色に使用禁止（カード背景除く）",
+      "detector": {
+        "type": "regex",
+        "pattern": "background:\\s*['\"]?#fff(fff)?['\"]?"
+      },
+      "fix": "--bg1 (#FFF5F0) または --card を使用",
+      "why": "純粋な白は冷たい印象。淡いクリーム色で温かみを出す"
+    },
+    {
+      "id": "RADIUS-001",
+      "severity": "error",
+      "category": "radius",
+      "description": "border-radius 8px未満を使用禁止（角が鋭すぎる）",
+      "detector": {
+        "type": "regex",
+        "pattern": "border-radius:\\s*[0-7](\\.\\d+)?px"
+      },
+      "fix": "最小8px。カードは18px、ボタンは14px、入力は12px",
+      "why": "シャープな角は冷たく硬い印象。柔らかさ・包容感を失う"
+    },
+    {
+      "id": "TYPO-001",
+      "severity": "error",
+      "category": "typography",
+      "description": "Zen Maru Gothic以外のフォントをbody/headingに使用禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "font-family:\\s*['\"]?(?!.*Zen Maru Gothic)(Arial|Helvetica|sans-serif)"
+      },
+      "fix": "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
+      "why": "ブランドアイデンティティの統一。丸ゴシックで警戒心を解く"
+    },
+    {
+      "id": "ANIM-001",
+      "severity": "warning",
+      "category": "animation",
+      "description": "layout propertyのアニメーション禁止（width, height, top, left）",
+      "detector": {
+        "type": "regex",
+        "pattern": "transition:.*(width|height|top|left)"
+      },
+      "fix": "transform と opacity のみアニメーション",
+      "why": "layoutアニメーションはパフォーマンス劣化の原因"
+    },
+    {
+      "id": "A11Y-001",
+      "severity": "error",
+      "category": "accessibility",
+      "description": "タップターゲット最小44pxを確保",
+      "detector": {
+        "type": "playwright",
+        "test": "button, a { min-height: 44px, min-width: 44px }"
+      },
+      "fix": "min-height: 44px; min-width: 44px; を追加",
+      "why": "モバイルのタップしやすさの最低ライン（WCAG 2.1 AA）"
+    },
+    {
+      "id": "A11Y-002",
+      "severity": "error",
+      "category": "accessibility",
+      "description": "alt属性なしのimg要素禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "<img(?![^>]*alt=)"
+      },
+      "fix": "alt属性を追加（装飾画像なら alt=\"\" でも可）",
+      "why": "スクリーンリーダー対応の基本"
+    },
+    {
+      "id": "SHADOW-001",
+      "severity": "warning",
+      "category": "effects",
+      "description": "重すぎるbox-shadow禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "box-shadow:[^;]*rgba\\([^)]*0\\.[3-9]"
+      },
+      "fix": "最大 rgba(..., 0.15)",
+      "why": "強すぎる影は安っぽく見える"
+    },
+    {
+      "id": "GRADIENT-001",
+      "severity": "warning",
+      "category": "colors",
+      "description": "プライマリCTA以外のグラデーション使用を禁止",
+      "detector": {
+        "type": "manual",
+        "note": "人間レビューで確認"
+      },
+      "fix": "グラデーションは --grad または --grad2 のみ、CTAのみに使用",
+      "why": "グラデーションの乱用は安っぽさを生む"
+    },
+    {
+      "id": "DASH-001",
+      "severity": "error",
+      "category": "content",
+      "description": "英語出力にem dash(—)とen dash(–)の使用を禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "[—–]",
+        "files": ["*.md", "*.html", "*.tsx"]
+      },
+      "fix": "コロン(:)、カンマ(,)、ピリオド(.)、セミコロン(;)で代替",
+      "why": "AI生成の典型パターンとしてバレやすい"
+    }
+  ]
+}

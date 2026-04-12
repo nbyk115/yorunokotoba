@@ -357,9 +357,56 @@ Atoms → Molecules → Organisms → Templates → Pages
 
 ---
 
-## 9. DESIGN.md（リポジトリの見た目の憲法）
+## 9. DESIGN.md（リポジトリの見た目の憲法）+ AI-Ready 3層構造
 
-> **Figmaで画面を作って終わりではない。その裏のデザインルールをMarkdownに落とし、AIが安定した出力を出せる状態を作る。AI時代の成果物は「Figma + DESIGN.md」のセット。**
+> **Figmaで画面を作って終わりではない。その裏のデザインルールをMarkdownに落とし、AIが安定した出力を出せる状態を作る。AI時代の成果物は「Figma + DESIGN.md + contracts」のセット。**
+
+### AI-Ready 3層構造（維持可能な設計）
+
+DESIGN.mdだけでは壊れる。JSON契約とCI検証をセットにして初めて「維持できる仕組み」になる。
+
+```
+Layer 1: 憲法（人間とAIが最初に読む入口）
+  DESIGN.md        ← Brand Identity + 原則 + Quick Reference
+  CLAUDE.md        ← AI作業手順書・読み込みガイド
+
+Layer 2: 仕様（Machine-Readable SSOT）
+  design/contracts/
+    ├── tokens.json      ← デザイントークン（値・意図・使用箇所）
+    ├── rules.json       ← 禁止ルール（ID + severity + detector）
+    └── components/      ← コンポーネント契約（variant + size + a11y + rules）
+
+Layer 3: 検証（破っても通さない）
+  scripts/design/
+    ├── validate.ts      ← Schema検証・トークン使用チェック
+    └── drift-check.ts   ← DESIGN.mdとcontractsの乖離検知
+  tests/                 ← Playwright + axe-core（アクセシビリティ）
+  .github/workflows/
+    └── design-validation.yml  ← CI で自動実行
+```
+
+| レイヤー | 形式 | 読み手 | 役割 |
+|---|---|---|---|
+| DESIGN.md | Markdown | AI（全エージェント）+ 人間 | デザイン憲法 + Quick Reference |
+| CLAUDE.md | Markdown | AI (Claude Code) | 作業手順・読み込みガイド |
+| contracts/ | JSON | AI + 検証ハーネス | 厳密仕様（ID + severity + detector） |
+| validate.ts | TypeScript | CI | Schema検証・drift検出 |
+| components/*.md | Markdown | 人間 | 設計意図・判断基準を自然言語で記述 |
+
+### なぜ3層構造が必要か
+
+**DESIGN.mdだけで維持できない理由:**
+1. AIがmdを誤解釈しても気づけない
+2. 新規メンバーがdrift（逸脱）しても検知できない
+3. レビュー担当者の主観に依存する
+
+**JSON契約 + CI検証が加わると:**
+1. validate.tsが機械的に検証 → ドリフトをCIで止める
+2. tokens.jsonの値を使っていないコードを自動検知
+3. rules.jsonで禁止パターンをsevertyレベルで定義
+4. Playwright + axe-coreでアクセシビリティを自動テスト
+
+### DESIGN.mdとは
 
 ### DESIGN.mdとは
 プロジェクトルートに配置するデザインシステム定義ファイル。Claude Codeが自動で読み込み、ブランド準拠のコードを生成する。
