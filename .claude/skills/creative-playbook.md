@@ -198,7 +198,7 @@ L1: 20画面（52%）→ サブ設定, 管理画面, 補助リスト
 - **フロー**: proposal-writerが構成→HTMLスライド生成→html2pptxでPPTX変換→納品
 - **DESIGN.md連携**: HTMLスライドにDESIGN.mdのカラー・フォントを適用→ブランド準拠PPTX
 
-### markdown-viewer/skills（Markdown→図表自動生成）
+### markdown-viewer/skills（Markdown→汎用図表自動生成）
 > **100+の図例・6000+のベクターアイコンを持つ図表生成スキル。Markdownの内容から一言で自動カスタマイズ。**
 
 ```bash
@@ -209,10 +209,28 @@ npx skills add markdown-viewer/skills
 - **フロー**: テキスト→図→html2pptx→PPTXの一気通貫納品
 - **活用エージェント**:
   - `proposal-writer`: 提案書にアーキテクチャ図・フローチャート自動生成
-  - `tech-lead`: システム設計書・クラス図・デプロイ図
   - `product-manager`: ユーザーストーリー図・ロードマップ図
   - `creative-director`: インフォグラフィック・プレゼン資料
   - `marketing-director`: ファネル図・チャネルミックス可視化
+
+### fireworks-tech-graph（AI/技術アーキテクチャ図特化）
+> **技術アーキテクチャ図専用スキル。AI/Agentパターン（RAG/Mem0/Multi-Agent/Tool Call等）を内蔵。自然言語1文で図が出る。**
+
+- **対応図**: 8種類（Multi-Agent / RAG / Agentic Search / Tool Call / データフロー / デプロイ / メモリアーキテクチャ 等）
+- **ビジュアルスタイル**: 5種類（ガラス質・ミニマル・カラフル 等）
+- **出力**: SVG + 1920px PNG自動エクスポート
+- **特徴**: セマンティック形状（六角形=Orchestrator、円筒=ストレージ）・セマンティックカラー（青=主フロー、オレンジ=制御、緑=読み書き）を自動割当
+- **活用エージェント**:
+  - `tech-lead`: システム設計書・マイクロサービス構成図
+  - `ai-engineer`: RAGパイプライン・Multi-Agent設計図・Mem0メモリ階層図
+  - `infra-devops`: デプロイ図・Kubernetes構成図
+
+### 使い分けルール
+```
+技術/AI/Agentの設計図 → fireworks-tech-graph
+汎用図表（ファネル/ユーザーストーリー/インフォグラフィック）→ markdown-viewer/skills
+両方欲しい → 両方インストール（競合しない）
+```
 
 ### Figma連携フロー（UI/UX・コンポーネント設計時）
 ```
