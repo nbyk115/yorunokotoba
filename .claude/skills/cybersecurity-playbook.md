@@ -203,6 +203,96 @@ password\s*[:=]\s*['"][^'"]{8,}  # ハードコードパスワード
 
 ---
 
+## 8.5 サプライチェーンセキュリティ（npm / PyPI / GitHub Actions）
+
+> **依存パッケージ経由の攻撃が2024-2026年で急増。OWASP A08「ソフトウェアとデータの整合性」の実装詳細。**
+
+### 脅威モデル
+- 悪意あるパッケージ（typosquatting: expres, loadsh 等）
+- 既存パッケージの乗っ取り（メンテナアカウント侵害）
+- preinstall / postinstall スクリプトでの任意コード実行
+- ビルドパイプライン改ざん（GitHub Actions injection）
+
+### 8つの防御設定
+
+**1. ロックファイル強制コミット**
+```
+package-lock.json / yarn.lock / pnpm-lock.yaml / poetry.lock
+→ 必ずgit管理。CI時は `npm ci` を使い `npm install` を禁止
+```
+
+**2. 自動脆弱性スキャン（CI組込）**
+```yaml
+# GitHub Actions例
+- run: npm audit --audit-level=high
+- run: pip-audit
+```
+`audit-level=high`以上でCIを落とす。
+
+**3. Dependabot / Renovate で自動更新PR**
+```yaml
+# .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+```
+
+**4. preinstallスクリプトをブロック**
+```bash
+# 新規パッケージ追加時
+npm install --ignore-scripts <package>
+# その後、信頼できるもののみscriptを手動実行
+```
+
+**5. GitHub Secret Scanning + Push Protection**
+```
+Settings → Code security and analysis → Secret scanning: Enabled
+Push protection: Enabled
+→ コミット時にシークレットを自動検知・ブロック
+```
+
+**6. Dependency Review Action（PR時の新規依存チェック）**
+```yaml
+# .github/workflows/dependency-review.yml
+- uses: actions/dependency-review-action@v4
+  with:
+    fail-on-severity: high
+```
+
+**7. npm provenance / SLSA対応**
+```bash
+# パッケージ公開時にprovenanceを付与
+npm publish --provenance
+
+# インストール時に検証
+npm install --auditlevel=high
+```
+
+**8. GitHub Actions のpin固定**
+```yaml
+# 悪い例: バージョンタグ（書き換え可能）
+- uses: actions/checkout@v4
+
+# 良い例: commit SHAで固定
+- uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+```
+
+### typosquatting対策
+- 新規パッケージ追加前に GitHub Stars / ダウンロード数 / メンテナ履歴を確認
+- 類似名（`lodash` vs `loadsh`, `express` vs `expres`）に注意
+- `npm view <package>` で公開元・メンテナを確認
+
+### ConsultingOS適用
+- `fullstack-dev` / `frontend-dev` / `ai-engineer`: 新規パッケージ追加前に上記1-5を必ず確認
+- `infra-devops`: CI/CDに2, 6, 8を組み込み
+- `tech-lead`: 四半期ごとに全プロジェクトの依存監査
+
+---
+
 ## 9. ConsultingOSエージェント別セキュリティ責務
 
 | エージェント | セキュリティ責務 |
