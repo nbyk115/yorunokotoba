@@ -460,6 +460,34 @@ claude --resume
 `/codemap` コマンドで `.claude/codemap.md` を生成しておくと、
 巨大コードベースでもコンテキストを消費せずにClaudeがナビゲートできる。
 
+### backlog/フォルダ習慣（大量の指摘・TODO管理）
+
+> **システム分析や長文レビューで出てきた大量の指摘・タスクを、まずmdに吐かせてから1つずつ処理する。**
+
+AIに分析させると5-10個の重要な指摘が一気に出ることが多い。そのまま順番に処理するとコンテキストが詰まる。
+代わりに `backlog/` フォルダに全タスクをmdとして吐かせてから処理する。
+
+```
+project/
+├── backlog/
+│   ├── 001-security-audit-findings.md    # セキュリティ監査の指摘5件
+│   ├── 002-performance-bottleneck.md     # パフォーマンス改善タスク
+│   ├── 003-ux-issues.md                  # UX問題点
+│   └── done/                             # 完了したものを移動
+│       └── 000-initial-setup.md
+```
+
+**活用方法**:
+1. AIに「分析結果を`backlog/`にmdで吐いて」と指示
+2. 1つのmdを開いて新しいスレッドで処理開始
+3. 完了したら`backlog/done/`に移動 or 削除
+4. フォローアップ項目があれば既存mdに追記
+5. 別モデル（Opus/Sonnet/外部AI）にレビュー依頼する際もmdを渡すだけで文脈が伝わる
+
+**ConsultingOSとの相性**: `/evolve` 実行結果、`/review-agent-essence` 実行結果、`agent-evaluation` のC判定タスクを `backlog/` に吐き出せば、段階的に処理できる。
+
+**鉄則**: 何でもmdに吐かせまくる。これが最強のコンテキスト管理。
+
 ---
 
 ## 5.5 推奨settings.json設定

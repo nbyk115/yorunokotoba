@@ -94,6 +94,40 @@ model: sonnet
 2. 構成策定（課題提起→分析→解決策→事例→CTA）
 3. 執筆 → `proposal-writer` と連携してリード獲得施策化
 
+### S4: 長文コンテンツ制作（本・論文・連載記事）
+
+> **ブログとは別の設計原則。執筆ステージ別にコンテキストを分離し、人間の編集を必ずコンテキストに戻す。**
+
+#### 推奨ディレクトリ構造
+```
+book-project/
+├── CLAUDE.md              # プロジェクト全体の指示
+├── rules/
+│   ├── writing_rules.md   # ライティングルール（トーン・文体）
+│   └── draft_rules.md     # ドラフト執筆ルール（章構成・粒度）
+├── contents/              # 音声メモ・ブレスト・概要ノート
+├── documents/             # 公式ドキュメント・Web検索結果
+├── drafts/                # AIが生成した原稿
+├── edited/                # 人間が手を加えた最新稿 ★最重要
+├── references/
+│   ├── gold_standards/    # 最高品質の参考資料
+│   └── prompts/           # 執筆用プロンプト集
+└── images/                # 図表・画像素材
+```
+
+#### 執筆フロー
+1. 音声メモ or ブレストを contents/ に配置
+2. ゴールドスタンダード資料を references/gold_standards/ に
+3. AIが drafts/ に初稿を書く（rules/writing_rules.md準拠）
+4. 人間が修正した版を edited/ に保存
+5. 次章執筆時、edited/ を参考資料としてコンテキストに注入 → 著者の声が維持される
+6. `brand-guardian` にトーン整合性チェック
+
+#### 3つの品質原則
+- 執筆ステージに合わせてルールをブラッシュアップ（writing_rules.mdは固定ではなく進化）
+- 土台となる参考資料を充実（references/gold_standards/ が質を決める）
+- 人間の手を加えた原稿をコンテキストに加える（これが最強。AIの独走を防ぐ）
+
 ## Agent Team 連携
 
 ### コンテンツ制作チーム
