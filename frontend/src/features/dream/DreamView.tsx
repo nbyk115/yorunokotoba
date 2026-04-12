@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { CharaAvatar } from '@/components/ui/CharaAvatar';
+import { RarityBadge } from '@/components/ui/RarityBadge';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry } from '@/lib/archive';
@@ -22,8 +24,7 @@ export function DreamView({ profile }: DreamViewProps) {
     if (!text.trim()) return;
     track('dream_start', { length: text.length });
     setLoading(true);
-    // small delay so users feel the "analysis"
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 500));
     const r = analyzeDream(text, signIdx);
     setResult(r);
     setLoading(false);
@@ -34,10 +35,7 @@ export function DreamView({ profile }: DreamViewProps) {
       timestamp: Date.now(),
       typeId: r.type.id,
       themeKey: r.theme.key,
-      summary: r.symbols
-        .slice(0, 2)
-        .map((s) => s.word)
-        .join('・'),
+      summary: r.symbols.slice(0, 2).map((s) => s.word).join('・'),
     });
   }
 
@@ -58,7 +56,7 @@ export function DreamView({ profile }: DreamViewProps) {
       </header>
 
       {!result && (
-        <Card>
+        <Card className="slide-up">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -89,28 +87,75 @@ export function DreamView({ profile }: DreamViewProps) {
 
       {result && (
         <>
-          <Card style={{ background: result.theme.grad, color: '#fff' }}>
-            <p style={{ fontSize: 13, fontWeight: 700, opacity: 0.85 }}>
+          {/* Hero character card — matches legacy layout */}
+          <div
+            className="slide-up"
+            style={{
+              borderRadius: 'var(--r-card)',
+              overflow: 'hidden',
+              background: result.theme.grad,
+              color: '#fff',
+              padding: 'var(--sp-6) var(--sp-5) var(--sp-5)',
+              textAlign: 'center',
+              position: 'relative',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                top: 14,
+                right: 14,
+                display: 'flex',
+                gap: 6,
+                alignItems: 'center',
+              }}
+            >
+              <RarityBadge rarity={result.type.rarity} />
+              <span style={{ fontSize: 10, opacity: 0.8 }}>{result.type.pct}</span>
+            </div>
+
+            <p style={{ fontSize: 12, fontWeight: 700, opacity: 0.85, letterSpacing: 1 }}>
               {result.theme.icon} {result.theme.label}
             </p>
-            <h3 style={{ fontSize: 18, fontWeight: 700, marginTop: 8, lineHeight: 1.6 }}>
-              {result.type.name}
-            </h3>
-            <p style={{ fontSize: 12, opacity: 0.9, marginTop: 4 }}>{result.type.sub}</p>
-          </Card>
 
-          <Card>
+            <div style={{ margin: '16px auto 12px' }}>
+              <CharaAvatar
+                id={result.type.id}
+                size={120}
+                animate
+                border="3px solid rgba(255,255,255,0.35)"
+              />
+            </div>
+
+            <h3 style={{ fontSize: 22, fontWeight: 700, letterSpacing: 1 }}>{result.type.name}</h3>
+            <p style={{ fontSize: 12, opacity: 0.92, marginTop: 6 }}>{result.type.sub}</p>
+
+            <p style={{ fontSize: 13, lineHeight: 1.9, marginTop: 'var(--sp-4)', textAlign: 'left', opacity: 0.96 }}>
+              {result.type.desc}
+            </p>
+          </div>
+
+          <Card className="slide-up-1">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
               夢が伝えていること
             </h4>
             <p style={{ fontSize: 14, lineHeight: 1.9, color: 'var(--t1)' }}>{result.mainReading.intro}</p>
-            <p style={{ fontSize: 13, lineHeight: 1.9, color: 'var(--t2)', marginTop: 'var(--sp-4)', whiteSpace: 'pre-line' }}>
+            <p
+              style={{
+                fontSize: 13,
+                lineHeight: 1.9,
+                color: 'var(--t2)',
+                marginTop: 'var(--sp-4)',
+                whiteSpace: 'pre-line',
+              }}
+            >
               {result.mainReading.deep}
             </p>
           </Card>
 
           {result.symbols.length > 0 && (
-            <Card>
+            <Card className="slide-up-2">
               <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 12 }}>
                 シンボル
               </h4>
@@ -137,7 +182,7 @@ export function DreamView({ profile }: DreamViewProps) {
             </Card>
           )}
 
-          <Card>
+          <Card className="slide-up-3">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
               今日のメッセージ
             </h4>
@@ -156,6 +201,17 @@ export function DreamView({ profile }: DreamViewProps) {
 
             <div style={{ marginTop: 'var(--sp-4)' }}>
               <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
+                気をつけること
+              </p>
+              <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
+                {result.actions.aware.map((a, i) => (
+                  <li key={i}>{a}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div style={{ marginTop: 'var(--sp-4)' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
                 今日避けたいこと
               </p>
               <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
@@ -166,9 +222,9 @@ export function DreamView({ profile }: DreamViewProps) {
             </div>
           </Card>
 
-          <Card>
+          <Card className="slide-up-4">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
-              ラッキー3点
+              🎁 ラッキー3点
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <p style={{ fontSize: 13, color: 'var(--t1)' }}>
@@ -186,6 +242,19 @@ export function DreamView({ profile }: DreamViewProps) {
                 <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
               </p>
             </div>
+          </Card>
+
+          <Card className="slide-up-5">
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
+              💕 相性の良いタイプ
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
+              <strong>{result.type.bestMatch}</strong>
+              <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.type.bestWhy}</span>
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+              <strong>恋愛傾向:</strong> {result.type.love}
+            </p>
           </Card>
 
           <Button variant="secondary" onClick={handleReset} fullWidth>

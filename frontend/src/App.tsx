@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Component, type ReactNode } from 'react';
 import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
@@ -6,58 +6,61 @@ import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { ArchiveView } from '@/features/archive/ArchiveView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
+import { AppHeader } from '@/components/navigation/AppHeader';
+import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
+import { Particles } from '@/components/fx/Particles';
+import { tickStreak, type StreakState } from '@/logic/streak';
+import { trackException, track } from '@/lib/analytics';
 
 export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive';
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
+  const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
+  const [streak, setStreak] = useState<StreakState>(() => ({ count: 0, lastDay: '' }));
 
-  // If profile not set, show setup
   useEffect(() => {
-    if (!profile) {
-      setView('home');
+    if (profile) {
+      const s = tickStreak();
+      setStreak(s);
+      track('streak_update', { count: s.count });
+      if (s.count === 3 || s.count === 7 || s.count === 14 || s.count === 30) {
+        track('streak_milestone', { count: s.count });
+      }
     }
   }, [profile]);
+
+  function handleProfileComplete(p: UserProfile) {
+    setProfile(p);
+  }
 
   if (!profile) {
     return (
       <div className="app-root">
-        <header style={{ padding: 'var(--sp-6) var(--sp-5)', textAlign: 'center' }}>
-          <h1
-            style={{
-              fontSize: 28,
-              fontWeight: 700,
-              color: 'var(--rose)',
-              letterSpacing: 2,
-              margin: 0,
-            }}
-          >
-            🌙 よるのことば
-          </h1>
-          <p style={{ color: 'var(--t2)', fontSize: 13, marginTop: 6 }}>夢占い × 星座占い</p>
-        </header>
-        <ProfileSetup initial={null} onComplete={setProfile} />
+        <AppHeader subtitle="夢占い × 星座占い" />
+        <ProfileSetup initial={null} onComplete={handleProfileComplete} />
       </div>
     );
   }
 
   return (
-    <div className="app-root" style={{ paddingBottom: 88 }}>
-      <ErrorBoundary>
-        {view === 'home' && <HomeView profile={profile} onNavigate={setView} />}
-        {view === 'dream' && <DreamView profile={profile} />}
-        {view === 'fortune' && <FortuneView profile={profile} />}
-        {view === 'archive' && <ArchiveView />}
-      </ErrorBoundary>
+    <div className="app-root" style={{ paddingBottom: 88, position: 'relative' }}>
+      <Particles count={14} seed={17} />
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <AppHeader />
+        <ErrorBoundary>
+          {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
+          {view === 'dream' && <DreamView profile={profile} />}
+          {view === 'fortune' && <FortuneView profile={profile} />}
+          {view === 'archive' && <ArchiveView />}
+        </ErrorBoundary>
+      </div>
       <BottomTabBar current={view} onChange={setView} />
+      {showFtue && <FtueOverlay onComplete={() => setShowFtue(false)} />}
     </div>
   );
 }
-
-// Minimal error boundary — prevents a single view crash from killing the shell.
-import { Component, type ReactNode } from 'react';
-import { trackException } from '@/lib/analytics';
 
 interface EBState {
   err: Error | null;
