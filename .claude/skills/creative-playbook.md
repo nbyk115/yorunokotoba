@@ -167,6 +167,22 @@ L1: 20画面（52%）→ サブ設定, 管理画面, 補助リスト
 - **フロー**: proposal-writerが構成→HTMLスライド生成→html2pptxでPPTX変換→納品
 - **DESIGN.md連携**: HTMLスライドにDESIGN.mdのカラー・フォントを適用→ブランド準拠PPTX
 
+### markdown-viewer/skills（Markdown→図表自動生成）
+> **100+の図例・6000+のベクターアイコンを持つ図表生成スキル。Markdownの内容から一言で自動カスタマイズ。**
+
+```bash
+npx skills add markdown-viewer/skills
+```
+
+- **対応図**: アーキテクチャ図・フローチャート・ワークフロー図・状態図・展開図・クラス図・ユースケース図・インフォグラフィック
+- **フロー**: テキスト→図→html2pptx→PPTXの一気通貫納品
+- **活用エージェント**:
+  - `proposal-writer`: 提案書にアーキテクチャ図・フローチャート自動生成
+  - `tech-lead`: システム設計書・クラス図・デプロイ図
+  - `product-manager`: ユーザーストーリー図・ロードマップ図
+  - `creative-director`: インフォグラフィック・プレゼン資料
+  - `marketing-director`: ファネル図・チャネルミックス可視化
+
 ### Figma連携フロー（UI/UX・コンポーネント設計時）
 ```
 1. FigmaリンクをURLで共有
