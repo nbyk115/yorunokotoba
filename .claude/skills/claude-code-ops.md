@@ -131,6 +131,20 @@ settings.jsonに定義する。
 > GitHub操作は `gh` CLI、API呼び出しは `curl`/Bash で代替。
 > MCPが必要になった場合のみ、上記フローに従って導入する。
 
+### Optional MCPs（案件発生時に有効化する候補リスト）
+
+> **原則**: 今は入れない。該当案件が発生した瞬間に settings.json に追加する。投機的抽象化を避けるため事前設定しない。
+
+| MCP | 有効化する案件条件 | 対応エージェント |
+|---|---|---|
+| **Shopify AI Toolkit** ([shopify.dev](https://shopify.dev/docs/apps/build/ai-toolkit)) | D2C/EC コンサル案件・商品管理/在庫/SEO自動化 | `performance-marketer` / `fullstack-dev` / `seo-specialist` |
+| **Stripe MCP** | 決済統合実装・サブスク設計（よるのことば等） | `fullstack-dev` / `ai-engineer` |
+| **Notion MCP** | クライアント案件のドキュメント同期・ナレッジ管理 | `proposal-writer` / `product-manager` |
+| **Slack MCP** | チームコミュニケーション統合（長期プロジェクト運営） | `client-success` / `strategy-lead` |
+| **Linear/Jira MCP** | プロダクトバックログ連携 | `product-manager` / `tech-lead` |
+
+→ いずれも有効化する場合は「5-6個上限」のルールを守り、使用完了後は無効化する。
+
 ---
 
 ## 3. Agent Teams（セッション間チーム協調）
