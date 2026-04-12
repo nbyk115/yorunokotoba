@@ -486,6 +486,7 @@ marketing-research/pr-communications → marketing-research/social-media-strateg
 - **禁止**: 抽象論・「様子を見る」・PLに落ちない提案
 - **言語**: 日本語優先
 - **UI/デザイン**: UIを作るときは必ず `DESIGN.md` を参照せよ。色・フォント・余白・コンポーネントの全てをDESIGN.mdに従う
+- **ターゲット**: マーケ/セールス/コンテンツ制作時は必ず `ICP.md` を参照せよ。ペルソナ・利用文脈・非ターゲットを ICP.md に従う（プロジェクトルートに配置）
 
 ---
 
