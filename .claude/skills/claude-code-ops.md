@@ -4,6 +4,20 @@
 Claude Codeの性能を最大化するための運用ガイド。
 Hooks・MCP管理・並列ワークフロー・コンテキスト管理を網羅する。
 
+### 4層アーキテクチャ（メタフレーム）
+
+> **出典**: Claude Code Workflow Cheatsheet 2026 Edition
+> ConsultingOS は以下の4層で構成される。各層の役割を混同しないこと。
+
+| Layer | 役割 | 実装箇所 |
+|---|---|---|
+| **L1: Rules** | 永続的なルールと方針（司令塔） | `CLAUDE.md`（ブランドルール・ルーティング・反証モード・外科的変更原則・冗長性禁止） |
+| **L2: Skills** | 自動起動される知識パック | `.claude/skills/*.md`（22スキル） |
+| **L3: Hooks** | 安全ゲートと機械的自動化 | `settings.json` の hooks セクション |
+| **L4: Agents** | 独自コンテキストを持つサブエージェント | `.claude/agents/**/*.md`（34エージェント） |
+
+**判断の原則**: 「全体の方針」→ L1 / 「特定ドメインの知識」→ L2 / 「機械的な強制」→ L3 / 「専門役割の切り出し」→ L4
+
 ---
 
 ## 1. Hooks（自動化トリガー）
@@ -20,6 +34,14 @@ settings.jsonに定義する。
 | **UserPromptSubmit** | メッセージ送信時 | 入力チェック・コンテキスト付加 |
 | **Stop** | Claude応答完了時 | 品質チェック・残タスク確認 |
 | **PreCompact** | コンテキスト圧縮前 | 重要情報の保全 |
+
+### Exit Code 仕様
+| Exit Code | 意味 |
+|---|---|
+| `0` | allow（処理を継続） |
+| `2` | block（処理を停止） |
+
+→ PreToolUse で `exit 2` を返すと該当ツール呼び出しがブロックされる。安全ゲートとして利用する。
 
 ### ConsultingOS推奨Hooks
 
@@ -698,7 +720,12 @@ Be more specific, more opinionated, and show tradeoffs.
 | `/` | スラッシュコマンド起動 |
 | `Shift+Enter` | 複数行入力 |
 | `Tab` | 思考表示の切り替え |
+| `Shift+Tab` → `Tab` | Auto Accept モード |
+| `Shift+Tab` → `Shift+Tab` | **Plan Mode**（計画のみ、実行しない） |
 | `Esc Esc` | Claude中断 & コード復元 |
+| `/init` | 初期化・スターターメモリ生成 |
+| `/doctor` | インストール・設定診断 |
+| `/compact` | コンテキスト手動圧縮 |
 
 ---
 
@@ -716,3 +743,4 @@ Be more specific, more opinionated, and show tradeoffs.
 |---|---|---|---|---|
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
 | 1.1.0 | 2026-04-12 | §5.7 Anthropic公式5パターン対応表・§5.8 反復改善プロンプト追加 | Anthropic "Building Effective Agents" / claude.com/blog/multi-agent-coordination-patterns | 公式パターンとの差分可視化・Voting/Gate未実装を特定 |
+| 1.2.0 | 2026-04-12 | 4層アーキテクチャメタフレーム・Hook exit code仕様・Plan Mode/doctor追加 | Claude Code Workflow Cheatsheet 2026 Edition | L1-L4の役割混同防止・安全ゲート明確化 |
