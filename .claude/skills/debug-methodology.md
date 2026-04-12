@@ -137,6 +137,70 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 | 「とりあえず再起動」 | 根本原因が不明のまま再発する | 再起動前にログ・状態を保全する |
 | エラーメッセージを読まない | 答えが書いてあることが多い | まずエラーメッセージを正確に読む |
 | 「環境の問題」で片付ける | 環境が原因ならその環境差分を特定すべき | 何の設定・バージョンが違うのか具体的に |
+| **実データなしで推測 patch を連発** | 4-7連続で commit しても直らず時間を溶かす | **Step 1（再現）を必ず通す・実機 devtools/Console/スクショを要求してから着手** |
+
+---
+
+## 5. 実戦ケーススタディ — よるのことば Shake/Scroll 回帰（2026-04-12）
+
+### 発生した問題
+1. ヘッダー「🌙 よるのことば」ロゴとホロスコープ結果のキャラ画像が高速シェイク
+2. Surgical fix 連発 → スクロール不能が何度も再発
+3. 7 連続 commit でも shake が完全に止まらず、最終的に nuclear CSS override + revert を経て収束
+
+### 根本原因（後から判明）
+1. **CSS animation + React inline style の相性問題**
+   - `<img style={{animation:"float 3s"}} />` のように inline で書くと、親コンポーネントが state 変更で re-render するたびに style 属性が再適用される
+   - ブラウザは `animation` プロパティの再代入を「新規アニメーション開始」と解釈し、開始フレーム（例: `rarityReveal 0%{scale(0.3) rotate(-10deg)}`）に巻き戻す
+   - re-render 頻度が animation duration より短いと、常に開始フレーム付近で固定 → 高速シェイクに見える
+
+2. **transform:translateZ(0) の副作用**
+   - GPU layer 昇格のために `header, main, nav` に `transform:translateZ(0)` を適用
+   - transform を持つ要素は新規 containing block を作る
+   - 内部の `position:fixed` や body scroll と相互作用し、iOS Safari で momentum scroll が破綻
+   - **結果: shake は止まるがスクロールが壊れる**
+
+### 得られた教訓
+
+| 教訓 | ルール化 |
+|---|---|
+| CSS animation は className で掛けて inline style を避ける | React/SPA で infinite animation を掛ける際は必ず className 経由。inline `style={{animation:...}}` は禁止 |
+| 親が頻繁に re-render する環境では inline style 自体を避ける | 再描画コスト + animation 再起動の二重問題 |
+| `transform:translateZ(0)` をタグセレクタ（`header,main,nav`）に広く掛けない | scrollable ancestor or position:fixed descendant を壊す。必要なら `.gpu-layer` のような特定クラスに限定 |
+| nuclear CSS override (`* { transition:none }` 等) は html/body/#root を **必ず除外** | scroll 関連プロパティに触れないようにする |
+| defense-in-depth (keyframes no-op 化) は surgical fix の代替にならない | 真の root cause を devtools で確認してから直すのが本線 |
+| 実機データなしの blind patch は禁止 | 環境制約で devtools 取れない場合は user に Console コマンド実行を依頼 |
+
+### 推奨ワークフロー（同種バグ再発時）
+
+1. **データ収集** (Step 1)
+   - ブラウザ devtools → Console で以下を実行してもらう:
+     ```js
+     Array.from(document.querySelectorAll('*')).filter(el=>{const a=getComputedStyle(el).animationName;return a&&a!=='none'}).map(el=>({tag:el.tagName,cls:(el.className||'').toString().slice(0,40),anim:getComputedStyle(el).animationName,dur:getComputedStyle(el).animationDuration}))
+     ```
+   - スクリーンショット（動画なお可）
+   - Performance タブで Paint/Layout が繰り返し発火していないか
+
+2. **仮説列挙** (Step 2)
+   - CSS animation の inline style 再適用
+   - Transform で containing block 生成
+   - Re-render loop (setState in render body, useEffect 無限ループ)
+   - Scroll-linked transform / rAF loop
+   - Font loading shift
+
+3. **局所化** (Step 3)
+   - 該当要素をピンポイントで特定してから変更
+   - tag セレクタ (`*`, `header`, `nav`) への CSS 広範囲適用は最終手段
+
+4. **修正** (Step 4)
+   - className ベースで animation を掛け直す
+   - `transform:translateZ(0)` は特定クラスに限定
+   - scroll を壊さないため html/body/#root を除外
+
+5. **防止** (Step 5)
+   - 本ケーススタディに追記（今ここ）
+   - code-quality-gates.md Gate 0 に「inline animation 禁止」を追加
+   - コードレビューで `style={{animation:...}}` パターンを grep で検出
 
 ---
 
@@ -168,3 +232,4 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.1.0 | 2026-04-12 | §5 実戦ケーススタディ (よるのことば shake/scroll) 追加 + アンチパターンに「実データなしの推測 patch 連発」を追記 | 本セッション 7 連続 commit の失敗経験 | React inline animation + transform の落とし穴を永続記録し同種バグを再発防止 |

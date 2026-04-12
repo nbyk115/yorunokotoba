@@ -205,6 +205,9 @@ PR #[番号]のレビュー。Agent Teamを作成:
 - [ ] **フォーマット変更の分離**: 自動整形の差分とロジック変更の差分は別コミットか？
 - [ ] **削除の証拠**: 削除したコード/ファイルは本当に使われていないか？ grep/ref確認したか？
 - [ ] **Chesterton's Fence**: 「なぜこれがあるか分からない」ものを消していないか？ 理由が分からないコードは**歴史的理由がある**と仮定して触らない（出典: Addy Osmani / G.K. Chesterton）
+- [ ] **Inline animation 禁止**: React/JSX で `style={{animation:"..."}}` を書いていないか？ 親 re-render で CSS アニメが restart され視覚的シェイクの原因になる → 必ず `className` 経由で CSS 側に定義（出典: よるのことば shake 事件 2026-04-12）
+- [ ] **Transform タグセレクタ禁止**: CSS で `header, main, nav, body, html { transform:... }` のような広範囲適用をしていないか？ 新規 containing block が `position:fixed` や body scroll を壊す → 特定クラス (`.gpu-layer`) に限定（出典: 同上）
+- [ ] **Nuclear CSS override の scope**: `* { animation:none; transition:none }` を書く場合は `*:not(html):not(body):not(#root)` で scroll コンテナを除外したか？
 - [ ] **命名の踏襲**: 既存の命名規則・インデント・コメント形式を尊重したか？
 - [ ] **「ついで」の排除**: 「せっかくなので」「ついでに」で追加した変更はないか？あれば別PRに分離
 - [ ] **テストの外科性**: 既存テストを"改善"していないか？ 新規テストは追加のみか？
@@ -257,3 +260,4 @@ PR #[番号]のレビュー。Agent Teamを作成:
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
 | 1.1.0 | 2026-04-12 | Gate 0（Surgical Change Gate）追加 | Karpathy観察 + andrej-karpathy-skills 原則3「外科的手術的な変更」 | 依頼範囲外の変更・"ついで"改善を防止 |
 | 1.2.0 | 2026-04-12 | Gate 0 に Chesterton's Fence ルール追加 | addyosmani/agent-skills "code-simplification" | 理由不明コードの安易な削除を防止 |
+| 1.3.0 | 2026-04-12 | Gate 0 に inline animation 禁止 / Transform タグセレクタ禁止 / Nuclear override scope 限定ルール追加 | よるのことば shake/scroll 事件 2026-04-12 | React × CSS animation 相互作用 + transform 副作用の永続記録 |
