@@ -3,11 +3,24 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles/global.css';
 import { applyInitialTheme } from './lib/theme';
+import { trackException } from './lib/analytics';
 
 applyInitialTheme();
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+// Global error reporting (non-blocking)
+window.addEventListener('error', (e) => {
+  trackException(e.message, true);
+});
+window.addEventListener('unhandledrejection', (e) => {
+  const reason = (e.reason instanceof Error ? e.reason.message : String(e.reason)) || 'unknown';
+  trackException('Promise: ' + reason, false);
+});
+
+const rootEl = document.getElementById('root');
+if (rootEl) {
+  ReactDOM.createRoot(rootEl).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+}

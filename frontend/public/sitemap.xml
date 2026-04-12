@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://yorunokotoba.vercel.app/</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://yorunokotoba.vercel.app/ogp.png</image:loc>
+      <image:title>よるのことば — 夢占い×ホロスコープ占いアプリ</image:title>
+      <image:caption>夢占いとホロスコープを組み合わせた占いWebアプリ。24キャラクターがあなたの深層心理を読み解きます。</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://yorunokotoba.vercel.app/icon-512.png</image:loc>
+      <image:title>よるのことば アプリアイコン</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://yorunokotoba.vercel.app/legal.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://yorunokotoba.vercel.app/privacy.html</loc>
+    <lastmod>2026-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://yorunokotoba.vercel.app/terms.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
