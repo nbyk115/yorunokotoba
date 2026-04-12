@@ -165,31 +165,16 @@ a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
 .tab-item:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
 /* ── Reduced motion ── */
 @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms !important;transition-duration:0.01ms !important}}
-/* ── 震え防止 nuclear override v2 ── CSS 由来の一切の動きを停止 */
-/* 全 keyframes を no-op に上書き */
+/* ── 震え防止 v3 (keyframes 無力化のみ・全要素 pause は撤去) ── */
+/* shake を起こす keyframes を no-op 上書きし、scroll / spin / breathe は保持 */
 @keyframes pulse{0%,100%{transform:none}}
 @keyframes float{0%,100%{transform:none}}
 @keyframes rarityReveal{0%,100%{transform:none;opacity:1}}
 @keyframes holoShimmer{0%,100%{background-position:0 0}}
 @keyframes rarityGlow{0%,100%{box-shadow:0 0 14px rgba(232,98,124,0.22)}}
 @keyframes shimmer{0%,100%{background-position:0 0}}
-@keyframes twinkle{0%,100%{opacity:0.2}}
-@keyframes breathe{0%,100%{opacity:1}}
-@keyframes pulse-dot{0%,100%{transform:none;opacity:1}}
-@keyframes badge-glow{0%,100%{box-shadow:0 0 8px rgba(176,138,207,0.3)}}
 @keyframes confetti{0%,100%{transform:none;opacity:1}}
-@keyframes fadeIn{0%,100%{opacity:1}}
-@keyframes slideUp{0%,100%{transform:none;opacity:1}}
-/* html/body/root は除外してスクロール系プロパティに触らない */
-*:not(html):not(body):not(#root),*::before,*::after{
-  transition:none !important;
-  animation-play-state:paused !important;
-}
-/* ただし spinner だけは動かす (ローディング UI 視認性のため)・親 re-render での restart を防ぐため 2.0s にスロー */
-.spin-loader,[style*="spin 0.8s"],[style*="spin 1s"]{
-  animation:spin 2s linear infinite !important;
-  animation-play-state:running !important;
-}
+@keyframes rarityRevealOverride{0%,100%{transform:none;opacity:1}}
 </style>
 
 <!-- SW更新＆キャッシュクリア v2 -->
