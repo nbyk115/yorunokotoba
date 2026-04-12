@@ -59,6 +59,17 @@ model: sonnet
 
 ## リサーチメソッド
 
+### 信頼できる定点観測ソース（年次レポート）
+地政学・経済動向の毎年の必読資料。最新版を毎年チェック:
+
+| ソース | 内容 | 公開 | URL |
+|---|---|---|---|
+| Eurasia Group「Top Risks」 | 世界10大地政学リスク | 毎年1月（無料） | eurasiagroup.net |
+| WEF Global Risks Report | 世界経済フォーラムのリスクレポート | 毎年1月 | weforum.org |
+| McKinsey Global Institute | マクロ経済・産業トレンド | 不定期 | mckinsey.com/mgi |
+| Edelman Trust Barometer | 信頼度調査 | 毎年1月 | edelman.com |
+| Meeker Internet Trends | ネット産業トレンド | 毎年 | bondcap.com |
+
 ### 5W1Hフレーム
 1. **What**: 何が起きているか（事実の確認）
 2. **Who**: 誰が関与しているか（ステークホルダー）
