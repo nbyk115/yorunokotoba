@@ -185,8 +185,9 @@ a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
   transition:none !important;
   animation-play-state:paused !important;
 }
-/* ただし spinner だけは動かす (ローディング UI 視認性のため) */
+/* ただし spinner だけは動かす (ローディング UI 視認性のため)・親 re-render での restart を防ぐため 2.0s にスロー */
 .spin-loader,[style*="spin 0.8s"],[style*="spin 1s"]{
+  animation:spin 2s linear infinite !important;
   animation-play-state:running !important;
 }
 /* サブピクセル揺れ物理抑制: GPU layer 昇格 */
