@@ -316,6 +316,23 @@ Atoms → Molecules → Organisms → Templates → Pages
 プロジェクトルートに配置するデザインシステム定義ファイル。Claude Codeが自動で読み込み、ブランド準拠のコードを生成する。
 `brand-guidelines.md`（思想・ルール）を**機械可読な実装仕様**に変換したもの。
 
+### 重要原則: 「値」と「意図（Why）」を必ずセットで記述する
+
+> **themeファイル/tokens.jsonは「値」だけ。DESIGN.mdは「意図」を明文化したもの。両者は競合しない、補完関係。**
+
+`color-primary: #0066CC` と書いてあっても「なぜ青なのか」は伝わらない。
+人間が実装していた時代は暗黙知で補完できていたが、AIには意図を明示しないとブランドがドリフトする。
+
+**全トークンに「Why」を併記する**:
+
+```markdown
+| Token | Value | Usage | Why |
+|---|---|---|---|
+| `--rose` | `#E8627C` | Primary accent, CTA | コーラルピンクで夜明け前の空を連想。占いの神秘性と親しみやすさを両立 |
+| `--radius-card` | `18px` | Card border-radius | 角を丸めることで「柔らかさ・包容感」を表現。シャープな角は使わない |
+| `font-heading` | `Zen Maru Gothic` | 見出し | 丸ゴシックで警戒心を解き、占いの「話を聞いてもらえる」安心感を作る |
+```
+
 ### DESIGN.mdの必須セクション
 
 ```markdown
