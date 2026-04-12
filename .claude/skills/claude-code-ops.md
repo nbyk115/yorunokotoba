@@ -494,6 +494,35 @@ claude --resume
 `/codemap` コマンドで `.claude/codemap.md` を生成しておくと、
 巨大コードベースでもコンテキストを消費せずにClaudeがナビゲートできる。
 
+### code-review-graph（Tree-sitter AST解析・精度重視）★Service Dev向け上位版
+
+> **/codemapは手動Markdown、code-review-graphはAST自動解析。トークン削減6.8倍の実測値あり。**
+
+```bash
+# 導入（100%ローカル・ゼロクラウド）
+pip install code-review-graph
+# MCP経由でClaude Codeに接続
+```
+
+- **仕組み**: Tree-sitterでAST解析 → ファイル依存関係を構造的にマッピング → 差分追跡で増分更新
+- **効果**: Claudeがクエリする時だけ関連ファイルを返す。全コードベース読み込みを回避
+- **実測**: 13,205トークン → 1,928トークン（6.8倍削減）、レビュー品質7.2 → 8.8
+- **claude-mem:smart-exploreとの違い**: smart-exploreは汎用構造検索。code-review-graphはレビュー特化で依存関係グラフを構築
+
+### 使い分け
+```
+小規模プロジェクト → /codemap で十分
+中〜大規模（100ファイル超）→ code-review-graph
+コードレビュー特化 → code-review-graph
+汎用構造検索 → claude-mem:smart-explore
+```
+
+### 対応エージェント
+- `tech-lead` — コードレビュー・技術負債分析
+- `fullstack-dev` — 大規模リファクタリング時の影響範囲特定
+- `frontend-dev` — コンポーネント依存関係の把握
+- `infra-devops` — Infrastructure as Codeの依存関係分析
+
 ### backlog/フォルダ習慣（大量の指摘・TODO管理）
 
 > **システム分析や長文レビューで出てきた大量の指摘・タスクを、まずmdに吐かせてから1つずつ処理する。**
