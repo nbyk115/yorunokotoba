@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <!-- build:1774790400 -->
-<script>/* SW kill switch — evict stale caches from broken deploys. Runs once per user. */(function(){try{var K='ynk_sw_reset_v10';if(localStorage.getItem(K))return;if(!('serviceWorker' in navigator))return;navigator.serviceWorker.getRegistrations().then(function(regs){var hadOne=regs.length>0;return Promise.all(regs.map(function(r){return r.unregister();})).then(function(){if(window.caches){return caches.keys().then(function(keys){return Promise.all(keys.map(function(k){return caches.delete(k);}));});}}).then(function(){localStorage.setItem(K,'1');if(hadOne){location.reload();}});}).catch(function(){try{localStorage.setItem(K,'1');}catch(e){}});}catch(e){}})();</script>
+<script>/* SW kill switch v12 — evict stale caches + bump forces re-run for returning users */(function(){try{var K='ynk_sw_reset_v12';if(localStorage.getItem(K))return;var done=function(){try{localStorage.setItem(K,'1');}catch(e){}var u=new URL(location.href);u.searchParams.set('cb',Date.now());location.replace(u.toString());};if(!('serviceWorker' in navigator)){done();return;}navigator.serviceWorker.getRegistrations().then(function(regs){return Promise.all(regs.map(function(r){return r.unregister();}));}).then(function(){if(window.caches){return caches.keys().then(function(keys){return Promise.all(keys.map(function(k){return caches.delete(k);}));});}}).then(done).catch(done);}catch(e){}})();</script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <link rel="dns-prefetch" href="https://www.gstatic.com"/>
