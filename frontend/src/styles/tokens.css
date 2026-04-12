@@ -1,0 +1,65 @@
+/*
+ * Design Tokens — Single Source of Truth
+ * 出典: design/contracts/tokens.json
+ * 変更時は tokens.json を先に更新し、validate.ts を通してから本ファイルを更新する
+ */
+
+:root {
+  /* Colors — Light */
+  --bg1: #FFF5F0;
+  --rose: #E8627C;
+  --pink: #D4506A;
+  --blush: #F2A0B0;
+  --lavender: #B08ACF;
+  --gold: #D4A853;
+  --t1: #3A2830;
+  --t2: rgba(58, 40, 48, 0.72);
+  --t3: rgba(58, 40, 48, 0.56);
+  --bg-body: var(--bg1);
+  --card: rgba(255, 255, 255, 0.92);
+  --card-solid: #FFFFFF;
+  --border: rgba(58, 40, 48, 0.08);
+  --card-highlight-shadow: 0 4px 20px rgba(232, 98, 124, 0.12);
+
+  /* Typography */
+  --font-heading: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans-serif;
+  --font-accent: 'Cormorant', serif;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 48px;
+
+  /* Radius */
+  --r-card: 18px;
+  --r-button: 14px;
+  --r-input: 12px;
+  --r-tag: 20px;
+  --r-modal: 24px;
+
+  /* Animation */
+  --anim-fade: 500ms ease;
+  --anim-slide: 450ms ease;
+  --anim-hover: 200ms ease;
+  --anim-theme: 300ms ease;
+
+  /* Layout */
+  --app-max-width: 480px;
+}
+
+[data-theme='dark'] {
+  --bg1: #0D0B0E;
+  --rose: #F0809A;
+  --card: rgba(28, 22, 30, 0.85);
+  --card-solid: #1C161E;
+  --t1: #F0E8EC;
+  --t2: rgba(240, 232, 236, 0.72);
+  --t3: rgba(240, 232, 236, 0.56);
+  --border: rgba(240, 232, 236, 0.10);
+  --bg-body: var(--bg1);
+}
