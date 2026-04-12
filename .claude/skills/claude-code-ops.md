@@ -623,6 +623,57 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 ---
 
+## 5.7 Anthropic公式マルチエージェントパターン × ConsultingOS対応表
+
+> **出典**: Anthropic "Building Effective Agents" (2024) / claude.com/blog/multi-agent-coordination-patterns
+> Anthropic公式が定義する5つの協調パターンに対し、ConsultingOSの実装箇所を明示する。**答え合わせ**であり、不足があればここに追記する。
+
+| # | Anthropic公式パターン | 概要 | ConsultingOS実装箇所 |
+|---|---|---|---|
+| 1 | **Prompt Chaining** | タスクを直列ステップに分解し、各ステップの出力を次の入力に | `CLAUDE.md` エージェント連携パターン1-18（例: competitive-analyst → strategy-lead → kpi-analytics） |
+| 2 | **Routing** | 入力を分類して最適なエージェント/プロンプトにディスパッチ | `CLAUDE.md` スマートルーティング判定ツリー（Step 1→2a-2f） |
+| 3 | **Parallelization** | Sectioning（独立サブタスク並列）/ Voting（同一タスクを複数実行し合議） | `/fork` / `git worktree` / Agent Teams（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`）/ 反証モードStep 2の逆説テスト |
+| 4 | **Orchestrator-Workers** | 中央オーケストレーターがサブタスクを動的に生成・委譲 | `strategy-lead` / `marketing-director` / `creative-director` が起点となる連携パターン、Agent Teamsの3-5名編成 |
+| 5 | **Evaluator-Optimizer** | 生成→評価→改善のループで品質を段階的に向上 | 反証モード3段階（自己/構造/実用）+ `agent-evaluation.md`（25点評価カード）+ `skill-evolution.md`（A/Bテスト）+ `/advisor opus` |
+
+### 追加パターン（ConsultingOS独自拡張）
+| # | パターン | 概要 | 実装箇所 |
+|---|---|---|---|
+| 6 | **Governance Overlay** | 干渉原則として経営視点（佐藤×小野寺）が全エージェントを統制 | `CLAUDE.md` 干渉原則セクション |
+| 7 | **Thought Leader Embedding** | 各エージェントに業界第一人者を憑依（ティール/ポーター/アイブ等） | 全34エージェントファイルの冒頭 |
+| 8 | **Self-Evolution Loop** | 評価→原因分析→改善→A/Bテスト→採用/ロールバック | `/evolve` コマンド + `evolution-log.jsonl` |
+
+### ギャップ診断（反証モード適用）
+- ✅ Anthropic公式5パターンは全てカバー済み
+- ⚠️ **Voting（同一タスク複数実行の合議）は形式化されていない**: 反証モードで代替しているが、「重要判断時は同エージェントを3回実行し多数決」のような明示的Votingプロトコルはない。→ 将来追加候補
+- ⚠️ **Prompt Chainingのgate check**: 公式では各ステップ後に「gate」を置いて次に進むかを判定する。ConsultingOSのハンドオフプロトコルに品質ゲートはあるが、自動gate判定は未実装 → 将来追加候補
+
+---
+
+## 5.8 Iterative Refinement Prompt（反復改善プロンプト）
+
+> **どのエージェントの出力に対しても使える汎用改善一言。** バズ記事（"10 Claude prompts for mobile apps"）から採用した唯一の実用要素。
+
+```
+Now improve this for a real production app.
+Be more specific, more opinionated, and show tradeoffs.
+```
+
+**日本語版（ConsultingOS標準）**:
+```
+これを本番運用レベルに引き上げて。
+より具体的に、より断定的に、トレードオフを明示して。
+```
+
+**使用シーン**:
+- エージェントの初回出力が抽象的・総花的だった時
+- 「無難な正解」で止まっている時
+- 反証モードStep 3（実用反証）で物足りない時
+
+**効果**: 抽象論→具体・両論併記→断定・メリットのみ→トレードオフ明示、の3方向で同時に出力が引き締まる。単独プロンプトとしても、反証モードの補助としても機能。
+
+---
+
 ## 6. ショートカット早見表
 
 | キー | 機能 |
@@ -650,3 +701,4 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.1.0 | 2026-04-12 | §5.7 Anthropic公式5パターン対応表・§5.8 反復改善プロンプト追加 | Anthropic "Building Effective Agents" / claude.com/blog/multi-agent-coordination-patterns | 公式パターンとの差分可視化・Voting/Gate未実装を特定 |
