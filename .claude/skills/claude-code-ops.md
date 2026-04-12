@@ -358,6 +358,25 @@ Monitor({
     └─ Bash の run_in_background を使う
 ```
 
+### Dynamic Looping（動的ループ）★新機能
+
+> **間隔を指定せず `/loop` だけ打てば、Claudeが最適な間隔を自動判断する。**
+
+```bash
+# 従来: 自分で間隔を指定
+/loop 5m check for feedback in bug-hunter channel
+
+# Dynamic Looping: Claudeが自動で間隔決定
+/loop check for feedback in bug-hunter channel
+  → Claudeが「最初のチェックは5分後」と判断
+  → 静かだったら「次は20分後にバックオフ」と自動調整
+  → 活動が多ければ間隔を短縮
+```
+
+- **効果**: 無駄な定期チェックが激減。トークン節約 + レスポンス爆速
+- **使いどころ**: 大規模監視・CIチェック・フィードバック監視
+- **ConsultingOSとの相性**: growth-hackerのA/Bテスト監視、infra-devopsの本番監視、client-successのヘルススコア定期チェックに最適
+
 ### 障害対応での活用（infra-devops / tech-lead 連携）
 
 ```
@@ -404,6 +423,20 @@ npx claude-mem install
 ### /compact: 手動コンテキスト圧縮
 長いセッションで応答が遅くなったら `/compact` を実行。
 重要な情報はCLAUDE.mdやスキルファイルに残っているため、圧縮しても失われない。
+
+### claude --resume: 中断セッションの再開
+前回のセッションが途中で終了した場合、新しいセッションを開くのではなく `claude --resume` で再開する。
+会話履歴・コンテキスト・作業中のファイルが全て復元される。毎回「このプロジェクトは…」の説明が不要になる。
+
+```bash
+# ターミナルで中断したClaude Codeセッションを再開
+claude --resume
+```
+
+- **claude-memとの関係**: claude-memはセッション終了時に自動保存・次回注入。`--resume`は同一セッションの直接継続。両方併用で二重に守られる
+- **使い分け**:
+  - 同じ作業を続ける → `--resume`
+  - 前のセッションの知見を踏まえて別の作業をする → 新セッション（claude-memが自動注入）
 
 ### /rewind & /checkpoints: 巻き戻し
 - `/rewind`: 会話を以前の状態に巻き戻し
