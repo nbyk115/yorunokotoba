@@ -393,9 +393,10 @@ Monitor({
 
 ## 5. コンテキスト管理
 
-### rtk（コマンド出力圧縮）★推奨
+### rtk（コマンド出力圧縮）★Service Dev / Creative部門で推奨
 
 > **git status, ls, find等のコマンド出力を事前圧縮し、トークン消費を最大90%削減。**
+> **ただし効果があるのはBashコマンドを多用する用途のみ。**
 
 ```bash
 # 導入
@@ -403,8 +404,21 @@ cargo install rtk
 ```
 
 - **仕組み**: Bashコマンドの出力がコンテキストに流れる前に、rtkが自動で圧縮・フィルタ
-- **効果**: git status, ls, find, npm等の冗長な出力を最小限に
+- **効果**: git status, ls, find, npm, docker, kubectl等の冗長な出力を最小限に
 - **claude-memとの使い分け**: rtkは「今のセッション内」のトークン節約、claude-memは「セッション間」のメモリ
+
+#### 効果があるエージェント（Service Dev / Creative）
+| エージェント | rtkが効くコマンド |
+|---|---|
+| fullstack-dev | npm, git, ls, find, grep |
+| frontend-dev | ビルド出力, lint, テスト結果 |
+| tech-lead | grep, find, code review系 |
+| infra-devops | docker, kubectl, ログ確認 |
+| ai-engineer | pip, ビルド, 評価実行 |
+
+#### 効果が薄いエージェント
+Consulting / Marketing / Global / Product系はBashコマンドをほぼ使わないため、
+rtkの削減率は3%以下。**これらの部門では導入不要。**
 
 ### claude-mem（永続メモリ圧縮）★推奨
 
