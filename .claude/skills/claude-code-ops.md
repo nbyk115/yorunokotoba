@@ -391,6 +391,40 @@ Monitor({
 
 ---
 
+## 4.7 notebooklm-py（外部リサーチ委譲）
+
+> **大量の資料分析をNotebookLMに丸投げし、ConsultingOS側はコンテキストを消費せずに要点だけ受け取る。**
+
+### 何ができるか
+- URL/PDF/YouTube動画を一括取り込み
+- NotebookLMが自動でソース間を横断分析
+- 音声・動画・スライド・クイズをプログラムで生成
+- Web UIでは不可能な一括ダウンロード
+
+### 導入
+```bash
+pip install notebooklm-py
+# or
+npm install notebooklm
+```
+
+### ConsultingOSでの活用
+
+| エージェント | 用途 |
+|---|---|
+| global-journalist | 海外ニュース100記事を一括投入→要約取得 |
+| market-researcher | 業界レポート10本を一括分析 |
+| competitive-analyst | 競合IR/プレスリリースを一括処理 |
+| content-strategist | 長文執筆時の参考資料をNotebookLMに蓄積 |
+| strategy-lead | M&A対象企業の全公開資料を一括分析 |
+
+### 効果
+- 大量資料分析でもConsultingOS側のコンテキストが汚染されない
+- トークン消費大幅削減
+- NotebookLM側に分析結果が保持されるため、再利用可能
+
+---
+
 ## 5. コンテキスト管理
 
 ### rtk（コマンド出力圧縮）★Service Dev / Creative部門で推奨
