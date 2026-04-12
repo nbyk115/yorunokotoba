@@ -181,7 +181,38 @@ jobs:
 
 ---
 
-## 6. デプロイ・運用
+## 6. データ可視化ライブラリ選定ガイド
+
+> **用途別に「正しいライブラリ」を選ぶ。毎回迷わない統一基準。**
+
+### 用途別選定マトリクス
+
+| 用途 | 推奨ライブラリ | 理由 | 想定エージェント |
+|---|---|---|---|
+| **金融時系列**（ローソク足・株価・バリュエーション） | **TradingView Lightweight Charts** | 40KB・リアルタイム対応・Apache 2.0 | strategy-lead (M&A) / competitive-analyst / kpi-analytics (バリュエーション) |
+| **汎用ダッシュボード**（棒・折線・円） | **Recharts** (React) / **Chart.js** | Reactとの統合が簡単・DESIGN.md準拠しやすい | kpi-analytics / marketing-analyst / client-success |
+| **高度な可視化**（ネットワーク図・サンキー・地図） | **D3.js** | 表現力最大・カスタマイズ無制限 | market-researcher / global-business |
+| **BIツール風**（クロス集計・ピボット・大量データ） | **Apache ECharts** | 軽量・中国系ライブラリだが品質高 | marketing-analyst / performance-marketer |
+| **時系列大量データ**（秒間数千点） | **uPlot** / **Plotly** | 軽量・高速描画 | infra-devops (監視) / growth-hacker (A/Bテスト) |
+| **ヒートマップ・ファネル**（CVR分析） | **Recharts** + カスタム | ファネル専用ライブラリより柔軟 | growth-hacker / feedback-synthesizer |
+| **リテンション曲線・コホート** | **Plotly** / **Recharts** | コホート表現に強い | product-manager / client-success |
+
+### 選定原則
+1. **DESIGN.md準拠を優先**: ブランドカラー・フォントが反映できるものを選ぶ
+2. **軽量さ > 多機能**: 使わない機能のためにバンドルサイズを増やさない
+3. **コミュニティの活発さ**: GitHub starsより直近6ヶ月のコミット頻度
+4. **ライセンス確認**: 商用可能か必ず確認（MIT/Apache 2.0 推奨）
+5. **1プロジェクト=1ライブラリ原則**: 同じ用途で複数のライブラリを混ぜない
+
+### 禁止
+- 「とりあえずChart.js」の思考停止
+- 金融チャートにRechartsを使う（ローソク足が表現できない）
+- 汎用ダッシュボードにD3.jsを使う（オーバーエンジニアリング）
+- ライセンス未確認での商用利用
+
+---
+
+## 7. デプロイ・運用
 
 ### デプロイプロセス
 ```
