@@ -170,6 +170,12 @@ a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
 @keyframes confetti{0%,100%{transform:none;opacity:1}}
 /* spinner 2s スロー (夢/ホロ診断共通) */
 [style*="spin 0.8s"],[style*="spin 1s"],.spin-loader{animation-duration:2s !important;animation-timing-function:linear !important}
+/* ── SHAKE 完全停止: img/char icon の pulse/float は React re-render で restart するので
+    !important で disable。rarityReveal も同様に固定。
+    hover 感は失うが shake 再発防止が最優先 ── */
+img[style*="pulse"],img[style*="float"],img[style*="breathe"]{animation:none !important;transform:translateZ(0);will-change:transform}
+div[style*="rarityReveal"]{animation:none !important;transform:none !important;opacity:1 !important}
+[style*="rarityGlow"]{animation:rarityGlow 8s ease-in-out infinite !important}
 </style>
 
 <!-- SW更新＆キャッシュクリア v2 -->
