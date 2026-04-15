@@ -141,7 +141,22 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 
 ---
 
-## 5. 実戦ケーススタディ — よるのことば Shake/Scroll 回帰（2026-04-12）
+## 5. 実戦ケーススタディ — よるのことば Shake/Scroll 回帰（2026-04-12 複数ラウンド）
+
+### ラウンド 3 の追加学び (2026-04-12 後半)
+
+**CSS attribute selector の wildcard trap**:
+- 当初 `img[style*="pulse"], img[style*="float"]` で shake を潰した
+- ユーザーが「ロゴが高速で震えてる」と再報告 → 原因:
+  - ロゴ上の moon SVG は `<div style="animation:float 4s">` (div, not img)
+  - img 限定セレクタは div をマッチせず、shake が残り続けた
+- **教訓**: shake 対策は要素タグに依存しない selector (`[style*="infinite"]`) で広く捕捉すべき
+- **反省**: 一度 fix した後「画面上の別要素」で再発した時、同じクラスの原因を疑う reasoning が弱かった (抽象化された原因を具体要素ごとに適用しきれていない)
+
+**許可リスト (allow list) パターン**:
+- `[style*="infinite"] { animation: none !important }` で全滅 → 必要なもの (spinner, twinkle) だけ後続ルールで復活させる
+- `.spin-loader, [style*="spin 0.8s"] { animation: spin 2s linear infinite !important }` のように具体的な allow 条件を書く
+- 汎用 deny → 具体 allow の順序で CSS 書く原則
 
 ### 発生した問題
 1. ヘッダー「🌙 よるのことば」ロゴとホロスコープ結果のキャラ画像が高速シェイク
