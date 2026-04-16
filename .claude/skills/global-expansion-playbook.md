@@ -279,6 +279,7 @@ LTV/CAC（現地ベース）: ___倍
 | 多言語LP/UIのデザインシステム | → `creative-playbook.md` §9 DESIGN.md |
 | ブランドトーンの多言語整合 | → `brand-guidelines.md` |
 | 現地サーバー・インフラ監視 | → `claude-code-ops.md` §4.5 Monitor |
+| 出力の事実検証が必要 | → `falsification-check.md` + `/check-hallucination` |
 
 ## 適用エージェント
 - `global/gtm-consultant` — 市場評価・GTM設計・参入モデル選択

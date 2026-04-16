@@ -320,6 +320,7 @@ Accepted / Proposed / Superseded by ADR-XXXX
 | DBスキーマ変更 | → `migration-safety.md` |
 | 本番障害が発生 | → `incident-response.md` |
 | プロンプト/RAG設計 | → `prompt-engineering.md` |
+| 出力の事実検証が必要 | → `falsification-check.md` + `/check-hallucination` |
 
 ---
 

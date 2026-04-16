@@ -121,6 +121,7 @@
 | global-expansion-playbook | `.claude/skills/global-expansion-playbook.md` | グローバル展開・市場評価・ローカライズ・現地オペレーション |
 | claude-subconscious | `.claude/skills/claude-subconscious.md` | セッション間メモリ・コンテキスト蓄積・ファイルベースメモリ |
 | agent-evaluation | `.claude/skills/agent-evaluation.md` | 自己評価・フィードバックループ・自動改善・品質スコアリング |
+| falsification-check | `.claude/skills/falsification-check.md` | 反証モード実行・ハルシネーション検証・3ラベル分類・出力前チェック |
 | skill-evolution | `.claude/skills/skill-evolution.md` | スキルA/Bテスト・バージョン管理・自動採用・ロールバック |
 
 ---
@@ -134,6 +135,7 @@
 | /codemap | `.claude/commands/codemap.md` | コードマップ自動生成・更新 |
 | /security-scan | `.claude/commands/security-scan.md` | セキュリティスキャン（OWASP・シークレット・CVE） |
 | /review-pr | `.claude/commands/review-pr.md` | PR自動レビュー（5軸評価） |
+| /check-hallucination | `.claude/commands/check-hallucination.md` | ハルシネーション反証（クレーム抽出→3ラベル分類→修正提案） |
 | /analyze | `.claude/commands/analyze.md` | 第一原理分解クイック版 |
 | /review-agent-essence | `.claude/commands/review-agent-essence.md` | エージェント本質レビュー（設計の矛盾・形骸化・過剰を検出） |
 | /evolve | `.claude/commands/evolve.md` | スキル進化サイクル実行（診断→原因分析→改善→記録） |

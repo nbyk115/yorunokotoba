@@ -509,6 +509,7 @@ Layer 3: 検証（破っても通さない）
 | フロントエンドの品質ゲート | → `code-quality-gates.md` |
 | API連携画面の設計 | → `api-design-patterns.md` |
 | 収益に直結するコンテンツ | → `revenue-growth-framework.md` §3 アセット蓄積 |
+| 出力の事実検証が必要 | → `falsification-check.md` + `/check-hallucination` |
 
 ---
 
