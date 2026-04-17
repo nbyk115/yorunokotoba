@@ -219,6 +219,42 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 
 ---
 
+### ラウンド 4 の追加学び (2026-04-17) — Modal overflow lock の脆性
+
+**症状**: UI 編集（header padding / SVG 削除 / textarea 拡大）後に「スクロールができない」が再発。
+
+**原因候補（再現できず確証なし。ただし構造的に脆弱）**:
+- `document.body.style.overflow="hidden"` が FTUE / Paywall / CancelConfirm の useEffect で掛かる
+- 依存配列が `[showFtue,showPaywall,showCancelConfirm]` のため、依存外の更新（例: StrictMode 二重実行、HMR、error boundary による unmount / remount）で cleanup が走らず body に `overflow:hidden` が残留する可能性
+- さらに、**初訪時の FTUE = true が React render エラーで invisible だと、overlay 見えないのに scroll だけロックされる** という最悪パターンが起きうる
+
+**対処**: mount 時と 300ms 後に `document.body.style.overflow=""` を強制リセットする insurance effect を追加。副作用ゼロ、下流 modal の正常動作を妨げない。
+
+```js
+React.useEffect(function(){
+  document.body.style.overflow="";
+  var t=setTimeout(function(){document.body.style.overflow=""},300);
+  return function(){clearTimeout(t)}
+},[]);
+```
+
+**教訓**（汎用化）:
+
+| 教訓 | ルール化 |
+|---|---|
+| グローバルな DOM mutation (body / documentElement の style 変更) は state 依存で掛けるな | state と無関係な leak が起きうる。掛けるなら `ref` + 明示的 enter/exit API に寄せる |
+| モーダル閉じ切った状態の保証は `else { overflow="" }` だけでは弱い | mount 時 insurance reset を必ず併記。依存外 remount 経路を想定 |
+| UI 編集後の scroll 破綻は「content 量不足で scroll 不要」の可能性も疑う | 画面高より content が短ければ scroll は発生しない。「壊れた」に見えるだけ |
+| scroll 回帰は UI コミット毎に手動検証すべき | vercel preview で実機スクロールを 1 回必ず触る。CI にはキャッチ不能 |
+
+**未解決**: 実機 devtools 出力なしなので「真因」は確定できていない。insurance は保険。ユーザー報告再発時は必ず以下を依頼:
+```js
+getComputedStyle(document.body).overflow
+```
+→ 値が "hidden" なら本ラウンドの原因、"visible"/"" なら別の scroll-ancestor を辿る。
+
+---
+
 ## アンチパターン（これをやるな）
 
 | ❌ やりがち | ✅ 正しい方法 |
@@ -248,3 +284,4 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 |---|---|---|---|---|
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
 | 1.1.0 | 2026-04-12 | §5 実戦ケーススタディ (よるのことば shake/scroll) 追加 + アンチパターンに「実データなしの推測 patch 連発」を追記 | 本セッション 7 連続 commit の失敗経験 | React inline animation + transform の落とし穴を永続記録し同種バグを再発防止 |
+| 1.2.0 | 2026-04-17 | §5 ラウンド 4 追加: modal body overflow lock の state 依存脆性 + mount 時 insurance reset パターン | よるのことば UI 編集後の scroll 再発（再現不能だが構造的に脆弱） | 依存配列外 remount で scroll 死蔵するケースを永続記録 |
