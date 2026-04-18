@@ -95,6 +95,12 @@ model: sonnet
 4. html2pptx.app でPPTXに変換
 5. `brand-guardian` にブランド整合性チェック → 納品
 
+### S6: Claude Designでピッチデック・提案スライド生成
+1. S1-S4いずれかのシナリオで提案内容を確定
+2. Claude Designにプロンプト指示でスライド生成（DOCX/PPTX/URLも入力可）
+3. インラインコメント・直接編集で微調整
+4. PPTXまたはPDFでエクスポート → `brand-guardian` にブランド整合性チェック → 納品
+
 ## Agent Team 連携
 
 ### 提案書作成チーム
