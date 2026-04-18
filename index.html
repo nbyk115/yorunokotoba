@@ -168,18 +168,9 @@ a:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{
 /* ── ホバリング/レア度演出を復活（shake 防止の keyframes no-op は撤去） ── */
 /* confetti のみ簡素化維持（パフォーマンス重視） */
 @keyframes confetti{0%,100%{transform:none;opacity:1}}
-/* spinner 2s スロー (夢/ホロ診断共通) */
-[style*="spin"]{animation-duration:2.5s !important;animation-timing-function:linear !important}
-/* ── SHAKE 完全停止 v4: img だけでなく div 含め全 inline infinite animation を停止 ── */
-/* 前回の失敗: img[style*='pulse'] セレクタは div に適用されず、ロゴ上の moon SVG div (float 4s) の shake を見逃した。
-   今回は [style*='infinite'] (div/img 問わず全要素) で広く disable し、spinner だけ allow list で復活させる */
-[style*="infinite"]{animation:none !important}
-/* Spinner は allow list で復活 (2s スロー) */
-[style*="spin"]{animation:spin 2.5s linear infinite !important;animation-play-state:running !important}
-/* twinkle の背景パーティクルは残す (背景演出は re-render 再適用の shake 問題が起きにくい) */
-[style*="twinkle"]{animation:twinkle 5s ease-in-out infinite !important}
-[style*="float"]{animation:float 4s ease-in-out infinite !important}
-[style*="pulse 2s"]{animation:pulse 2s ease-in-out infinite !important}
+/* spinner スロー化 (2.5s) */
+[style*="spin"]{animation-duration:2.5s !important}
+/* rarityReveal のみ無効 (shake 原因の唯一のアニメーション) */
 div[style*="rarityReveal"]{animation:none !important;transform:none !important;opacity:1 !important}
 </style>
 
