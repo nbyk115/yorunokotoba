@@ -48,7 +48,7 @@
 | feedback-synthesizer | `.claude/agents/product/feedback-synthesizer.md` | ユーザーフィードバック統合・インサイト抽出 |
 
 ### 🟣 Creative（クリエイティブ・コンテンツ）
-**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン, グロース, A/Bテスト, ファネル, CVR
+**トリガー**: デザイン, UI, UX, Figma, LP, コンテンツ, SNS, ブログ, HTML, CSS, キャンペーン, ブランド, AIO, トーン, グロース, A/Bテスト, ファネル, CVR, 動画, 動画編集, リール, 字幕
 
 > **Figma MCP対応エージェントには 🎨 を付与。**
 > FigmaリンクをURLとして渡すと自動でデザイン→コード変換が起動する。
@@ -124,6 +124,7 @@
 | agent-evaluation | `.claude/skills/agent-evaluation.md` | 自己評価・フィードバックループ・自動改善・品質スコアリング |
 | falsification-check | `.claude/skills/falsification-check.md` | 反証モード実行・ハルシネーション検証・3ラベル分類・出力前チェック |
 | skill-evolution | `.claude/skills/skill-evolution.md` | スキルA/Bテスト・バージョン管理・自動採用・ロールバック |
+| video-use | `.claude/skills/video-use` (external) | 動画編集自動化・字幕・色補正・アニメーション挿入 |
 
 ---
 
@@ -721,6 +722,7 @@ model: sonnet  # 実装はSonnet
 - **有効化は最大5〜6個まで**: ツール総数80以下。入れすぎると200k→70kに縮小
 - **CLIで代替できるならMCP不要**: `gh` CLI、`curl` 等で十分なケースはMCPを導入しない
 - **無料運用が前提**: 有料APIを必要とするMCPは導入前にコスト確認必須
+- **Video Use**: TTS機能にElevenLabs APIキー（有料）が必要。TTS不要の編集タスクは無料で利用可能
 - **長セッションでは /compact**: コンテキスト圧縮を手動実行
 - **コードマップ活用**: `/codemap` で `.claude/codemap.md` を生成し、巨大コードベースのナビゲーションコストを削減
 
