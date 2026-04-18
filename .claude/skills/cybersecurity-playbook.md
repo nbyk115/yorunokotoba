@@ -428,6 +428,84 @@ npm install --auditlevel=high
 
 ---
 
+## 9.5 Claude Code 多層防御（Multi-Layer Defense）
+
+> **Claude Code 環境では、モデルの「善意の判断ミス」が直接的なシステム操作につながる。** 単一層の制約では Opus 4.7+ 級モデルが「ユーザーの意図を汲んで」ルールを柔軟解釈するリスクがある。2層で防御する。
+
+### 防御アーキテクチャ
+
+```
+Layer 1: CLAUDE.md（意図レベル）
+├─ 自然言語で禁止事項を明示
+├─ モデルの「判断」に依存する層
+└─ リスク: モデルが例外を自己判断する可能性
+
+Layer 2: settings.json（技術レベル）
+├─ permissions.deny でコマンドパターンを技術的にブロック
+├─ モデルの判断に関係なく実行を阻止
+└─ リスク: deny リストに無いパターンはすり抜ける
+
+両方を組み合わせ → モデルの判断ミスを技術的にキャッチ
+```
+
+### Layer 1: CLAUDE.md に記載すべきルール（意図レベル）
+
+| カテゴリ | ルール例 |
+|---|---|
+| 機密ファイル | `.env`, `credentials`, `secrets` の読み取り・出力・コミット禁止 |
+| 破壊的 Git 操作 | `push --force`, `reset --hard` 禁止 |
+| 外部通信 | POST/PUT/DELETE はユーザー承認なしに実行しない |
+| MCP 書き込み | Figma 編集、GitHub push_files 等はタスク単位で承認 |
+| ファイル破壊 | `rm -rf`, `chmod 777` 禁止 |
+
+### Layer 2: settings.json に設定すべき deny パターン（技術レベル）
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ./*)",
+      "Bash(chmod 777 *)",
+      "Bash(git push --force *)",
+      "Bash(git push * --force*)",
+      "Bash(git reset --hard *)",
+      "Bash(sudo *)",
+      "Bash(cat *.env*)",
+      "Bash(cat *credentials*)",
+      "Bash(cat *secret*)",
+      "Bash(*> .env*)",
+      "Read(.env*)",
+      "Read(*credentials*)",
+      "Read(*secret*)"
+    ]
+  }
+}
+```
+
+### なぜ 2 層が必要か
+
+| 防御 | 攻撃パターン | 結果 |
+|---|---|---|
+| Layer 1 のみ | モデルが「この .env は開発用だから読んで良い」と自己判断 | 機密漏洩 |
+| Layer 2 のみ | 新ツール `Bash(base64 .env)` が deny に未登録 | すり抜け |
+| **両方** | Layer 1 で意図を理解 + Layer 2 で技術ブロック | **安全** |
+
+### 運用チェックリスト
+
+- [ ] CLAUDE.md にルール追加 → settings.json の deny にも対応パターンを追加
+- [ ] `/security-scan` 実行時に deny パターンの網羅性を確認
+- [ ] 新 MCP 追加時にセキュリティ影響を評価
+- [ ] deny リストのバイパスパターン（base64, xxd, od 等の間接読み取り）を定期チェック
+
+### ConsultingOS 適用
+
+- **全 34 エージェント**: Layer 1 ルールは CLAUDE.md の「セキュリティ多層防御」セクションに集約
+- **settings.json**: プロジェクトルートの `.claude/settings.json` に deny パターンを定義（チームで共有）
+- **settings.local.json**: 個人の追加制約は `.claude/settings.local.json` に定義（gitignore 対象）
+
+---
+
 ## バージョン履歴
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
@@ -435,3 +513,4 @@ npm install --auditlevel=high
 | 1.0.0 | 2026-04-10 | 初版 | サイバーセキュリティの体系的スキル欠如 | ベースライン |
 | 1.1.0 | 2026-04-12 | §8.7 ガバナンスフレームワーク（ISMS/NIST CSF/CPSF/経営ガイドライン/ISO 27005）追加 | IPA/NIST/METI/ISO 公式資料 + 企業経営サイバーセキュリティ診断チェック | エンジニアリング層とガバナンス層の分離・エンタープライズ案件の共通言語提供 |
 | 1.2.0 | 2026-04-12 | §8.8 自律セキュリティテスト（Self-Pentesting）追加 | workers.io/blog/autonomous-mobile-pentesting + Chrome DevTools MCP 連携 | 本番前の動的検証を体系化・倫理規定で悪用防止・サブスク化前の必須チェック明確化 |
+| 1.3.0 | 2026-04-18 | §9.5 Claude Code 多層防御（CLAUDE.md + settings.json 2層防御）追加 | Opus 4.7+ モデルの単一層バイパスリスク | 意図レベル + 技術レベルの defense-in-depth 確立 |

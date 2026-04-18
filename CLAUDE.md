@@ -773,6 +773,40 @@ model: sonnet  # 実装はSonnet
 
 ---
 
+## 🛡️ セキュリティ多層防御（Multi-Layer Defense）
+
+> **「信頼」ではなく「制御」で固める。** モデルの善意に依存しない。Opus 4.7+ 級のモデルは単一層の制約を「ユーザーの意図を汲んで」柔軟解釈するリスクがある。2層で防御する。
+
+### Layer 1: CLAUDE.md（意図レベル — このファイル）
+- `.env`, `credentials`, `secrets`, API キーを含むファイルの **読み取り・出力・コミット禁止**
+- `git push --force`, `git reset --hard` は禁止（既存ルールと統合）
+- 外部 API への POST/PUT/DELETE は **ユーザーの明示的承認なしに実行しない**
+- ユーザーの明示的指示なく **他リポジトリ・他サービスにアクセスしない**
+- MCP サーバー経由の書き込み操作（Figma 編集、GitHub push_files 等）は **タスク単位で承認を得る**
+- `rm -rf`、`chmod 777` 等の破壊的ファイル操作は禁止
+
+### Layer 2: settings.json（技術レベル — permissions.deny）
+- `disabledMcpServers`: 未使用 MCP は無効化（コンテキスト管理ルールと統合）
+- `permissions.deny`: 危険コマンドパターンを明示的に拒否（settings.json に定義済み）
+- ファイルアクセス: `.env*`, `*credentials*`, `*secret*` の cat/read をブロック
+- Bash: `rm -rf /`, `curl -X POST`（無承認外部送信）等をブロック
+- Git: `push --force`, `reset --hard` をブロック
+
+### なぜ 2 層必要か
+
+| 単一層 | リスク |
+|---|---|
+| Layer 1 だけ | モデルが「ユーザーの意図を汲んで」ルールを柔軟解釈し、「この場合は例外」と判断する |
+| Layer 2 だけ | 新しいツール/コマンドが deny リストに入っていない場合にすり抜ける |
+| **両方** | モデルの判断ミス → 技術的にブロック → 安全 |
+
+### 運用ルール
+- **Layer 2 の更新は Layer 1 と同期**: CLAUDE.md にルールを追加したら settings.json の deny にも対応パターンを追加
+- **deny リストは定期レビュー**: `/security-scan` 実行時に deny パターンの網羅性を確認
+- **新 MCP 追加時**: セキュリティ影響を評価し、書き込み系ツールは deny パターンを先に設定
+
+---
+
 ## Gitワークフロー（マストルール）
 
 ### PRマージ方法

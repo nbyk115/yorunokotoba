@@ -45,15 +45,25 @@
   },
   "permissions": {
     "deny": [
-      "Bash(rm -rf /*)",
+      "Bash(*> .env*)",
+      "Bash(cat *.env*)",
+      "Bash(cat *SECRET*)",
+      "Bash(cat *credentials*)",
+      "Bash(cat *secret*)",
+      "Bash(cat /etc/passwd*)",
+      "Bash(cat /etc/shadow*)",
       "Bash(chmod 777 *)",
+      "Bash(env *)",
+      "Bash(git push * --force*)",
       "Bash(git push --force *)",
       "Bash(git reset --hard *)",
-      "Bash(sudo *)",
-      "Bash(env *)",
       "Bash(printenv *)",
-      "Bash(cat /etc/passwd*)",
-      "Bash(cat /etc/shadow*)"
+      "Bash(rm -rf ./*)",
+      "Bash(rm -rf /*)",
+      "Bash(sudo *)",
+      "Read(*credentials*)",
+      "Read(*secret*)",
+      "Read(.env*)"
     ]
   }
 }
