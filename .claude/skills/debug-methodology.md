@@ -284,4 +284,20 @@ getComputedStyle(document.body).overflow
 |---|---|---|---|---|
 | 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
 | 1.1.0 | 2026-04-12 | §5 実戦ケーススタディ (よるのことば shake/scroll) 追加 + アンチパターンに「実データなしの推測 patch 連発」を追記 | 本セッション 7 連続 commit の失敗経験 | React inline animation + transform の落とし穴を永続記録し同種バグを再発防止 |
+### ラウンド 5 の学び (2026-04-18) — deny-all CSS パターンの構造的失敗
+
+**症状**: SHAKE v4 `[style*="infinite"]{animation:none !important}` + allow list パターンが 5 セッションにわたり対症療法の連鎖を生んだ。spinner 止まる → allow list 追加 → float 止まる → allow list 追加 → 速度変更で allow list 不一致 → 止まる → の無限ループ。
+
+**根本原因**: deny-all + allow-list は CSS の正しいパターンだが、**inline style の animation 値が JS 側で変更される環境では allow list が追従できない**。0.8s→2.5s に変えた瞬間に allow list が壊れるのは構造的必然。
+
+**教訓**:
+
+| 教訓 | ルール化 |
+|---|---|
+| CSS deny-all は inline style 環境で使うな | JS 側の値変更が allow list を壊す。個別 disable のみ |
+| 対症療法を 2 回繰り返したら構造を疑え | 同じカテゴリの修正が 2 回続いたら設計判断ミス |
+| 反証モードを CSS 変更にも適用せよ | 「この CSS 変更で他のどの要素が影響を受けるか」を変更前に列挙 |
+
+---
+
 | 1.2.0 | 2026-04-17 | §5 ラウンド 4 追加: modal body overflow lock の state 依存脆性 + mount 時 insurance reset パターン | よるのことば UI 編集後の scroll 再発（再現不能だが構造的に脆弱） | 依存配列外 remount で scroll 死蔵するケースを永続記録 |
