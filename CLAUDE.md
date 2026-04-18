@@ -52,6 +52,7 @@
 
 > **Figma MCP対応エージェントには 🎨 を付与。**
 > FigmaリンクをURLとして渡すと自動でデザイン→コード変換が起動する。
+> **Claude Design**: プロンプト駆動でプロトタイプ・スライド・ワンページャーを高速生成（Opus 4.7ベース）。PDF/PPTX/HTML/Canvaエクスポート対応。Claude Codeへワンクリックハンドオフ。
 
 | エージェント | ファイル | 起動条件 |
 |---|---|---|
@@ -290,6 +291,7 @@
 consulting/proposal-writer → creative/ux-designer → creative/frontend-dev
      （訴求整理）              （UX設計）              （実装）
 📘 consulting-playbook → creative-playbook → code-quality-gates
+※ 早期プロトタイプはClaude Designで生成→HTML export→frontend-devで仕上げも可
 ```
 
 ### パターン2: クライアントへの戦略提案書を作りたい
@@ -690,7 +692,7 @@ Step 3: 実用反証（Practical Falsification）
 | Consulting | 情報収集・データ整理・フォーマット | 戦略判断・PL試算・Go/No-Go判定 |
 | Service Dev | コード実装・テスト・バグ修正 | アーキテクチャ設計・セキュリティレビュー |
 | Product | バックログ整理・VOC分類 | PMF判定・ロードマップ優先順位 |
-| Creative | コンテンツ生成・デザイン実装 | ブランド戦略・クリエイティブ方針 |
+| Creative | コンテンツ生成・デザイン実装・Claude Design生成 | ブランド戦略・クリエイティブ方針 |
 | Global | 翻訳・データ収集 | GTM戦略・市場参入判断 |
 | Marketing | レポート生成・データ集計 | チャネルミックス・予算配分判断 |
 

@@ -21,6 +21,28 @@ Creative部門の全エージェントが参照するデザインプロセス・
 | **Canva** | SNS画像・バナー・簡易LP・名刺・プレゼン資料・ロゴ案 | 無料（Free） | テンプレート豊富・素材内蔵・高速制作 |
 | **Figma** | UIデザインの仕上げ・コンポーネント管理・デザインシステム運用 | 無料（Starter） | 手動編集の精度・開発者連携・デザインシステム管理 |
 | **Google Slides** | 提案書・ピッチデック・社内資料・ワークショップ資料 | 無料 | 共同編集・ビジネス標準・テキスト主体の資料 |
+| **Claude Design** | プロトタイプ・スライド・ワンページャー・サマリー資料 | 無料（Pro/Max/Team/Enterprise） | プロンプト駆動生成・DOCX/PPTX/URL入力・PDF/PPTX/HTML/Canvaエクスポート・コードベース読取でデザインシステム自動適用・Claude Codeワンクリックハンドオフ |
+
+### Claude Design 活用ガイド
+
+> **プロンプト駆動でプロトタイプ・スライド・ワンページャー・ビジュアル資料を高速生成。Opus 4.7ベース。**
+
+| 機能 | 説明 |
+|---|---|
+| プロンプト→生成 | テキスト指示でプロトタイプ・スライド・サマリーを生成 |
+| 入力形式 | テキスト / DOCX / PPTX / XLSX / URL |
+| エクスポート | Canva（SNS素材連携）/ PDF（クライアント納品）/ PPTX（プレゼン）/ HTML（Web実装） |
+| デザインシステム自動適用 | コードベースを読み取りDESIGN.mdのトークンを自動反映 |
+| Claude Codeハンドオフ | ワンクリックでClaude Codeに渡してHTML/React実装へ |
+| インラインコメント・直接編集 | 生成後の微調整をUI上で即時実行 |
+
+**Figma MCPとの使い分け**: Claude Designは高速プロトタイピング・資料生成に使い、Figmaはピクセルパーフェクトな本番デザイン・コンポーネント管理に使う。
+
+**エクスポート形式の選定基準**:
+- **Canva**: SNS素材・バナーとして再編集が必要な場合
+- **PDF**: クライアント納品・最終資料
+- **PPTX**: プレゼンテーション・ピッチデック
+- **HTML**: Web実装・Claude Codeハンドオフ
 
 ### 自動選定ロジック（creative-directorが判断）
 
@@ -30,7 +52,8 @@ Creative部門の全エージェントが参照するデザインプロセス・
 何を作るか？
   ├── UI/アプリ画面（新規・ラフ） → Google Stitch（0→1生成）
   │     → 仕上げが必要なら → Figma or frontend-dev
-  ├── 提案書・ピッチデック・社内資料 → Google Slides
+  ├── 提案書・ピッチデック・社内資料 → Claude Design（PPTX/PDF）or Google Slides
+  ├── プロトタイプ・ワンページャー・サマリー → Claude Design
   ├── SNS画像・バナー・チラシ・簡易ビジュアル → Canva
   ├── LP（高速プロトタイプ） → Google Stitch → frontend-dev
   ├── LP（テンプレベース・ノンコード） → Canva
@@ -47,7 +70,7 @@ Creative部門の全エージェントが参照するデザインプロセス・
 | ケース | 組み合わせ |
 |---|---|
 | UI新規制作 | Google Stitch（0→1生成）→ Figma（仕上げ）→ frontend-dev（実装） |
-| 提案書 + デモUI | Google Slides（資料）+ Google Stitch（UIモック） |
+| 提案書 + デモUI | Claude Design（資料PPTX）+ Google Stitch（UIモック） |
 | SNSキャンペーン + LP | Canva（SNS素材）+ Google Stitch or frontend-dev（LP） |
 | ピッチ + ブランド素材 | Google Slides（ピッチ）+ Canva（ロゴ・素材） |
 | LP + OGP画像 | Google Stitch/frontend-dev（LP）+ Canva（OGP画像） |
@@ -78,6 +101,21 @@ Creative部門の全エージェントが参照するデザインプロセス・
 | プロトタイプ | 画面遷移・インタラクションを自動生成 |
 
 **月間制限**: Standard（Gemini Flash）月350回 / Experimental（Gemini Pro）月50回
+
+---
+
+## 1.8 Video Use 活用ガイド（動画編集自動化）
+
+> **アセットフォルダを渡すだけで完成mp4を生成。** `pip install -e .` でセットアップ。
+
+| 用途 | 説明 |
+|---|---|
+| SNSリール・ショート動画 | フィラーワード・無音自動除去、字幕バーンイン |
+| プロモ動画・チュートリアル | シーン別AI色補正、カット境界の自動フェード |
+| アニメーション挿入 | Manim/Remotion/PILアニメーションを動画に合成 |
+
+- **ワークフロー**: アセットフォルダ → Claude Code「動画編集して」 → 完成mp4
+- **TTS機能**: ElevenLabs APIキーが必要（有料）。TTS不要の編集は無料
 
 ---
 
