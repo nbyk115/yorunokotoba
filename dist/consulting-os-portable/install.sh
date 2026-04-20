@@ -3,7 +3,7 @@
 set -e
 
 TARGET_DIR="${1:-.}"
-SOURCE_REPO="https://github.com/nbyk115/yorunokotoba.git"
+SOURCE_REPO="https://github.com/nbyk115/consulting-os.git"
 TMP_DIR="/tmp/ynk-consulting-os-$$"
 
 echo "🧠 ConsultingOS インストール開始"

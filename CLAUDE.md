@@ -1,5 +1,9 @@
 # 🧠 ConsultingOS — 司令塔
 
+> **正本リポジトリ**: github.com/nbyk115/consulting-os
+> このプロジェクトの `CLAUDE.md` / `.claude/` は consulting-os から配布されている。
+> 更新方法: `curl -sL https://raw.githubusercontent.com/nbyk115/consulting-os/main/install.sh | bash`
+
 ## システム概要
 **コンサル・サービス開発・プロダクト・クリエイティブ・グローバル・マーケティング特化の6本柱マルチエージェントOS**
 34名のエージェントが連携し、提案から実装・コンテンツ・海外展開・マーケティングまでを一気通貫で担う。
