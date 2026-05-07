@@ -9,12 +9,21 @@ import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
 import { Particles } from '@/components/fx/Particles';
+import { TimeOfDayProvider } from '@/components/providers/TimeOfDayProvider';
 import { tickStreak, type StreakState } from '@/logic/streak';
 import { trackException, track } from '@/lib/analytics';
 
 export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive';
 
 export default function App() {
+  return (
+    <TimeOfDayProvider>
+      <AppInner />
+    </TimeOfDayProvider>
+  );
+}
+
+function AppInner() {
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
