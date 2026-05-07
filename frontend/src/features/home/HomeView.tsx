@@ -1,8 +1,9 @@
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { DREAM_TYPES } from '@/data/dreamTypes';
-import { makeSeededRandom, getDailySeed } from '@/logic/hash';
+import type { CSSProperties } from 'react';
+import { HeroBlock } from '@/components/ui/HeroBlock';
+import { RitualButton } from '@/components/ui/RitualButton';
+import { BlurReveal } from '@/components/ui/BlurReveal';
+import { useTimeOfDay } from '@/components/providers/TimeOfDayProvider';
+import type { TimeOfDay } from '@/lib/timeOfDay';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
 import type { StreakState } from '@/logic/streak';
@@ -13,162 +14,385 @@ interface HomeViewProps {
   onNavigate: (view: ViewKey) => void;
 }
 
-function pickDailyCharacters(count: number): typeof DREAM_TYPES {
-  const rng = makeSeededRandom(getDailySeed(42));
-  const arr = [...DREAM_TYPES];
-  // Fisher-Yates shuffle using seeded RNG
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [arr[i], arr[j]] = [arr[j]!, arr[i]!];
-  }
-  return arr.slice(0, count) as unknown as typeof DREAM_TYPES;
+// 時間帯別 HeroBlock テキスト
+const HERO_COPIES: Record<TimeOfDay, { en: string; jp: string }> = {
+  'night-deep': {
+    en: 'The dream is a letter your soul wrote at 3 AM',
+    jp: '夢は、魂が深夜3時に書いた手紙',
+  },
+  dawn: {
+    en: 'Something new is breathing between the stars',
+    jp: '星のあいだで、何かが息をし始めている',
+  },
+  day: {
+    en: 'Even daylight holds the memory of night',
+    jp: '昼の光も、夜のことを覚えている',
+  },
+  dusk: {
+    en: 'This is the hour the day confesses its secrets',
+    jp: '昼が秘密を打ち明ける時間',
+  },
+  night: {
+    en: 'The night knows what the day forgot to say',
+    jp: '夜は、昼が言い忘れたことを知っている',
+  },
+};
+
+// 時間帯別 greeting-section テキスト（ICP語彙: 「おつかれ」「深夜」）
+function getGreeting(tod: TimeOfDay): string {
+  if (tod === 'night-deep') return '深夜、おつかれさま';
+  if (tod === 'dawn') return 'おはよう、今日も一日';
+  if (tod === 'day') return 'こんにちは';
+  if (tod === 'dusk') return 'こんばんは';
+  return 'おやすみ前に';
+}
+
+// 深夜専用の名前呼びかけコピー（ICP語彙: 「おつかれ」「帰ってきたね」）
+function getNightDeepSubCopy(name: string): string {
+  return `おつかれ、${name}。今夜もよく帰ってきたね`;
+}
+
+// 月相アイコン（新月〜満月〜新月のサイクル約29.5日）
+function getMoonPhaseEmoji(): string {
+  const knownNewMoon = new Date('2000-01-06T18:14:00Z').getTime();
+  const now = Date.now();
+  const cycleMs = 29.530589 * 24 * 60 * 60 * 1000;
+  const phase = ((now - knownNewMoon) % cycleMs) / cycleMs;
+  const icons = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+  const idx = Math.round(phase * 8) % 8;
+  return icons[idx] ?? '🌕';
+}
+
+// BlurReveal 内のチラ見せ占い結果プレビュー（ICP語彙: 「波動」「引き寄せ」「星」）
+const BLUR_PREVIEW_MESSAGES = [
+  '今夜の波動は、解放の方向を向いている',
+  '星があなたに言いたいことがある',
+  '引き寄せの扉が、そっと開きかけている',
+  '夢の奥に、今のあなたへのメッセージが眠っている',
+];
+
+function getDailyBlurMessage(): string {
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
+}
+
+// 守護キャラIDを星座から決める（12星座 → 12キャラ）
+const SIGN_CHARA_MAP: Record<string, string> = {
+  牡羊座: 'yume_kobuta',
+  牡牛座: 'umi_rakko',
+  双子座: 'mori_risu',
+  蟹座: 'tsuki_usagi',
+  獅子座: 'taiyo_raion',
+  乙女座: 'hoshi_kuma',
+  天秤座: 'kaze_ookami',
+  蠍座: 'yoru_kitsune',
+  射手座: 'hi_uma',
+  山羊座: 'daichi_kuma',
+  水瓶座: 'sora_kujira',
+  魚座: 'umi_rakko',
+};
+
+function getGuardianCharaId(sign: string): string {
+  return SIGN_CHARA_MAP[sign] ?? 'tsuki_usagi';
 }
 
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
-  const greeting = getGreeting();
-  const todaysChars = pickDailyCharacters(6);
+  const tod = useTimeOfDay();
+  const heroCopy = HERO_COPIES[tod];
+  const greeting = getGreeting(tod);
+  const moonEmoji = getMoonPhaseEmoji();
+  const blurMessage = getDailyBlurMessage();
+  const charaId = getGuardianCharaId(profile.sign);
+  const isNightDeep = tod === 'night-deep';
+
+  const mainStyle: CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100dvh',
+  };
 
   return (
-    <div
-      className="slide-up"
-      style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
-    >
-      <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
-        <p style={{ fontSize: 12, color: 'var(--t2)' }}>{greeting}</p>
-        <h2
-          style={{
-            fontSize: 22,
-            fontWeight: 700,
-            color: 'var(--rose)',
-            letterSpacing: 1,
-            marginTop: 4,
-          }}
-        >
-          {profile.name}さん
-        </h2>
-        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 4 }}>{profile.sign}</p>
-      </header>
+    <div style={mainStyle}>
+      {/* ヒーロー 100dvh */}
+      <HeroBlock
+        english={heroCopy.en}
+        japanese={heroCopy.jp}
+        subtitle={isNightDeep ? getNightDeepSubCopy(profile.name) : undefined}
+        align="center"
+        size="hero"
+      />
 
-      {/* Streak card */}
-      {streak.count > 0 && (
-        <div
-          className="slide-up-1"
+      {/* スクロール領域 */}
+      <main style={{ flex: 1 }}>
+        {/* greeting-section */}
+        <section
           style={{
-            background: 'linear-gradient(135deg, #D4A853, #B8902E)',
-            color: '#fff',
-            borderRadius: 'var(--r-card)',
-            padding: 'var(--sp-5)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--sp-4)',
-            boxShadow: '0 4px 20px rgba(212, 168, 83, 0.25)',
+            marginTop: 0,
+            padding: '32px 24px 0',
+            textAlign: 'center',
           }}
         >
-          <div style={{ fontSize: 36 }}>🔥</div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, opacity: 0.85, fontWeight: 700, letterSpacing: 1 }}>
-              連続ログイン
-            </p>
-            <p style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>
-              {streak.count}
-              <span style={{ fontSize: 13, fontWeight: 500, marginLeft: 4 }}>日目</span>
-            </p>
-          </div>
-          <p style={{ fontSize: 11, opacity: 0.9, textAlign: 'right', maxWidth: 120, lineHeight: 1.5 }}>
-            {streak.count >= 7 ? '習慣化できてる' : '続けるほど運気がまわる'}
+          <p
+            style={{
+              fontSize: 13,
+              fontWeight: 400,
+              color: 'var(--t3)',
+              letterSpacing: '0.08em',
+              lineHeight: 1.5,
+              margin: 0,
+            }}
+          >
+            {greeting}
           </p>
-        </div>
-      )}
+          <p
+            style={{
+              fontSize: 22,
+              fontWeight: 700,
+              color: 'var(--t1)',
+              letterSpacing: '0.04em',
+              marginTop: 4,
+              lineHeight: 1.3,
+            }}
+          >
+            {profile.name}さん
+          </p>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 400,
+              color: 'var(--t3)',
+              marginTop: 4,
+            }}
+          >
+            {/* 月相 + 星座 + 連続日数（極小表示）*/}
+            {moonEmoji}{' '}
+            {profile.sign}
+            {streak.count > 0 && (
+              <span
+                style={{
+                  fontSize: 11,
+                  color: 'var(--t3)',
+                  marginLeft: 6,
+                  opacity: 0.7,
+                }}
+                aria-label={`連続${streak.count}日`}
+              >
+                · {streak.count}日目
+              </span>
+            )}
+          </p>
+        </section>
 
-      <Card className="slide-up-2">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          🌙 今夜の夢を読み解く
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          見た夢をそのまま書いて。シンボルから今のあなたへのメッセージを読み解くよ。
-        </p>
-        <Button onClick={() => onNavigate('dream')} fullWidth>
-          夢占いを始める
-        </Button>
-      </Card>
-
-      <Card className="slide-up-3">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          ✨ 今日の運勢
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          {profile.sign}の今日のラッキーアイテム、注意点、行動指針が分かるよ。
-        </p>
-        <Button variant="secondary" onClick={() => onNavigate('fortune')} fullWidth>
-          星座占いを見る
-        </Button>
-      </Card>
-
-      {/* Character carousel */}
-      <Card className="slide-up-4">
-        <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 12 }}>
-          今日出会えるかもしれないキャラ
-        </h2>
-        <div
-          className="no-scrollbar"
+        {/* dream-card（唯一の機能カード）*/}
+        <article
+          className="slide-up"
           style={{
-            display: 'flex',
-            gap: 14,
-            overflowX: 'auto',
-            paddingBottom: 6,
-            WebkitOverflowScrolling: 'touch',
+            margin: 'clamp(12px, 4.3vw, 20px) clamp(12px, 4.3vw, 20px) 0',
+            padding: 'clamp(16px, 5.3vw, 24px)',
+            background: 'var(--card)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid var(--border)',
+            borderRadius: 18,
+            boxShadow: 'var(--shadow)',
+            animation: 'slideUp 450ms ease both',
+            transition: 'transform 200ms ease, box-shadow 200ms ease',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+            (e.currentTarget as HTMLElement).style.boxShadow =
+              '0 8px 32px rgba(180, 100, 120, 0.12)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)';
+          }}
+          onMouseDown={(e) => {
+            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
           }}
         >
-          {todaysChars.map((c) => (
-            <div
-              key={c.id}
+          {/* eyebrow */}
+          <p
+            style={{
+              fontFamily: 'var(--font-accent)',
+              fontSize: 11,
+              fontWeight: 400,
+              fontStyle: 'italic',
+              color: 'var(--lavender)',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              marginBottom: 8,
+            }}
+          >
+            Dream Reading
+          </p>
+
+          {/* card-title（ICP語彙: 「夢」「読み解く」）*/}
+          <h2
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: 'var(--t1)',
+              lineHeight: 1.4,
+              marginBottom: 8,
+              margin: '0 0 8px',
+            }}
+          >
+            今夜の夢を読み解く
+          </h2>
+
+          {/* card-body（ICP語彙: 「シンボル」「メッセージ」）*/}
+          <p
+            style={{
+              fontSize: 13,
+              color: 'var(--t2)',
+              lineHeight: 1.8,
+              marginBottom: 16,
+              margin: '0 0 16px',
+            }}
+          >
+            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージを読み解くよ。
+          </p>
+
+          {/* チラ見せ占い結果プレビュー（BlurReveal）*/}
+          <BlurReveal
+            initialBlur={4}
+            revealOnTap
+            style={{
+              padding: '12px 14px',
+              background: 'rgba(180, 100, 180, 0.06)',
+              borderRadius: 10,
+              marginBottom: 20,
+              fontSize: 13,
+              color: 'var(--t2)',
+              lineHeight: 1.6,
+              letterSpacing: '0.02em',
+              fontStyle: 'italic',
+            }}
+          >
+            {blurMessage}
+          </BlurReveal>
+
+          {/* 儀式動詞ボタン（ICP語彙: 「扉をひらく」）*/}
+          <RitualButton
+            verb="今夜の扉をひらく"
+            onConfirm={() => onNavigate('dream')}
+            fullWidth
+          />
+        </article>
+
+        {/* scroll-indicator（他画面への誘導チップ）*/}
+        <nav
+          aria-label="他のページへ"
+          style={{
+            margin: '24px clamp(12px, 4.3vw, 20px) 0',
+            display: 'flex',
+            gap: 12,
+            paddingBottom: 24,
+          }}
+        >
+          {/* fortune-chip */}
+          <button
+            onClick={() => onNavigate('fortune')}
+            style={chipStyle}
+            onMouseEnter={(e) => applyChipHover(e, true)}
+            onMouseLeave={(e) => applyChipHover(e, false)}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
+              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = 'none';
+            }}
+          >
+            <span style={{ fontSize: 18 }} aria-hidden="true">
+              ✨
+            </span>
+            <span
               style={{
-                flexShrink: 0,
-                width: 84,
-                textAlign: 'center',
+                fontSize: 12,
+                fontWeight: 700,
+                color: 'var(--t2)',
               }}
             >
-              <CharaAvatar id={c.id} size={72} />
-              <p
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: 'var(--t1)',
-                  marginTop: 6,
-                  lineHeight: 1.4,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {c.name}
-              </p>
-              <p style={{ fontSize: 9, color: 'var(--t3)', marginTop: 2 }}>{c.rarity}</p>
-            </div>
-          ))}
-        </div>
-      </Card>
+              星座占い
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: 'var(--rose)',
+                fontWeight: 600,
+              }}
+            >
+              みる
+            </span>
+          </button>
 
-      <Card className="slide-up-5">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          📖 履歴を振り返る
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          過去に見た夢のパターンから、自分の傾向が見えてくる。
-        </p>
-        <Button variant="ghost" onClick={() => onNavigate('archive')} fullWidth>
-          履歴を見る
-        </Button>
-      </Card>
+          {/* archive-chip */}
+          <button
+            onClick={() => onNavigate('archive')}
+            style={chipStyle}
+            onMouseEnter={(e) => applyChipHover(e, true)}
+            onMouseLeave={(e) => applyChipHover(e, false)}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
+              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = 'none';
+            }}
+          >
+            <span style={{ fontSize: 18 }} aria-hidden="true">
+              📖
+            </span>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: 'var(--t2)',
+              }}
+            >
+              夜の日記
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: 'var(--lavender)',
+                fontWeight: 600,
+              }}
+            >
+              しまう
+            </span>
+          </button>
+        </nav>
+      </main>
     </div>
   );
 }
 
-function getGreeting(): string {
-  const h = new Date().getHours();
-  if (h < 5) return '深夜、おつかれさま';
-  if (h < 11) return 'おはよう';
-  if (h < 17) return 'こんにちは';
-  if (h < 22) return 'こんばんは';
-  return 'おやすみ前に';
+const chipStyle: CSSProperties = {
+  flex: 1,
+  padding: '16px 12px',
+  background: 'var(--card)',
+  border: '1px solid var(--border)',
+  borderRadius: 14,
+  textAlign: 'center',
+  cursor: 'pointer',
+  minHeight: 56,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 4,
+  transition: 'border-color 200ms ease, transform 200ms ease',
+};
+
+function applyChipHover(
+  e: React.MouseEvent<HTMLButtonElement>,
+  entering: boolean,
+): void {
+  const el = e.currentTarget as HTMLElement;
+  el.style.borderColor = entering ? 'var(--rose)' : 'var(--border)';
+  el.style.transform = entering ? 'translateY(-1px)' : 'translateY(0)';
 }
