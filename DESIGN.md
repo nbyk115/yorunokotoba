@@ -74,6 +74,8 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 | Body | 15px | 400 | 1.7 |
 | Small / Caption | 13px | 400 | 1.5 |
 | Minimum | 11px | 400 | 1.4 |
+| **Hero (Cormorant italic)** | 32px | 300 | 1.4 |
+| **Hero JP (Zen Maru)** | 18px | 500 | 1.7 |
 
 ## Spacing
 
@@ -144,11 +146,31 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 | Stagger delay | 50ms per item | -- |
 | Hover transform | 200ms | ease |
 | Theme toggle | 300ms | ease |
+| **Ritual sequence** | 3000ms | cubic-bezier(0.4, 0, 0.2, 1) |
 
 ### Particles
 - Canvas overlay, pointer-events: none
 - Rose/Lavender/Gold colored circles
 - Slow upward drift with fade
+
+## Time of Day Mode
+
+`document.documentElement.dataset.timeOfDay` 属性で切り替わる5段階の時間帯モード。
+`TimeOfDayProvider` が1分ごとに自動判定し、CSS変数を上書きする。
+
+| Mode | 時間帯 | `--bg1` | Particle Color | Count | Speed |
+|---|---|---|---|---|---|
+| `night-deep` | 02:00-05:00 | `#0A0810` | `var(--gold)` | 8 | 0.6 |
+| `dawn` | 05:00-11:00 | `#1A0E18` | `var(--blush)` | 5 | 0.8 |
+| `day` | 11:00-17:00 | `#FFF5F0` | `var(--rose)` | 6 | 1.0 |
+| `dusk` | 17:00-22:00 | `#1A0A12` | `var(--lavender)` | 7 | 0.9 |
+| `night` | 22:00-02:00 | `#0D0B0E` | `var(--rose)` | 6 | 1.0 |
+
+### 設計原則
+- ライト/ダークテーマ(`data-theme`)とは独立して動作する
+- `day` モードのみ明るい背景（ライトテーマと同値）
+- `day` 以外は夜系の深い背景色を使用
+- パーティクル色・数・速度は各モードの雰囲気に合わせて調整
 
 ## Do
 
