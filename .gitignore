@@ -7,6 +7,9 @@ node_modules/
 .DS_Store
 .claude/worktrees/
 
+# Build artifacts
+dist/
+
 # Vercel
 .vercel/
 
