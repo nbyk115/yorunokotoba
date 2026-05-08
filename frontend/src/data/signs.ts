@@ -24,6 +24,32 @@ export const SIGNS: readonly Sign[] = [
 ];
 
 /**
+ * 12星座 × 2性別 = 24キャラのマッピング（SSOT）。
+ * fortune.ts と HomeView/ArchiveView/相性占い から共通参照する。
+ */
+export const SIGN_GENDER_CHAR: Record<string, { female: string; male: string }> = {
+  おひつじ座: { female: 'hi_no_tora', male: 'sora_unicorn' },
+  おうし座: { female: 'hana_panda', male: 'niji_koala' },
+  ふたご座: { female: 'mori_risu', male: 'yuki_hakucho' },
+  かに座: { female: 'umi_rakko', male: 'yume_kobuta' },
+  しし座: { female: 'tsuki_hyou', male: 'taiyou_lion' },
+  おとめ座: { female: 'komorebi_shika', male: 'hana_poodle' },
+  てんびん座: { female: 'sakura_usagi', male: 'yozora_fukurou' },
+  さそり座: { female: 'mayonaka_neko', male: 'kaze_ookami' },
+  いて座: { female: 'honoo_phoenix', male: 'kaze_uma' },
+  やぎ座: { female: 'hoshi_kuma', male: 'akatsuki_washi' },
+  みずがめ座: { female: 'nijiiro_dragon', male: 'yuuyake_kitsune' },
+  うお座: { female: 'ame_iruka', male: 'shizuku_penguin' },
+};
+
+/** 守護キャラID取得。性別が未指定 or 'female' なら female、'male' なら male、不明なら female fallback。 */
+export function getCharaIdBySign(sign: string, gender: 'male' | 'female' | '' | undefined): string {
+  const pair = SIGN_GENDER_CHAR[sign];
+  if (!pair) return 'yume_kobuta'; // 不明な星座は fallback
+  return gender === 'male' ? pair.male : pair.female;
+}
+
+/**
  * Determine zodiac sign index from month/day (1-indexed).
  * Returns 0-11 matching SIGNS array order.
  */

@@ -4,26 +4,12 @@ import { ShareCard } from '@/components/ui/ShareCard';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
 import { getDreamTypeById } from '@/data/dreamTypes';
+import { getCharaIdBySign } from '@/data/signs';
 import type { UserProfile } from '@/lib/firestore';
-
-const SIGN_CHARA_MAP: Record<string, string> = {
-  牡羊座: 'yume_kobuta',
-  牡牛座: 'komorebi_shika',
-  双子座: 'mori_risu',
-  蟹座: 'ame_iruka',
-  獅子座: 'taiyou_lion',
-  乙女座: 'sakura_usagi',
-  天秤座: 'hana_panda',
-  蠍座: 'mayonaka_neko',
-  射手座: 'kaze_uma',
-  山羊座: 'hoshi_kuma',
-  水瓶座: 'sora_unicorn',
-  魚座: 'umi_rakko',
-};
 
 interface ArchiveViewProps {
   profile?: UserProfile | null;
-  onNavigate?: (view: 'home' | 'dream' | 'fortune' | 'archive') => void;
+  onNavigate?: (view: 'home' | 'dream' | 'fortune' | 'archive' | 'aura') => void;
 }
 
 const themeLabels: Record<string, string> = {
@@ -313,7 +299,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
 
   // 空状態
   if (entries.length === 0) {
-    const guardianId = profile?.sign ? SIGN_CHARA_MAP[profile.sign] : undefined;
+    const guardianId = profile?.sign ? getCharaIdBySign(profile.sign, profile.gender) : undefined;
     return (
       <div
         style={{

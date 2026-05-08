@@ -7,6 +7,7 @@ import type { TimeOfDay } from '@/lib/timeOfDay';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
 import type { StreakState } from '@/logic/streak';
+import { getCharaIdBySign } from '@/data/signs';
 
 interface HomeViewProps {
   profile: UserProfile;
@@ -77,25 +78,7 @@ function getDailyBlurMessage(): string {
   return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
 }
 
-// 守護キャラIDを星座から決める（12星座 → DREAM_TYPES の実在キャラ12体）
-const SIGN_CHARA_MAP: Record<string, string> = {
-  牡羊座: 'yume_kobuta',
-  牡牛座: 'komorebi_shika',
-  双子座: 'mori_risu',
-  蟹座: 'ame_iruka',
-  獅子座: 'taiyou_lion',
-  乙女座: 'sakura_usagi',
-  天秤座: 'hana_panda',
-  蠍座: 'mayonaka_neko',
-  射手座: 'kaze_uma',
-  山羊座: 'hoshi_kuma',
-  水瓶座: 'sora_unicorn',
-  魚座: 'umi_rakko',
-};
-
-function getGuardianCharaId(sign: string): string {
-  return SIGN_CHARA_MAP[sign] ?? 'yume_kobuta';
-}
+// 守護キャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
 
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const tod = useTimeOfDay();
@@ -103,7 +86,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const greeting = getGreeting(tod);
   const moonEmoji = getMoonPhaseEmoji();
   const blurMessage = getDailyBlurMessage();
-  const charaId = getGuardianCharaId(profile.sign);
+  const charaId = getCharaIdBySign(profile.sign, profile.gender);
   const isNightDeep = tod === 'night-deep';
 
   const mainStyle: CSSProperties = {
@@ -328,6 +311,43 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               }}
             >
               みる
+            </span>
+          </button>
+
+          {/* aura-chip */}
+          <button
+            onClick={() => onNavigate('aura')}
+            style={chipStyle}
+            onMouseEnter={(e) => applyChipHover(e, true)}
+            onMouseLeave={(e) => applyChipHover(e, false)}
+            onFocus={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
+              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
+            }}
+            onBlur={(e) => {
+              (e.currentTarget as HTMLElement).style.outline = 'none';
+            }}
+          >
+            <span style={{ fontSize: 18 }} aria-hidden="true">
+              💫
+            </span>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: 'var(--t2)',
+              }}
+            >
+              相性占い
+            </span>
+            <span
+              style={{
+                fontSize: 13,
+                color: 'var(--gold)',
+                fontWeight: 600,
+              }}
+            >
+              ためす
             </span>
           </button>
 
