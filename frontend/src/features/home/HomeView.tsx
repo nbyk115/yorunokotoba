@@ -77,24 +77,24 @@ function getDailyBlurMessage(): string {
   return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
 }
 
-// 守護キャラIDを星座から決める（12星座 → 12キャラ）
+// 守護キャラIDを星座から決める（12星座 → DREAM_TYPES の実在キャラ12体）
 const SIGN_CHARA_MAP: Record<string, string> = {
   牡羊座: 'yume_kobuta',
-  牡牛座: 'umi_rakko',
+  牡牛座: 'komorebi_shika',
   双子座: 'mori_risu',
-  蟹座: 'tsuki_usagi',
-  獅子座: 'taiyo_raion',
-  乙女座: 'hoshi_kuma',
-  天秤座: 'kaze_ookami',
-  蠍座: 'yoru_kitsune',
-  射手座: 'hi_uma',
-  山羊座: 'daichi_kuma',
-  水瓶座: 'sora_kujira',
+  蟹座: 'ame_iruka',
+  獅子座: 'taiyou_lion',
+  乙女座: 'sakura_usagi',
+  天秤座: 'hana_panda',
+  蠍座: 'mayonaka_neko',
+  射手座: 'kaze_uma',
+  山羊座: 'hoshi_kuma',
+  水瓶座: 'sora_unicorn',
   魚座: 'umi_rakko',
 };
 
 function getGuardianCharaId(sign: string): string {
-  return SIGN_CHARA_MAP[sign] ?? 'tsuki_usagi';
+  return SIGN_CHARA_MAP[sign] ?? 'yume_kobuta';
 }
 
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
@@ -121,6 +121,8 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
         subtitle={isNightDeep ? getNightDeepSubCopy(profile.name) : undefined}
         align="center"
         size="hero"
+        charaId={charaId}
+        charaSize={160}
       />
 
       {/* スクロール領域 */}

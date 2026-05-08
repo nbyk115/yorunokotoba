@@ -65,7 +65,19 @@
   --particle-speed: 1;
 }
 
-/* Time of Day Modes */
+[data-theme='dark'] {
+  --bg1: #0D0B0E;
+  --rose: #F0809A;
+  --card: rgba(28, 22, 30, 0.85);
+  --card-solid: #1C161E;
+  --t1: #F0E8EC;
+  --t2: rgba(240, 232, 236, 0.72);
+  --t3: rgba(240, 232, 236, 0.56);
+  --border: rgba(240, 232, 236, 0.10);
+  --bg-body: var(--bg1);
+}
+
+/* Time of Day Modes — must come after [data-theme='dark'] so --bg1 wins */
 [data-time-of-day="night-deep"] {
   --bg1: #0A0810;
   --bg-body: #0A0810;
@@ -104,16 +116,4 @@
   --particle-color: var(--rose);
   --particle-count: 6;
   --particle-speed: 1;
-}
-
-[data-theme='dark'] {
-  --bg1: #0D0B0E;
-  --rose: #F0809A;
-  --card: rgba(28, 22, 30, 0.85);
-  --card-solid: #1C161E;
-  --t1: #F0E8EC;
-  --t2: rgba(240, 232, 236, 0.72);
-  --t3: rgba(240, 232, 236, 0.56);
-  --border: rgba(240, 232, 236, 0.10);
-  --bg-body: var(--bg1);
 }

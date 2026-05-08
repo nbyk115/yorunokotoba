@@ -19,9 +19,16 @@ export function getTimeOfDay(hour = new Date().getHours()): TimeOfDay {
 }
 
 /**
- * document.documentElement.dataset.timeOfDay を設定する。
- * TokensCSS の [data-time-of-day="..."] セレクタが CSS 変数を上書きする。
+ * 暗い背景の時間帯モードでは dark テーマを適用する。
+ * dawn/day は light テーマ、night-deep/dusk/night は dark テーマ。
+ */
+const DARK_TIME_MODES: ReadonlySet<TimeOfDay> = new Set(['night-deep', 'dusk', 'night']);
+
+/**
+ * document.documentElement.dataset.timeOfDay と data-theme を設定する。
+ * TokensCSS の [data-time-of-day="..."] と [data-theme="dark"] が CSS 変数を上書きする。
  */
 export function applyTimeOfDay(tod: TimeOfDay): void {
   document.documentElement.dataset.timeOfDay = tod;
+  document.documentElement.dataset.theme = DARK_TIME_MODES.has(tod) ? 'dark' : 'light';
 }

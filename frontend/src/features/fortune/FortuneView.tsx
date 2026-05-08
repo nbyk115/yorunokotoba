@@ -217,7 +217,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
         {/* ════════════════════════════════ */}
         <div
           style={{
-            padding: '48px 24px 32px',
+            padding: '28px 24px 20px',
             textAlign: 'center',
             background: 'var(--bg1)',
             position: 'relative',
@@ -296,8 +296,8 @@ export function FortuneView({ profile }: FortuneViewProps) {
           </p>
 
           {/* chara-wrapper */}
-          <div style={{ margin: '0 auto', width: 160, height: 160 }}>
-            <CharaAvatar id={result.type.id} size={160} animate />
+          <div style={{ margin: '0 auto', width: 120, height: 120 }}>
+            <CharaAvatar id={result.type.id} size={120} animate />
           </div>
 
           {/* chara-name */}
@@ -412,7 +412,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             style={{
               height: 1,
               background: 'var(--border)',
-              margin: '14px 0',
+              margin: '10px 0',
             }}
             aria-hidden="true"
           />
@@ -439,7 +439,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             style={{
               height: 1,
               background: 'var(--border)',
-              margin: '14px 0',
+              margin: '10px 0',
             }}
             aria-hidden="true"
           />
@@ -489,7 +489,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             style={{
               height: 1,
               background: 'var(--border)',
-              margin: '14px 0',
+              margin: '10px 0',
             }}
             aria-hidden="true"
           />

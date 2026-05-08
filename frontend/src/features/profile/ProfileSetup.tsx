@@ -866,11 +866,19 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
   const step3Valid = gender !== '';
 
   return (
-    <div style={{ minHeight: '100dvh', background: 'var(--bg1)', paddingBottom: 120 }}>
+    <div
+      style={{
+        minHeight: '100dvh',
+        background: 'var(--bg1)',
+        paddingBottom: 120,
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* Hero header */}
       <div
         style={{
-          padding: '40px 24px 0',
+          padding: '32px 24px 0',
           textAlign: 'center',
         }}
       >
@@ -902,7 +910,10 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
       <MoonPhaseProgress currentStep={currentStep} />
 
       {/* Step content */}
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+      >
         {currentStep === 1 && (
           <Step1
             name={name}
@@ -936,6 +947,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
             bottom: 'calc(56px + env(safe-area-inset-bottom))',
             padding: '16px 24px',
             background: 'linear-gradient(to top, var(--bg1) 80%, transparent)',
+            marginTop: 'auto',
           }}
         >
           {currentStep < 3 ? (
