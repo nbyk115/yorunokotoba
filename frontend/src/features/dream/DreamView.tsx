@@ -230,7 +230,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value.slice(0, 500))}
-              placeholder="蛇に追いかけられた…とか、海に沈んでいった…とか"
+              placeholder="空を飛んでいた…とか、知らない街にいた…とか"
               disabled={loading}
               style={{
                 width: '100%',
@@ -279,10 +279,42 @@ export function DreamView({ profile }: DreamViewProps) {
             </div>
           </div>
 
-          {/* placeholder 薄ピンク override */}
+          {/* 期待値コピー（textarea-card と TabBar の間の余白を埋める） */}
+          <div
+            style={{
+              padding: '8px 32px 24px',
+              textAlign: 'center',
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-accent)',
+                fontStyle: 'italic',
+                fontSize: 14,
+                color: 'var(--t3)',
+                lineHeight: 1.7,
+                margin: 0,
+              }}
+            >
+              You leave it to the night.
+            </p>
+            <p
+              style={{
+                fontSize: 12,
+                color: 'var(--t3)',
+                lineHeight: 1.7,
+                marginTop: 4,
+                letterSpacing: '0.04em',
+              }}
+            >
+              夜にあずけると、あなたへのことばが返ってくる
+            </p>
+          </div>
+
+          {/* placeholder の色を t3 に下げてノイズ感を解消 */}
           <style>{`
             textarea::placeholder {
-              color: rgba(232, 98, 124, 0.4);
+              color: rgba(240, 232, 236, 0.40);
             }
           `}</style>
         </>
@@ -784,6 +816,7 @@ export function DreamView({ profile }: DreamViewProps) {
             body={result.mainReading.intro}
             charaId={result.type.id}
             theme="rose"
+            signLabel={`${profile.sign} · ${profile.name}`}
           />
           <Button
             variant="ghost"

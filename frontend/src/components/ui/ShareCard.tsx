@@ -10,6 +10,15 @@ interface ShareCardProps {
   body: string;
   charaId?: string;
   theme?: CardTheme;
+  /** トップ右に出す日付ラベル（例: "5.8 ✦"）。未指定時は現在日付 */
+  dateLabel?: string;
+  /** トップ左に出すコンテキスト（例: "蠍座 · みおの夜"）。未指定なら非表示 */
+  signLabel?: string;
+}
+
+function getDefaultDateLabel(): string {
+  const d = new Date();
+  return `${d.getMonth() + 1}.${d.getDate()} ✦`;
 }
 
 const THEME_GRADIENTS: Record<CardTheme, string> = {
@@ -29,7 +38,10 @@ export function ShareCard({
   body,
   charaId,
   theme = 'rose',
+  dateLabel,
+  signLabel,
 }: ShareCardProps) {
+  const dateText = dateLabel ?? getDefaultDateLabel();
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleSave = async () => {
@@ -104,8 +116,31 @@ export function ShareCard({
     position: 'absolute',
     inset: 0,
     background: THEME_GRADIENTS[theme],
-    opacity: 0.12,
+    opacity: 0.30,
     pointerEvents: 'none',
+  };
+
+  const dateBadgeStyle: CSSProperties = {
+    position: 'absolute',
+    top: 64,
+    right: 64,
+    fontFamily: "'Cormorant', serif",
+    fontStyle: 'italic',
+    fontSize: 32,
+    fontWeight: 300,
+    color: '#E8C068',
+    letterSpacing: '0.06em',
+  };
+
+  const signBadgeStyle: CSSProperties = {
+    position: 'absolute',
+    top: 64,
+    left: 64,
+    fontFamily: "'Zen Maru Gothic', sans-serif",
+    fontSize: 24,
+    fontWeight: 500,
+    color: 'rgba(240,232,236,0.62)',
+    letterSpacing: '0.08em',
   };
 
   const titleStyle: CSSProperties = {
@@ -148,11 +183,15 @@ export function ShareCard({
   const footerStyle: CSSProperties = {
     position: 'absolute',
     bottom: 56,
-    right: 80,
-    fontSize: 24,
-    color: 'rgba(240,232,236,0.40)',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    fontFamily: "'Cormorant', serif",
+    fontStyle: 'italic',
+    fontSize: 30,
+    color: '#E8C068',
     fontWeight: 400,
-    letterSpacing: '0.05em',
+    letterSpacing: '0.10em',
   };
 
   /* ────── ボタン共通スタイル ────── */
@@ -186,6 +225,18 @@ export function ShareCard({
           {/* グラデーションオーバーレイ */}
           <div style={gradientOverlayStyle} aria-hidden="true" />
 
+          {/* トップ右: 日付（月+日） */}
+          <span style={dateBadgeStyle} aria-hidden="true">
+            {dateText}
+          </span>
+
+          {/* トップ左: 星座+名前（任意） */}
+          {signLabel && (
+            <span style={signBadgeStyle} aria-hidden="true">
+              {signLabel}
+            </span>
+          )}
+
           {/* 守護キャラ */}
           {charaId && <CharaAvatar id={charaId} size={180} />}
 
@@ -195,9 +246,9 @@ export function ShareCard({
           <p style={subtitleStyle}>{subtitle}</p>
           <p style={bodyStyle}>{body}</p>
 
-          {/* フッター */}
+          {/* フッター（gold Cormorant italic 30px・センタリング） */}
           <span style={footerStyle} aria-hidden="true">
-            よるのことば
+            yorunokotoba · よるのことば
           </span>
         </div>
       </div>

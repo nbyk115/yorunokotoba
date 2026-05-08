@@ -551,6 +551,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             body={result.summary.slice(0, 60) + (result.summary.length > 60 ? '…' : '')}
             charaId={result.type.id}
             theme={shareTheme}
+            signLabel={`${profile.sign} · ${profile.name}`}
           />
         </div>
       </div>

@@ -62,7 +62,7 @@ function AppInner() {
           {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} />}
           {view === 'fortune' && <FortuneView profile={profile} />}
-          {view === 'archive' && <ArchiveView />}
+          {view === 'archive' && <ArchiveView profile={profile} onNavigate={setView} />}
         </ErrorBoundary>
       </div>
       <BottomTabBar current={view} onChange={setView} />

@@ -20,9 +20,15 @@ export function getTimeOfDay(hour = new Date().getHours()): TimeOfDay {
 
 /**
  * 暗い背景の時間帯モードでは dark テーマを適用する。
- * dawn/day は light テーマ、night-deep/dusk/night は dark テーマ。
+ * day のみ light テーマ。dawn/dusk/night/night-deep は dark テーマ
+ * （tokens.css の time-of-day bg はすべて暗色なため）。
  */
-const DARK_TIME_MODES: ReadonlySet<TimeOfDay> = new Set(['night-deep', 'dusk', 'night']);
+const DARK_TIME_MODES: ReadonlySet<TimeOfDay> = new Set([
+  'night-deep',
+  'dawn',
+  'dusk',
+  'night',
+]);
 
 /**
  * document.documentElement.dataset.timeOfDay と data-theme を設定する。

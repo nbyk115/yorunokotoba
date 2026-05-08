@@ -1,8 +1,30 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ShareCard } from '@/components/ui/ShareCard';
+import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
 import { getDreamTypeById } from '@/data/dreamTypes';
+import type { UserProfile } from '@/lib/firestore';
+
+const SIGN_CHARA_MAP: Record<string, string> = {
+  牡羊座: 'yume_kobuta',
+  牡牛座: 'komorebi_shika',
+  双子座: 'mori_risu',
+  蟹座: 'ame_iruka',
+  獅子座: 'taiyou_lion',
+  乙女座: 'sakura_usagi',
+  天秤座: 'hana_panda',
+  蠍座: 'mayonaka_neko',
+  射手座: 'kaze_uma',
+  山羊座: 'hoshi_kuma',
+  水瓶座: 'sora_unicorn',
+  魚座: 'umi_rakko',
+};
+
+interface ArchiveViewProps {
+  profile?: UserProfile | null;
+  onNavigate?: (view: 'home' | 'dream' | 'fortune' | 'archive') => void;
+}
 
 const themeLabels: Record<string, string> = {
   anx: '不安・解放',
@@ -192,7 +214,7 @@ function EntryCard({
   );
 }
 
-export function ArchiveView() {
+export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   const [entries, setEntries] = useState<ArchiveEntry[]>(() => loadArchive());
 
   // 月ナビゲーション state
@@ -291,6 +313,7 @@ export function ArchiveView() {
 
   // 空状態
   if (entries.length === 0) {
+    const guardianId = profile?.sign ? SIGN_CHARA_MAP[profile.sign] : undefined;
     return (
       <div
         style={{
@@ -298,26 +321,59 @@ export function ArchiveView() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '60vh',
+          minHeight: '70vh',
           padding: '40px 24px',
           textAlign: 'center',
+          gap: 24,
         }}
       >
-        <p
-          style={{
-            fontFamily: 'var(--font-accent)',
-            fontStyle: 'italic',
-            fontSize: 22,
-            color: 'var(--t2)',
-            lineHeight: 1.6,
-            marginBottom: 12,
-          }}
-        >
-          まだあなたの夜は、白紙のまま
-        </p>
-        <p style={{ fontSize: 13, color: 'var(--t3)' }}>
-          夢占いをしてみて
-        </p>
+        {guardianId && (
+          <div style={{ width: 120, height: 120, opacity: 0.92 }}>
+            <CharaAvatar id={guardianId} size={120} animate />
+          </div>
+        )}
+        <div>
+          <p
+            style={{
+              fontFamily: 'var(--font-accent)',
+              fontStyle: 'italic',
+              fontSize: 24,
+              color: 'var(--t1)',
+              lineHeight: 1.6,
+              marginBottom: 8,
+            }}
+          >
+            まだあなたの夜は、白紙のまま
+          </p>
+          <p style={{ fontSize: 13, color: 'var(--t3)', lineHeight: 1.7 }}>
+            最初の1夜を、ここに。
+          </p>
+        </div>
+        {onNavigate && (
+          <button
+            type="button"
+            onClick={() => onNavigate('dream')}
+            style={{
+              minHeight: 52,
+              padding: '14px 32px',
+              borderRadius: 14,
+              border: 'none',
+              background: 'var(--grad)',
+              color: '#fff',
+              fontSize: 15,
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              boxShadow: '0 8px 24px rgba(240, 128, 154, 0.28)',
+              transition: 'transform 200ms ease, box-shadow 200ms ease',
+            }}
+            onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.98)')}
+            onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          >
+            夢を、夜にあずける
+          </button>
+        )}
       </div>
     );
   }
