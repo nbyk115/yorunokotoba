@@ -209,6 +209,44 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [shareTarget, setShareTarget] = useState<ArchiveEntry | null>(null);
 
+  // 検索 state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedThemes, setSelectedThemes] = useState<Set<string>>(() => new Set());
+
+  const isSearching = searchQuery.trim().length > 0 || selectedThemes.size > 0;
+
+  // 検索結果のフィルタリング（テキスト+タグ AND条件）
+  const searchResults = useMemo(() => {
+    if (!isSearching) return [];
+    const q = searchQuery.trim().toLowerCase();
+    return entries
+      .filter((e) => {
+        // タグフィルタ
+        if (selectedThemes.size > 0 && !selectedThemes.has(e.themeKey)) return false;
+        // テキストフィルタ
+        if (q.length > 0) {
+          const haystack = `${e.text} ${e.summary}`.toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => b.timestamp - a.timestamp);
+  }, [entries, searchQuery, selectedThemes, isSearching]);
+
+  const toggleTheme = (key: string) => {
+    setSelectedThemes((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSelectedThemes(new Set());
+  };
+
   // 現在表示月にエントリーがある日のSet
   const entryDays = useMemo(() => {
     const set = new Set<number>();
@@ -410,6 +448,229 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           </p>
         </header>
 
+        {/* search-section（検索バー + テーマタグ） */}
+        <div style={{ padding: '0 16px 16px' }}>
+          <div
+            style={{
+              position: 'relative',
+              marginBottom: 12,
+            }}
+          >
+            <input
+              type="search"
+              aria-label="夢の記録を検索"
+              placeholder="夢のことばで探す（例: 海・追われる）"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                minHeight: 44,
+                padding: '12px 40px 12px 16px',
+                background: 'var(--card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                color: 'var(--t1)',
+                fontSize: 14,
+                fontFamily: 'var(--font-heading)',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                aria-label="検索をクリア"
+                onClick={() => setSearchQuery('')}
+                style={{
+                  position: 'absolute',
+                  right: 12,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: 'var(--border)',
+                  color: 'var(--t2)',
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* テーマタグチップ */}
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              overflowX: 'auto',
+              paddingBottom: 4,
+              scrollbarWidth: 'none',
+            }}
+          >
+            {Object.entries(themeLabels).map(([key, label]) => {
+              const active = selectedThemes.has(key);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => toggleTheme(key)}
+                  style={{
+                    flexShrink: 0,
+                    minHeight: 36,
+                    padding: '8px 14px',
+                    borderRadius: 18,
+                    border: `1px solid ${active ? 'var(--rose)' : 'var(--border)'}`,
+                    background: active ? 'rgba(240, 128, 154, 0.14)' : 'transparent',
+                    color: active ? 'var(--rose)' : 'var(--t2)',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-heading)',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 200ms ease',
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            {isSearching && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                style={{
+                  flexShrink: 0,
+                  minHeight: 36,
+                  padding: '8px 14px',
+                  borderRadius: 18,
+                  border: '1px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--t3)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-heading)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                すべて解除
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 検索結果リスト or 月カレンダー */}
+        {isSearching ? (
+          <div style={{ padding: '0 16px 16px' }}>
+            <p
+              style={{
+                fontSize: 12,
+                color: 'var(--t3)',
+                margin: '0 0 12px',
+                letterSpacing: '0.04em',
+              }}
+            >
+              {searchResults.length}件の夢が見つかりました
+            </p>
+            {searchResults.length === 0 ? (
+              <div
+                style={{
+                  textAlign: 'center',
+                  padding: '40px 16px',
+                  color: 'var(--t3)',
+                  fontSize: 13,
+                  lineHeight: 1.8,
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: 'var(--font-accent)',
+                    fontStyle: 'italic',
+                    fontSize: 18,
+                    color: 'var(--t2)',
+                    margin: '0 0 8px',
+                  }}
+                >
+                  まだ、その夢に出会っていない
+                </p>
+                <p style={{ margin: 0, fontSize: 12 }}>
+                  別のことばや、テーマで探してみて
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {searchResults.map((entry) => (
+                  <button
+                    key={entry.id}
+                    type="button"
+                    onClick={() => setShareTarget(entry)}
+                    style={{
+                      textAlign: 'left',
+                      background: 'var(--card)',
+                      border: '1px solid var(--border)',
+                      borderRadius: 14,
+                      padding: 16,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 6,
+                      fontFamily: 'var(--font-heading)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 11,
+                          color: 'var(--rose)',
+                          fontWeight: 700,
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        {themeLabels[entry.themeKey] ?? entry.themeKey}
+                      </span>
+                      <span style={{ fontSize: 11, color: 'var(--t3)' }}>
+                        {new Date(entry.timestamp).toLocaleDateString('ja-JP', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        color: 'var(--t1)',
+                        lineHeight: 1.7,
+                        margin: 0,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {entry.text}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+        <>
         {/* month-header */}
         <div
           style={{
@@ -616,6 +877,8 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             この日記をしまう（全削除）
           </Button>
         </div>
+        </>
+        )}
       </div>
 
       {/* slideUp アニメーション */}
