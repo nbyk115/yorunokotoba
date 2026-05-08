@@ -552,6 +552,8 @@ export function FortuneView({ profile }: FortuneViewProps) {
             charaId={result.type.id}
             theme={shareTheme}
             signLabel={`${profile.sign} · ${profile.name}`}
+            luckyNumber={result.lucky.num.v}
+            luckyNumberLabel="Lucky"
           />
         </div>
       </div>

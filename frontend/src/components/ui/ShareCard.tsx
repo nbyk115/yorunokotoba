@@ -14,6 +14,12 @@ interface ShareCardProps {
   dateLabel?: string;
   /** トップ左に出すコンテキスト（例: "蠍座 · みおの夜"）。未指定なら非表示 */
   signLabel?: string;
+  /** ラッキーナンバー（例: 12）。指定時は大型 Cormorant italic で中央上部に */
+  luckyNumber?: number | string;
+  /** ラッキーナンバーの注釈（例: "Lucky"）。luckyNumber と併用 */
+  luckyNumberLabel?: string;
+  /** 月相絵文字（例: 🌖）。トップ左の signLabel 下に併記 */
+  moonPhase?: string;
 }
 
 function getDefaultDateLabel(): string {
@@ -40,6 +46,9 @@ export function ShareCard({
   theme = 'rose',
   dateLabel,
   signLabel,
+  luckyNumber,
+  luckyNumberLabel,
+  moonPhase,
 }: ShareCardProps) {
   const dateText = dateLabel ?? getDefaultDateLabel();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -230,15 +239,60 @@ export function ShareCard({
             {dateText}
           </span>
 
-          {/* トップ左: 星座+名前（任意） */}
+          {/* トップ左: 星座+名前（任意） + 月相絵文字（任意） */}
           {signLabel && (
             <span style={signBadgeStyle} aria-hidden="true">
               {signLabel}
+              {moonPhase && <span style={{ marginLeft: 12, fontSize: 32 }}>{moonPhase}</span>}
             </span>
           )}
 
           {/* 守護キャラ */}
           {charaId && <CharaAvatar id={charaId} size={180} />}
+
+          {/* ラッキーナンバー大型表示（任意） — Spotify Wrapped 型の "あなただけの数字" */}
+          {luckyNumber !== undefined && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0,
+                margin: '8px 0',
+              }}
+              aria-hidden="true"
+            >
+              {luckyNumberLabel && (
+                <span
+                  style={{
+                    fontFamily: "'Cormorant', serif",
+                    fontStyle: 'italic',
+                    fontSize: 28,
+                    color: '#E8C068',
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    fontWeight: 300,
+                  }}
+                >
+                  {luckyNumberLabel}
+                </span>
+              )}
+              <span
+                style={{
+                  fontFamily: "'Cormorant', serif",
+                  fontStyle: 'italic',
+                  fontSize: 180,
+                  fontWeight: 300,
+                  lineHeight: 1,
+                  color: '#F0E8EC',
+                  textShadow: '0 4px 32px rgba(232, 192, 104, 0.3)',
+                  letterSpacing: '-0.04em',
+                }}
+              >
+                {luckyNumber}
+              </span>
+            </div>
+          )}
 
           {/* テキスト群 */}
           <p style={titleStyle}>{title}</p>

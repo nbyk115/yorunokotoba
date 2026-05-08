@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
-import { getDreamTypeById } from '@/data/dreamTypes';
+import { getSafeDreamType } from '@/lib/contentFilter';
 import { getCharaIdBySign } from '@/data/signs';
 import type { UserProfile } from '@/lib/firestore';
 
@@ -35,7 +35,7 @@ function ShareModal({
   entry: ArchiveEntry;
   onClose: () => void;
 }) {
-  const type = getDreamTypeById(entry.typeId);
+  const type = getSafeDreamType(entry.typeId);
   return (
     <div
       role="dialog"
@@ -115,7 +115,7 @@ function EntryCard({
   entry: ArchiveEntry;
   onShareRequest: (e: ArchiveEntry) => void;
 }) {
-  const type = getDreamTypeById(entry.typeId);
+  const type = getSafeDreamType(entry.typeId);
   return (
     <div
       style={{

@@ -4,7 +4,7 @@ import { RitualButton } from '@/components/ui/RitualButton';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { CompatibilityCard } from '@/components/ui/CompatibilityCard';
 import { SIGNS, getCharaIdBySign } from '@/data/signs';
-import { getDreamTypeById } from '@/data/dreamTypes';
+import { getSafeDreamType } from '@/lib/contentFilter';
 import {
   calculateCompatibility,
   getRankPrefix,
@@ -22,7 +22,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   const [myGender, setMyGender] = useState<'female' | 'male'>('female');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
 
-  const fromChara = getDreamTypeById(fromCharaId);
+  const fromChara = getSafeDreamType(fromCharaId);
 
   useEffect(() => {
     track('compatibility_link_open', {

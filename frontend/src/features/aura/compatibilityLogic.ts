@@ -8,7 +8,8 @@
  * AI/外部API 不使用、完全に決定論的（同じ入力 → 同じ結果）。
  */
 
-import { getDreamTypeById, type DreamType } from '@/data/dreamTypes';
+import { type DreamType } from '@/data/dreamTypes';
+import { getSafeDreamType } from '@/lib/contentFilter';
 
 export type CompatibilityRank = 'best' | 'good' | 'growth';
 
@@ -67,8 +68,8 @@ export function calculateCompatibility(
   charaIdA: string,
   charaIdB: string,
 ): CompatibilityResult {
-  const charaA = getDreamTypeById(charaIdA);
-  const charaB = getDreamTypeById(charaIdB);
+  const charaA = getSafeDreamType(charaIdA);
+  const charaB = getSafeDreamType(charaIdB);
 
   if (!charaA || !charaB) {
     return {
