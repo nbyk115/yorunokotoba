@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { generateFortune, type FortuneRank, type FortuneResult } from '@/logic/fortune';

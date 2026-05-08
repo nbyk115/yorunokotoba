@@ -76,7 +76,7 @@ function ShareModal({
           title={type?.name ?? '夢診断'}
           subtitle={themeLabels[entry.themeKey] ?? entry.themeKey}
           body={entry.summary}
-          charaId={type?.guardianId}
+          charaId={type?.id}
           theme="rose"
         />
         <button
