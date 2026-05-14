@@ -23,6 +23,7 @@ import {
 } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { getFirebaseApp } from './firebase';
+import { getCurrentIdToken } from './auth';
 
 export type SubscriptionStatus = 'none' | 'active' | 'past_due' | 'canceled';
 export type SubscriptionPlan = 'premium_monthly';
@@ -115,20 +116,22 @@ export function useSubscription(userId: string | null): {
 }
 
 /**
- * Checkout 起動: バックエンドに UnivaPay の checkout URL or token を作成依頼。
- *
- * TODO(univapay): 実 API 接続時は以下を確定する
- *   - UnivaPay の Checkout 方式: (a) 自社UI + token API / (b) Hosted Page
- *   - 推奨は (b) Hosted Page（PCI DSS 範囲縮小）
- *   - レスポンス: { checkoutUrl: string } を期待
+ * Checkout 起動. Firebase Auth ID Token を Authorization で送る.
+ * バックエンドは token の uid を権威ある識別子として使用（body.userId は信用しない）.
  */
 export async function startCheckout(params: {
-  userId: string;
   plan: SubscriptionPlan;
 }): Promise<{ checkoutUrl: string }> {
+  const token = await getCurrentIdToken();
+  if (!token) {
+    throw new Error('not_signed_in');
+  }
   const res = await fetch('/api/subscription/checkout', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(params),
   });
   if (!res.ok) {
@@ -138,14 +141,19 @@ export async function startCheckout(params: {
 }
 
 /**
- * Subscription キャンセル要求.
- * TODO(univapay): UnivaPay 側のキャンセル API 呼び出し → Webhook で status='canceled'
+ * Subscription キャンセル要求. ID Token から uid を取得するため body は空でよい.
  */
-export async function cancelSubscription(userId: string): Promise<void> {
+export async function cancelSubscription(): Promise<void> {
+  const token = await getCurrentIdToken();
+  if (!token) {
+    throw new Error('not_signed_in');
+  }
   const res = await fetch('/api/subscription/cancel', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   });
   if (!res.ok) {
     throw new Error(`cancel failed: ${res.status}`);

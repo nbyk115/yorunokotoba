@@ -86,6 +86,13 @@ export async function signOut(): Promise<void> {
   await fbSignOut(getAuthInstance());
 }
 
+/** 現在ログイン中のユーザーの ID Token を取得（API 認証用）. 未ログイン時は null. */
+export async function getCurrentIdToken(): Promise<string | null> {
+  const user = getAuthInstance().currentUser;
+  if (!user) return null;
+  return user.getIdToken();
+}
+
 /**
  * 現在ログイン中の Firebase Auth ユーザーを購読する React フック。
  * 未ログイン時は user=null / userId=null を返す（既存の guest 体験を維持）。

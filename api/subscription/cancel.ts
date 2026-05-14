@@ -1,23 +1,24 @@
 /**
  * POST /api/subscription/cancel
  *
- * UnivaPay の subscription を即時キャンセル要求。
+ * UnivaPay の subscription を即時キャンセル要求.
+ *
+ * 認可: Authorization: Bearer <Firebase ID Token> 必須.
+ * 取り消す subscription は token の uid に紐付くもののみ.
+ * body の userId は信用せず、token から取得した uid を使う（IDOR 防止）.
  *
  * 処理フロー:
- *   1. body.userId 必須
- *   2. Firestore から users/{userId}.subscription.univapaySubscriptionId を取得
- *   3. UnivaPay の cancel API を呼ぶ
- *   4. 実際の status='canceled' 反映は webhook (subscription.canceled) 経由
+ *   1. ID Token 検証 → uid
+ *   2. Firestore users/{uid}.subscription.univapaySubscriptionId を取得
+ *   3. UnivaPay /stores/{id}/subscriptions/{sub_id}/cancel を呼ぶ
+ *   4. 実 status='canceled' 反映は webhook (subscription.canceled) 経由
  *
- * env 未設定 → 503（mock 動作は webhook 側で完結するため不要）.
- *
- * 注意: 本エンドポイントは認証された userId のみが自分の subscription を
- * キャンセルできるよう、Firebase Auth ID Token 検証を G2 完了後に追加する.
+ * env 未設定 → 503.
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { CancelRequest } from '../_shared/types';
 import { getAdminFirestore } from '../_shared/firebase-admin';
+import { verifyAuthUid } from '../_shared/auth-verify';
 
 export default async function handler(
   req: VercelRequest,
@@ -28,9 +29,9 @@ export default async function handler(
     return;
   }
 
-  const body = req.body as Partial<CancelRequest>;
-  if (!body.userId) {
-    res.status(400).json({ error: 'userId is required' });
+  const uid = await verifyAuthUid(req);
+  if (!uid) {
+    res.status(401).json({ error: 'unauthorized' });
     return;
   }
 
@@ -52,7 +53,7 @@ export default async function handler(
     return;
   }
 
-  const snap = await db.doc(`users/${body.userId}`).get();
+  const snap = await db.doc(`users/${uid}`).get();
   if (!snap.exists) {
     res.status(404).json({ error: 'user_not_found' });
     return;

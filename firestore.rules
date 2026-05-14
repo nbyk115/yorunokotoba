@@ -3,11 +3,34 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users may read/write only their own profile document.
-    // Schema: users/{uid} = { name, sign, birthYear, birthMonth, birthDay, gender, prefecture, updatedAt }
+    // users/{uid}: 自分自身のみ read/write 可。
+    // ただし `subscription` フィールドは Admin SDK（Webhook）専用。
+    // クライアントから subscription.status='active' を書かれる事故を防ぐ。
     match /users/{userId} {
-      allow read, write: if request.auth != null
-                         && request.auth.uid == userId;
+      allow read: if request.auth != null
+                  && request.auth.uid == userId;
+
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && !('subscription' in request.resource.data);
+
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && !('subscription' in request.resource.data.diff(resource.data).affectedKeys());
+
+      allow delete: if request.auth != null
+                    && request.auth.uid == userId;
+    }
+
+    // subscriptionsMap/{subId}: Webhook で UnivaPay subscription_id → userId 逆引き用.
+    // Admin SDK のみ書込・読込.
+    match /subscriptionsMap/{subId} {
+      allow read, write: if false;
+    }
+
+    // webhook_events/{eventId}: idempotency 制御用. Admin SDK のみ.
+    match /webhook_events/{eventId} {
+      allow read, write: if false;
     }
 
     // Default deny — any other path is rejected.
