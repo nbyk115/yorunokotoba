@@ -104,15 +104,30 @@ Webhook から Firestore を更新するため、Vercel 環境変数に Service 
 - `FIREBASE_SERVICE_ACCOUNT_JSON`（base64 推奨）
 - リージョン: Vercel 側 `hnd1`、Firestore は asia-northeast1 推奨（レイテンシ）
 
-### G6. 価格決定
-| ソース | 価格 |
-|---|---|
-| 既存 UI（FortuneView）| **¥480/月** |
-| strategy-lead 試算 | ¥980/月（ARPPU 仮定値）|
-| competitive-analyst 試算 | ¥1,980/月（UnivaPay 推奨）|
-| LINE占い・noteメンバーシップ事例 | ¥1,000〜¥1,500 が中央値 |
+### G6. 価格決定 ✅ 確定（2026-05-14）
 
-**意思決定待ち**: marketing-research（market-researcher）で価格弾力性調査推奨。S1 着手前に確定必須。
+**確定価格: ¥980/月（Premium 単一プラン）**
+
+詳細根拠・反証・A/Bテスト設計は `docs/strategy/pricing-decision.md`（SSOT）を参照。
+
+#### 候補比較
+
+| ソース | 価格 | 採否 |
+|---|---|---|
+| 既存 UI（FortuneView 旧版）| ¥480/月 | ❌ 粗利インパクト弱・ブランド毀損リスク |
+| **strategy-lead 試算** | **¥980/月** | ✅ **採用**（PMF検証フェーズ最適） |
+| competitive-analyst 試算 | ¥1,980/月 | ❌ 創業者直感不一致・初期摩擦過大 |
+| LINE占い・note 中央値 | ¥1,000〜¥1,500 | 参考値 |
+
+#### 採用理由（要約）
+- 創業者直感（"払う気になる"）一致
+- CHANI ¥1,200 / Co-Star ¥1,800 より下で明確なポジショニング
+- LTV ¥5,880（6ヶ月想定）= 電話占い1回相当の等価交換成立
+- 粗利率 96.8%（UnivaPay 手数料 3.2%）→ ¥948/月粗利
+
+#### 段階引き上げプラン
+- M3: ¥1,480 への A/Bテスト判断（既存ユーザー grandfathering）
+- M6: Premium Plus ¥1,980 検討（占い師1on1・カスタム鑑定）
 
 ### G7. CSP（Content-Security-Policy）
 `vercel.json` の CSP は `connect-src` に UnivaPay ドメインが含まれていない。Checkout 後の戻りリンクや Webhook 関連で許可ドメインが必要：
@@ -134,7 +149,7 @@ S1 着手時に CSP を追記する。
 
 優先順（上から順に対応）:
 
-1. **G6 価格決定**（経営判断）
+1. ~~**G6 価格決定**（経営判断）~~ ✅ ¥980/月 確定（2026-05-14）
 2. **G2 UnivaPay 事前相談** + 業種申請（外部待ち、並行進行）
 3. **G1 Auth 統合**: Email link signin を Premium タップ時に発火（UX 設計：ux-designer）
 4. **G3 Checkout API 実装**: `api/subscription/checkout.ts` のスタブを実 API 呼び出しに置換
@@ -183,7 +198,7 @@ npx vercel dev
 ✅ **Step 1（自己反証）**:
 - UnivaPay が後日アカウント停止する可能性 → S0 として note メンバーシップ並走を提案（決済導線冗長化）
 - 「auth がない」状態で課金UIだけ用意することの違和感 → スキャフォールド段階では `guest_xxxx` で動かしギャップを可視化、本番投入前に G1 必須化
-- 価格 ¥480 vs ¥1,980 の差 → market-researcher で確定（前提値で動かさない）
+- ~~価格 ¥480 vs ¥1,980 の差 → market-researcher で確定~~ → ✅ ¥980/月 確定（pricing-decision.md 参照）
 
 ✅ **Step 2（構造反証）**:
 - Vercel + Firestore + UnivaPay の三者連携は標準的なパターン（Stripe や Paddle でも同じ構造）→ 構造は妥当

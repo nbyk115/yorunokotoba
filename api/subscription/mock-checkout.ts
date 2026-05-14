@@ -42,7 +42,7 @@ export default function handler(
   <div class="panel">
     <p>userId: <code>${escapeHtml(userId)}</code></p>
     <p>plan: <code>${escapeHtml(plan)}</code></p>
-    <p>price: <code>¥480 / 月</code></p>
+    <p>price: <code>¥980 / 月</code></p>
     <button id="pay">決済完了をシミュレート</button>
     <p class="warn">⚠ これはモック。実 UnivaPay 接続後はこのページは表示されない。</p>
   </div>

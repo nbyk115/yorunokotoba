@@ -3,14 +3,17 @@
  *
  * onClick → startCheckout() でバックエンドに checkoutUrl を要求 → 同タブで遷移。
  *
+ * 価格: ¥980/月（SSOT: docs/strategy/pricing-decision.md, 2026-05-14 確定）
+ *
  * 既知ギャップ（TODO(univapay) 参照）:
  * - userId が undefined の場合は guest ID を生成。本番では Firebase Auth 必須。
- * - 価格は props で渡す（既存 ¥480 と新方針 ¥1,980 の差は意思決定待ち）。
  */
 
 import { useState } from 'react';
 import { track } from '@/lib/analytics';
 import { startCheckout } from '@/lib/subscription';
+
+export const PREMIUM_PRICE_LABEL = '月¥980' as const;
 
 interface PremiumCTAProps {
   source: string;
@@ -23,7 +26,7 @@ interface PremiumCTAProps {
 export function PremiumCTA({
   source,
   userId,
-  priceLabel = '月¥480',
+  priceLabel = PREMIUM_PRICE_LABEL,
   headline = 'For Premium readers',
   description = '守護キャラからの私信を、夜ごとに読み解けます',
 }: PremiumCTAProps) {
