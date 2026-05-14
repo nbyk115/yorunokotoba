@@ -572,6 +572,17 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             luckyNumberLabel="Lucky"
           />
         </div>
+        <p
+          style={{
+            fontSize: 10,
+            color: 'var(--t3)',
+            textAlign: 'center',
+            margin: '24px 16px 4px',
+            lineHeight: 1.6,
+          }}
+        >
+          ※ 占い結果は AI が生成した娯楽コンテンツです. 特定の結果を保証するものではありません.
+        </p>
       </div>
     </>
   );

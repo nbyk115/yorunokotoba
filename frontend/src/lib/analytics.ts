@@ -1,7 +1,11 @@
 /**
  * Type-safe wrapper around Google Analytics 4 gtag().
- * All 28 event names from legacy index.html are declared as a union so
- * typos fail at compile time.
+ * EventName union で typo を compile-time に弾く.
+ *
+ * 旧 paywall 系（soft_paywall_tap, deep_paywall_tap, letter_paywall_tap,
+ * banner_premium_tap, premium_cta_tap, sticky_cta_tap, teaser_cta_tap,
+ * retention_teaser_tap）は実装統合により dead. 2026-05-14 削除.
+ * 現在は compat_paywall_tap 1系統に集約.
  */
 
 type EventName =
@@ -13,14 +17,7 @@ type EventName =
   | 'ftue_complete'
   | 'profile_complete'
   | 'paywall_view'
-  | 'soft_paywall_tap'
-  | 'deep_paywall_tap'
   | 'compat_paywall_tap'
-  | 'letter_paywall_tap'
-  | 'banner_premium_tap'
-  | 'premium_cta_tap'
-  | 'sticky_cta_tap'
-  | 'teaser_cta_tap'
   | 'checkout_open'
   | 'subscription_cancel'
   | 'image_save'
@@ -28,7 +25,6 @@ type EventName =
   | 'share_dream'
   | 'friend_invite_tap'
   | 'push_prompt_dream_result'
-  | 'retention_teaser_tap'
   | 'streak_update'
   | 'streak_milestone'
   | 'night_mode_toggle'
