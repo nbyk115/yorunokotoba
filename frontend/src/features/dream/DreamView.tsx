@@ -770,6 +770,17 @@ export function DreamView({ profile }: DreamViewProps) {
               もう一度あずける
             </Button>
           </div>
+          <p
+            style={{
+              fontSize: 10,
+              color: 'var(--t3)',
+              textAlign: 'center',
+              margin: '16px 16px 4px',
+              lineHeight: 1.6,
+            }}
+          >
+            ※ 夢の解釈は AI が生成した娯楽コンテンツです. 特定の結果を保証するものではありません.
+          </p>
         </>
       )}
 
