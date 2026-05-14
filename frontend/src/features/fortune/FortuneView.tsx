@@ -5,6 +5,8 @@ import { ShareCard } from '@/components/ui/ShareCard';
 import { generateFortune, type FortuneRank, type FortuneResult } from '@/logic/fortune';
 import { SIGNS } from '@/data/signs';
 import { getGuardianMessage } from '@/data/guardianMessages';
+import { getMoonSignWave } from '@/data/moonSignWaves';
+import { getMoonPhaseCategory, getMoonPhaseEmoji, getMoonPhaseLabel } from '@/lib/moonPhase';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 
@@ -528,6 +530,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
         <DeepReadingSection
           charaId={result.type.id}
           charaName={result.type.name}
+          sign={profile.sign}
           isPremium={false /* TODO: profile.subscription === 'premium' に置換 */}
         />
 
@@ -578,11 +581,17 @@ export function FortuneView({ profile }: FortuneViewProps) {
 interface DeepReadingSectionProps {
   charaId: string;
   charaName: string;
+  sign: string;
   isPremium: boolean;
 }
 
-function DeepReadingSection({ charaId, charaName, isPremium }: DeepReadingSectionProps) {
+function DeepReadingSection({ charaId, charaName, sign, isPremium }: DeepReadingSectionProps) {
   const message = getGuardianMessage(charaId);
+  const moonPhaseCategory = getMoonPhaseCategory();
+  const moonEmoji = getMoonPhaseEmoji();
+  const moonLabel = getMoonPhaseLabel();
+  const moonWave = getMoonSignWave(sign, moonPhaseCategory);
+
   if (!message) return null;
 
   const wrapStyle: React.CSSProperties = {
@@ -623,6 +632,12 @@ function DeepReadingSection({ charaId, charaName, isPremium }: DeepReadingSectio
     transition: 'filter 300ms ease',
   };
 
+  const dividerStyle: React.CSSProperties = {
+    height: 1,
+    background: 'var(--border)',
+    margin: '20px 0',
+  };
+
   return (
     <Card style={wrapStyle}>
       <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
@@ -630,6 +645,17 @@ function DeepReadingSection({ charaId, charaName, isPremium }: DeepReadingSectio
         {charaName}からの夜のことば
       </h4>
       <p style={bodyStyle}>{message.body}</p>
+
+      {moonWave && (
+        <>
+          <div style={dividerStyle} aria-hidden="true" />
+          <p style={{ ...eyebrowStyle, color: 'var(--lavender)' }}>
+            {moonEmoji} Moon × Sign · {moonLabel}の波動
+          </p>
+          <h4 style={titleStyle}>{moonWave.title}</h4>
+          <p style={bodyStyle}>{moonWave.body}</p>
+        </>
+      )}
 
       {!isPremium && (
         <div
