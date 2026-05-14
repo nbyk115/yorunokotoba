@@ -6,9 +6,12 @@
   "description": "よるのことば - 夢占い×星座占い (Vite + React + TypeScript rebuild)",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/sync-legal.mjs",
+    "predev": "node scripts/sync-legal.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "sync-legal": "node scripts/sync-legal.mjs"
   },
   "dependencies": {
     "firebase": "^10.12.0",
