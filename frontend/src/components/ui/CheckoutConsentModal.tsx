@@ -114,14 +114,24 @@ export function CheckoutConsentModal({
         >
           <ConsentRow label="月額" value="¥980（税込）" note="申込時に即時決済されるよ" />
           <ConsentRow
+            label="サービス内容"
+            value="毎月の Premium 機能アクセス"
+            note="占いの深層メッセージ・守護キャラからの私信 等"
+          />
+          <ConsentRow
+            label="提供期間"
+            value="期間の定めなし（解約まで継続）"
+            note="次回更新日は初回決済日から30日ごと"
+          />
+          <ConsentRow
             label="自動継続"
             value="解約しない限り毎月課金"
-            note="次回更新日は初回決済日から30日ごと"
+            note="解約は次回更新日の前日23:59 まで"
           />
           <ConsentRow
             label="解約"
             value="マイページから1タップ"
-            note="次回更新日の前日23:59 まで・日割返金なし"
+            note="日割返金なし・残り期間は引き続き利用可"
           />
         </ul>
 
