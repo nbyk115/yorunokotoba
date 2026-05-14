@@ -9,6 +9,8 @@ import { getMoonSignWave } from '@/data/moonSignWaves';
 import { getMoonPhaseCategory, getMoonPhaseEmoji, getMoonPhaseLabel } from '@/lib/moonPhase';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
+import { useSubscription } from '@/lib/subscription';
+import { PremiumCTA } from '@/components/ui/PremiumCTA';
 
 interface FortuneViewProps {
   profile: UserProfile;
@@ -531,7 +533,6 @@ export function FortuneView({ profile }: FortuneViewProps) {
           charaId={result.type.id}
           charaName={result.type.name}
           sign={profile.sign}
-          isPremium={false /* TODO: profile.subscription === 'premium' に置換 */}
         />
 
         {/* ════════════════════════════════ */}
@@ -582,10 +583,11 @@ interface DeepReadingSectionProps {
   charaId: string;
   charaName: string;
   sign: string;
-  isPremium: boolean;
 }
 
-function DeepReadingSection({ charaId, charaName, sign, isPremium }: DeepReadingSectionProps) {
+function DeepReadingSection({ charaId, charaName, sign }: DeepReadingSectionProps) {
+  // TODO(univapay): App.tsx で auth を組み込んだら、currentUser?.uid を props で受け取る
+  const { isPremium } = useSubscription(null);
   const message = getGuardianMessage(charaId);
   const moonPhaseCategory = getMoonPhaseCategory();
   const moonEmoji = getMoonPhaseEmoji();
@@ -657,55 +659,7 @@ function DeepReadingSection({ charaId, charaName, sign, isPremium }: DeepReading
         </>
       )}
 
-      {!isPremium && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: '14px 16px',
-            background: 'linear-gradient(135deg, rgba(232, 192, 104, 0.10), rgba(176, 138, 207, 0.10))',
-            border: '1px solid var(--border)',
-            borderRadius: 14,
-            textAlign: 'center',
-          }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontStyle: 'italic',
-              fontSize: 14,
-              color: 'var(--gold)',
-              margin: '0 0 4px',
-              letterSpacing: '0.06em',
-            }}
-          >
-            For Premium readers
-          </p>
-          <p style={{ fontSize: 12, color: 'var(--t2)', margin: '0 0 12px', lineHeight: 1.7 }}>
-            守護キャラからの私信を、夜ごとに読み解けます
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              track('compat_paywall_tap', { source: 'deep_reading' });
-            }}
-            style={{
-              minHeight: 44,
-              padding: '10px 24px',
-              borderRadius: 12,
-              border: 'none',
-              background: 'linear-gradient(135deg, var(--rose), var(--pink))',
-              color: '#fff',
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: 'pointer',
-              fontFamily: 'var(--font-heading)',
-              letterSpacing: '0.04em',
-            }}
-          >
-            続きを読む · 月¥480
-          </button>
-        </div>
-      )}
+      {!isPremium && <PremiumCTA source="deep_reading" userId={null} />}
     </Card>
   );
 }
