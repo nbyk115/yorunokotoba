@@ -1,28 +1,69 @@
 /**
  * CheckoutConsentModal — 課金前の重要事項確認モーダル.
  *
- * 根拠法令: 電子消費者契約法第3条（申込内容の確認措置）+ 特商法第15条の3
- * （定期購入の重要事項表示）.
+ * 根拠法令:
+ *   - 電子契約法第3条（申込内容の確認措置）
+ *   - 特商法第15条の3（定期購入の重要事項表示）
+ *   - 民法第5条（18歳以上の年齢確認）
  *
- * 提示する重要事項3点:
- *   1. 価格: 月¥980（税込）
- *   2. 自動継続: 解約しない限り毎月課金
- *   3. 解約方法: マイページから1タップで解約可
+ * 機能:
+ *   - 重要事項3点（価格・自動継続・解約方法）の明示
+ *   - 18歳以上チェックボックス必須
+ *   - 同意記録 Firestore 保存（onConfirm 内）
+ *   - 法務リンク（特商法/利用規約/プラポリ）をモーダル内部でフルスクリーン表示
+ *     → 戻ったときに同意モーダルが維持される（CVR維持）
+ *   - ESC で閉じる + フォーカストラップ + scroll lock
  */
 
+import { useRef, useState } from 'react';
+import { useModalA11y } from '@/lib/useModalA11y';
+import { LegalDocument, type LegalCategory } from '@/features/settings/LegalDocument';
+
 interface CheckoutConsentModalProps {
-  onConfirm: () => void;
+  /** 同意取得後に呼ばれる. ageConfirmed は L-H2 要件用. */
+  onConfirm: (args: { ageConfirmed: boolean }) => void;
   onCancel: () => void;
-  onShowLegal: (category: 'tokushoho' | 'terms' | 'privacy') => void;
   pending?: boolean;
 }
 
 export function CheckoutConsentModal({
   onConfirm,
   onCancel,
-  onShowLegal,
   pending = false,
 }: CheckoutConsentModalProps) {
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [legalCategory, setLegalCategory] = useState<LegalCategory | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const initialRef = useRef<HTMLInputElement>(null);
+
+  useModalA11y({
+    open: legalCategory === null,
+    onClose: pending ? () => {} : onCancel,
+    dialogRef,
+    initialFocusRef: initialRef,
+  });
+
+  // 法務文書を表示中はモーダル全画面で legal を出す
+  // 「← 戻る」で同意モーダルに復帰（CVR 維持）
+  if (legalCategory) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'var(--bg, #1a1530)',
+          zIndex: 1100,
+          overflowY: 'auto',
+        }}
+      >
+        <LegalDocument
+          category={legalCategory}
+          onBack={() => setLegalCategory(null)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       role="dialog"
@@ -41,6 +82,8 @@ export function CheckoutConsentModal({
       onClick={pending ? undefined : onCancel}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         style={{
           background: 'var(--card-solid)',
@@ -49,6 +92,7 @@ export function CheckoutConsentModal({
           padding: 'var(--sp-5)',
           maxWidth: 380,
           width: '100%',
+          outline: 'none',
         }}
       >
         <h3
@@ -68,11 +112,7 @@ export function CheckoutConsentModal({
             gap: 10,
           }}
         >
-          <ConsentRow
-            label="月額"
-            value="¥980（税込）"
-            note="申込時に即時決済されるよ"
-          />
+          <ConsentRow label="月額" value="¥980（税込）" note="申込時に即時決済されるよ" />
           <ConsentRow
             label="自動継続"
             value="解約しない限り毎月課金"
@@ -85,6 +125,36 @@ export function CheckoutConsentModal({
           />
         </ul>
 
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 8,
+            cursor: 'pointer',
+            margin: '0 0 14px',
+            padding: '8px 0',
+            minHeight: 44,
+          }}
+        >
+          <input
+            ref={initialRef}
+            type="checkbox"
+            checked={ageConfirmed}
+            onChange={(e) => setAgeConfirmed(e.target.checked)}
+            disabled={pending}
+            style={{
+              width: 18,
+              height: 18,
+              marginTop: 2,
+              accentColor: 'var(--rose)',
+              cursor: 'pointer',
+            }}
+          />
+          <span style={{ fontSize: 12, color: 'var(--t1)', lineHeight: 1.6 }}>
+            私は18歳以上です（民法上、未成年は親権者の同意が必要）
+          </span>
+        </label>
+
         <div
           style={{
             fontSize: 11,
@@ -94,29 +164,33 @@ export function CheckoutConsentModal({
           }}
         >
           詳しくは{' '}
-          <LinkButton onClick={() => onShowLegal('tokushoho')}>特商法表記</LinkButton>
+          <LinkButton onClick={() => setLegalCategory('tokushoho')}>特商法表記</LinkButton>
           {' / '}
-          <LinkButton onClick={() => onShowLegal('terms')}>利用規約</LinkButton>
+          <LinkButton onClick={() => setLegalCategory('terms')}>利用規約</LinkButton>
           {' / '}
-          <LinkButton onClick={() => onShowLegal('privacy')}>プライバシー</LinkButton>
+          <LinkButton onClick={() => setLegalCategory('privacy')}>プライバシー</LinkButton>
           {' を確認してね。'}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button
             type="button"
-            onClick={onConfirm}
-            disabled={pending}
+            onClick={() => onConfirm({ ageConfirmed })}
+            disabled={pending || !ageConfirmed}
+            aria-disabled={pending || !ageConfirmed}
             style={{
               minHeight: 44,
               padding: '10px 24px',
               borderRadius: 12,
               border: 'none',
-              background: 'linear-gradient(135deg, var(--rose), var(--pink))',
+              background:
+                pending || !ageConfirmed
+                  ? 'var(--border)'
+                  : 'linear-gradient(135deg, var(--rose), var(--pink))',
               color: '#fff',
               fontSize: 13,
               fontWeight: 700,
-              cursor: pending ? 'wait' : 'pointer',
+              cursor: pending || !ageConfirmed ? 'not-allowed' : 'pointer',
               opacity: pending ? 0.6 : 1,
             }}
           >
@@ -172,7 +246,7 @@ function ConsentRow({ label, value, note }: ConsentRowProps) {
       <p
         style={{
           fontSize: 11,
-          color: 'var(--t3)',
+          color: 'var(--t2)',
           lineHeight: 1.6,
           margin: '2px 0 0 64px',
         }}

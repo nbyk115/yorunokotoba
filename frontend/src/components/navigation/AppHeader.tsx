@@ -39,6 +39,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
     >
       {onSettingsClick && (
         <button
+          type="button"
           onClick={onSettingsClick}
           aria-label="設定を開く"
           style={{
@@ -61,6 +62,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
         </button>
       )}
       <button
+        type="button"
         onClick={cycle}
         aria-label={dark ? 'ライトモードに切替' : 'ダークモードに切替'}
         style={{

@@ -18,12 +18,17 @@ import {
   doc,
   getDoc,
   onSnapshot,
+  serverTimestamp,
+  setDoc,
   type Firestore,
   type Timestamp,
 } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { getFirebaseApp } from './firebase';
 import { getCurrentIdToken } from './auth';
+
+/** 利用規約・特商法・プラポリの最新バージョン. 規約改定時にここを更新する. */
+export const TERMS_VERSION = '2026-05-14' as const;
 
 export type SubscriptionStatus = 'none' | 'active' | 'past_due' | 'canceled';
 export type SubscriptionPlan = 'premium_monthly';
@@ -113,6 +118,40 @@ export function useSubscription(userId: string | null): {
     isPremium: isPremiumActive(subscription),
     loading,
   };
+}
+
+/**
+ * 同意記録を Firestore に保存（特商法第15条の4・電子契約法3条 の証跡）.
+ *
+ * 保存先: users/{uid}.lastConsent
+ *   - kind: 'checkout' 等
+ *   - at: serverTimestamp
+ *   - termsVersion: 同意した規約バージョン
+ *   - priceJpy: 同意した価格
+ *   - ageConfirmed: 18歳以上確認チェック
+ *
+ * Firestore Rules で users/{uid} の subscription フィールドだけは保護されているが、
+ * lastConsent などのその他フィールドは client write 可能.
+ */
+export async function recordConsent(args: {
+  userId: string;
+  kind: 'checkout' | 'cancel';
+  priceJpy: number;
+  ageConfirmed: boolean;
+}): Promise<void> {
+  await setDoc(
+    doc(db(), 'users', args.userId),
+    {
+      lastConsent: {
+        kind: args.kind,
+        at: serverTimestamp(),
+        termsVersion: TERMS_VERSION,
+        priceJpy: args.priceJpy,
+        ageConfirmed: args.ageConfirmed,
+      },
+    },
+    { merge: true },
+  );
 }
 
 /**

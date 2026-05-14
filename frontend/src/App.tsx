@@ -148,20 +148,15 @@ class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
           <p style={{ color: 'var(--rose)', fontWeight: 700, fontSize: 14 }}>
             ごめんね、表示でうまくいかなかったみたい
           </p>
-          <pre
-            style={{
-              fontSize: 10,
-              color: 'var(--t3)',
-              marginTop: 8,
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {this.state.err.message}
-          </pre>
+          <p style={{ fontSize: 11, color: 'var(--t3)', marginTop: 6, lineHeight: 1.6 }}>
+            再読み込みすると直ることが多いよ。
+          </p>
           <button
+            type="button"
             onClick={() => location.reload()}
             style={{
               marginTop: 12,
+              minHeight: 44,
               padding: '10px 20px',
               borderRadius: 8,
               border: 'none',

@@ -3,20 +3,21 @@
  *
  * フロー:
  *   1. userId なし → email 入力 → リンク送信 → メール開いて戻る → ログイン → 再タップ
- *   2. userId あり → CheckoutConsentModal で重要事項3点を提示 → 同意 → startCheckout
+ *   2. userId あり → CheckoutConsentModal で重要事項3点+18歳以上を確認 → recordConsent →
+ *      startCheckout
  *
  * 価格: ¥980/月（SSOT: docs/strategy/pricing-decision.md, 2026-05-14 確定）
- * 法令: 電子契約法3条 + 特商法15条の3 のため、課金前確認モーダルを強制.
+ * 法令: 電子契約法3条 + 特商法15条の3 + 民法5条 のため、課金前確認モーダルを強制.
  */
 
 import { useEffect, useState } from 'react';
 import { track } from '@/lib/analytics';
-import { startCheckout } from '@/lib/subscription';
+import { startCheckout, recordConsent } from '@/lib/subscription';
 import { sendEmailLink } from '@/lib/auth';
 import { CheckoutConsentModal } from './CheckoutConsentModal';
-import { LegalDocument, type LegalCategory } from '@/features/settings/LegalDocument';
 
 export const PREMIUM_PRICE_LABEL = '月¥980' as const;
+const PREMIUM_PRICE_JPY = 980;
 
 interface PremiumCTAProps {
   source: string;
@@ -38,9 +39,7 @@ export function PremiumCTA({
   const [mode, setMode] = useState<'idle' | 'email-input' | 'email-sent'>('idle');
   const [email, setEmail] = useState('');
   const [showConsent, setShowConsent] = useState(false);
-  const [legalCategory, setLegalCategory] = useState<LegalCategory | null>(null);
 
-  // paywall_view: PremiumCTA がマウントされた時点で発火
   useEffect(() => {
     track('paywall_view', { source });
   }, [source]);
@@ -55,11 +54,19 @@ export function PremiumCTA({
     setShowConsent(true);
   }
 
-  async function handleConsentConfirm() {
+  async function handleConsentConfirm({ ageConfirmed }: { ageConfirmed: boolean }) {
+    if (!userId) return;
     track('checkout_open', { source, plan: 'premium_monthly' });
     setPending(true);
     setError(null);
     try {
+      // L2: 同意記録を Firestore に保存（特商法15条の4 申込取消権の証跡）
+      await recordConsent({
+        userId,
+        kind: 'checkout',
+        priceJpy: PREMIUM_PRICE_JPY,
+        ageConfirmed,
+      });
       const { checkoutUrl } = await startCheckout({ plan: 'premium_monthly' });
       window.location.href = checkoutUrl;
     } catch (e) {
@@ -88,10 +95,6 @@ export function PremiumCTA({
     } finally {
       setPending(false);
     }
-  }
-
-  if (legalCategory) {
-    return <LegalDocument category={legalCategory} onBack={() => setLegalCategory(null)} />;
   }
 
   return (
@@ -189,17 +192,7 @@ export function PremiumCTA({
                 lineHeight: 1.6,
               }}
             >
-              ※ メアドはログイン目的のみ. 第三者には渡さないよ.{' '}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setLegalCategory('privacy');
-                }}
-                style={linkButtonStyle}
-              >
-                プライバシー
-              </button>
+              ※ メアドはログイン目的のみ. 第三者には渡さないよ.
             </p>
             <button type="submit" disabled={pending} style={primaryButtonStyle(pending)}>
               {pending ? '送信中…' : 'ログインリンクを送る'}
@@ -252,7 +245,6 @@ export function PremiumCTA({
           pending={pending}
           onConfirm={handleConsentConfirm}
           onCancel={() => setShowConsent(false)}
-          onShowLegal={(cat) => setLegalCategory(cat)}
         />
       )}
     </>
@@ -293,16 +285,6 @@ function secondaryButtonStyle(pending: boolean): React.CSSProperties {
     opacity: pending ? 0.6 : 1,
   };
 }
-
-const linkButtonStyle: React.CSSProperties = {
-  background: 'transparent',
-  border: 'none',
-  color: 'var(--rose)',
-  textDecoration: 'underline',
-  cursor: 'pointer',
-  font: 'inherit',
-  padding: 0,
-};
 
 function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
