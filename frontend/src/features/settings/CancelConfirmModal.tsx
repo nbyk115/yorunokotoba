@@ -2,13 +2,22 @@
  * CancelConfirmModal — Premium 解約の確認モーダル.
  *
  * 法務的明示（特商法 + 利用規約準拠）:
+ *   - 価格 ¥980/月 を再表示（消費者保護の観点）
  *   - 次回更新日まで利用可能であること
  *   - 日割返金はないこと
+ *
+ * ダークパターン回避（消費者庁2025年強化方針対応）:
+ *   - 「解約」「継続」を視覚的に同等の重みで表示
+ *   - 「継続」を強調しない（Confirmshaming 回避）
+ *
+ * a11y: ESC で閉じる + フォーカストラップ + scroll lock
  */
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { cancelSubscription } from '@/lib/subscription';
 import { track } from '@/lib/analytics';
+import { useModalA11y } from '@/lib/useModalA11y';
+import { PREMIUM_PRICE_LABEL } from '@/components/ui/PremiumCTA';
 
 interface CancelConfirmModalProps {
   onClose: () => void;
@@ -23,6 +32,15 @@ export function CancelConfirmModal({
 }: CancelConfirmModalProps) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const initialRef = useRef<HTMLButtonElement>(null);
+
+  useModalA11y({
+    open: true,
+    onClose: pending ? () => {} : onClose,
+    dialogRef,
+    initialFocusRef: initialRef,
+  });
 
   async function handleConfirm() {
     setPending(true);
@@ -53,9 +71,11 @@ export function CancelConfirmModal({
         zIndex: 1000,
         padding: 'var(--sp-5)',
       }}
-      onClick={onClose}
+      onClick={pending ? undefined : onClose}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         style={{
           background: 'var(--card-solid)',
@@ -64,6 +84,7 @@ export function CancelConfirmModal({
           padding: 'var(--sp-5)',
           maxWidth: 360,
           width: '100%',
+          outline: 'none',
         }}
       >
         <h3
@@ -72,6 +93,9 @@ export function CancelConfirmModal({
         >
           Premium を解約する？
         </h3>
+        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
+          現在: {PREMIUM_PRICE_LABEL}
+        </p>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 8px' }}>
           解約しても、{currentPeriodEndIso ? formatIsoDate(currentPeriodEndIso) : '次回更新日'}まではそのまま使えるよ。
         </p>
@@ -81,26 +105,21 @@ export function CancelConfirmModal({
         </p>
 
         {error && (
-          <p style={{ fontSize: 11, color: 'var(--rose)', margin: '0 0 12px' }}>{error}</p>
+          <p
+            role="alert"
+            style={{ fontSize: 11, color: 'var(--rose)', margin: '0 0 12px' }}
+          >
+            {error}
+          </p>
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button
+            ref={initialRef}
             type="button"
             onClick={handleConfirm}
             disabled={pending}
-            style={{
-              minHeight: 44,
-              padding: '10px 24px',
-              borderRadius: 12,
-              border: '1px solid var(--rose)',
-              background: 'transparent',
-              color: 'var(--rose)',
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: pending ? 'wait' : 'pointer',
-              opacity: pending ? 0.6 : 1,
-            }}
+            style={equalWeightButtonStyle(pending, 'danger')}
           >
             {pending ? '処理中…' : 'うん、解約する'}
           </button>
@@ -108,18 +127,7 @@ export function CancelConfirmModal({
             type="button"
             onClick={onClose}
             disabled={pending}
-            style={{
-              minHeight: 44,
-              padding: '10px 24px',
-              borderRadius: 12,
-              border: 'none',
-              background: 'linear-gradient(135deg, var(--rose), var(--pink))',
-              color: '#fff',
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: pending ? 'wait' : 'pointer',
-              opacity: pending ? 0.6 : 1,
-            }}
+            style={equalWeightButtonStyle(pending, 'neutral')}
           >
             やっぱり続ける
           </button>
@@ -127,6 +135,32 @@ export function CancelConfirmModal({
       </div>
     </div>
   );
+}
+
+/**
+ * ダークパターン回避: 両ボタンを同等の視覚的重みで表示.
+ * danger: 解約（注意色のアウトライン）
+ * neutral: 継続（淡色のアウトライン）
+ * どちらもアウトラインで、CTAを「継続」側に視覚誘導しない.
+ */
+function equalWeightButtonStyle(
+  pending: boolean,
+  variant: 'danger' | 'neutral',
+): React.CSSProperties {
+  const color = variant === 'danger' ? 'var(--rose)' : 'var(--t1)';
+  const borderColor = variant === 'danger' ? 'var(--rose)' : 'var(--border)';
+  return {
+    minHeight: 44,
+    padding: '10px 24px',
+    borderRadius: 12,
+    border: `1px solid ${borderColor}`,
+    background: 'transparent',
+    color,
+    fontSize: 13,
+    fontWeight: 700,
+    cursor: pending ? 'wait' : 'pointer',
+    opacity: pending ? 0.6 : 1,
+  };
 }
 
 function formatIsoDate(iso: string): string {

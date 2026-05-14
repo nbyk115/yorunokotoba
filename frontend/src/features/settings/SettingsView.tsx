@@ -23,6 +23,12 @@ export function SettingsView({ onBack }: SettingsViewProps) {
   const [legalCategory, setLegalCategory] = useState<LegalCategory | null>(null);
   const [signOutPending, setSignOutPending] = useState(false);
 
+  // T-H2: legal 遷移時は解約モーダルを必ず閉じる（戻った時の意図せぬ復帰防止）
+  function openLegal(c: LegalCategory) {
+    setShowCancelModal(false);
+    setLegalCategory(c);
+  }
+
   if (legalCategory) {
     return <LegalDocument category={legalCategory} onBack={() => setLegalCategory(null)} />;
   }
@@ -82,9 +88,9 @@ export function SettingsView({ onBack }: SettingsViewProps) {
         <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
           📄 規約・ポリシー
         </h3>
-        <LegalLinkRow onClick={() => setLegalCategory('tokushoho')} label="特定商取引法に基づく表記" />
-        <LegalLinkRow onClick={() => setLegalCategory('terms')} label="利用規約" />
-        <LegalLinkRow onClick={() => setLegalCategory('privacy')} label="プライバシーポリシー" />
+        <LegalLinkRow onClick={() => openLegal('tokushoho')} label="特定商取引法に基づく表記" />
+        <LegalLinkRow onClick={() => openLegal('terms')} label="利用規約" />
+        <LegalLinkRow onClick={() => openLegal('privacy')} label="プライバシーポリシー" />
       </Card>
 
       {user && (
@@ -190,9 +196,32 @@ function SubscriptionStatusBlock({
 
   if (status === 'past_due') {
     return (
-      <p style={{ fontSize: 13, color: 'var(--rose)', lineHeight: 1.8, margin: 0 }}>
-        ⚠️ お支払いに問題が発生しています。カード情報をご確認ください。
-      </p>
+      <div>
+        <p style={{ fontSize: 13, color: 'var(--rose)', lineHeight: 1.8, margin: '0 0 10px' }}>
+          ⚠️ お支払いに問題が発生したみたい
+        </p>
+        <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
+          カードの有効期限切れや残高不足が原因かも。<br />
+          次回更新日までに解決できない場合は自動で解約になるよ。
+        </p>
+        <button
+          type="button"
+          onClick={onCancel}
+          style={{
+            minHeight: 44,
+            padding: '10px 16px',
+            borderRadius: 12,
+            border: '1px solid var(--border)',
+            background: 'transparent',
+            color: 'var(--t2)',
+            fontSize: 12,
+            fontWeight: 700,
+            cursor: 'pointer',
+          }}
+        >
+          このまま解約する
+        </button>
+      </div>
     );
   }
 
