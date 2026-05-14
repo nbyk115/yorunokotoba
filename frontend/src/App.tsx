@@ -7,6 +7,7 @@ import { FortuneView } from '@/features/fortune/FortuneView';
 import { ArchiveView } from '@/features/archive/ArchiveView';
 import { AuraView } from '@/features/aura/AuraView';
 import { AuraReceiverView } from '@/features/aura/AuraReceiverView';
+import { SettingsView } from '@/features/settings/SettingsView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
@@ -16,7 +17,7 @@ import { tickStreak, type StreakState } from '@/logic/streak';
 import { trackException, track } from '@/lib/analytics';
 import { handleEmailLinkSignInOnLoad, useCurrentUser } from '@/lib/auth';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'aura';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'aura' | 'settings';
 
 /** URL から `?from=charaId` を読み取る。受信者ページ（リンク経由）の判定に使う。 */
 function getFromCharaIdFromUrl(): string | null {
@@ -102,16 +103,17 @@ function AppInner() {
     <div className="app-root" style={{ paddingBottom: 88, position: 'relative' }}>
       <Particles count={14} seed={17} />
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <AppHeader />
+        <AppHeader onSettingsClick={() => setView('settings')} />
         <ErrorBoundary>
           {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} />}
           {view === 'fortune' && <FortuneView profile={profile} currentUserId={userId} />}
           {view === 'archive' && <ArchiveView profile={profile} onNavigate={setView} />}
           {view === 'aura' && <AuraView profile={profile} onNavigate={setView} />}
+          {view === 'settings' && <SettingsView onBack={() => setView('home')} />}
         </ErrorBoundary>
       </div>
-      <BottomTabBar current={view} onChange={setView} />
+      {view !== 'settings' && <BottomTabBar current={view} onChange={setView} />}
       {showFtue && <FtueOverlay onComplete={() => setShowFtue(false)} />}
     </div>
   );

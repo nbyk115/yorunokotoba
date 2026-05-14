@@ -10,9 +10,10 @@ import { track } from '@/lib/analytics';
 interface AppHeaderProps {
   title?: string;
   subtitle?: string;
+  onSettingsClick?: () => void;
 }
 
-export function AppHeader({ title = '🌙 よるのことば', subtitle }: AppHeaderProps) {
+export function AppHeader({ title = '🌙 よるのことば', subtitle, onSettingsClick }: AppHeaderProps) {
   const [mode, setMode] = useState<NightMode>(() => getNightMode());
   const [dark, setDark] = useState(() => isDarkActive());
 
@@ -36,6 +37,29 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle }: AppHe
         position: 'relative',
       }}
     >
+      {onSettingsClick && (
+        <button
+          onClick={onSettingsClick}
+          aria-label="設定を開く"
+          style={{
+            position: 'absolute',
+            top: 'var(--sp-5)',
+            left: 'var(--sp-4)',
+            background: 'transparent',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--r-tag)',
+            padding: '6px 12px',
+            fontSize: 16,
+            cursor: 'pointer',
+            color: 'var(--t1)',
+            minHeight: 44,
+            minWidth: 44,
+            transition: 'background var(--anim-hover)',
+          }}
+        >
+          ⚙️
+        </button>
+      )}
       <button
         onClick={cycle}
         aria-label={dark ? 'ライトモードに切替' : 'ダークモードに切替'}

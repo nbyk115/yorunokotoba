@@ -1,18 +1,20 @@
 /**
- * PremiumCTA — Premium 課金導線（UnivaPay scaffold + Email link auth）.
+ * PremiumCTA — Premium 課金導線（UnivaPay + Email link auth + 課金前同意モーダル）.
  *
- * userId あり: onClick → startCheckout() で checkoutUrl を取得 → 同タブで遷移
- * userId なし: メール入力 → sendEmailLink → メール確認 → リンクから戻ると App.tsx
- *              の handleEmailLinkSignInOnLoad が完了 → useCurrentUser 経由で userId
- *              が入る → ボタンを再タップして checkout
+ * フロー:
+ *   1. userId なし → email 入力 → リンク送信 → メール開いて戻る → ログイン → 再タップ
+ *   2. userId あり → CheckoutConsentModal で重要事項3点を提示 → 同意 → startCheckout
  *
  * 価格: ¥980/月（SSOT: docs/strategy/pricing-decision.md, 2026-05-14 確定）
+ * 法令: 電子契約法3条 + 特商法15条の3 のため、課金前確認モーダルを強制.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { startCheckout } from '@/lib/subscription';
 import { sendEmailLink } from '@/lib/auth';
+import { CheckoutConsentModal } from './CheckoutConsentModal';
+import { LegalDocument, type LegalCategory } from '@/features/settings/LegalDocument';
 
 export const PREMIUM_PRICE_LABEL = '月¥980' as const;
 
@@ -28,21 +30,33 @@ export function PremiumCTA({
   source,
   userId,
   priceLabel = PREMIUM_PRICE_LABEL,
-  headline = 'For Premium readers',
-  description = '守護キャラからの私信を、夜ごとに読み解けます',
+  headline = '今夜だけの私信を読む',
+  description = '守護キャラからの私信を、夜ごとに読み解けるよ',
 }: PremiumCTAProps) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'idle' | 'email-input' | 'email-sent'>('idle');
   const [email, setEmail] = useState('');
+  const [showConsent, setShowConsent] = useState(false);
+  const [legalCategory, setLegalCategory] = useState<LegalCategory | null>(null);
 
-  async function handleCheckoutClick() {
+  // paywall_view: PremiumCTA がマウントされた時点で発火
+  useEffect(() => {
+    track('paywall_view', { source });
+  }, [source]);
+
+  function openConsent() {
     if (!userId) {
       track('compat_paywall_auth_prompt', { source });
       setMode('email-input');
       return;
     }
     track('compat_paywall_tap', { source });
+    setShowConsent(true);
+  }
+
+  async function handleConsentConfirm() {
+    track('checkout_open', { source, plan: 'premium_monthly' });
     setPending(true);
     setError(null);
     try {
@@ -52,6 +66,7 @@ export function PremiumCTA({
       console.error('[PremiumCTA] checkout failed', e);
       setError('うまくつながらなかったみたい。もう一度試してね');
       setPending(false);
+      setShowConsent(false);
     }
   }
 
@@ -75,104 +90,172 @@ export function PremiumCTA({
     }
   }
 
+  if (legalCategory) {
+    return <LegalDocument category={legalCategory} onBack={() => setLegalCategory(null)} />;
+  }
+
   return (
-    <div
-      style={{
-        marginTop: 16,
-        padding: '14px 16px',
-        background:
-          'linear-gradient(135deg, rgba(232, 192, 104, 0.10), rgba(176, 138, 207, 0.10))',
-        border: '1px solid var(--border)',
-        borderRadius: 14,
-        textAlign: 'center',
-      }}
-    >
-      <p
+    <>
+      <div
         style={{
-          fontFamily: 'var(--font-accent)',
-          fontStyle: 'italic',
-          fontSize: 14,
-          color: 'var(--gold)',
-          margin: '0 0 4px',
-          letterSpacing: '0.06em',
+          marginTop: 16,
+          padding: '14px 16px',
+          background:
+            'linear-gradient(135deg, rgba(232, 192, 104, 0.10), rgba(176, 138, 207, 0.10))',
+          border: '1px solid var(--border)',
+          borderRadius: 14,
+          textAlign: 'center',
         }}
       >
-        {headline}
-      </p>
-      <p
-        style={{
-          fontSize: 12,
-          color: 'var(--t2)',
-          margin: '0 0 12px',
-          lineHeight: 1.7,
-        }}
-      >
-        {description}
-      </p>
-      {mode === 'idle' && (
-        <button
-          type="button"
-          onClick={handleCheckoutClick}
-          disabled={pending}
-          style={primaryButtonStyle(pending)}
+        <p
+          style={{
+            fontFamily: 'var(--font-accent)',
+            fontStyle: 'italic',
+            fontSize: 14,
+            color: 'var(--gold)',
+            margin: '0 0 4px',
+            letterSpacing: '0.06em',
+          }}
         >
-          {pending ? '起動中…' : `続きを読む · ${priceLabel}`}
-        </button>
-      )}
-
-      {mode === 'email-input' && (
-        <form onSubmit={handleSendEmailLink} style={{ marginTop: 4 }}>
-          <p style={{ fontSize: 11, color: 'var(--t2)', margin: '0 0 10px', lineHeight: 1.7 }}>
-            続きを読むには、メールアドレスでログインしてね。
-            <br />
-            ※パスワード不要。届いたリンクをタップするだけ。
-          </p>
-          <input
-            type="email"
-            inputMode="email"
-            autoComplete="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{
-              width: '100%',
-              boxSizing: 'border-box',
-              minHeight: 44,
-              padding: '10px 14px',
-              borderRadius: 10,
-              border: '1px solid var(--border)',
-              background: 'var(--card)',
-              color: 'var(--t1)',
-              fontSize: 13,
-              marginBottom: 10,
-            }}
-          />
-          <button type="submit" disabled={pending} style={primaryButtonStyle(pending)}>
-            {pending ? '送信中…' : 'ログインリンクを送る'}
-          </button>
-        </form>
-      )}
-
-      {mode === 'email-sent' && (
-        <div style={{ marginTop: 4 }}>
-          <p style={{ fontSize: 13, color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7 }}>
-            ✉️ メールを送ったよ
-          </p>
-          <p style={{ fontSize: 11, color: 'var(--t2)', margin: 0, lineHeight: 1.7 }}>
-            届いたメールのリンクをタップして戻ってきてね。
-            <br />
-            ログインできたら、もう一度「続きを読む」を押してね。
-          </p>
-        </div>
-      )}
-
-      {error && (
-        <p style={{ fontSize: 11, color: 'var(--rose)', marginTop: 8 }}>
-          {error}
+          {headline}
         </p>
+        <p
+          style={{
+            fontSize: 12,
+            color: 'var(--t2)',
+            margin: '0 0 12px',
+            lineHeight: 1.7,
+          }}
+        >
+          {description}
+        </p>
+
+        {mode === 'idle' && (
+          <>
+            <button
+              type="button"
+              onClick={openConsent}
+              disabled={pending}
+              style={primaryButtonStyle(pending)}
+            >
+              {pending ? '起動中…' : `続きを読む · ${priceLabel}`}
+            </button>
+            <p
+              style={{
+                fontSize: 10,
+                color: 'var(--t3)',
+                marginTop: 8,
+                lineHeight: 1.6,
+              }}
+            >
+              月¥980（税込）· 自動更新 · いつでも解約できるよ
+            </p>
+          </>
+        )}
+
+        {mode === 'email-input' && (
+          <form onSubmit={handleSendEmailLink} style={{ marginTop: 4 }}>
+            <p style={{ fontSize: 11, color: 'var(--t2)', margin: '0 0 10px', lineHeight: 1.7 }}>
+              続きを読むには、メールアドレスでログインしてね。
+              <br />
+              ※パスワード不要。届いたリンクをタップするだけ。
+            </p>
+            <input
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                minHeight: 44,
+                padding: '10px 14px',
+                borderRadius: 10,
+                border: '1px solid var(--border)',
+                background: 'var(--card)',
+                color: 'var(--t1)',
+                fontSize: 13,
+                marginBottom: 10,
+              }}
+            />
+            <p
+              style={{
+                fontSize: 10,
+                color: 'var(--t3)',
+                margin: '0 0 10px',
+                lineHeight: 1.6,
+              }}
+            >
+              ※ メアドはログイン目的のみ. 第三者には渡さないよ.{' '}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLegalCategory('privacy');
+                }}
+                style={linkButtonStyle}
+              >
+                プライバシー
+              </button>
+            </p>
+            <button type="submit" disabled={pending} style={primaryButtonStyle(pending)}>
+              {pending ? '送信中…' : 'ログインリンクを送る'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('idle');
+                setEmail('');
+                setError(null);
+              }}
+              disabled={pending}
+              style={secondaryButtonStyle(pending)}
+            >
+              キャンセル
+            </button>
+          </form>
+        )}
+
+        {mode === 'email-sent' && (
+          <div style={{ marginTop: 4 }}>
+            <p style={{ fontSize: 13, color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7 }}>
+              ✉️ メールを送ったよ
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--t2)', margin: '0 0 12px', lineHeight: 1.7 }}>
+              届いたメールのリンクをタップして戻ってきてね。
+              <br />
+              ログインできたら、もう一度「続きを読む」を押してね。
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('email-input');
+                setError(null);
+              }}
+              style={secondaryButtonStyle(false)}
+            >
+              メアドを変える
+            </button>
+          </div>
+        )}
+
+        {error && (
+          <p style={{ fontSize: 11, color: 'var(--rose)', marginTop: 8 }}>{error}</p>
+        )}
+      </div>
+
+      {showConsent && (
+        <CheckoutConsentModal
+          pending={pending}
+          onConfirm={handleConsentConfirm}
+          onCancel={() => setShowConsent(false)}
+          onShowLegal={(cat) => setLegalCategory(cat)}
+        />
       )}
-    </div>
+    </>
   );
 }
 
@@ -193,6 +276,33 @@ function primaryButtonStyle(pending: boolean): React.CSSProperties {
     opacity: pending ? 0.6 : 1,
   };
 }
+
+function secondaryButtonStyle(pending: boolean): React.CSSProperties {
+  return {
+    minHeight: 44,
+    width: '100%',
+    padding: '10px 24px',
+    borderRadius: 12,
+    border: '1px solid var(--border)',
+    background: 'transparent',
+    color: 'var(--t2)',
+    fontSize: 12,
+    fontWeight: 700,
+    cursor: pending ? 'wait' : 'pointer',
+    marginTop: 8,
+    opacity: pending ? 0.6 : 1,
+  };
+}
+
+const linkButtonStyle: React.CSSProperties = {
+  background: 'transparent',
+  border: 'none',
+  color: 'var(--rose)',
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  font: 'inherit',
+  padding: 0,
+};
 
 function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
