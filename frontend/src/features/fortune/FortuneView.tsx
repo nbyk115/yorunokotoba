@@ -14,6 +14,7 @@ import { PremiumCTA } from '@/components/ui/PremiumCTA';
 
 interface FortuneViewProps {
   profile: UserProfile;
+  currentUserId: string | null;
 }
 
 /* ── ランク英語変換 ── */
@@ -166,7 +167,7 @@ function ConstellationReveal({ color }: { color: string }) {
 /* ────────────────────────────────────────────── */
 /*  メインコンポーネント                          */
 /* ────────────────────────────────────────────── */
-export function FortuneView({ profile }: FortuneViewProps) {
+export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
   const [result, setResult] = useState<FortuneResult | null>(null);
   const [showConstellation, setShowConstellation] = useState(true);
 
@@ -533,6 +534,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
           charaId={result.type.id}
           charaName={result.type.name}
           sign={profile.sign}
+          currentUserId={currentUserId}
         />
 
         {/* ════════════════════════════════ */}
@@ -583,11 +585,16 @@ interface DeepReadingSectionProps {
   charaId: string;
   charaName: string;
   sign: string;
+  currentUserId: string | null;
 }
 
-function DeepReadingSection({ charaId, charaName, sign }: DeepReadingSectionProps) {
-  // TODO(univapay): App.tsx で auth を組み込んだら、currentUser?.uid を props で受け取る
-  const { isPremium } = useSubscription(null);
+function DeepReadingSection({
+  charaId,
+  charaName,
+  sign,
+  currentUserId,
+}: DeepReadingSectionProps) {
+  const { isPremium } = useSubscription(currentUserId);
   const message = getGuardianMessage(charaId);
   const moonPhaseCategory = getMoonPhaseCategory();
   const moonEmoji = getMoonPhaseEmoji();
@@ -659,7 +666,7 @@ function DeepReadingSection({ charaId, charaName, sign }: DeepReadingSectionProp
         </>
       )}
 
-      {!isPremium && <PremiumCTA source="deep_reading" userId={null} />}
+      {!isPremium && <PremiumCTA source="deep_reading" userId={currentUserId} />}
     </Card>
   );
 }
