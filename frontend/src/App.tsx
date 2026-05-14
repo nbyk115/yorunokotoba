@@ -14,6 +14,7 @@ import { Particles } from '@/components/fx/Particles';
 import { TimeOfDayProvider } from '@/components/providers/TimeOfDayProvider';
 import { tickStreak, type StreakState } from '@/logic/streak';
 import { trackException, track } from '@/lib/analytics';
+import { handleEmailLinkSignInOnLoad, useCurrentUser } from '@/lib/auth';
 
 export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'aura';
 
@@ -38,6 +39,25 @@ function AppInner() {
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
   const [streak, setStreak] = useState<StreakState>(() => ({ count: 0, lastDay: '' }));
+  const { userId } = useCurrentUser();
+
+  useEffect(() => {
+    handleEmailLinkSignInOnLoad()
+      .then((user) => {
+        if (user) {
+          track('auth_email_link_complete', { uid: user.uid });
+          const url = new URL(window.location.href);
+          url.searchParams.delete('emailSignIn');
+          url.searchParams.delete('apiKey');
+          url.searchParams.delete('mode');
+          url.searchParams.delete('oobCode');
+          url.searchParams.delete('continueUrl');
+          url.searchParams.delete('lang');
+          window.history.replaceState({}, '', url.toString());
+        }
+      })
+      .catch((err) => trackException(`auth_email_link_error: ${String(err)}`, false));
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -86,7 +106,7 @@ function AppInner() {
         <ErrorBoundary>
           {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} />}
-          {view === 'fortune' && <FortuneView profile={profile} />}
+          {view === 'fortune' && <FortuneView profile={profile} currentUserId={userId} />}
           {view === 'archive' && <ArchiveView profile={profile} onNavigate={setView} />}
           {view === 'aura' && <AuraView profile={profile} onNavigate={setView} />}
         </ErrorBoundary>

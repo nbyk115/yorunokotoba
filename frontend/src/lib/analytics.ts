@@ -36,6 +36,9 @@ type EventName =
   | 'compatibility_complete'
   | 'compatibility_share'
   | 'compatibility_link_open'
+  | 'auth_email_link_complete'
+  | 'compat_paywall_auth_prompt'
+  | 'compat_paywall_email_submit'
   | 'exception';
 
 declare global {
