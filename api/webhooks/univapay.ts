@@ -2,22 +2,21 @@
  * POST /api/webhooks/univapay
  *
  * UnivaPay からの subscription イベントを受信し、Firestore の
- * users/{userId}.subscription を更新する。
+ * users/{userId}.subscription を更新する.
  *
- * 処理フロー:
- *   1. Raw body を読み込む（HMAC 検証のため bodyParser: false）
- *   2. X-Univapay-Signature を HMAC-SHA256(secret, rawBody) で timing-safe 比較
- *   3. JSON パース → event.id で idempotency check（Firestore webhook_events/{event_id}）
- *   4. mapUnivapayEventToStatus で内部 status に変換
- *   5. users/{userId}.subscription を Firestore に書込（merge）
+ * セキュリティ:
+ *   - 本番（VERCEL_ENV === 'production'）では ?mock=1 を完全無効化.
+ *   - HMAC-SHA256 + timing-safe で署名検証.
+ *   - idempotency は Firestore transaction で原子化（TOCTOU race 防止）.
  *
  * 想定イベント:
  *   - subscription.activated / payment.succeeded → 'active'
  *   - subscription.payment.failed → 'past_due'
  *   - subscription.canceled → 'canceled'
  *
- * ?mock=1: 開発用 mock-checkout からの呼び出し。署名検証スキップ、
- *          metadata は query string から復元。
+ * 注意（G2 完了後に確定）:
+ *   - HMAC signature ヘッダのプレフィックス・エンコーディング（hex / base64 / `sha256=` プレフィックス等）
+ *   - event payload の実フィールド名（current_period_end / subscription_id 等）
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
@@ -26,9 +25,9 @@ import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import {
   mapUnivapayEventToStatus,
   type UnivapayWebhookEvent,
-  type SubscriptionStatus,
 } from '../_shared/types';
 import { getAdminFirestore } from '../_shared/firebase-admin';
+import { isProductionEnv } from '../_shared/auth-verify';
 
 export const config = {
   api: { bodyParser: false },
@@ -43,7 +42,9 @@ export default async function handler(
     return;
   }
 
-  const isMock = req.query.mock === '1';
+  // mock 経路は本番で完全無効化（任意 userId を Premium 化されないため）.
+  const isMock = req.query.mock === '1' && !isProductionEnv();
+
   const rawBody = await readRawBody(req);
 
   if (!isMock) {
@@ -87,24 +88,64 @@ export default async function handler(
     return;
   }
 
-  // idempotency: event.id があれば webhook_events/{event_id} で重複処理を防ぐ
-  if (event.id) {
-    const ref = db.collection('webhook_events').doc(event.id);
-    const snap = await ref.get();
-    if (snap.exists) {
-      res.status(200).json({ received: true, deduplicated: true });
-      return;
-    }
-    await ref.set({
-      provider: 'univapay',
-      eventName: event.event,
-      receivedAt: FieldValue.serverTimestamp(),
-    });
-  }
-
   const status = mapUnivapayEventToStatus(event.event, event.data.status);
   const currentPeriodEnd = toTimestamp(event.data.current_period_end);
 
+  // idempotency: event.id があれば transaction で「未処理かつ user 更新」を原子化.
+  if (event.id) {
+    const eventRef = db.collection('webhook_events').doc(event.id);
+    const userRef = db.doc(`users/${userId}`);
+    const subMapRef = db.collection('subscriptionsMap').doc(event.data.id);
+
+    try {
+      const result = await db.runTransaction(async (tx) => {
+        const eventSnap = await tx.get(eventRef);
+        if (eventSnap.exists) {
+          return { deduplicated: true };
+        }
+        tx.set(eventRef, {
+          provider: 'univapay',
+          eventName: event.event,
+          subscriptionId: event.data.id,
+          userId,
+          receivedAt: FieldValue.serverTimestamp(),
+        });
+        tx.set(
+          userRef,
+          {
+            subscription: {
+              status,
+              plan: status === 'none' ? null : 'premium_monthly',
+              currentPeriodEnd,
+              univapaySubscriptionId: event.data.id,
+              updatedAt: FieldValue.serverTimestamp(),
+            },
+          },
+          { merge: true },
+        );
+        // 監査用の subscriptionId → userId マップ
+        tx.set(
+          subMapRef,
+          {
+            userId,
+            firstSeenAt: FieldValue.serverTimestamp(),
+            lastEvent: event.event,
+            lastStatus: status,
+          },
+          { merge: true },
+        );
+        return { deduplicated: false };
+      });
+      res.status(200).json({ received: true, ...result });
+      return;
+    } catch (err) {
+      console.error('[univapay webhook] transaction_failed', err);
+      res.status(500).json({ error: 'transaction_failed' });
+      return;
+    }
+  }
+
+  // event.id が無いペイロードは idempotency 不可だがベストエフォートで反映.
   await db.doc(`users/${userId}`).set(
     {
       subscription: {
@@ -118,7 +159,7 @@ export default async function handler(
     { merge: true },
   );
 
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true, idempotency: 'best_effort' });
 }
 
 async function readRawBody(req: VercelRequest): Promise<Buffer> {
@@ -130,9 +171,11 @@ async function readRawBody(req: VercelRequest): Promise<Buffer> {
 }
 
 function verifyHmac(body: Buffer, signatureHex: string, secret: string): boolean {
+  // UnivaPay 公式仕様未確定のためプレフィックス耐性のみ確保（hex 想定）.
+  const cleaned = signatureHex.trim().toLowerCase().replace(/^sha256=/, '');
   const expected = createHmac('sha256', secret).update(body).digest('hex');
   const expectedBuf = Buffer.from(expected, 'utf8');
-  const actualBuf = Buffer.from(signatureHex.trim().toLowerCase(), 'utf8');
+  const actualBuf = Buffer.from(cleaned, 'utf8');
   if (expectedBuf.length !== actualBuf.length) return false;
   return timingSafeEqual(expectedBuf, actualBuf);
 }
@@ -174,6 +217,3 @@ function toTimestamp(iso: string | undefined): Timestamp | null {
   if (Number.isNaN(date.getTime())) return null;
   return Timestamp.fromDate(date);
 }
-
-// 型整合のため import を一箇所に
-export type { SubscriptionStatus };

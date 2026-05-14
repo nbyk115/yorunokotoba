@@ -46,13 +46,11 @@ export function PremiumCTA({
     setPending(true);
     setError(null);
     try {
-      const { checkoutUrl } = await startCheckout({
-        userId,
-        plan: 'premium_monthly',
-      });
+      const { checkoutUrl } = await startCheckout({ plan: 'premium_monthly' });
       window.location.href = checkoutUrl;
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'checkout error');
+      console.error('[PremiumCTA] checkout failed', e);
+      setError('うまくつながらなかったみたい。もう一度試してね');
       setPending(false);
     }
   }
@@ -60,7 +58,7 @@ export function PremiumCTA({
   async function handleSendEmailLink(e: React.FormEvent) {
     e.preventDefault();
     if (!isValidEmail(email)) {
-      setError('メールアドレスの形式が正しくないみたい');
+      setError('メールアドレスの形が、ちょっと違うみたい');
       return;
     }
     track('compat_paywall_email_submit', { source });
@@ -70,7 +68,8 @@ export function PremiumCTA({
       await sendEmailLink(email.trim());
       setMode('email-sent');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'sign-in link send failed');
+      console.error('[PremiumCTA] sendEmailLink failed', err);
+      setError('メール送信ができなかったみたい。もう一度試してね');
     } finally {
       setPending(false);
     }

@@ -24,6 +24,7 @@ import {
   type CheckoutRequest,
   type CheckoutResponse,
 } from '../_shared/types';
+import { isProductionEnv, verifyAuthUid } from '../_shared/auth-verify';
 
 interface UnivapayCheckoutCreateResponse {
   redirect_url?: string;
@@ -39,20 +40,33 @@ export default async function handler(
     return;
   }
 
-  const body = req.body as Partial<CheckoutRequest>;
-  if (!body.userId || !body.plan) {
-    res.status(400).json({ error: 'userId and plan are required' });
+  const uid = await verifyAuthUid(req);
+  if (!uid) {
+    res.status(401).json({ error: 'unauthorized' });
     return;
   }
+
+  const body = req.body as Partial<CheckoutRequest>;
+  if (!body.plan) {
+    res.status(400).json({ error: 'plan is required' });
+    return;
+  }
+  // body.userId は信用しない（IDOR防止）。常に token の uid を使う.
 
   const secret = process.env.UNIVAPAY_SECRET;
   const storeId = process.env.UNIVAPAY_STORE_ID;
   const apiBase = process.env.UNIVAPAY_API_BASE ?? 'https://api.univapay.com';
 
   if (!secret || !storeId) {
+    // 本番で env 未設定 = 設定漏れ事故. mock fallback すると課金 0 円で本番運用される.
+    if (isProductionEnv()) {
+      console.error('[checkout] UnivaPay env missing in production');
+      res.status(503).json({ error: 'univapay_not_configured' });
+      return;
+    }
     const mock: CheckoutResponse = {
       checkoutUrl: `/api/subscription/mock-checkout?userId=${encodeURIComponent(
-        body.userId,
+        uid,
       )}&plan=${encodeURIComponent(body.plan)}`,
     };
     res.status(200).json(mock);
@@ -76,7 +90,7 @@ export default async function handler(
         period: 'monthly',
         success_url: successUrl,
         cancel_url: cancelUrl,
-        metadata: { userId: body.userId, plan: body.plan },
+        metadata: { userId: uid, plan: body.plan },
       }),
     });
 
@@ -97,6 +111,13 @@ export default async function handler(
       return;
     }
 
+    // Open redirect 防止: UnivaPay の正規ドメインのみ許可
+    if (!isUnivapayAllowedHost(checkoutUrl)) {
+      console.error('[checkout] disallowed redirect host', checkoutUrl);
+      res.status(502).json({ error: 'univapay_invalid_redirect_host' });
+      return;
+    }
+
     const response: CheckoutResponse = { checkoutUrl };
     res.status(200).json(response);
   } catch (err) {
@@ -105,8 +126,21 @@ export default async function handler(
   }
 }
 
+const APP_URL = process.env.APP_PUBLIC_URL;
+
 function getRequestOrigin(req: VercelRequest): string {
+  // 優先: 環境変数で固定 origin（Host header injection 防止）
+  if (APP_URL) return APP_URL.replace(/\/$/, '');
   const proto = (req.headers['x-forwarded-proto'] as string) ?? 'https';
   const host = (req.headers['x-forwarded-host'] as string) ?? req.headers.host;
   return `${proto}://${host}`;
+}
+
+function isUnivapayAllowedHost(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return /(^|\.)univapay\.com$/.test(parsed.hostname);
+  } catch {
+    return false;
+  }
 }

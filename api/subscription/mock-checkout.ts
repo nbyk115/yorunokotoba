@@ -1,19 +1,22 @@
 /**
  * GET /api/subscription/mock-checkout?userId=...&plan=...
  *
- * 開発用モック決済画面。実 UnivaPay 接続前のフロー検証用。
- * 「決済完了」ボタンを押すと /api/webhooks/univapay に擬似 webhook を送信し、
- * Firestore の subscription を 'active' に更新する。
- *
- * 本番では削除すること。
+ * 開発用モック決済画面. 実 UnivaPay 接続前のフロー検証用.
+ * 本番（VERCEL_ENV === 'production'）では 404 を返して完全無効化.
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { isProductionEnv } from '../_shared/auth-verify';
 
 export default function handler(
   req: VercelRequest,
   res: VercelResponse,
 ): void {
+  if (isProductionEnv()) {
+    res.status(404).send('not found');
+    return;
+  }
+
   const userId = String(req.query.userId ?? '');
   const plan = String(req.query.plan ?? 'premium_monthly');
 
