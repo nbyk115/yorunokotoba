@@ -16,6 +16,7 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
   return (
     <nav
       aria-label="メインナビゲーション"
+      role="tablist"
       style={{
         position: 'fixed',
         bottom: 0,
@@ -37,9 +38,12 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
         return (
           <button
             key={tab.key}
-            onClick={() => onChange(tab.key)}
+            type="button"
+            role="tab"
+            aria-selected={active}
             aria-label={tab.label}
-            aria-pressed={active}
+            tabIndex={active ? 0 : -1}
+            onClick={() => onChange(tab.key)}
             style={{
               background: 'transparent',
               border: 'none',
@@ -56,8 +60,10 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
               transition: 'color var(--anim-hover)',
             }}
           >
-            <span style={{ fontSize: 22, lineHeight: 1 }}>{tab.icon}</span>
-            <span style={{ fontSize: 10, fontWeight: 700 }}>{tab.label}</span>
+            <span style={{ fontSize: 22, lineHeight: 1 }} aria-hidden="true">
+              {tab.icon}
+            </span>
+            <span style={{ fontSize: 11, fontWeight: 700 }}>{tab.label}</span>
           </button>
         );
       })}

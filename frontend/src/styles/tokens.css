@@ -50,6 +50,19 @@
 
   /* Layout */
   --app-max-width: 480px;
+
+  /* Hero typography */
+  --hero-cormorant-size: 32px;
+  --hero-jp-size: 18px;
+
+  /* Ritual animation */
+  --ritual-duration: 3000ms;
+  --ritual-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Particle defaults */
+  --particle-color: var(--rose);
+  --particle-count: 6;
+  --particle-speed: 1;
 }
 
 [data-theme='dark'] {
@@ -62,4 +75,45 @@
   --t3: rgba(240, 232, 236, 0.56);
   --border: rgba(240, 232, 236, 0.10);
   --bg-body: var(--bg1);
+}
+
+/* Time of Day Modes — must come after [data-theme='dark'] so --bg1 wins */
+[data-time-of-day="night-deep"] {
+  --bg1: #0A0810;
+  --bg-body: #0A0810;
+  --particle-color: var(--gold);
+  --particle-count: 8;
+  --particle-speed: 0.6;
+}
+
+[data-time-of-day="dawn"] {
+  --bg1: #1A0E18;
+  --bg-body: #1A0E18;
+  --particle-color: var(--blush);
+  --particle-count: 5;
+  --particle-speed: 0.8;
+}
+
+[data-time-of-day="day"] {
+  --bg1: #FFF5F0;
+  --bg-body: #FFF5F0;
+  --particle-color: var(--rose);
+  --particle-count: 6;
+  --particle-speed: 1;
+}
+
+[data-time-of-day="dusk"] {
+  --bg1: #1A0A12;
+  --bg-body: #1A0A12;
+  --particle-color: var(--lavender);
+  --particle-count: 7;
+  --particle-speed: 0.9;
+}
+
+[data-time-of-day="night"] {
+  --bg1: #0D0B0E;
+  --bg-body: #0D0B0E;
+  --particle-color: var(--rose);
+  --particle-count: 6;
+  --particle-speed: 1;
 }

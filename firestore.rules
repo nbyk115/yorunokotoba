@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users may read/write only their own profile document.
+    // Schema: users/{uid} = { name, sign, birthYear, birthMonth, birthDay, gender, prefecture, updatedAt }
+    match /users/{userId} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId;
+    }
+
+    // Default deny — any other path is rejected.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

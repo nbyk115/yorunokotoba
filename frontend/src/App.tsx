@@ -1,20 +1,39 @@
-import { useEffect, useState, Component, type ReactNode } from 'react';
+import { useEffect, useState, useMemo, Component, type ReactNode } from 'react';
 import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { ArchiveView } from '@/features/archive/ArchiveView';
+import { AuraView } from '@/features/aura/AuraView';
+import { AuraReceiverView } from '@/features/aura/AuraReceiverView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
 import { Particles } from '@/components/fx/Particles';
+import { TimeOfDayProvider } from '@/components/providers/TimeOfDayProvider';
 import { tickStreak, type StreakState } from '@/logic/streak';
 import { trackException, track } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'aura';
+
+/** URL から `?from=charaId` を読み取る。受信者ページ（リンク経由）の判定に使う。 */
+function getFromCharaIdFromUrl(): string | null {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  return params.get('from');
+}
 
 export default function App() {
+  return (
+    <TimeOfDayProvider>
+      <AppInner />
+    </TimeOfDayProvider>
+  );
+}
+
+function AppInner() {
+  const fromCharaId = useMemo(() => getFromCharaIdFromUrl(), []);
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
@@ -35,6 +54,21 @@ export default function App() {
     setProfile(p);
   }
 
+  // リンク経由の受信者ページ: ?from= があり、未登録ユーザーなら専用UIを出す
+  if (fromCharaId && !profile) {
+    return (
+      <div className="app-root" style={{ paddingBottom: 0, position: 'relative' }}>
+        <Particles count={14} seed={17} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <AppHeader />
+          <ErrorBoundary>
+            <AuraReceiverView fromCharaId={fromCharaId} />
+          </ErrorBoundary>
+        </div>
+      </div>
+    );
+  }
+
   if (!profile) {
     return (
       <div className="app-root">
@@ -53,7 +87,8 @@ export default function App() {
           {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} />}
           {view === 'fortune' && <FortuneView profile={profile} />}
-          {view === 'archive' && <ArchiveView />}
+          {view === 'archive' && <ArchiveView profile={profile} onNavigate={setView} />}
+          {view === 'aura' && <AuraView profile={profile} onNavigate={setView} />}
         </ErrorBoundary>
       </div>
       <BottomTabBar current={view} onChange={setView} />
