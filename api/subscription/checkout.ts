@@ -1,21 +1,34 @@
 /**
  * POST /api/subscription/checkout
  *
- * UnivaPay の Checkout URL（Hosted Page）を生成して返す。
+ * UnivaPay Hosted Page の URL を生成して返す。
  *
- * 実装フロー（TODO(univapay)）:
- *   1. process.env.UNIVAPAY_SECRET / UNIVAPAY_STORE_ID / UNIVAPAY_WEBHOOK_SECRET を読込
- *   2. UnivaPay の Subscription Token API を呼び出して checkout token を取得
- *      - POST https://api.univapay.com/stores/{store_id}/checkout
- *      - body: { amount: 480, currency: 'jpy', period: 'monthly', metadata: { userId } }
- *      - header: Authorization: Bearer {secret}
- *   3. レスポンスの redirect_url を返却
+ * 実装フロー:
+ *   1. env 検証: UNIVAPAY_SECRET, UNIVAPAY_STORE_ID
+ *   2. UnivaPay の Subscription Checkout API を呼び出して redirect URL を取得
+ *   3. レスポンス { checkoutUrl } を返却
  *
- * 現状: スタブ実装。UNIVAPAY_SECRET 未設定なら mock checkout URL を返す。
+ * env 未設定 → mock-checkout に fallback（開発フロー継続）.
+ * UnivaPay API 失敗 → 502 を返却（client は error 表示）.
+ *
+ * 価格: PREMIUM_PRICE_JPY（¥980）— SSOT: docs/strategy/pricing-decision.md
+ *
+ * 注意（G2 完了後に確定）:
+ *   - エンドポイント・パラメータ名は UnivaPay 公式 docs に従って微調整する
+ *   - 現状は標準的な REST + Bearer auth + JSON body を仮定
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { CheckoutRequest, CheckoutResponse } from '../_shared/types';
+import {
+  PREMIUM_PRICE_JPY,
+  type CheckoutRequest,
+  type CheckoutResponse,
+} from '../_shared/types';
+
+interface UnivapayCheckoutCreateResponse {
+  redirect_url?: string;
+  url?: string;
+}
 
 export default async function handler(
   req: VercelRequest,
@@ -32,9 +45,10 @@ export default async function handler(
     return;
   }
 
-  // TODO(univapay): 実 API 呼び出しに置換
   const secret = process.env.UNIVAPAY_SECRET;
   const storeId = process.env.UNIVAPAY_STORE_ID;
+  const apiBase = process.env.UNIVAPAY_API_BASE ?? 'https://api.univapay.com';
+
   if (!secret || !storeId) {
     const mock: CheckoutResponse = {
       checkoutUrl: `/api/subscription/mock-checkout?userId=${encodeURIComponent(
@@ -45,14 +59,54 @@ export default async function handler(
     return;
   }
 
-  // TODO(univapay): ここで UnivaPay Checkout API を呼ぶ
-  // const r = await fetch(`https://api.univapay.com/stores/${storeId}/checkout`, {
-  //   method: 'POST',
-  //   headers: { Authorization: `Bearer ${secret}`, 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ amount: 480, currency: 'jpy', period: 'monthly', metadata: { userId: body.userId } }),
-  // });
-  // const data = await r.json();
-  // res.status(200).json({ checkoutUrl: data.redirect_url });
+  const origin = getRequestOrigin(req);
+  const successUrl = `${origin}/?premium=1`;
+  const cancelUrl = `${origin}/?premium=cancel`;
 
-  res.status(501).json({ error: 'univapay_integration_pending' });
+  try {
+    const upstream = await fetch(`${apiBase}/stores/${storeId}/checkout`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${secret}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: PREMIUM_PRICE_JPY,
+        currency: 'jpy',
+        period: 'monthly',
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        metadata: { userId: body.userId, plan: body.plan },
+      }),
+    });
+
+    if (!upstream.ok) {
+      const text = await upstream.text().catch(() => '');
+      console.error('[univapay checkout] upstream_error', {
+        status: upstream.status,
+        body: text.slice(0, 500),
+      });
+      res.status(502).json({ error: 'univapay_upstream_error' });
+      return;
+    }
+
+    const data = (await upstream.json()) as UnivapayCheckoutCreateResponse;
+    const checkoutUrl = data.redirect_url ?? data.url;
+    if (!checkoutUrl) {
+      res.status(502).json({ error: 'univapay_missing_redirect_url' });
+      return;
+    }
+
+    const response: CheckoutResponse = { checkoutUrl };
+    res.status(200).json(response);
+  } catch (err) {
+    console.error('[univapay checkout] exception', err);
+    res.status(502).json({ error: 'univapay_request_failed' });
+  }
+}
+
+function getRequestOrigin(req: VercelRequest): string {
+  const proto = (req.headers['x-forwarded-proto'] as string) ?? 'https';
+  const host = (req.headers['x-forwarded-host'] as string) ?? req.headers.host;
+  return `${proto}://${host}`;
 }

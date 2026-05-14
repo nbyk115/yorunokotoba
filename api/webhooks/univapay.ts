@@ -4,23 +4,35 @@
  * UnivaPay からの subscription イベントを受信し、Firestore の
  * users/{userId}.subscription を更新する。
  *
- * 実装フロー（TODO(univapay)）:
- *   1. UnivaPay の webhook 署名検証（HMAC-SHA256）
- *      - header: X-Univapay-Signature
- *      - secret: process.env.UNIVAPAY_WEBHOOK_SECRET
- *   2. event 種別ごとに status を判定
- *   3. firebase-admin で users/{userId}.subscription を更新
+ * 処理フロー:
+ *   1. Raw body を読み込む（HMAC 検証のため bodyParser: false）
+ *   2. X-Univapay-Signature を HMAC-SHA256(secret, rawBody) で timing-safe 比較
+ *   3. JSON パース → event.id で idempotency check（Firestore webhook_events/{event_id}）
+ *   4. mapUnivapayEventToStatus で内部 status に変換
+ *   5. users/{userId}.subscription を Firestore に書込（merge）
  *
  * 想定イベント:
- *   - subscription.activated → status: 'active'
- *   - subscription.payment.failed → status: 'past_due'
- *   - subscription.canceled → status: 'canceled'
+ *   - subscription.activated / payment.succeeded → 'active'
+ *   - subscription.payment.failed → 'past_due'
+ *   - subscription.canceled → 'canceled'
  *
- * 現状: スタブ実装。?mock=1 で署名検証スキップ、Firestore 更新もログのみ。
+ * ?mock=1: 開発用 mock-checkout からの呼び出し。署名検証スキップ、
+ *          metadata は query string から復元。
  */
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { UnivapayWebhookEvent } from '../_shared/types';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { Timestamp, FieldValue } from 'firebase-admin/firestore';
+import {
+  mapUnivapayEventToStatus,
+  type UnivapayWebhookEvent,
+  type SubscriptionStatus,
+} from '../_shared/types';
+import { getAdminFirestore } from '../_shared/firebase-admin';
+
+export const config = {
+  api: { bodyParser: false },
+};
 
 export default async function handler(
   req: VercelRequest,
@@ -32,21 +44,31 @@ export default async function handler(
   }
 
   const isMock = req.query.mock === '1';
+  const rawBody = await readRawBody(req);
 
-  // TODO(univapay): 本番では署名検証必須
   if (!isMock) {
-    const signature = req.headers['x-univapay-signature'];
     const webhookSecret = process.env.UNIVAPAY_WEBHOOK_SECRET;
-    if (!signature || !webhookSecret) {
+    if (!webhookSecret) {
+      console.error('[univapay webhook] UNIVAPAY_WEBHOOK_SECRET not set');
+      res.status(503).json({ error: 'webhook_not_configured' });
+      return;
+    }
+    const signatureHeader = req.headers['x-univapay-signature'];
+    if (typeof signatureHeader !== 'string') {
       res.status(401).json({ error: 'signature_required' });
       return;
     }
-    // TODO(univapay): HMAC-SHA256 で req.body を検証
+    if (!verifyHmac(rawBody, signatureHeader, webhookSecret)) {
+      res.status(401).json({ error: 'signature_invalid' });
+      return;
+    }
   }
 
-  const event = req.body as Partial<UnivapayWebhookEvent>;
-  if (!event?.event || !event.data) {
-    res.status(400).json({ error: 'invalid_event' });
+  let event: UnivapayWebhookEvent;
+  try {
+    event = parseEvent(rawBody, isMock, req);
+  } catch (err) {
+    res.status(400).json({ error: 'invalid_event', detail: String(err) });
     return;
   }
 
@@ -56,28 +78,102 @@ export default async function handler(
     return;
   }
 
-  // TODO(univapay): firebase-admin で Firestore 更新
-  // import { initializeApp, cert } from 'firebase-admin/app';
-  // import { getFirestore, Timestamp } from 'firebase-admin/firestore';
-  // const app = getOrInitAdminApp();
-  // await getFirestore(app).doc(`users/${userId}`).set({
-  //   subscription: {
-  //     status: mapStatus(event.event, event.data.status),
-  //     plan: 'premium_monthly',
-  //     currentPeriodEnd: event.data.current_period_end
-  //       ? Timestamp.fromDate(new Date(event.data.current_period_end))
-  //       : null,
-  //     univapaySubscriptionId: event.data.id,
-  //   },
-  // }, { merge: true });
+  let db;
+  try {
+    db = getAdminFirestore();
+  } catch (err) {
+    console.error('[univapay webhook] firebase_admin_init_failed', err);
+    res.status(503).json({ error: 'firebase_admin_not_configured' });
+    return;
+  }
 
-  console.log('[univapay webhook]', {
-    event: event.event,
-    userId,
-    subscriptionId: event.data.id,
-    status: event.data.status,
-    mock: isMock,
-  });
+  // idempotency: event.id があれば webhook_events/{event_id} で重複処理を防ぐ
+  if (event.id) {
+    const ref = db.collection('webhook_events').doc(event.id);
+    const snap = await ref.get();
+    if (snap.exists) {
+      res.status(200).json({ received: true, deduplicated: true });
+      return;
+    }
+    await ref.set({
+      provider: 'univapay',
+      eventName: event.event,
+      receivedAt: FieldValue.serverTimestamp(),
+    });
+  }
 
-  res.status(200).json({ received: true, mock: isMock });
+  const status = mapUnivapayEventToStatus(event.event, event.data.status);
+  const currentPeriodEnd = toTimestamp(event.data.current_period_end);
+
+  await db.doc(`users/${userId}`).set(
+    {
+      subscription: {
+        status,
+        plan: status === 'none' ? null : 'premium_monthly',
+        currentPeriodEnd,
+        univapaySubscriptionId: event.data.id,
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+    },
+    { merge: true },
+  );
+
+  res.status(200).json({ received: true });
 }
+
+async function readRawBody(req: VercelRequest): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : (chunk as Buffer));
+  }
+  return Buffer.concat(chunks);
+}
+
+function verifyHmac(body: Buffer, signatureHex: string, secret: string): boolean {
+  const expected = createHmac('sha256', secret).update(body).digest('hex');
+  const expectedBuf = Buffer.from(expected, 'utf8');
+  const actualBuf = Buffer.from(signatureHex.trim().toLowerCase(), 'utf8');
+  if (expectedBuf.length !== actualBuf.length) return false;
+  return timingSafeEqual(expectedBuf, actualBuf);
+}
+
+function parseEvent(
+  rawBody: Buffer,
+  isMock: boolean,
+  req: VercelRequest,
+): UnivapayWebhookEvent {
+  if (isMock) {
+    const userId = (req.query.userId as string) ?? '';
+    const eventName = (req.query.event as string) ?? 'subscription.activated';
+    const subId = (req.query.subscriptionId as string) ?? `mock_${Date.now()}`;
+    const periodEnd =
+      (req.query.currentPeriodEnd as string) ??
+      new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+    return {
+      id: `mock_${Date.now()}`,
+      event: eventName,
+      data: {
+        id: subId,
+        status: 'active',
+        metadata: { userId },
+        current_period_end: periodEnd,
+      },
+    };
+  }
+
+  const parsed = JSON.parse(rawBody.toString('utf8')) as Partial<UnivapayWebhookEvent>;
+  if (!parsed.event || !parsed.data) {
+    throw new Error('event or data missing');
+  }
+  return parsed as UnivapayWebhookEvent;
+}
+
+function toTimestamp(iso: string | undefined): Timestamp | null {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return Timestamp.fromDate(date);
+}
+
+// 型整合のため import を一箇所に
+export type { SubscriptionStatus };
