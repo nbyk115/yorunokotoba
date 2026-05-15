@@ -31,8 +31,8 @@ export function PremiumCTA({
   source,
   userId,
   priceLabel = PREMIUM_PRICE_LABEL,
-  headline = '今夜だけの私信を読む',
-  description = 'AI が紡ぐ守護キャラからの私信を、夜ごとに読み解けるよ',
+  headline = '今夜だけのことばを読む',
+  description = 'AI が紡ぐキャラクターからのことばを、夜ごとに読み解けるよ',
 }: PremiumCTAProps) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);

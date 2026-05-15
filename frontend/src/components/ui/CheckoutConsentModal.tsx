@@ -116,7 +116,7 @@ export function CheckoutConsentModal({
           <ConsentRow
             label="サービス内容"
             value="毎月の Premium 機能アクセス"
-            note="占いの深層メッセージ・守護キャラからの私信 等"
+            note="占いの深層メッセージ・キャラクターからのことば 等"
           />
           <ConsentRow
             label="提供期間"
