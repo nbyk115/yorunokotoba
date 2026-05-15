@@ -551,7 +551,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </div>
         </div>
 
-        {/* ラッキー3点（第三幕） */}
+        {/* 今日のお守り（第三幕） */}
         <Card style={{ margin: '0 16px 12px' }}>
           <h4
             style={{

@@ -27,10 +27,12 @@ const THEME_GRADIENTS: Record<CardTheme, string> = {
   lavender: 'linear-gradient(160deg, #1F1A2E 0%, #352848 60%, #4D3870 100%)',
 };
 
-const CARD_SIZE = 1080;
-/** display 上の縮小比率（プレビューサイズ） */
-const DISPLAY_SCALE = 0.32;
-const DISPLAY_SIZE = Math.round(CARD_SIZE * DISPLAY_SCALE);
+/** Instagram ストーリーズ標準 9:16. ICP は IG ストーリー世代 */
+const CARD_W = 1080;
+const CARD_H = 1920;
+const DISPLAY_SCALE = 0.18;
+const DISPLAY_W = Math.round(CARD_W * DISPLAY_SCALE);
+const DISPLAY_H = Math.round(CARD_H * DISPLAY_SCALE);
 
 export function ShareCard({
   title,
@@ -49,8 +51,8 @@ export function ShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const link = document.createElement('a');
       link.download = 'yorunokotoba-share.png';
@@ -66,8 +68,8 @@ export function ShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const res = await fetch(dataUrl);
       const blob = await res.blob();
@@ -89,13 +91,14 @@ export function ShareCard({
     }
   };
 
-  /* ────── カード本体（1080×1080）────── */
+  /* ────── カード本体（1080×1920 縦長・Instagram ストーリーズ）────── */
   const cardStyle: CSSProperties = {
-    width: CARD_SIZE,
-    height: CARD_SIZE,
+    width: CARD_W,
+    height: CARD_H,
     background: THEME_GRADIENTS[theme],
-    borderRadius: 48,
-    padding: '120px 80px 100px',
+    borderRadius: 0,
+    // IG ストーリー上下安全領域 250px（上下に重要情報を置かない）
+    padding: '280px 80px 280px',
     position: 'relative',
     overflow: 'hidden',
     boxSizing: 'border-box',
@@ -104,57 +107,56 @@ export function ShareCard({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 24,
-    // 縮小プレビュー用. top center で水平中央揃え.
+    gap: 48,
     transform: `scale(${DISPLAY_SCALE})`,
     transformOrigin: 'top center',
   };
 
-  /* ────── ヘッダー（top の日付 + sign）絶対配置 ────── */
+  /* ────── ヘッダー（safe area 内）────── */
   const topBarStyle: CSSProperties = {
     position: 'absolute',
-    top: 64,
+    top: 280,
     left: 80,
     right: 80,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     fontFamily: "'Zen Maru Gothic', sans-serif",
-    fontSize: 26,
-    color: 'rgba(240,232,236,0.55)',
+    fontSize: 32,
+    color: 'rgba(240,232,236,0.6)',
     letterSpacing: '0.08em',
   };
 
-  /* ────── キャラ ────── */
+  /* ────── キャラ（縦長で大きく） ────── */
   const charaWrapStyle: CSSProperties = {
-    width: 240,
-    height: 240,
+    width: 360,
+    height: 360,
     borderRadius: '50%',
-    background: 'rgba(255,255,255,0.06)',
-    border: '4px solid rgba(255,255,255,0.18)',
+    background: 'rgba(255,255,255,0.08)',
+    border: '6px solid rgba(255,255,255,0.20)',
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   };
 
-  /* ────── ランク英字（H1）────── */
+  /* ────── ランク英字（H1・縦長で巨大化）────── */
   const titleStyle: CSSProperties = {
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
     fontWeight: 400,
-    fontSize: 120,
+    fontSize: 180,
     lineHeight: 1.1,
     color: '#F0E8EC',
     textAlign: 'center',
     margin: 0,
     letterSpacing: '0.01em',
-    textShadow: '0 4px 24px rgba(0,0,0,0.3)',
+    textShadow: '0 6px 32px rgba(0,0,0,0.4)',
   };
 
   /* ────── タイプ識別子（H2）────── */
   const subtitleStyle: CSSProperties = {
-    fontSize: 42,
+    fontSize: 56,
     fontWeight: 700,
     color: '#F0E8EC',
     margin: 0,
@@ -164,28 +166,28 @@ export function ShareCard({
 
   /* ────── 1 行詩（Body）────── */
   const bodyStyle: CSSProperties = {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: 400,
-    color: 'rgba(240,232,236,0.78)',
+    color: 'rgba(240,232,236,0.82)',
     margin: 0,
     textAlign: 'center',
     lineHeight: 1.6,
-    maxWidth: 800,
+    maxWidth: 900,
   };
 
-  /* ────── footer（ブランド）────── */
+  /* ────── footer（ブランド・safe area 内）────── */
   const footerStyle: CSSProperties = {
     position: 'absolute',
-    bottom: 64,
+    bottom: 280,
     left: 0,
     right: 0,
     textAlign: 'center',
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 32,
-    color: 'rgba(232, 192, 104, 0.9)',
+    fontSize: 40,
+    color: 'rgba(232, 192, 104, 0.92)',
     fontWeight: 400,
-    letterSpacing: '0.12em',
+    letterSpacing: '0.14em',
   };
 
   /* ────── ボタン共通 ────── */
@@ -203,18 +205,18 @@ export function ShareCard({
 
   return (
     <div style={{ width: '100%' }}>
-      {/* 縮小プレビュー: width/height 固定で内側 cardRef が scale で収まる */}
+      {/* 縮小プレビュー: 9:16 縦長 (Instagram ストーリーズ標準) */}
       <div
         style={{
-          width: DISPLAY_SIZE,
-          height: DISPLAY_SIZE,
+          width: DISPLAY_W,
+          height: DISPLAY_H,
           margin: '0 auto',
           overflow: 'hidden',
-          borderRadius: Math.round(48 * DISPLAY_SCALE),
+          borderRadius: 12,
           boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
           position: 'relative',
         }}
-        aria-label="シェアカードプレビュー"
+        aria-label="シェアカードプレビュー（縦長 9:16）"
       >
         <div ref={cardRef} style={cardStyle}>
           {/* ヘッダー: 星座+名前（左）/ 日付（右）*/}
@@ -226,7 +228,7 @@ export function ShareCard({
           {/* キャラ */}
           {charaId && (
             <div style={charaWrapStyle}>
-              <CharaAvatar id={charaId} size={200} />
+              <CharaAvatar id={charaId} size={320} />
             </div>
           )}
 
