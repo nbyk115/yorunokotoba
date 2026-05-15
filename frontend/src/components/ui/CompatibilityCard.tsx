@@ -297,28 +297,28 @@ export function CompatibilityCard({
       >
         <button
           type="button"
-          aria-label="画像を保存する"
+          aria-label="リンクをシェアする"
           style={{
             ...btnBase,
             background: 'linear-gradient(135deg, var(--rose), var(--pink))',
             color: '#fff',
           }}
-          onClick={handleSave}
+          onClick={handleShare}
         >
-          画像を保存
+          シェアする
         </button>
         <button
           type="button"
-          aria-label="リンクをシェアする"
+          aria-label="画像を保存する"
           style={{
             ...btnBase,
             background: 'var(--card)',
             color: 'var(--t1)',
             border: '1px solid var(--border)',
           }}
-          onClick={handleShare}
+          onClick={handleSave}
         >
-          シェア
+          画像を保存
         </button>
         <button
           type="button"
