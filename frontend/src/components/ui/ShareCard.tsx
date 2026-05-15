@@ -86,7 +86,8 @@ export function ShareCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば',
-          text: title,
+          // ハッシュタグプリセットで UGC 集約
+          text: `${title} ${subtitle ? `· ${subtitle}` : ''} #よるのことば`,
           files: [file],
         });
       } else {
@@ -317,25 +318,27 @@ export function ShareCard({
         }}
       >
         <button
+          type="button"
           style={{
             ...btnBase,
             background: 'linear-gradient(135deg, var(--rose), var(--pink))',
             color: '#fff',
           }}
-          onClick={handleSave}
+          onClick={handleShare}
         >
-          画像を保存
+          シェアする
         </button>
         <button
+          type="button"
           style={{
             ...btnBase,
             background: 'var(--card)',
             color: 'var(--t1)',
             border: '1px solid var(--border)',
           }}
-          onClick={handleShare}
+          onClick={handleSave}
         >
-          シェア
+          画像を保存
         </button>
       </div>
     </div>
