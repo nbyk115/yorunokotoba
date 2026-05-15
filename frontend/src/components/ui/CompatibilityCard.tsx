@@ -135,7 +135,7 @@ export function CompatibilityCard({
     overflow: 'hidden',
     fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
     transform: `scale(${DISPLAY_SCALE})`,
-    transformOrigin: 'top left',
+    transformOrigin: 'top center',
   };
 
   const gradientOverlayStyle: CSSProperties = {
@@ -253,6 +253,9 @@ export function CompatibilityCard({
           borderRadius: Math.round(48 * DISPLAY_SCALE),
           boxShadow: '0 4px 24px rgba(0,0,0,0.20)',
           position: 'relative',
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '0 auto',
         }}
         aria-label="相性カードプレビュー"
       >

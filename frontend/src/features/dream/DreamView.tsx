@@ -421,7 +421,7 @@ export function DreamView({ profile }: DreamViewProps) {
                 }}
               >
                 <RarityBadge rarity={result.type.rarity} />
-                <span style={{ fontSize: 10, opacity: 0.8 }}>{result.type.pct}</span>
+                <span style={{ fontSize: 11, opacity: 0.8 }}>{result.type.pct}</span>
               </div>
 
               <p
@@ -547,7 +547,6 @@ export function DreamView({ profile }: DreamViewProps) {
                     fontSize: 13,
                     lineHeight: 1.9,
                     color: 'var(--t2)',
-                    whiteSpace: 'pre-line',
                   }}
                 >
                   {result.mainReading.deep}
@@ -772,7 +771,7 @@ export function DreamView({ profile }: DreamViewProps) {
           </div>
           <p
             style={{
-              fontSize: 10,
+              fontSize: 11,
               color: 'var(--t3)',
               textAlign: 'center',
               margin: '16px 16px 4px',

@@ -117,9 +117,9 @@ export function ShareCard({
     position: 'relative',
     overflow: 'hidden',
     fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
-    // 縮小表示用
+    // 縮小表示用. transformOrigin: 'top center' で水平中央揃えを保証.
     transform: `scale(${DISPLAY_SCALE})`,
-    transformOrigin: 'top left',
+    transformOrigin: 'top center',
   };
 
   const gradientOverlayStyle: CSSProperties = {
@@ -219,7 +219,7 @@ export function ShareCard({
 
   return (
     <div>
-      {/* 縮小表示ラッパー */}
+      {/* 縮小表示ラッパー: flex で水平中央揃え保証 */}
       <div
         style={{
           width: DISPLAY_SIZE,
@@ -228,6 +228,9 @@ export function ShareCard({
           borderRadius: Math.round(48 * DISPLAY_SCALE),
           boxShadow: '0 4px 24px rgba(0,0,0,0.20)',
           position: 'relative',
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '0 auto',
         }}
         aria-label="シェアカードプレビュー"
       >

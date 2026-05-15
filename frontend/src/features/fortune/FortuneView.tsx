@@ -383,7 +383,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* AI 免責（Hero 直下に配置・景表法対応） */}
           <p
             style={{
-              fontSize: 10,
+              fontSize: 11,
               color: 'var(--t3)',
               textAlign: 'center',
               margin: '14px 0 0',
@@ -522,7 +522,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             <p
               style={{
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: 700,
                 color: 'var(--t3)',
                 letterSpacing: '0.08em',
@@ -545,7 +545,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             <p
               style={{
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: 700,
                 color: 'var(--t3)',
                 letterSpacing: '0.08em',
