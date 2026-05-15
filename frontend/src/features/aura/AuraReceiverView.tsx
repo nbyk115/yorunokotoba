@@ -138,7 +138,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
     return (
       <div className="slide-up">
         <section style={{ padding: '32px 24px', textAlign: 'center' }}>
-          <p style={eyebrowStyle}>Aura Reading</p>
+          <p style={eyebrowStyle}>相性診断 · 無料</p>
           <p
             style={{
               fontFamily: 'var(--font-accent)',

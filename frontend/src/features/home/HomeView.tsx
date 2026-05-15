@@ -338,16 +338,16 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
                 color: 'var(--t2)',
               }}
             >
-              相性占い
+              相性診断
             </span>
             <span
               style={{
-                fontSize: 13,
+                fontSize: 11,
                 color: 'var(--gold)',
                 fontWeight: 600,
               }}
             >
-              ためす
+              無料でためす
             </span>
           </button>
 
