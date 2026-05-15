@@ -11,7 +11,6 @@ import { SettingsView } from '@/features/settings/SettingsView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
-import { Particles } from '@/components/fx/Particles';
 import { TimeOfDayProvider } from '@/components/providers/TimeOfDayProvider';
 import { tickStreak, type StreakState } from '@/logic/streak';
 import { trackException, track } from '@/lib/analytics';
@@ -79,7 +78,6 @@ function AppInner() {
   if (fromCharaId && !profile) {
     return (
       <div className="app-root" style={{ paddingBottom: 0, position: 'relative' }}>
-        <Particles count={14} seed={17} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <AppHeader />
           <ErrorBoundary>
@@ -101,7 +99,6 @@ function AppInner() {
 
   return (
     <div className="app-root" style={{ paddingBottom: 88, position: 'relative' }}>
-      <Particles count={14} seed={17} />
       <div style={{ position: 'relative', zIndex: 1 }}>
         <AppHeader onSettingsClick={() => setView('settings')} />
         <ErrorBoundary>
