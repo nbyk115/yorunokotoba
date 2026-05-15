@@ -348,7 +348,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   return (
     <div className="slide-up">
       <section style={sectionStyle}>
-        <p style={eyebrowStyle}>Aura Reading</p>
+        <p style={eyebrowStyle}>相性診断 · 無料</p>
 
         <p style={rankStyle}>{getRankPrefix(result.rank)}</p>
         <p style={rankLabelStyle}>{result.rankLabel}</p>
