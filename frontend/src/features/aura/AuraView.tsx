@@ -203,7 +203,7 @@ function InputScreen({
         <p style={eyebrowStyle}>Compatibility Reading</p>
         <h2 style={h2Style}>あの人との相性を読み解く</h2>
         <p style={bodyStyle}>
-          守護キャラの星が、ふたりの縁を照らし出す。
+          星が、ふたりの縁を照らし出す。
         </p>
 
         <div style={fieldStyle}>
@@ -374,7 +374,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             source="aura_result"
             userId={userId}
             headline="この縁の深層を読み解く"
-            description="守護キャラからの私信で、二人の御縁の続きが分かるよ"
+            description="キャラクターからのことばで、二人の縁の続きが分かるよ"
           />
         </div>
 
@@ -391,7 +391,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             style={ghostBtnStyle}
             onClick={() => onNavigate('fortune')}
           >
-            自分の守護キャラをもっと知る
+            自分のキャラクターをもっと知る
           </button>
         </div>
       </section>

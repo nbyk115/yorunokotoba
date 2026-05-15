@@ -396,16 +396,16 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         </div>
 
         {/* ════════════════════════════════ */}
-        {/*  第二幕: 夜のおはなし              */}
+        {/*  第二幕: 今夜のよみとき              */}
         {/* ════════════════════════════════ */}
-        <ActEyebrow label="夜のおはなし" />
+        <ActEyebrow label="今夜のよみとき" />
 
-        {/* カード1: 今夜のあなたの波動 · 御縁のゆくえ · 指名の星まわり */}
+        {/* カード1: 今夜のエネルギー · 縁のゆくえ · 仕事運の星まわり */}
         <Card
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
-          {/* 今夜のあなたの波動（ICP語彙） */}
+          {/* 今夜のエネルギー（ICP語彙） */}
           <h4
             style={{
               fontSize: 14,
@@ -414,7 +414,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            今夜のあなたの波動
+            今夜のエネルギー
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.trait}
@@ -429,7 +429,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             aria-hidden="true"
           />
 
-          {/* 御縁のゆくえ（ICP語彙） */}
+          {/* 縁のゆくえ（ICP語彙） */}
           <h4
             style={{
               fontSize: 14,
@@ -438,7 +438,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            御縁のゆくえ
+            縁のゆくえ
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.love}
@@ -456,7 +456,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             aria-hidden="true"
           />
 
-          {/* 指名の星まわり（ICP語彙） */}
+          {/* 仕事運の星まわり（ICP語彙） */}
           <h4
             style={{
               fontSize: 14,
@@ -465,7 +465,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            指名の星まわり
+            仕事運の星まわり
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.work}
@@ -475,7 +475,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </p>
         </Card>
 
-        {/* カード2: 健康（夜のおはなしの末尾） */}
+        {/* カード2: 健康（今夜のよみときの末尾） */}
         <Card
           className="slide-up-2"
           style={{ margin: '0 16px 12px' }}
@@ -499,9 +499,9 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         </Card>
 
         {/* ════════════════════════════════ */}
-        {/*  第三幕: ねむる前に                 */}
+        {/*  第三幕: 眠る前に                 */}
         {/* ════════════════════════════════ */}
-        <ActEyebrow label="ねむる前に" />
+        <ActEyebrow label="眠る前に" />
 
         {/* lucky-time + risk グリッド（第三幕に移動） */}
         <div
@@ -641,7 +641,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 }
 
 // ─────────────────────────────────────────────
-// DeepReadingSection（Premium限定の守護キャラ私信）
+// DeepReadingSection（Premium限定の深層メッセージ）
 // ─────────────────────────────────────────────
 
 interface DeepReadingSectionProps {
@@ -710,7 +710,7 @@ function DeepReadingSection({
   if (!isPremium) {
     return (
       <Card style={wrapStyle}>
-        <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
+        <p style={eyebrowStyle}>Deep Reading · 今夜のことば</p>
         <h4 style={titleStyle}>
           {charaName}からの夜のことば
         </h4>
@@ -722,8 +722,8 @@ function DeepReadingSection({
             margin: '0 0 4px',
           }}
         >
-          今夜のあなたへ、{charaName}からの私信が届いてるよ。
-          {moonWave && `${moonLabel}の波動を読み解く特別な夜のことばも。`}
+          今夜のあなたへ、{charaName}からのことばが届いてるよ。
+          {moonWave && `${moonLabel}のエネルギーを読み解く特別な夜のことばも。`}
         </p>
         <PremiumCTA source="deep_reading" userId={currentUserId} />
       </Card>
@@ -733,7 +733,7 @@ function DeepReadingSection({
   // Premium 時: 全文表示
   return (
     <Card style={wrapStyle}>
-      <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
+      <p style={eyebrowStyle}>Deep Reading · 今夜のことば</p>
       <h4 style={titleStyle}>
         {charaName}からの夜のことば
       </h4>
@@ -743,7 +743,7 @@ function DeepReadingSection({
         <>
           <div style={dividerStyle} aria-hidden="true" />
           <p style={{ ...eyebrowStyle, color: 'var(--lavender)' }}>
-            {moonEmoji} Moon × Sign · {moonLabel}の波動
+            {moonEmoji} Moon × Sign · {moonLabel}のエネルギー
           </p>
           <h4 style={titleStyle}>{moonWave.title}</h4>
           <p style={bodyStyle}>{moonWave.body}</p>
