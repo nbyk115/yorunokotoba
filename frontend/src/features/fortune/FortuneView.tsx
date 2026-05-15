@@ -400,15 +400,14 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         {/* ════════════════════════════════ */}
         <ActEyebrow label="今夜のよみとき" />
 
-        {/* カード1: 今夜のエネルギー · 縁のゆくえ · 仕事運の星まわり */}
+        {/* カード1: 今夜のエネルギー（1カード1テーマ） */}
         <Card
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
-          {/* 今夜のエネルギー（ICP語彙） */}
           <h4
             style={{
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 700,
               color: 'var(--lavender)',
               marginBottom: 10,
@@ -416,84 +415,76 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             今夜のエネルギー
           </h4>
-          <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
+          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.trait}
           </p>
+        </Card>
 
-          <div
-            style={{
-              height: 1,
-              background: 'var(--border)',
-              margin: '10px 0',
-            }}
-            aria-hidden="true"
-          />
-
-          {/* 縁のゆくえ（ICP語彙） */}
+        {/* カード2: 恋愛・つながり */}
+        <Card
+          className="slide-up-1"
+          style={{ margin: '0 16px 12px' }}
+        >
           <h4
             style={{
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 700,
               color: 'var(--rose)',
               marginBottom: 10,
             }}
           >
-            縁のゆくえ
+            恋愛・つながり
           </h4>
-          <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
+          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.love}
           </p>
-          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyLove}
           </p>
+        </Card>
 
-          <div
-            style={{
-              height: 1,
-              background: 'var(--border)',
-              margin: '10px 0',
-            }}
-            aria-hidden="true"
-          />
-
-          {/* 仕事運の星まわり（ICP語彙） */}
+        {/* カード3: 仕事・才能 */}
+        <Card
+          className="slide-up-1"
+          style={{ margin: '0 16px 12px' }}
+        >
           <h4
             style={{
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 700,
               color: 'var(--gold)',
               marginBottom: 10,
             }}
           >
-            仕事運の星まわり
+            仕事・才能
           </h4>
-          <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
+          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.work}
           </p>
-          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyWork}
           </p>
         </Card>
 
-        {/* カード2: 健康（今夜のよみときの末尾） */}
+        {/* カード4: 健康（今夜のよみとき末尾） */}
         <Card
           className="slide-up-2"
           style={{ margin: '0 16px 12px' }}
         >
           <h4
             style={{
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 700,
               color: '#5BA87C',
               marginBottom: 10,
             }}
           >
-            🌿 健康運
+            健康・からだ
           </h4>
-          <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
+          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.health}
           </p>
-          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyHealth}
           </p>
         </Card>
