@@ -225,8 +225,8 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   return (
     <div>
       <HeroBlock
-        english="A message from the stars"
-        japanese="星があなたに届けた縁"
+        english="From someone you know"
+        japanese="あの人から届いた、相性占い"
         align="center"
         size="hero"
         charaId={fromCharaId}

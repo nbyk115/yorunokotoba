@@ -191,8 +191,8 @@ function InputScreen({
   return (
     <div>
       <HeroBlock
-        english="What the stars say about us"
-        japanese="ふたりの星が語ること"
+        english="How you two fit"
+        japanese="あの人との相性、見てみる？"
         align="center"
         size="hero"
         charaId={myCharaId}
@@ -201,7 +201,7 @@ function InputScreen({
 
       <section style={sectionStyle}>
         <p style={eyebrowStyle}>Compatibility Reading</p>
-        <h2 style={h2Style}>あの人との相性を読み解く</h2>
+        <h2 style={h2Style}>気になるあの人との相性</h2>
         <p style={bodyStyle}>
           星が、ふたりの縁を照らし出す。
         </p>
@@ -249,7 +249,7 @@ function InputScreen({
         </div>
 
         <RitualButton
-          verb="相性を読み解く"
+          verb="相性を見てみる"
           onConfirm={onConfirm}
           disabled={!partnerSign}
           fullWidth
@@ -373,7 +373,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
           <PremiumCTA
             source="aura_result"
             userId={userId}
-            headline="この縁の深層を読み解く"
+            headline="ふたりの相性、もっと深く"
             description="キャラクターからのことばで、二人の縁の続きが分かるよ"
           />
         </div>

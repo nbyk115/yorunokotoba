@@ -237,20 +237,11 @@ export function DreamView({ profile }: DreamViewProps) {
                 padding: '16px',
                 border: 'none',
                 background: 'transparent',
-                /*
-                 * 罫線ノート風: 枠線を消去し backgroundImage で水平線を引く
-                 * line-height: 28px → 1行ピッチ 28px
-                 * パディング上端16px に合わせるため offset を28px基準で開始
-                 */
-                backgroundImage:
-                  'linear-gradient(transparent 27px, var(--border) 28px)',
-                backgroundSize: '100% 28px',
-                backgroundAttachment: 'local',
                 color: 'var(--t1)',
                 caretColor: 'var(--rose)',
                 fontFamily: 'var(--font-heading)',
                 fontSize: 15,
-                lineHeight: '28px',
+                lineHeight: 1.9,
                 resize: 'none',
                 minHeight: 'clamp(120px, 28vw, 200px)',
                 outline: 'none',
