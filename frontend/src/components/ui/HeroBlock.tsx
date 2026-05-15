@@ -37,24 +37,28 @@ export function HeroBlock({
     alignItems: align === 'center' ? 'center' : 'flex-start',
   };
 
+  // 日本語を主役に. 英語は装飾的キャプション（11-13px・薄く）として表示.
+  // ICP（夜中3時の港区夜職層・OL層）に英語ポエムは伝わらないため.
+  const japaneseStyle: CSSProperties = {
+    fontFamily: 'var(--font-heading)',
+    fontWeight: 500,
+    fontSize: isCompact ? 18 : 'var(--hero-jp-size, 24px)',
+    lineHeight: 1.5,
+    color: 'var(--t1)',
+    letterSpacing: '0.02em',
+    margin: 0,
+  };
+
   const englishStyle: CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
     fontWeight: 300,
-    fontSize: isCompact ? 22 : 'var(--hero-cormorant-size)',
-    lineHeight: 1.4,
-    color: 'var(--t1)',
+    fontSize: isCompact ? 11 : 13,
+    lineHeight: 1.5,
+    color: 'var(--t3)',
+    opacity: 0.7,
     margin: 0,
-    letterSpacing: '0.01em',
-  };
-
-  const japaneseStyle: CSSProperties = {
-    fontFamily: 'var(--font-heading)',
-    fontWeight: 500,
-    fontSize: isCompact ? 14 : 'var(--hero-jp-size)',
-    lineHeight: 1.7,
-    color: 'var(--t2)',
-    margin: 0,
+    letterSpacing: '0.06em',
   };
 
   const subtitleStyle: CSSProperties = {
@@ -80,8 +84,10 @@ export function HeroBlock({
           <CharaAvatar id={charaId!} size={resolvedCharaSize} animate />
         </div>
       )}
-      <p style={englishStyle}>{english}</p>
+      {/* 日本語を主役に表示（ICP 配慮） */}
       <p style={japaneseStyle}>{japanese}</p>
+      {/* 英語は装飾的キャプションとして小さく薄く */}
+      <p style={englishStyle} aria-hidden="true">{english}</p>
       {subtitle && <p style={subtitleStyle}>{subtitle}</p>}
     </header>
   );
