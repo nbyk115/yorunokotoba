@@ -7,9 +7,9 @@ interface HeroBlockProps {
   subtitle?: string;
   align?: 'center' | 'left';
   size?: 'hero' | 'compact';
-  /** 守護キャラID（指定時は英文の上に大きく表示） */
+  /** 夜のキャラID（指定時は英文の上に大きく表示） */
   charaId?: string;
-  /** 守護キャラのサイズ。size=hero時のデフォルトは160px、compact時は0=非表示 */
+  /** 夜のキャラのサイズ。size=hero時のデフォルトは160px、compact時は0=非表示 */
   charaSize?: number;
 }
 

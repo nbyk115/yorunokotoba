@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
 import { CompatibilityCard } from '@/components/ui/CompatibilityCard';
@@ -24,6 +24,14 @@ export function AuraView({ profile, onNavigate }: AuraViewProps) {
   const [partnerSign, setPartnerSign] = useState('');
   const [partnerGender, setPartnerGender] = useState<'female' | 'male'>('female');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
+  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    },
+    [],
+  );
 
   const myCharaId = getCharaIdBySign(profile.sign, profile.gender);
 
@@ -38,8 +46,8 @@ export function AuraView({ profile, onNavigate }: AuraViewProps) {
       partner_sign: partnerSign,
       via: 'direct',
     });
-    // 結果表示完了タイミングで complete イベント
-    setTimeout(() => {
+    if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    completeTimerRef.current = setTimeout(() => {
       track('compatibility_complete', {
         my_sign: profile.sign,
         partner_sign: partnerSign,
@@ -201,7 +209,7 @@ function InputScreen({
         <p style={eyebrowStyle}>Compatibility Reading</p>
         <h2 style={h2Style}>あの人との相性を読み解く</h2>
         <p style={bodyStyle}>
-          守護キャラの星が、ふたりの縁を照らし出す。
+          夜のキャラの星が、ふたりの縁を照らし出す。
         </p>
 
         <div style={fieldStyle}>
@@ -378,7 +386,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             style={ghostBtnStyle}
             onClick={() => onNavigate('fortune')}
           >
-            自分の守護キャラをもっと知る
+            自分のキャラをもっと知る
           </button>
         </div>
       </section>

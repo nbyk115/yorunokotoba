@@ -78,6 +78,20 @@ export function DreamView({ profile }: DreamViewProps) {
   /* シェアシート表示フラグ */
   const [showShare, setShowShare] = useState(false);
 
+  /* タイマー管理（unmount 時に clear） */
+  const phaseTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ritualTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (phaseTimerRef.current) clearInterval(phaseTimerRef.current);
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+      if (ritualTimerRef.current) clearTimeout(ritualTimerRef.current);
+    },
+    [],
+  );
+
   const signIdx = SIGNS.findIndex((s) => s.k === profile.sign);
 
   /* ─── ロジック（既存流用） ─── */
@@ -94,21 +108,26 @@ export function DreamView({ profile }: DreamViewProps) {
 
     const PHASE_INTERVAL = 1000; // 3フェーズ × 1秒
     let idx = 0;
-    const phaseTimer = setInterval(() => {
+    if (phaseTimerRef.current) clearInterval(phaseTimerRef.current);
+    phaseTimerRef.current = setInterval(() => {
       idx += 1;
       if (idx >= RITUAL_PHASES.length) {
-        clearInterval(phaseTimer);
+        if (phaseTimerRef.current) clearInterval(phaseTimerRef.current);
         return;
       }
       setPhaseVisible(false);
-      setTimeout(() => {
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+      fadeTimerRef.current = setTimeout(() => {
         setRitualPhaseIdx(idx);
         setPhaseVisible(true);
       }, 150);
     }, PHASE_INTERVAL);
 
-    await new Promise((r) => setTimeout(r, 3000));
-    clearInterval(phaseTimer);
+    await new Promise<void>((r) => {
+      if (ritualTimerRef.current) clearTimeout(ritualTimerRef.current);
+      ritualTimerRef.current = setTimeout(() => r(), 3000);
+    });
+    if (phaseTimerRef.current) clearInterval(phaseTimerRef.current);
 
     const r = analyzeDream(text, signIdx);
     setResult(r);
@@ -656,7 +675,7 @@ export function DreamView({ profile }: DreamViewProps) {
               </div>
             </div>
 
-            {/* ── Card 5: ラッキー3点 + 相性タイプ（統合） ── */}
+            {/* ── Card 5: 今日のお守り + 相性タイプ（統合） ── */}
             <div style={{ ...cardBase }}>
               <h4
                 style={{
@@ -666,7 +685,7 @@ export function DreamView({ profile }: DreamViewProps) {
                   marginBottom: 10,
                 }}
               >
-                ラッキー3点
+                💝 今日のお守り
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <p style={{ fontSize: 13, color: 'var(--t1)' }}>

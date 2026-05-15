@@ -1,4 +1,4 @@
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useState, useEffect, useRef, type CSSProperties } from 'react';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
@@ -21,6 +21,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   const [mySign, setMySign] = useState('');
   const [myGender, setMyGender] = useState<'female' | 'male'>('female');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
+  const completeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fromChara = getSafeDreamType(fromCharaId);
 
@@ -30,6 +31,13 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
       has_profile: false,
     });
   }, [fromCharaId]);
+
+  useEffect(
+    () => () => {
+      if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    },
+    [],
+  );
 
   const handleConfirm = () => {
     if (!mySign) return;
@@ -41,7 +49,8 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
       partner_sign: '(from-link)',
       via: 'share_link',
     });
-    setTimeout(() => {
+    if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+    completeTimerRef.current = setTimeout(() => {
       track('compatibility_complete', {
         my_sign: mySign,
         partner_sign: '(from-link)',
@@ -193,7 +202,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           <div style={{ height: 1, background: 'var(--border)', margin: '24px auto', maxWidth: 240 }} />
 
           <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 12 }}>
-            あなたも自分の守護キャラを見つけてみる？
+            あなたも自分のキャラを見つけてみる？
           </p>
           <button
             type="button"
@@ -241,7 +250,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
               FROM
             </p>
             <p style={{ fontSize: 13, color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
-              {fromChara?.name ?? '夜のひと'}の守護キャラが、
+              {fromChara?.name ?? '夜のひと'}のキャラが、
               <br />
               あなたとの相性を占っています
             </p>

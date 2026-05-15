@@ -311,26 +311,28 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
       <div style={{ display: 'flex', gap: 8 }}>
         <div style={{ flex: 1.5 }}>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={birthYear}
-            onChange={(e) => onYear(e.target.value)}
+            onChange={(e) => onYear(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="年（例: 1999）"
             style={dateInputStyle('year')}
-            min={1900}
-            max={new Date().getFullYear()}
+            maxLength={4}
             onFocus={() => setFocusedField('year')}
             onBlur={() => setFocusedField(null)}
           />
         </div>
         <div style={{ flex: 1 }}>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={birthMonth}
-            onChange={(e) => onMonth(e.target.value)}
+            onChange={(e) => onMonth(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="月"
             style={dateInputStyle('month')}
-            min={1}
-            max={12}
+            maxLength={2}
             required
             onFocus={() => setFocusedField('month')}
             onBlur={() => setFocusedField(null)}
@@ -338,13 +340,14 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
         </div>
         <div style={{ flex: 1 }}>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={birthDay}
-            onChange={(e) => onDay(e.target.value)}
+            onChange={(e) => onDay(e.target.value.replace(/[^0-9]/g, ''))}
             placeholder="日"
             style={dateInputStyle('day')}
-            min={1}
-            max={31}
+            maxLength={2}
             required
             onFocus={() => setFocusedField('day')}
             onBlur={() => setFocusedField(null)}
@@ -862,7 +865,13 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
 
   // New user: 3-step wizard
   const step1Valid = name.trim().length > 0;
-  const step2Valid = parseInt(birthMonth, 10) >= 1 && parseInt(birthDay, 10) >= 1;
+  const step2Valid =
+    parseInt(birthYear, 10) >= 1900 &&
+    parseInt(birthYear, 10) <= new Date().getFullYear() &&
+    parseInt(birthMonth, 10) >= 1 &&
+    parseInt(birthMonth, 10) <= 12 &&
+    parseInt(birthDay, 10) >= 1 &&
+    parseInt(birthDay, 10) <= 31;
   const step3Valid = gender !== '';
 
   return (

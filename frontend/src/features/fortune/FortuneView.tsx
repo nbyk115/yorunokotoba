@@ -361,7 +361,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
                 margin: 0,
               }}
             >
-              🕐 ラッキータイム
+              🌙 今夜の引きどき
             </p>
             <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.time}
@@ -392,12 +392,12 @@ export function FortuneView({ profile }: FortuneViewProps) {
           </div>
         </div>
 
-        {/* カード1: 今夜のあなたの波動 · 御縁のゆくえ · 指名の星まわり */}
+        {/* カード1: 今夜のあなた · 縁・つながり · 仕事・才能 */}
         <Card
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
-          {/* 今夜のあなたの波動（ICP語彙） */}
+          {/* 今夜のあなた */}
           <h4
             style={{
               fontSize: 14,
@@ -406,7 +406,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            今夜のあなたの波動
+            今夜のあなた
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.trait}
@@ -421,7 +421,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             aria-hidden="true"
           />
 
-          {/* 御縁のゆくえ（ICP語彙） */}
+          {/* 縁・つながり */}
           <h4
             style={{
               fontSize: 14,
@@ -430,7 +430,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            御縁のゆくえ
+            縁・つながり
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.love}
@@ -448,7 +448,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
             aria-hidden="true"
           />
 
-          {/* 指名の星まわり（ICP語彙） */}
+          {/* 仕事・才能 */}
           <h4
             style={{
               fontSize: 14,
@@ -457,7 +457,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            指名の星まわり
+            仕事・才能
           </h4>
           <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
             {result.personality.work}
@@ -467,7 +467,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
           </p>
         </Card>
 
-        {/* カード2: 健康 · ラッキー3点 */}
+        {/* カード2: 健康 · 今日のお守り */}
         <Card
           className="slide-up-2"
           style={{ margin: '0 16px 12px' }}
@@ -506,7 +506,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            🎁 ラッキー3点
+            💝 今日のお守り
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <p style={{ fontSize: 13, color: 'var(--t1)' }}>
@@ -566,8 +566,6 @@ export function FortuneView({ profile }: FortuneViewProps) {
             charaId={result.type.id}
             theme={shareTheme}
             signLabel={`${profile.sign} · ${profile.name}`}
-            luckyNumber={result.lucky.num.v}
-            luckyNumberLabel="Lucky"
           />
         </div>
       </div>
@@ -576,7 +574,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
 }
 
 // ─────────────────────────────────────────────
-// DeepReadingSection（Premium限定の守護キャラ私信）
+// DeepReadingSection（Premium限定の夜のキャラからのひとこと）
 // ─────────────────────────────────────────────
 
 interface DeepReadingSectionProps {
@@ -642,7 +640,7 @@ function DeepReadingSection({ charaId, charaName, sign }: DeepReadingSectionProp
 
   return (
     <Card style={wrapStyle}>
-      <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
+      <p style={eyebrowStyle}>Deep Reading · 今夜のひとこと</p>
       <h4 style={titleStyle}>
         {charaName}からの夜のことば
       </h4>
@@ -652,7 +650,7 @@ function DeepReadingSection({ charaId, charaName, sign }: DeepReadingSectionProp
         <>
           <div style={dividerStyle} aria-hidden="true" />
           <p style={{ ...eyebrowStyle, color: 'var(--lavender)' }}>
-            {moonEmoji} Moon × Sign · {moonLabel}の波動
+            {moonEmoji} Moon × Sign · {moonLabel}のながれ
           </p>
           <h4 style={titleStyle}>{moonWave.title}</h4>
           <p style={bodyStyle}>{moonWave.body}</p>

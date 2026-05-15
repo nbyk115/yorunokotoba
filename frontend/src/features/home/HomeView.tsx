@@ -64,11 +64,11 @@ function getMoonPhaseEmoji(): string {
   return icons[idx] ?? '🌕';
 }
 
-// BlurReveal 内のチラ見せ占い結果プレビュー（ICP語彙: 「波動」「引き寄せ」「星」）
+// BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
 const BLUR_PREVIEW_MESSAGES = [
-  '今夜の波動は、解放の方向を向いている',
+  '今夜のながれは、ゆるむ方向を向いている',
   '星があなたに言いたいことがある',
-  '引き寄せの扉が、そっと開きかけている',
+  '今夜のドアが、そっと開きかけている',
   '夢の奥に、今のあなたへのメッセージが眠っている',
 ];
 
@@ -78,7 +78,7 @@ function getDailyBlurMessage(): string {
   return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
 }
 
-// 守護キャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
+// キャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
 
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const tod = useTimeOfDay();

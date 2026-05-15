@@ -208,6 +208,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth());
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [shareTarget, setShareTarget] = useState<ArchiveEntry | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // 検索 state
   const [searchQuery, setSearchQuery] = useState('');
@@ -328,11 +329,14 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   };
 
   const handleClear = () => {
-    if (window.confirm('この日記をしまうよ。すべての夜の記録が消えるよ。いい？')) {
-      clearArchive();
-      setEntries([]);
-      setSelectedDay(null);
-    }
+    setShowClearConfirm(true);
+  };
+
+  const confirmClear = () => {
+    clearArchive();
+    setEntries([]);
+    setSelectedDay(null);
+    setShowClearConfirm(false);
   };
 
   // 空状態
@@ -888,6 +892,83 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
+
+      {showClearConfirm && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="archive-clear-title"
+          onClick={() => setShowClearConfirm(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.55)',
+            zIndex: 1200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 24,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '100%',
+              maxWidth: 360,
+              background: 'var(--card-solid)',
+              borderRadius: 16,
+              padding: 20,
+              boxShadow: '0 16px 48px rgba(0,0,0,0.32)',
+            }}
+          >
+            <h3
+              id="archive-clear-title"
+              style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', margin: '0 0 10px' }}
+            >
+              この日記をしまう？
+            </h3>
+            <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 18px' }}>
+              すべての夜の記録が消えるよ。もとに戻せないから慎重にね。
+            </p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                style={{
+                  flex: 1,
+                  minHeight: 44,
+                  borderRadius: 12,
+                  border: '1px solid var(--border)',
+                  background: 'transparent',
+                  color: 'var(--t1)',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                やっぱりやめる
+              </button>
+              <button
+                type="button"
+                onClick={confirmClear}
+                style={{
+                  flex: 1,
+                  minHeight: 44,
+                  borderRadius: 12,
+                  border: 'none',
+                  background: 'var(--rose)',
+                  color: '#fff',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                削除する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

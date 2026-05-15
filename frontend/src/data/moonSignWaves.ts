@@ -1,5 +1,5 @@
 /**
- * 月 × 星座の今日の波動（Premium機能 α版・B要素）
+ * 月 × 星座の今夜のながれ（Premium機能 α版・B要素）
  *
  * content-strategist（ConsultingOS、2026-05）の設計に従う。
  * 月相2カテゴリ（new/full）× 12星座 = 24パターン。
@@ -12,7 +12,7 @@
  *  - 火（おひつじ・しし・いて）: エネルギー強、満月で爆発しやすい
  *  - 土（おうし・おとめ・やぎ）: 安定・実践、新月で仕込みに最適
  *  - 風（ふたご・てんびん・みずがめ）: 情報・対話、上弦で発信加速
- *  - 水（かに・さそり・うお）: 感情・神秘、満月で感受性が振り切れ
+ *  - 水（かに・さそり・うお）: 感情・繊細、満月で感受性が振り切れ
  *
  * 各メッセージ 120-150字。content-strategist サンプル文の文体に統一。
  */
@@ -102,7 +102,7 @@ export const MOON_SIGN_WAVES: readonly MoonSignWave[] = [
     sign: 'うお座',
     phase: 'new',
     title: '新月のうお座: 夢の入口に立つ夜',
-    body: '🌑 新月 — 水のうお座が最も繊細になる夜。誰かの感情を受け取りすぎてきた今、今夜は「自分の境界線」を確認して。海の中で、あなたの色と他人の色を区別する夜。涙が出ても、それは浄化だから大丈夫。',
+    body: '🌑 新月 — 水のうお座が最も繊細になる夜。誰かの感情を受け取りすぎてきた今、今夜は「自分の境界線」を確認して。海の中で、あなたの色と他人の色を区別する夜。涙が出ても、それはリセットだから大丈夫。',
   },
 
   // ─── 満月期（full） ──────────────────────────
@@ -181,7 +181,7 @@ export const MOON_SIGN_WAVES: readonly MoonSignWave[] = [
 ];
 
 /**
- * 星座と月相カテゴリから今日の波動メッセージを取得する。
+ * 星座と月相カテゴリから今夜のながれメッセージを取得する。
  */
 export function getMoonSignWave(sign: string, phase: MoonPhaseCategory): MoonSignWave | undefined {
   return MOON_SIGN_WAVES.find((w) => w.sign === sign && w.phase === phase);

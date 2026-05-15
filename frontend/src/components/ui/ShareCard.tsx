@@ -1,6 +1,14 @@
 import { useRef, type CSSProperties } from 'react';
 import { toPng } from 'html-to-image';
 import { CharaAvatar } from './CharaAvatar';
+import { track } from '@/lib/analytics';
+
+/** シェアテキストに添える招待誘引 + URL（K値計測用） */
+function buildShareText(title: string, subtitle: string): string {
+  const url = typeof window !== 'undefined' ? window.location.origin : '';
+  const head = subtitle ? `${title} · ${subtitle}` : title;
+  return `${head}\n友達の星座を入れると相性が見れるよ\n${url} #よるのことば`;
+}
 
 type CardTheme = 'rose' | 'gold' | 'lavender';
 
@@ -86,15 +94,15 @@ export function ShareCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば',
-          text: title,
+          text: buildShareText(title, subtitle),
           files: [file],
         });
+        track('share_result', { theme, has_chara: Boolean(charaId), surface: 'web_share' });
       } else {
-        // Web Share API が使えない場合はダウンロードにフォールバック
         await handleSave();
+        track('share_result', { theme, has_chara: Boolean(charaId), surface: 'fallback_save' });
       }
     } catch (err) {
-      // AbortError はユーザーキャンセルなので無視
       if (err instanceof Error && err.name !== 'AbortError') {
         console.error('ShareCard: シェアに失敗しました', err);
       }
@@ -247,7 +255,7 @@ export function ShareCard({
             </span>
           )}
 
-          {/* 守護キャラ */}
+          {/* 夜のキャラ */}
           {charaId && <CharaAvatar id={charaId} size={180} />}
 
           {/* ラッキーナンバー大型表示（任意） — Spotify Wrapped 型の "あなただけの数字" */}

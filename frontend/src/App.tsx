@@ -34,7 +34,14 @@ export default function App() {
 
 function AppInner() {
   const fromCharaId = useMemo(() => getFromCharaIdFromUrl(), []);
-  const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
+  const [profile, setProfile] = useState<UserProfile | null>(() => {
+    try {
+      return loadLocalProfile();
+    } catch (err) {
+      console.warn('[App] loadLocalProfile failed', err);
+      return null;
+    }
+  });
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
   const [streak, setStreak] = useState<StreakState>(() => ({ count: 0, lastDay: '' }));
