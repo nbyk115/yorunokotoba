@@ -27,3 +27,6 @@ Thumbs.db
 *.swp
 *.swo
 consulting-os-full-inventory.md
+
+# ConsultingOS auto-generated workload tracking
+.claude/memory/
