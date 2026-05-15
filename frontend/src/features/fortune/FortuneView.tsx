@@ -84,8 +84,8 @@ function ConstellationReveal({ color }: { color: string }) {
       path.style.strokeDashoffset = '0';
     });
 
-    // 3秒後にフェードアウト
-    const timer = setTimeout(() => setVisible(false), 3200);
+    // ICP（夜中3時・即時性重視）に合わせ 1.2秒で消す（ドーシー流即時性 + 演出余韻のバランス）
+    const timer = setTimeout(() => setVisible(false), 1200);
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(timer);
@@ -183,8 +183,8 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
     setResult(r);
     track('fortune_complete', { sign: profile.sign, rank: r.rank });
 
-    // 3.2秒後に星座アニメを消す
-    const t = setTimeout(() => setShowConstellation(false), 3200);
+    // 1.2秒後に星座アニメを消す（ConstellationReveal 内部 timer と同期）
+    const t = setTimeout(() => setShowConstellation(false), 1200);
     return () => clearTimeout(t);
   }, [profile]);
 
@@ -206,7 +206,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
   return (
     <>
-      {/* ── 星座結びオーバーレイ（3秒） ── */}
+      {/* ── 星座結びオーバーレイ（1.2秒） ── */}
       {showConstellation && <ConstellationReveal color={particleColor} />}
 
       <div
@@ -329,6 +329,20 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             }}
           >
             {result.summary}
+          </p>
+
+          {/* AI 免責（Hero 直下に配置・景表法対応） */}
+          <p
+            style={{
+              fontSize: 10,
+              color: 'var(--t3)',
+              textAlign: 'center',
+              margin: '14px 0 0',
+              lineHeight: 1.6,
+              opacity: 0.7,
+            }}
+          >
+            ※ AI が生成する娯楽の占いだよ
           </p>
         </div>
 
@@ -572,17 +586,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             luckyNumberLabel="Lucky"
           />
         </div>
-        <p
-          style={{
-            fontSize: 10,
-            color: 'var(--t3)',
-            textAlign: 'center',
-            margin: '24px 16px 4px',
-            lineHeight: 1.6,
-          }}
-        >
-          ※ 占い結果は AI が生成した娯楽コンテンツです. 特定の結果を保証するものではありません.
-        </p>
       </div>
     </>
   );
