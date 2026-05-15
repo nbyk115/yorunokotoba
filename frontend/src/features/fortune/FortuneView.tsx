@@ -520,7 +520,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
                 margin: 0,
               }}
             >
-              🕐 ラッキータイム
+              🌙 今夜の引きどき
             </p>
             <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.time}
@@ -543,7 +543,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
                 margin: 0,
               }}
             >
-              ⚠️ 注意
+              ひといき
             </p>
             <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.risk}
@@ -561,7 +561,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               marginBottom: 10,
             }}
           >
-            🎁 ラッキー3点
+            💝 今日のお守り
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <p style={{ fontSize: 13, color: 'var(--t1)' }}>
@@ -602,17 +602,15 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <p
             style={{
-              fontSize: 11,
+              fontSize: 13,
               fontWeight: 700,
-              color: 'var(--t3)',
-              letterSpacing: '0.1em',
+              color: 'var(--t2)',
+              letterSpacing: '0.04em',
               textAlign: 'center',
               marginBottom: 16,
-              fontFamily: 'var(--font-accent)',
-              fontStyle: 'italic',
             }}
           >
-            share your night
+            シェアして残そう
           </p>
 
           <ShareCard
@@ -622,8 +620,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             charaId={result.type.id}
             theme={shareTheme}
             signLabel={`${profile.sign} · ${profile.name}`}
-            luckyNumber={result.lucky.num.v}
-            luckyNumberLabel="Lucky"
           />
         </div>
       </div>

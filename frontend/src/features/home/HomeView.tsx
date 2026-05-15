@@ -18,24 +18,24 @@ interface HomeViewProps {
 // 時間帯別 HeroBlock テキスト
 const HERO_COPIES: Record<TimeOfDay, { en: string; jp: string }> = {
   'night-deep': {
-    en: 'The dream is a letter your soul wrote at 3 AM',
-    jp: '夢は、魂が深夜3時に書いた手紙',
+    en: 'Late nights talk to themselves',
+    jp: '眠れない夜は、ちょっとだけ自分と話そう',
   },
   dawn: {
-    en: 'Something new is breathing between the stars',
-    jp: '星のあいだで、何かが息をし始めている',
+    en: 'A quiet good morning',
+    jp: 'おはよう。今日のあなた、どんな日にする？',
   },
   day: {
-    en: 'Even daylight holds the memory of night',
-    jp: '昼の光も、夜のことを覚えている',
+    en: 'Check in with yourself',
+    jp: 'いま、自分の気持ち聞けてる？',
   },
   dusk: {
-    en: 'This is the hour the day confesses its secrets',
-    jp: '昼が秘密を打ち明ける時間',
+    en: 'A breath before the night',
+    jp: '今日もおつかれさま。ひといきつこう',
   },
   night: {
-    en: 'The night knows what the day forgot to say',
-    jp: '夜は、昼が言い忘れたことを知っている',
+    en: 'A little time for you',
+    jp: '今夜は、自分のために少しだけ時間つくろう',
   },
 };
 
