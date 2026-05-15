@@ -193,7 +193,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           <div style={{ height: 1, background: 'var(--border)', margin: '24px auto', maxWidth: 240 }} />
 
           <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 12 }}>
-            あなたも自分の守護キャラを見つけてみる？
+            あなたも自分の夜のキャラを見つけてみる？
           </p>
           <button
             type="button"
@@ -241,7 +241,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
               FROM
             </p>
             <p style={{ fontSize: 13, color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
-              {fromChara?.name ?? '夜のひと'}の守護キャラが、
+              {fromChara?.name ?? '夜のひと'}の夜のキャラが、
               <br />
               あなたとの相性を占っています
             </p>

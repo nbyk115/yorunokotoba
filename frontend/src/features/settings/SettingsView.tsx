@@ -198,7 +198,7 @@ function SubscriptionStatusBlock({
     return (
       <div>
         <p style={{ fontSize: 13, color: 'var(--rose)', lineHeight: 1.8, margin: '0 0 10px' }}>
-          ⚠️ お支払いに問題が発生したみたい
+          ひといき お支払いに問題が発生したみたい
         </p>
         <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
           カードの有効期限切れや残高不足が原因かも。<br />
