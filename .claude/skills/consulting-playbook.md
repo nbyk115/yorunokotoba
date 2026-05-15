@@ -245,63 +245,52 @@
 
 ## 11. ICP.md: プロジェクト固有のターゲット憲法
 
-> **CLAUDE.md（行動）/ DESIGN.md（見た目）/ ICP.md（ターゲット）の三位一体で中央参照。**
+> CLAUDE.md (行動) / DESIGN.md (見た目) / ICP.md (ターゲット) の三位一体で中央参照。
 
-### ICP.mdとは
-プロジェクトルートに置く**Ideal Customer Profile**の定義ファイル。
-全マーケ系・コンサル系エージェントが自動参照する。
+プロジェクトルートに置く Ideal Customer Profile 定義ファイル。全マーケ系・コンサル系エージェントが自動参照、出力ブレ防止のため永続化する。market-researcher のシナリオでその場しのぎで作るのではなく、四半期ごとに更新。
 
-「誰のために作っているか」が全エージェントで統一されないと、アウトプットがブレる。
-market-researcherのシナリオでその場しのぎで作るのではなく、**永続化**する。
+### 必須セクション (テンプレ)
 
-### ICP.mdの必須セクション
+| セクション | 内容 |
+|---|---|
+| Primary ICP | デモグラ / サイコグラ / 利用文脈 / 未充足ニーズ / 支払意欲 / チャネル接触 (各項目に Why 列必須) |
+| Secondary ICP | 副次ターゲット (任意) |
+| Non-ICP | 明示除外セグメント (ブレ防止) |
+| ペルソナ代表例 | 年齢 / 職業 / 1 日の過ごし方 / 課題 / 課金瞬間 |
 
-```markdown
-# ICP.md: [プロジェクト名]
+### 適用エージェント (ICP.md 自動参照)
 
-## Primary ICP（主要ターゲット）
-| 項目 | 内容 | Why |
-|---|---|---|
-| デモグラ | 25-35歳女性・都市部在住 | スマホ占いの主要利用層 |
-| サイコグラ | 自己理解欲求・不安傾向・スピ好き | 占い課金モチベーションの源 |
-| 利用文脈 | 朝の通勤中・夜寝る前 | 習慣化しやすい時間帯 |
-| 未充足ニーズ | 「当たる」ではなく「寄り添ってほしい」 | 既存占いアプリの盲点 |
-| 支払意欲 | 月500-980円 | PSM分析結果 |
-| チャネル接触 | Instagram/TikTok/友人紹介 | オーガニック経由が主 |
+market-researcher / marketing-director / performance-marketer / content-strategist / proposal-writer / product-manager の 6 agent。
 
-## Secondary ICP（副次ターゲット）
-[必要に応じて記述]
+### メンテナンス・配置
 
-## Non-ICP（ターゲット外）
-[明示的に除外するセグメント。ブレ防止]
-- 例: 「毎日占いをする必要がない人」→ ターゲット外
+- 四半期ごとに market-researcher が見直し、変更履歴は `evolution-log.jsonl` 追記
+- ConsultingOS 本体に置かず、各プロジェクトルートに配置。複数案件時は `icp/client-a.md` 等で分割
 
-## ペルソナ代表例
-### ペルソナA: [名前]
-- 年齢/性別/職業:
-- 1日の過ごし方:
-- 抱えている課題:
-- 占いとの接点:
-- 課金する瞬間:
-```
+---
 
-### 適用エージェント（ICP.md自動参照）
-- `market-researcher`: ペルソナ更新時の根拠データとして
-- `marketing-director`: チャネルミックス判断の基準
-- `performance-marketer`: オーディエンス設計の起点
-- `content-strategist`: コンテンツトーン判定
-- `proposal-writer`: 提案書のターゲティング節の出典
-- `product-manager`: 機能優先順位判断の基準
+## 12. システム思考: 線形シフト思考の構造盲点を埋める (2026-05-15 統合)
 
-### メンテナンス
-- 四半期ごとに `market-researcher` がICP.mdを見直し
-- 新データが入ったら即更新（Why列に根拠を明示）
-- 変更履歴は `evolution-log.jsonl` に追記
+> 既存 25+ 体系 (マスク / アルトマン / Dario / BCG 等) は全て「線形シフト思考」、ループ + 遅延 + 非線形性 + レバレッジポイントの正統体系が抜けている。ConsultingOS 既経験事象を構造分析する道具として導入。
 
-### 注意
-- ConsultingOS本体には置かない。**各プロジェクトのルート**に置く
-- コンサル案件では**クライアントごとに別ICP.md**を作る
-- 複数ICP.mdが必要な場合は `icp/client-a.md`, `icp/client-b.md` のように分ける
+出典: Sterman『システム思考: 複雑な問題の解決技法』(東洋経済新報社、Business Dynamics 翻訳、FACT) / 湊宣明『[実践] システム・シンキング』(講談社、FACT) / Meadows 12 レバレッジポイント + Senge 5 アーキタイプ (INFERENCE)。
+
+### コア概念 4 軸
+
+| 概念 | ConsultingOS 既存事象との接続 |
+|---|---|
+| 強化ループ R / 平衡ループ B | reactive correction loop (PR #160 OS 設計失敗) = 遅延を持つ平衡ループ核心事象、既存記述は症状のみ構造未分析 |
+| ストック・フロー | Hard Rule 13 形骸化検出 = ルール stock 正味増加率 = 追加 flow - 削除 flow、Boris #3「追加=削除1セット」の構造化根拠 |
+| 遅延 (delay) | 主語詐称 (Hard Rule 17) + ついで変更 (Hard Rule 12) = 「行動 → 結果」遅延で因果認識失敗 |
+| Meadows レバレッジ 12 点 | 上位 4 点 (パラダイム / 目的 / 構造ルール / 自己組織化) を関根さん N&Y Craft + 水野さん v4 投資テーゼで適用 |
+
+### Senge 5 アーキタイプ (パターン認識)
+
+成長の限界 / 問題のすり替わり / 共有地の悲劇 / 目標の浸食 / 成功者への成功 = ConsultingOS 案件で構造診断パターンとして使用。
+
+### 適用エージェント
+
+strategy-lead + product-manager + feedback-synthesizer + kpi-analytics + brand-guardian。analyze command (第一原理分解) と併用、線形分解 + ループ分解の 2 軸で使い分け。
 
 ---
 

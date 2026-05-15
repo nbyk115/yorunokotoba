@@ -95,45 +95,71 @@ evolution-log に `dream_last_run: YYYY-MM-DD` フィールド追加、30 日超
 - PR #160 ルーブリック明示 skill: dream rubric が同型概念
 - Karpathy 12 ルール (PR #138): ルール 6 トークン予算と整合 ($4.20/月)
 
-## 9. ConsultingOS 専用 rubric テンプレート (Phase 2 で活用)
+## 9. ConsultingOS 専用 rubric + dream.py 実装雛形
 
-Mnimiy 12 行を ConsultingOS 規律体系向けに 25 行拡張:
+Phase 1 雛形 2 ファイル (本 PR で物理化):
 
-```markdown
-# ConsultingOS Dream Pass Rubric
+- `.claude/skills/dreaming/dream.py.template`: Mnimiy 80 行 Python + ConsultingOS 機密マスク + 30 日トリップワイヤー + diff-only フロー
+- `.claude/skills/dreaming/rubric.md.template`: Mnimiy 12 行 → ConsultingOS 専用 25 行 (Hard Rule 17 主語詐称 + Hard Rule 2 出典なし数値 + Hard Rule 13 形骸化 + 反証チェック Step 1-4 検出を追加)
 
-You are doing a forensic pass over 100+ ConsultingOS Claude Code sessions.
-Find patterns I would not write down myself + ConsultingOS 規律違反.
+Phase 2 で API key 設定 + sample 20 sessions 試走 ($0.84) 後に `.template` 拡張子削除 + 実行解禁。
 
-## Workflow patterns observed (高/中/低 confidence)
-- Behavioral observations only
-- Cite session frequency
+## 10. Mnimiy 完全版核心 FACT (2026-05-15 記事追記)
 
-## ConsultingOS 規律違反検出
-- Hard Rule 17 主語詐称 (agent 起動ゼロ時の「ConsultingOS が」)
-- Hard Rule 2 出典なし数値断言
-- Hard Rule 13 形骸化ルール
-- 反証チェック Step 1-4 不完全
+### 10.1 数値具体 (FACT、Mnimiy 提示)
 
-## 削除候補
-- 一回限り訂正が永続ルール化
-- aged context (プロジェクト名 / アーキテクチャ変更)
-- 矛盾する規律
+| 軸 | 数値 |
+|---|---|
+| 入力 transcripts | 100 sessions / 6M tokens |
+| 実行時間 | 11 分 |
+| コスト (初回) | $4.20 / (キャッシュ再実行 $0.80) |
+| 元 CLAUDE.md 削除率 | 73% |
+| 最終出力 | 38 行 |
+| rubric サイズ | 12 行 |
+| dream.py サイズ | 80 行 Python |
 
-## 38 skill 間の重複・形骸化
+### 10.2 4 つの未文書化パターン浮上 (Mnimiy 実例)
 
-## 27 agent 起動パターン (実起動 vs 主語詐称)
+| パターン | 内容 |
+|---|---|
+| 1. "Review" = "Approve" | レビュー要請の 73% が修正なし承認、実態は「許可」要求 |
+| 2. Stack switch 無告知 | TS / Python 切替を再宣言せず、半数の壊れた output 原因 |
+| 3. "Quick fix" 平均 12 ターン | turn 4 で 30% 未満解決率、redirect 推奨 |
+| 4. Prose 修正 = Code の 8.2x | 編集エネルギー 80% を 90% 完成済 prose に投下、20% を 60% コードに |
 
-Rules: max 40 lines. No defense. Recurring patterns only.
-```
+= ConsultingOS でも同型検出可能候補: agent 起動ゼロ時の「ConsultingOS が」(主語詐称) / skill 間重複 / 4 週間更新ゼロ skill 検出。
 
-## 10. 関連参照
+### 10.3 削除カテゴリ 3 種 (Mnimiy 分類)
+
+| カテゴリ | 内容 |
+|---|---|
+| 1. One-off correction → 永続化 | 1 回の訂正が 6 ヶ月後も全 session に適用 |
+| 2. Aged context | プロジェクト名 / アーキテクチャ変更で文脈消失 |
+| 3. Contradictory | 同 file 内に「em-dash 使う」「em-dash AI っぽい」両立 |
+
+= ConsultingOS 監査軸: Hard Rule 13 形骸化検出 + 矛盾検出を rubric に組込。
+
+### 10.4 5 失敗 (Mnimiy 5 honest negatives、ConsultingOS 採用時の警告)
+
+1. Rubric なしの dream output = 「User values efficiency」級の generic、使えない
+2. 100 sessions は少ない (Harvey は数千件)、200+ で confidence 比率逆転
+3. ファイル上書き危険 → `dream_output.md` 別出力 + diff 必須 (brand-guardian 要件 1 と整合)
+4. ローカル版に継続性なし → 14-30 日 cron + diff 追跡が必要
+5. Harvey の 6x improvement は個人 user に転移しない (1 task type x 数千 session の条件)
+
+### 10.5 7 日後効果トレードオフ (Mnimiy 追跡)
+
+- 速度向上 + token 削減 +$90/月 (持続性 INFERENCE)
+- 確信度上昇 = 「Claude が second-guess する hedge」減少、たまに confidently wrong
+- ネット効果プラスだが「自己疑念の保険」は失う、再 dream 14-30 日サイクル必須
+
+## 11. 関連参照
 
 - 出典: Anthropic 公式 Dreaming + Mnimiy ローカル実装 (INFERENCE)
 - 関連: gbrain (PR #168) / 5 Orchestration Patterns (PR #158) / Prompt Cache Prewarm (PR #173) / LLM 推論メカニクス (PR #169) / ルーブリック明示 (PR #160)
 - 関連 agent: tech-lead + ai-engineer + strategy-lead + brand-guardian (4 agent 起動判定済)
 
-## 11. 反証チェック (Step 1-4 圧縮)
+## 12. 反証チェック (Step 1-4 圧縮)
 
 - Step 1: Anthropic 公式 Dreaming + Mnimiy 記事 INFERENCE / 4 agent 判定済 FACT / 175 sessions 実測 FACT (tech-lead agent 確認) / 機密リスクは brand-guardian 機械検証 FACT
 - Step 2: 既存 ConsultingOS 規律 (Hard Rule 13/15/17 + Boris #3 + gbrain PR #168) と整合検証
