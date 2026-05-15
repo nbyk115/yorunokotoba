@@ -354,6 +354,18 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             {result.type.name}
           </p>
 
+          {/* chara-sub（タイプ識別子・MBTI 風ラベル） */}
+          <p
+            style={{
+              fontSize: 11,
+              color: 'var(--t3)',
+              marginTop: 4,
+              letterSpacing: '0.04em',
+            }}
+          >
+            {result.type.sub}
+          </p>
+
           {/* summary */}
           <p
             style={{
@@ -614,8 +626,8 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
           <ShareCard
             title={rankEn}
-            subtitle={`${signIcon} ${profile.sign} · ${result.rank}`}
-            body={result.summary.slice(0, 60) + (result.summary.length > 60 ? '…' : '')}
+            subtitle={result.type.sub}
+            body={result.summary.slice(0, 30) + (result.summary.length > 30 ? '…' : '')}
             charaId={result.type.id}
             theme={shareTheme}
             signLabel={`${profile.sign} · ${profile.name}`}
