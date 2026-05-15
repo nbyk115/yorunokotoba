@@ -54,11 +54,26 @@ function getDefaultDateLabel(): string {
   return `${d.getMonth() + 1}.${d.getDate()}`;
 }
 
-/** 受信者リンク + 招待誘引（K値ドライバー） */
-function buildShareText(pairTitle: string, rankLabel: string, rank: CompatibilityRank, fromCharaId?: string): string {
+/** 受信者リンク + 招待誘引（K値ドライバー）
+ *  content-strategist 案: 機能説明ではなく「結果の報告」形式で社会的証明 */
+function extractSign(signLabel?: string): string {
+  if (!signLabel) return 'あなた';
+  const [signPart] = signLabel.split('·').map((s) => s.trim());
+  return signPart && signPart.length > 0 ? signPart : 'あなた';
+}
+
+function buildShareText(
+  pairTitle: string,
+  rankLabel: string,
+  rank: CompatibilityRank,
+  fromCharaId?: string,
+  signLabel?: string,
+): string {
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
-  return `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\n自分の星座でも相性見れるよ\n${inviteUrl} #よるのことば`;
+  const mySign = extractSign(signLabel);
+  const surprise = rank === 'best' ? '怖いくらい' : rank === 'good' ? '思ったより深い' : '意外と';
+  return `あなたとの相性、${mySign}は${rankLabel}だった。${surprise}。入れてみて→\n${inviteUrl} ${pairTitle} ${RANK_PREFIX[rank]} #よるのことば`;
 }
 
 export function CompatibilityCard({
@@ -108,7 +123,7 @@ export function CompatibilityCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば 相性占い',
-          text: buildShareText(pairTitle, rankLabel, rank, fromCharaId),
+          text: buildShareText(pairTitle, rankLabel, rank, fromCharaId, signLabel),
           files: [file],
         });
         track('compatibility_share', { rank, surface: 'web_share' });
@@ -126,7 +141,9 @@ export function CompatibilityCard({
   const handleXPost = () => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
-    const text = `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\n自分の星座でも相性見れるよ\nよるのことば 相性占い`;
+    const mySign = extractSign(signLabel);
+    const surprise = rank === 'best' ? '怖いくらい' : rank === 'good' ? '思ったより深い' : '意外と';
+    const text = `あなたとの相性、${mySign}は${rankLabel}だった。${surprise}。${pairTitle} ${RANK_PREFIX[rank]}`;
     const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(inviteUrl)}&hashtags=${encodeURIComponent('よるのことば')}`;
     if (typeof window !== 'undefined') {
       window.open(intent, '_blank', 'noopener,noreferrer');

@@ -26,9 +26,15 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   const fromChara = getSafeDreamType(fromCharaId);
 
   useEffect(() => {
+    let hasProfile = false;
+    try {
+      hasProfile = typeof window !== 'undefined' && Boolean(localStorage.getItem('ynk_profile'));
+    } catch {
+      /* localStorage 無効環境 */
+    }
     track('compatibility_link_open', {
       from_chara: fromCharaId,
-      has_profile: false,
+      has_profile: hasProfile,
     });
   }, [fromCharaId]);
 
@@ -197,6 +203,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
             rankLabel={result.rankLabel}
             pairText={result.pairText}
             pairTitle={result.pairTitle}
+            fromCharaId={fromCharaId}
           />
 
           <div style={{ height: 1, background: 'var(--border)', margin: '24px auto', maxWidth: 240 }} />

@@ -340,7 +340,7 @@ export function DreamView({ profile }: DreamViewProps) {
       )}
 
       {/* ══════════════════════════════════════════
-          ★ 儀式オーバーレイ（loading === true 時）
+          ★ 解析中オーバーレイ（loading === true 時）
       ══════════════════════════════════════════ */}
       {loading && (
         <div

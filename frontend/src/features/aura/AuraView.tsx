@@ -382,7 +382,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             style={ghostBtnStyle}
             onClick={onReset}
           >
-            別の人と占う
+            別の人と試す
           </button>
           <button
             type="button"

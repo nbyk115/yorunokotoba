@@ -259,7 +259,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             {blurMessage}
           </BlurReveal>
 
-          {/* 儀式動詞ボタン（ICP語彙: 「扉をひらく」）*/}
+          {/* 主要CTAボタン（ICP共感語彙: 「扉をひらく」）*/}
           <RitualButton
             verb="今夜の扉をひらく"
             onConfirm={() => onNavigate('dream')}
