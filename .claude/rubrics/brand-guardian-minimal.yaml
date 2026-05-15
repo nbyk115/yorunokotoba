@@ -1,0 +1,46 @@
+# Outcomes Rubric: brand-guardian-minimal
+# 用途: ConsultingOS の assistant 応答に対する mechanical enforcement (PoC)
+# 起動: .claude/hooks/outcomes-judge-minimal.sh から参照
+# 設計根拠: Anthropic Outcomes 機能（2026-05-06 発表）の概念を ConsultingOS に自前移植
+# 物理化日: 2026-05-07
+# Phase: PoC（最小 viable、非ブロッキングの alert 専用）
+
+name: brand-guardian-minimal
+version: 0.1.0
+threshold_pass_count: 4  # 4 / 4 全 criteria 通過必須
+non_blocking: true       # alert のみ、応答ブロックしない
+
+criteria:
+  - id: emdash_ban
+    name: em ダッシュ / en ダッシュ禁止
+    rule_ref: CLAUDE.md ハードルール 16 ⑥
+    pattern: "U+2014 / U+2013"
+    fail_message: "em / en ダッシュ違反、コロン or ハイフン or カンマで置換"
+
+  - id: bold_markdown_ban
+    name: 太字 ** 違反禁止（規律定義書外）
+    rule_ref: CLAUDE.md ハードルール 16 ①
+    pattern: "Markdown ** in non-規律 output"
+    fail_message: "太字 ** 違反、強調は「」or 大文字 IMPORTANT/NEVER ラベルで代替"
+
+  - id: completion_claim_evidence
+    name: 完了系断言の実測値併記
+    rule_ref: CLAUDE.md ハードルール 1
+    pattern: "撲滅 / ゼロ / 0 件 / 完了 / 修復済 / 統一済 / 致命的 0"
+    fail_message: "完了系断言は実測コマンド + 実出力の併記必須、narrative のみは無効"
+
+  - id: subject_fraud_ban
+    name: 主語詐称禁止（agent 起動ゼロターン）
+    rule_ref: docs/orchestration-protocol.md §2.3
+    pattern: "agent 起動ゼロで「ConsultingOS が」「OS 自律実行」"
+    fail_message: "agent 起動ゼロのターンは「assistant が今ターン直接実装」明記必須
+
+# 不足 criteria（Phase 2 拡張候補）:
+# - 反証チェック Step 1-4 完備
+# - FACT / INFERENCE / SPECULATION 3 ラベル明示
+# - 出典なし具体数値の断言検出
+# - 一文中改行検出
+# - 日本語字形（中国フォント混入）検出
+
+# 整合性: brand-guardian agent 定義（.claude/agents/creative/brand-guardian.md）と並列、
+# 機械検証層として動作。本 rubric は assistant 出力に適用、brand-guardian は creative 出力に適用。

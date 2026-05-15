@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!--
+================================================================
+frontend-dev 必須 HTML テンプレート (LP / ランディングページ用)
+================================================================
+このファイルは ConsultingOS の「実装テンプレ」物理化成果物。
+
+参照元:
+  - .claude/agents/creative/frontend-dev.md
+  - CLAUDE.md ハードルール 8 (DESIGN.md 必須参照)
+  - CLAUDE.md ハードルール 10 (lang="ja" / 日本語フォント)
+
+必須項目チェックリスト (template-injection-check.sh で検証):
+  [x] <!DOCTYPE html>
+  [x] <html lang="ja">                            -> ハードルール 10
+  [x] <meta charset="UTF-8">
+  [x] <meta name="viewport" content="width=device-width, initial-scale=1">
+  [x] <meta name="description">                   -> SEO 必須
+  [x] <meta property="og:*">                      -> OGP 必須
+  [x] 日本語フォントスタック (Hiragino / Noto Sans JP)
+  [x] word-break: auto-phrase (Marp と同思想)
+  [x] DESIGN.md トークン参照コメント
+
+クライアント別カスタマイズ:
+  - .claude/templates/frontend-dev/<variant>.html として派生作成
+
+================================================================
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO 必須 -->
+  <title>ページタイトル | サービス名</title>
+  <meta name="description" content="ページの 120 文字以内の説明文">
+  <meta name="keywords" content="キーワード1, キーワード2, キーワード3">
+
+  <!-- OGP (Open Graph Protocol) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ページタイトル">
+  <meta property="og:description" content="ページの説明文">
+  <meta property="og:url" content="https://example.com/">
+  <meta property="og:image" content="https://example.com/ogp.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="サービス名">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ページタイトル">
+  <meta name="twitter:description" content="ページの説明文">
+  <meta name="twitter:image" content="https://example.com/ogp.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Preload (Core Web Vitals 改善) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!--
+    DESIGN.md トークン参照
+    プロジェクトルートの DESIGN.md の色 / フォント / 余白を必ず反映
+    (CLAUDE.md ハードルール 8)
+  -->
+  <style>
+    /* ConsultingOS 必須 CSS (frontend-dev / sales-deck-designer 共通) */
+    :root {
+      --font-ja-sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+                      "Noto Sans JP", "BIZ UDPGothic", "Yu Gothic UI",
+                      "Meiryo", sans-serif;
+      --font-ja-serif: "Hiragino Mincho ProN", "Yu Mincho",
+                       "Noto Serif JP", "BIZ UDPMincho", serif;
+    }
+
+    html {
+      lang: ja;
+    }
+
+    body,
+    body * {
+      word-break: auto-phrase;
+      line-break: strict;
+      overflow-wrap: break-word;
+      font-family: var(--font-ja-sans);
+      font-feature-settings: "palt" 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #ffffff;
+    }
+
+    /* WCAG 2.1 AA (frontend-dev §禁止事項) */
+    :focus-visible {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* モバイルファースト (frontend-dev §実装原則) */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- LP セクション順序は ux-designer §LP構成テンプレート 参照 -->
+  <header role="banner">
+    <!-- ヘッダー -->
+  </header>
+
+  <main role="main">
+    <section class="hero" aria-label="ヒーローセクション">
+      <h1>メインキャッチコピー</h1>
+      <p>サブキャッチ</p>
+      <a href="#cta" class="cta">CTA ボタン</a>
+    </section>
+
+    <!-- 課題 / 解決 / 特徴 / 証明 / 料金 / FAQ / 最終CTA -->
+  </main>
+
+  <footer role="contentinfo">
+    <small>&copy; YYYY サービス名</small>
+  </footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Cybersecurity Playbook — サイバーセキュリティ標準
+# Cybersecurity Playbook: サイバーセキュリティ標準
 
 ## 概要
 全エージェント・全プロジェクトに適用されるサイバーセキュリティの標準手法。
@@ -6,7 +6,7 @@
 
 ---
 
-## 1. シフトレフト原則 — 設計段階でセキュリティを組み込む
+## 1. シフトレフト原則: 設計段階でセキュリティを組み込む
 
 > **バグを本番で見つけるコストは、設計段階の100倍。セキュリティも同じ。**
 
@@ -83,10 +83,40 @@
 ## 3. シークレット管理
 
 ### 鉄則
-- **ハードコード絶対禁止**: APIキー・トークン・パスワードをコードに書かない
-- **環境変数で管理**: `.env`ファイルは`.gitignore`に必ず追加
-- **ローテーション**: シークレットは90日ごとにローテーション
-- **最小権限**: APIキーは必要最小限のスコープで発行
+- ハードコード絶対禁止: APIキー・トークン・パスワードをコードに書かない
+- 環境変数で管理: `.env`ファイルは`.gitignore`に必ず追加
+- ローテーション: シークレットは90日ごとにローテーション
+- 最小権限: APIキーは必要最小限のスコープで発行
+
+### 🚨 GitHub アカウント・リポジトリセキュリティ（2026-05-01 マネーフォワード事案学習）
+
+参考: 2026 年 5 月のマネーフォワード GitHub 不正アクセス事案では、認証情報漏洩 → リポジトリ不正アクセス → ソースコード/関連ファイル閲覧コピー → 個人情報 370 件流出（氏名 + クレカ下 4 桁）という経路で被害が拡大した（出典: [日本経済新聞](https://www.nikkei.com/article/DGXZQOUB012UA0R00C26A5000000/) / [株式会社一創](https://www.issoh.co.jp/tech/details/11988/)）。同種の被害を防ぐため以下の規律を徹底する。
+
+#### GitHub 認証情報の管理
+- IMPORTANT: GitHub アカウント MFA（多要素認証）必須。Authenticator アプリまたはハードウェアキー（YubiKey 等）を有効化
+- IMPORTANT: Personal Access Token（PAT）は Fine-grained PAT を使用、Classic PAT は新規発行禁止
+- IMPORTANT: PAT のスコープは最小権限（読み取りのみ / 特定リポジトリのみ）
+- IMPORTANT: PAT 有効期限は最長 90 日、満了前にローテーション
+- NEVER: PAT / SSH 秘密鍵 / OAuth トークンを `.env` 以外に保存
+- IMPORTANT: SSH 鍵はパスフレーズ付き、漏洩時即無効化のため鍵管理表（鍵 ID / 用途 / 発行日 / 有効期限）を `.claude/memory/` に保管
+
+#### リポジトリ運用
+- IMPORTANT: クライアント案件・機密情報を含むリポジトリはプライベート設定必須
+- IMPORTANT: 公開リポジトリでは個人情報 / 顧客データ / 内部 URL / 内部メールアドレスを含めない
+- IMPORTANT: GitHub Secret Scanning + Dependabot を全リポジトリで有効化
+- IMPORTANT: Branch protection rules: main ブランチへの直接 push 禁止、PR レビュー必須、Squash and merge 限定
+- IMPORTANT: リポジトリアクセス権を四半期ごとに棚卸し、退職者・案件離脱者は即剥奪
+- NEVER: コミット履歴に過去シークレットを残置（誤コミット時は git filter-repo + force push + 同シークレット即ローテーション）
+
+#### 監視・検知
+- IMPORTANT: GitHub 監査ログ（Audit Log）を月次レビュー、異常 IP / 異常時間帯のアクセスを検知
+- IMPORTANT: 不審なリポジトリクローン / fork / 大量 API 呼び出しは即調査
+- IMPORTANT: GitHub Security Advisories を有効化、依存関係の脆弱性通知を受信
+
+#### Claude Code 利用時の固有規律
+- NEVER: Claude Code から GitHub MCP 経由で書き込み操作（push / merge / delete）を承認なしに実行
+- IMPORTANT: GitHub MCP の認証トークンも Fine-grained PAT、最小権限・短期間ローテーション
+- IMPORTANT: Claude Code セッションログに GitHub PAT が出力されていないか週次確認
 
 ### 検知パターン（/security-scan用）
 ```bash
@@ -98,6 +128,82 @@ xoxb-[0-9]{10,13}-[a-zA-Z0-9] # Slack Bot Token
 -----BEGIN.*PRIVATE KEY-----   # 秘密鍵
 password\s*[:=]\s*['"][^'"]{8,}  # ハードコードパスワード
 ```
+
+---
+
+## §3-B Workload Identity Federation（keyless auth）
+
+> INFERENCE: Anthropic 公式ドキュメント（platform.claude.com/docs/en/manage-claude/workload-identity-federation）に基づく。仕様変更リスクあり、採用前に最新ドキュメントを必ず参照。
+
+### なぜ keyless auth が必要か
+
+§3 の鉄則「ローテーション 90 日」と「最小権限」は API Key 長期保管を前提とするが、以下のリスクは残る。
+
+- CI Secrets / `.env` に長期 API Key を保管 → 漏洩時、有効期限まで攻撃者が自由に使用可能（マネーフォワード事案と同構造）
+- ローテーション漏れ → 90 日ルールを形骸化させる運用ミスが蓄積
+- 鍵の数が増えるほど管理コストが指数的に上昇
+
+keyless auth は「家の合鍵（長期 API Key）」から「毎回入館証（短命トークン都度発行）」モデルへ移行し、鍵そのものを保管しない設計で上記リスクをカテゴリごと排除する。
+
+### 仕組み
+
+```
+既存クラウド ID（AWS IAM Role / GCP SA / GitHub Actions OIDC 等）
+        |
+        v（Trust Federation: 既存 ID を Anthropic に信頼させる）
+Anthropic STS（Security Token Service）
+        |
+        v（短命トークン発行、TTL: 分〜時間単位）
+Claude API 呼び出し
+```
+
+API Key を環境変数 / CI Secrets に保存しない。トークンはリクエスト都度発行され、有効期限切れで自動失効する。
+
+### 対応プロバイダー（2026-05-06 時点、INFERENCE）
+
+| プロバイダー | 認証元 ID | 適合ユース |
+|---|---|---|
+| AWS | IAM Role（EC2 / Lambda / ECS） | AWS 上のバックエンド・バッチ処理 |
+| GCP | Service Account（Workload Identity Pool） | GCP 上の Cloud Run / GKE |
+| Azure | Managed Identity / Azure AD | Azure Functions / AKS |
+| GitHub Actions | OIDC トークン（`id-token: write`） | CI/CD パイプライン |
+| Kubernetes | Service Account + OIDC | k8s ワークロード |
+
+### メリット 4 点
+
+1. 漏洩時の影響限定: 短命トークンは有効期限内のみ有効。漏洩しても数分〜数時間で無効化
+2. 監査追跡の精度向上: クラウド IAM 監査ログとの連携で「誰が・いつ・どのロールで呼び出したか」を追跡可能
+3. 権限管理の一元化: シークレットのローテーション管理が不要。クラウド IAM に集約
+4. クラウドネイティブ統合: 既存の IAM ポリシー・SCPs・組織ポリシーを Claude API にそのまま適用可能
+
+### デメリット・制約
+
+- IMPORTANT: 設定が複雑。Trust Federation の設定ミスは認証不能または過剰権限付与につながる（tech-lead のレビュー必須）
+- 小規模・個人開発・ローカル検証: API Key の方がコスト対効果が高い。keyless auth の導入は過剰設計になりやすい
+- Anthropic 側仕様: 2026-05-06 時点で全プランに提供されているか要確認（エンタープライズ向けの可能性あり）
+
+### 移行判断基準
+
+| 規模 / 状況 | 推奨 |
+|---|---|
+| 個人開発・PoC・小規模（開発者 1〜3 名） | 既存 API Key + 90 日ローテーション継続 |
+| 中規模 SaaS（CI/CD + GitHub Actions 運用あり） | GitHub Actions OIDC keyless auth を優先検討 |
+| 本番運用（AWS / GCP / Azure 上） | プロバイダー Managed Identity / IAM Role keyless auth を採用 |
+| マルチクラウド / エンタープライズ | 全ワークロードに keyless auth 適用、API Key 発行自体を禁止するポリシーも検討 |
+
+**NEVER**: keyless auth 移行後も旧 API Key を CI Secrets に残置する（即削除・ローテーション必須）。
+
+### 連携エージェント
+
+| エージェント | 責務 |
+|---|---|
+| `service-dev/tech-lead` | Trust Federation 設計・IAM ポリシーレビュー・移行判断 |
+| `service-dev/fullstack-dev` | SDK 側の認証フロー実装（API Key → Federation Token への切替） |
+| `service-dev/ai-engineer` | Claude API 呼び出しコードの keyless auth 対応（Anthropic SDK の認証設定） |
+| `service-dev/infra-devops` | AWS IAM Role / GCP SA / GitHub Actions OIDC の設定・CI/CD パイプライン修正 |
+| `consulting/legal-compliance-checker` | エンタープライズ案件での監査証跡要件・契約上の認証要件の整合確認 |
+
+> 出典（FACT）: Anthropic 公式ドキュメント - Workload Identity Federation（platform.claude.com/docs/en/manage-claude/workload-identity-federation）
 
 ---
 
@@ -336,7 +442,7 @@ npm install --auditlevel=high
 |---|---|
 | `consulting/strategy-lead` | フレームワーク選定・経営層向けセキュリティ戦略立案 |
 | `consulting/legal-compliance-checker` | ISMS/個人情報保護法/GDPR 整合性確認 |
-| `consulting/ai-consultant` | AI導入時のガバナンス設計（NIST AI RMFとの接続） |
+| `consulting/strategy-lead` + `service-dev/ai-engineer` | AI導入時のガバナンス設計（NIST AI RMFとの接続・戦略 + 技術検証ペア） |
 | `consulting/kpi-analytics` | セキュリティ投資対効果・残留リスクの定量化 |
 | `marketing-research/marketing-director` | 1stParty データ運用の適法性・信頼構築 |
 
@@ -371,7 +477,7 @@ npm install --auditlevel=high
 | 🟡 Medium | セッション管理（有効期限・ログアウト処理） | 不正利用 |
 
 ### Claude Code 連携パターン
-- **Chrome DevTools MCP**: Web アプリの動的検証。`browser-automation.md` と併用
+- **Chrome DevTools MCP**: Web アプリの動的検証。Scrapling 系等の bot 偽装ツールは禁止（ICP.md §9.4 / 不正アクセス禁止法 3 条グレー）
 - **curl/httpie + Claude Code**: API エンドポイントの境界テスト（認証/認可/入力）
 - **OWASP ZAP / Burp Suite**: プロキシ経由でのリクエスト改変（手動連携）
 - **/security-scan コマンド**: OWASP Top 10 + シークレット漏洩の静的検知
@@ -428,89 +534,16 @@ npm install --auditlevel=high
 
 ---
 
-## 9.5 Claude Code 多層防御（Multi-Layer Defense）
 
-> **Claude Code 環境では、モデルの「善意の判断ミス」が直接的なシステム操作につながる。** 単一層の制約では Opus 4.7+ 級モデルが「ユーザーの意図を汲んで」ルールを柔軟解釈するリスクがある。2層で防御する。
+## 補助セクション（references/ 分離）
 
-### 防御アーキテクチャ
+ハードルール 13 遵守のため、Claude Code 多層防御（3 層）+ バージョン履歴を分離（2026-05-05 PR #49）。
 
-```
-Layer 1: CLAUDE.md（意図レベル）
-├─ 自然言語で禁止事項を明示
-├─ モデルの「判断」に依存する層
-└─ リスク: モデルが例外を自己判断する可能性
+詳細: [`.claude/skills/references/cybersecurity-playbook-claude-defense.md`](references/cybersecurity-playbook-claude-defense.md)
 
-Layer 2: settings.json（技術レベル）
-├─ permissions.deny でコマンドパターンを技術的にブロック
-├─ モデルの判断に関係なく実行を阻止
-└─ リスク: deny リストに無いパターンはすり抜ける
 
-両方を組み合わせ → モデルの判断ミスを技術的にキャッチ
-```
+## 出典・依拠先
 
-### Layer 1: CLAUDE.md に記載すべきルール（意図レベル）
-
-| カテゴリ | ルール例 |
-|---|---|
-| 機密ファイル | `.env`, `credentials`, `secrets` の読み取り・出力・コミット禁止 |
-| 破壊的 Git 操作 | `push --force`, `reset --hard` 禁止 |
-| 外部通信 | POST/PUT/DELETE はユーザー承認なしに実行しない |
-| MCP 書き込み | Figma 編集、GitHub push_files 等はタスク単位で承認 |
-| ファイル破壊 | `rm -rf`, `chmod 777` 禁止 |
-
-### Layer 2: settings.json に設定すべき deny パターン（技術レベル）
-
-```json
-{
-  "permissions": {
-    "deny": [
-      "Bash(rm -rf /*)",
-      "Bash(rm -rf ./*)",
-      "Bash(chmod 777 *)",
-      "Bash(git push --force *)",
-      "Bash(git push * --force*)",
-      "Bash(git reset --hard *)",
-      "Bash(sudo *)",
-      "Bash(cat *.env*)",
-      "Bash(cat *credentials*)",
-      "Bash(cat *secret*)",
-      "Bash(*> .env*)",
-      "Read(.env*)",
-      "Read(*credentials*)",
-      "Read(*secret*)"
-    ]
-  }
-}
-```
-
-### なぜ 2 層が必要か
-
-| 防御 | 攻撃パターン | 結果 |
-|---|---|---|
-| Layer 1 のみ | モデルが「この .env は開発用だから読んで良い」と自己判断 | 機密漏洩 |
-| Layer 2 のみ | 新ツール `Bash(base64 .env)` が deny に未登録 | すり抜け |
-| **両方** | Layer 1 で意図を理解 + Layer 2 で技術ブロック | **安全** |
-
-### 運用チェックリスト
-
-- [ ] CLAUDE.md にルール追加 → settings.json の deny にも対応パターンを追加
-- [ ] `/security-scan` 実行時に deny パターンの網羅性を確認
-- [ ] 新 MCP 追加時にセキュリティ影響を評価
-- [ ] deny リストのバイパスパターン（base64, xxd, od 等の間接読み取り）を定期チェック
-
-### ConsultingOS 適用
-
-- **全 34 エージェント**: Layer 1 ルールは CLAUDE.md の「セキュリティ多層防御」セクションに集約
-- **settings.json**: プロジェクトルートの `.claude/settings.json` に deny パターンを定義（チームで共有）
-- **settings.local.json**: 個人の追加制約は `.claude/settings.local.json` に定義（gitignore 対象）
-
----
-
-## バージョン履歴
-
-| Ver | 日付 | 変更内容 | 根拠 | 効果 |
-|---|---|---|---|---|
-| 1.0.0 | 2026-04-10 | 初版 | サイバーセキュリティの体系的スキル欠如 | ベースライン |
-| 1.1.0 | 2026-04-12 | §8.7 ガバナンスフレームワーク（ISMS/NIST CSF/CPSF/経営ガイドライン/ISO 27005）追加 | IPA/NIST/METI/ISO 公式資料 + 企業経営サイバーセキュリティ診断チェック | エンジニアリング層とガバナンス層の分離・エンタープライズ案件の共通言語提供 |
-| 1.2.0 | 2026-04-12 | §8.8 自律セキュリティテスト（Self-Pentesting）追加 | workers.io/blog/autonomous-mobile-pentesting + Chrome DevTools MCP 連携 | 本番前の動的検証を体系化・倫理規定で悪用防止・サブスク化前の必須チェック明確化 |
-| 1.3.0 | 2026-04-18 | §9.5 Claude Code 多層防御（CLAUDE.md + settings.json 2層防御）追加 | Opus 4.7+ モデルの単一層バイパスリスク | 意図レベル + 技術レベルの defense-in-depth 確立 |
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/cybersecurity-playbook.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

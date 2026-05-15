@@ -1,4 +1,4 @@
-# Incident Response — 本番障害対応プレイブック
+# Incident Response: 本番障害対応プレイブック
 
 ## 原則
 **「復旧が最優先。犯人探しは後。」**
@@ -199,10 +199,10 @@ git checkout -b hotfix/incident-YYYYMMDD main
 
 | 状況 | 参照スキル |
 |---|---|
-| 原因特定が必要 | `debug-methodology.md` — 反証ベースで仮説を絞る |
-| DBマイグレーション起因 | `migration-safety.md` — ロールバック手順 |
-| 修正後のPR品質 | `code-quality-gates.md` — ホットフィックスでも最低限のゲート |
-| 再発防止の監視設計 | `engineering-playbook.md` — 監視・アラート設計 |
+| 原因特定が必要 | `debug-methodology.md`: 反証ベースで仮説を絞る |
+| DBマイグレーション起因 | `migration-safety.md`: ロールバック手順 |
+| 修正後のPR品質 | `code-quality-gates.md`: ホットフィックスでも最低限のゲート |
+| 再発防止の監視設計 | `engineering-playbook.md`: 監視・アラート設計 |
 
 ---
 
@@ -250,10 +250,10 @@ git checkout -b hotfix/incident-YYYYMMDD main
 ---
 
 ## 適用エージェント
-- `service-dev/tech-lead` — 障害対応の指揮・判断
-- `service-dev/fullstack-dev` — ホットフィックスの実装
-- `service-dev/infra-devops` — インフラレベルの復旧・監視
-- `service-dev/ai-engineer` — AI機能固有の障害対応
+- `service-dev/tech-lead`: 障害対応の指揮・判断
+- `service-dev/fullstack-dev`: ホットフィックスの実装
+- `service-dev/infra-devops`: インフラレベルの復旧・監視
+- `service-dev/ai-engineer`: AI機能固有の障害対応
 
 
 
@@ -264,4 +264,11 @@ git checkout -b hotfix/incident-YYYYMMDD main
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/incident-response.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

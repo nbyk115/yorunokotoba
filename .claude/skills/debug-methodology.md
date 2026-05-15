@@ -1,4 +1,4 @@
-# Debug Methodology — 反証ベース根本原因特定
+# Debug Methodology: 反証ベース根本原因特定
 
 ## 概要
 「推測で直すな。証拠で語れ」を原則とする、構造的デバッグ手法。
@@ -14,7 +14,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
      └────────────── 仮説が棄却されたらループ ──────────────────┘
 ```
 
-### Step 1: Observe — 症状の正確な記録
+### Step 1: Observe: 症状の正確な記録
 ```
 【症状記録テンプレート】
 - 何が起きたか: （期待値 vs 実際の値）
@@ -24,7 +24,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 - エラーログ: （スタックトレース・HTTPステータス・コンソール出力）
 ```
 
-### Step 2: Orient — 仮説の列挙と優先順位
+### Step 2: Orient: 仮説の列挙と優先順位
 ```
 【仮説列挙ルール】
 1. 最低3つの仮説を立てる（1つだけだと確証バイアスに陥る）
@@ -39,7 +39,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 | 仮説B: ... | ... | ... | ○/× |
 | 仮説C: ... | ... | ... | ○/× |
 
-### Step 3: Decide — 反証テストの設計
+### Step 3: Decide: 反証テストの設計
 ```
 【反証テスト設計ルール】
 - 仮説を「証明」するのではなく「棄却」するテストを設計する
@@ -48,7 +48,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 - 1つのテストで1つの仮説だけを検証する（変数を1つだけ変える）
 ```
 
-### Step 4: Act — 最小限の修正
+### Step 4: Act: 最小限の修正
 ```
 【修正ルール】
 - 反証テストで生き残った仮説のみに基づいて修正する
@@ -141,7 +141,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 
 ---
 
-## 5. 実戦ケーススタディ — よるのことば Shake/Scroll 回帰（2026-04-12 複数ラウンド）
+## 5. 実戦ケーススタディ: よるのことば Shake/Scroll 回帰（2026-04-12 複数ラウンド）
 
 ### ラウンド 3 の追加学び (2026-04-12 後半)
 
@@ -219,7 +219,7 @@ Observe（観察）→ Orient（仮説立案）→ Decide（反証設計）→ A
 
 ---
 
-### ラウンド 4 の追加学び (2026-04-17) — Modal overflow lock の脆性
+### ラウンド 4 の追加学び (2026-04-17): Modal overflow lock の脆性
 
 **症状**: UI 編集（header padding / SVG 削除 / textarea 拡大）後に「スクロールができない」が再発。
 
@@ -268,10 +268,10 @@ getComputedStyle(document.body).overflow
 ---
 
 ## 適用エージェント
-- `service-dev/tech-lead` — デバッグ方針の判断
-- `service-dev/fullstack-dev` — 実装レベルの調査・修正
-- `service-dev/ai-engineer` — AI機能固有の問題調査
-- `service-dev/infra-devops` — インフラレイヤーの調査
+- `service-dev/tech-lead`: デバッグ方針の判断
+- `service-dev/fullstack-dev`: 実装レベルの調査・修正
+- `service-dev/ai-engineer`: AI機能固有の問題調査
+- `service-dev/infra-devops`: インフラレイヤーの調査
 
 
 
@@ -282,9 +282,9 @@ getComputedStyle(document.body).overflow
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
 | 1.1.0 | 2026-04-12 | §5 実戦ケーススタディ (よるのことば shake/scroll) 追加 + アンチパターンに「実データなしの推測 patch 連発」を追記 | 本セッション 7 連続 commit の失敗経験 | React inline animation + transform の落とし穴を永続記録し同種バグを再発防止 |
-### ラウンド 5 の学び (2026-04-18) — deny-all CSS パターンの構造的失敗
+### ラウンド 5 の学び (2026-04-18): deny-all CSS パターンの構造的失敗
 
 **症状**: SHAKE v4 `[style*="infinite"]{animation:none !important}` + allow list パターンが 5 セッションにわたり対症療法の連鎖を生んだ。spinner 止まる → allow list 追加 → float 止まる → allow list 追加 → 速度変更で allow list 不一致 → 止まる → の無限ループ。
 
@@ -301,3 +301,10 @@ getComputedStyle(document.body).overflow
 ---
 
 | 1.2.0 | 2026-04-17 | §5 ラウンド 4 追加: modal body overflow lock の state 依存脆性 + mount 時 insurance reset パターン | よるのことば UI 編集後の scroll 再発（再現不能だが構造的に脆弱） | 依存配列外 remount で scroll 死蔵するケースを永続記録 |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/debug-methodology.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

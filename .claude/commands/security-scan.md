@@ -1,4 +1,8 @@
-# /security-scan — セキュリティスキャン
+---
+description: セキュリティスキャン
+---
+
+# /security-scan: セキュリティスキャン
 
 コードベース全体をスキャンし、`.claude/skills/cybersecurity-playbook.md` に基づいてセキュリティリスクを検出・報告してください。
 

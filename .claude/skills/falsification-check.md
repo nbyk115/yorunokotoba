@@ -1,8 +1,8 @@
-# Falsification Check — 反証・ハルシネーション検証スキル
+# Falsification Check: 反証・ハルシネーション検証スキル
 
 - **Version**: 1.0.0
 - **Author**: strategy-lead orchestrator
-- **Scope**: 全 34 エージェント・全 22 スキル共通
+- **Scope**: 全 27 エージェント・全 26 スキル（直下 18 + サブディレクトリ 8）共通
 - **関連**: `CLAUDE.md` §🔺 反証モード / `.claude/commands/check-hallucination.md`
 
 ---
@@ -33,6 +33,31 @@ ConsultingOS は `CLAUDE.md` に**反証モード（トリプルチェック）*
 - エッジケース・最悪シナリオの検証
 - 実装可能性・実行可能性の現実チェック
 - 「クライアント/ユーザーがこれを見たらどう反応するか」の視点
+- 実測コマンド + 実出力添付必須（narrative のみは無効扱い、CLAUDE.md ハードルール 1）
+
+### Step 4: リスク即潰し（Residual Risk Elimination、2026-05-06 PR AB 物理化）
+
+Step 1-3 で発見したリスクは「並列して終わる」のではなく、ConsultingOS 自律で以下のいずれかを実行する:
+
+- 即修正: 本セッション内で潰せるリスク = 修正実装で消滅
+- 構造化: hook / 規律 / 物理化で発生不可能化
+- Phase 4 持ち越し: 構造的に本セッション完結不可能な場合のみ、期日カレンダー登録
+
+**NEVER**: 「残存リスクを並列して終わる」「Phase 4 持ち越しが累積する」「次セッション送り」は構造的怠慢として禁止（PR #59 / PR #61 / PR Y / PR Z / PR AA 自己虚偽事象シリーズの同型再発防止）。
+
+応答末尾フォーマット:
+
+```
+【反証チェック結果】
+Step 1 自己反証: ...
+Step 2 構造反証: ...
+Step 3 実用反証: ...（実測コマンド + 出力）
+Step 4 リスク即潰し: 発見 N 件、即修正 M 件、構造化 X 件、Phase 4 持ち越し（構造的不可避）Y 件
+```
+
+補完関係: §2.6 Autonomous Mode 既定化（7 protocol）は task 起動時の self-audit gate（TASK START CALIBRATION / AUTO-SPAWN GATES / AUTONOMOUS DIMENSION MAPPING / VERIFY-FIRST DRAFT / WHY-LAYER COMPLETION / VERIFIED ASSET INTEGRATION / REACTIVE FAILSAFE）として、本 Step 4 の上流で reactive correction loop を構造的に防止する（2026-05-07 LinkedIn 16 failure cluster 学習）。詳細: docs/orchestration-protocol.md §2.6
+
+機械検証層（2026-05-07 物理化）: 自己 audit に依存しない構造的品質保証として、`.claude/rubrics/brand-guardian-minimal.yaml` + `.claude/hooks/outcomes-judge-minimal.sh`（Stop hook）を運用。assistant 応答の 4 criteria（em ダッシュ / 太字 ** / 完了系断言 / 主語詐称）を機械判定、違反は stderr に [FAIL] / [WARN] alert（非ブロッキング、PoC 段階）。Anthropic Outcomes 機能（2026-05-06 Public Beta）の概念を自前移植、Managed Agents 基盤への移行は scope 外。
 
 ---
 
@@ -50,7 +75,7 @@ ConsultingOS は `CLAUDE.md` に**反証モード（トリプルチェック）*
 
 | ラベル | 意味 | 判断基準 |
 |---|---|---|
-| ✅ **検証済** | 一次ソース確認済 or 直近のツール出力に裏付けあり | 公式ドキュメント・API 結果・grep 結果・commit hash |
+| ✅ **検証済** | 一次ソース確認済 or 直近のツール出力に裏付けあり | grep 結果（出力添付必須）/ commit hash / wc 出力 / find 出力 / test 結果 / 公式ドキュメント URL。スタイル指定・narrative のみは対象外 |
 | ⚠️ **グレー** | 一般知識・経験則だが一次ソース未確認 | 「Gen Z に人気らしい」「〜と言われている」 |
 | ❌ **要削除** | 検証不能 or 確度不明 | 具体数値を推測で出した・出典なしの引用 |
 
@@ -77,19 +102,32 @@ ConsultingOS は `CLAUDE.md` に**反証モード（トリプルチェック）*
 1. **結論→根拠→具体アクション** 順になっているか
 2. 数値に**桁数・単位・出典**があるか
 3. 「たぶん」「おそらく」「〜と思われる」などの弱い語を避けたか（or 意図的に使ったか）
-4. **Step 1-3** を頭の中で 10 秒回したか
+
+### 4.1.1 完了系宣言規律（2026-05-05 追加・PR #59 自己虚偽事象学習）
+
+**YOU MUST**: 「撲滅」「ゼロ」「0 件」「完了」「修復済」「統一済」「致命的 0」「全件処理」「残存ゼロ」を含む宣言は、以下の形式でのみ使用可。narrative のみの完了宣言は **REJECT**（reality-check.sh / stop-validator.sh が物理ブロック）。
+
+```
+$ grep -ro $'\xe2\x80\x94' .claude/ docs/ *.md | wc -l
+0
+```
+
+実測コマンド + 実出力（数値 0 or 該当ゼロのファイルリスト）の添付必須。実測なしの完了宣言は虚偽として evolution-log 自動記録。
 
 ### 4.2 重要判断時の完全チェック
 コンサル納品物・戦略提案・PL試算・コード設計の場合:
 1. 紙（or memo）に **Step 1-3 の結論** を書く
-2. 出力の末尾に **反証チェック結果** を付与:
+2. 出力の末尾に **反証チェック結果** を付与（実測フォーマット・2026-05-05 改訂）:
    ```
    【反証チェック結果】
-   ✅ Step 1（自己反証）: ...
-   ✅ Step 2（構造反証）: ...
-   ✅ Step 3（実用反証）: ...
-   🔺 残存リスク: ...
+   Step 1 自己反証: ...narrative...
+   Step 2 構造反証: ...narrative...
+   Step 3 実用反証（実測必須）:
+     $ <実行コマンド>
+     <実出力>
+   残存リスク（未実測項目は明示必須）: ...
    ```
+   実測コマンドを省略した Step 3 は無効扱い。完了系宣言（§4.1.1）は実測値（コマンド + 出力）の併記なしに使用禁止。stop-validator.sh が narrative-only Step 3 + 完了系キーワード × 検証コマンド未実行を検出して警告 / ブロック。
 
 ### 4.3 ハルシネーション検証（外部情報・事実主張を含む場合）
 1. クレーム抽出（§3.1）
@@ -138,14 +176,14 @@ ConsultingOS は `CLAUDE.md` に**反証モード（トリプルチェック）*
 
 ## 8. 評価カード連携
 
-反証モードの実行度合いを `agent-evaluation.md` の 25 点評価カードに組み込む:
-- Step 1 実行: 5 点
-- Step 2 実行: 5 点
-- Step 3 実行: 5 点
+反証モードの実行度合いを `agent-evaluation.md` の 25 点評価カードに組み込む（2026-05-05 改訂・narrative 加点削除 + 実測加点強化）:
+- Step 1 実行（narrative）: 3 点
+- Step 2 実行（narrative）: 3 点
+- Step 3 実行（実測コマンド + 出力添付）: 7 点（narrative のみは 0 点）
 - ハルシネーション 0 件: 5 点
-- 残存リスク明示: 5 点
+- 残存リスク明示（未実測項目の列挙含む）: 7 点
 
-未実行の場合はその commit を「ドラフト扱い」とし、評価カード対象外とする。
+未実行 or Step 3 narrative のみ = 「ドラフト扱い」。評価カード対象外。
 
 ---
 
@@ -154,3 +192,11 @@ ConsultingOS は `CLAUDE.md` に**反証モード（トリプルチェック）*
 | Ver | 日付 | 変更 |
 |---|---|---|
 | 1.0.0 | 2026-04-12 | 初版。CLAUDE.md の反証モードを独立 skill として昇格 |
+| 1.1.0 | 2026-05-05 | PR #59 自己虚偽事象学習で物理化。§3.2 検証済ラベル基準を実測出力必須に強化 / §4.1 L80 「10 秒頭の中」属人判定削除 / §4.1.1 完了系宣言規律新設（実測コマンド + 出力必須）/ §4.2 Step 3 実測フォーマット強制 / §8 評価カード narrative 加点削除 + 実測加点 7 点化。reality-check.sh + stop-validator.sh 拡張で物理ブロック化。 |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/falsification-check.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

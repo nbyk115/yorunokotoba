@@ -1,0 +1,28 @@
+# priority	agent	regex	secondary
+10	strategy-lead	戦略|事業戦略|中期計画|成長戦略|ビジョン|新規事業|DX|AI導入|デジタル変革|事業開発|ピボット|差別化|競争優位|売上拡大|収益改善|PLインパクト	competitive-analyst,kpi-analytics
+10	competitive-analyst	競合|競合分析|市場調査|ベンチマーク|SWOT|ポジショニング|他社比較|業界分析|市場規模|シェア|参入障壁|代替品|競争環境	strategy-lead
+10	proposal-writer	提案書|提案資料|RFP|提案|見積|企画書|プレゼン資料|提案作成|提案書作成|ソリューション提案|顧客提案	sales-deck-designer,kpi-analytics,strategy-lead
+10	kpi-analytics	KPI|指標|メトリクス|ダッシュボード|レポート|分析|数値|実績|目標|OKR|ROI|LTV|CAC|チャーン|コンバージョン率|ARR|MRR	strategy-lead
+10	client-success	顧客成功|CS|カスタマーサクセス|オンボーディング|解約|チャーン防止|更新|アップセル|クロスセル|顧客満足|NPS|顧客維持|LTV向上	feedback-synthesizer
+10	legal-compliance-checker	法務|契約|規約|コンプライアンス|法令|規制|GDPR|個人情報|利用規約|NDA|秘密保持|知的財産|著作権|ライセンス|リーガル	strategy-lead,proposal-writer
+20	tech-lead	アーキテクチャ|設計|技術選定|システム設計|技術負債|コードレビュー|テスト設計|API設計|スキーマ|DB設計|マイクロサービス|モノレポ|技術方針|ADR	ai-engineer,fullstack-dev
+20	fullstack-dev	実装|コーディング|バグ|デバッグ|フロントエンド|バックエンド|API|React|Next.js|TypeScript|Python|SQL|データベース|CRUD|認証|エラー修正	tech-lead
+20	ai-engineer	AI|LLM|RAG|プロンプト|ファインチューニング|ChatGPT|Claude|GPT|Gemini|Anthropic|OpenAI|ベクトル|埋め込み|エージェント実装|AIパイプライン|モデル評価	tech-lead,strategy-lead
+20	infra-devops	インフラ|デプロイ|Docker|CI/CD|GitHub Actions|AWS|GCP|Vercel|Kubernetes|コンテナ|監視|ログ|スケーリング|コスト最適化|Terraform|IaC|本番環境	tech-lead
+30	product-manager	プロダクト|ロードマップ|要件定義|ユーザーストーリー|バックログ|スプリント|MVP|PRD|リリース計画|優先度|フィーチャー|プロダクト戦略	feedback-synthesizer,kpi-analytics
+30	feedback-synthesizer	フィードバック|VOC|ユーザーの声|レビュー|アンケート|NPS|定性調査|ユーザーインタビュー|不満|要望|カスタマーフィードバック	product-manager
+40	creative-director	クリエイティブ|ブランド|ビジュアル|デザイン方針|クリエイティブ戦略|ビジュアルアイデンティティ|トーン&マナー|デザインシステム|コンセプト	ux-designer,frontend-dev,brand-guardian
+40	ux-designer	UX|UI|ユーザー体験|ワイヤーフレーム|プロトタイプ|ユーザビリティ|アクセシビリティ|情報設計|IA|ユーザーフロー|インタラクション|Figma	frontend-dev,brand-guardian
+40	frontend-dev	HTML|CSS|LP|ランディングページ|Webサイト|静的サイト|コンポーネント|レスポンシブ|アニメーション|Tailwind|SCSS|デザイン実装|Web制作	ux-designer,brand-guardian
+40	content-strategist	コンテンツ|記事|ブログ|コピー|ライティング|コンテンツ戦略|SEOコンテンツ|キャッチコピー|ナラティブ|ストーリー|オウンドメディア	seo-specialist,brand-guardian
+40	brand-guardian	ブランドガイドライン|トーン統一|表記揺れ|字形|禁止表現|ブランド品質|品質チェック|フォント|ブランド規律|日本語品質	content-strategist,creative-director
+40	growth-hacker	CVR|グロース|グロースハック|A/Bテスト|改善施策|施策カレンダー|ファネル改善|リテンション|ウイルス係数|Kファクター|MAU|DAU	content-strategist,frontend-dev
+40	sales-deck-designer	セールスデック|営業資料|スライド|プレゼン|PPTX|PDF|提案スライド|デッキ|資料デザイン|セールス資料|ピッチ|pitch	proposal-writer,brand-guardian
+50	gtm-consultant	海外展開|グローバル|GTM|市場参入|海外市場|輸出|越境EC|ローカライズ戦略|海外拠点|パートナーシップ|グローバル戦略|進出	competitive-analyst,market-researcher
+60	marketing-director	マーケティング戦略|チャネルミックス|マーケ予算|マーケティング全体|統合マーケ|CMO|マーケ方針|施策優先度	performance-marketer,seo-specialist
+60	performance-marketer	広告|SEM|リスティング|PPC|ROAS|CPM|CPC|CPA|Google広告|Meta広告|媒体|広告運用|クリエイティブAB|入札	marketing-analyst
+60	seo-specialist	SEO|検索順位|テクニカルSEO|Core Web Vitals|CWV|構造化データ|内部リンク|サイトマップ|ページ速度|検索流入|キーワード|AIO|GEO	content-strategist
+60	marketing-analyst	GA4|アトリビューション|CDP|データ分析|マーケ分析|トラッキング|Looker|BigQuery|コホート|ファネル分析|マーケデータ	performance-marketer
+60	social-media-strategist	SNS|ソーシャルメディア|Instagram|Twitter|X|TikTok|YouTube|LinkedIn|インフルエンサー|コミュニティ|エンゲージメント|バイラル	content-strategist,brand-guardian
+60	market-researcher	市場調査|消費者調査|セグメンテーション|ペルソナ|価格調査|定量調査|定性調査|グループインタビュー|アンケート設計|顧客インサイト	competitive-analyst
+60	pr-communications	PR|広報|プレスリリース|メディア|取材|掲載|パブリシティ|ブランドイメージ|危機管理|コーポレートコミュニケーション	brand-guardian,content-strategist
