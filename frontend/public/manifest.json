@@ -9,7 +9,7 @@
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#FFF5F0",
-  "theme_color": "#FFF5F0",
+  "theme_color": "#E8627C",
   "lang": "ja",
   "dir": "ltr",
   "categories": ["entertainment", "lifestyle"],
