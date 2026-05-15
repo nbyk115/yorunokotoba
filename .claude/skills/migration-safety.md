@@ -1,4 +1,4 @@
-# Migration Safety — DB/APIマイグレーション安全手順
+# Migration Safety: DB/APIマイグレーション安全手順
 
 ## 概要
 データベーススキーマ変更・API破壊的変更を「ゼロダウンタイム・ゼロデータロス」で実行するための手順書。
@@ -215,9 +215,9 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 ---
 
 ## 適用エージェント
-- `service-dev/tech-lead` — マイグレーション方針判断・リスク評価
-- `service-dev/fullstack-dev` — マイグレーション実装・アプリ側対応
-- `service-dev/infra-devops` — バックアップ・モニタリング・実行
+- `service-dev/tech-lead`: マイグレーション方針判断・リスク評価
+- `service-dev/fullstack-dev`: マイグレーション実装・アプリ側対応
+- `service-dev/infra-devops`: バックアップ・モニタリング・実行
 
 
 
@@ -228,5 +228,12 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
 | 1.1.0 | 2026-04-12 | §5.5 Shift Left + 段階的ロールアウト追加 | addyosmani/agent-skills "shipping-and-launch" | 本番事故の早期検知・段階的リリースの原則化 |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/migration-safety.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

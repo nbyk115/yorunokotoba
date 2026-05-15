@@ -1,4 +1,8 @@
-# /check-hallucination — ハルシネーション反証コマンド
+---
+description: ハルシネーション反証コマンド
+---
+
+# /check-hallucination: ハルシネーション反証コマンド
 
 直前の Claude 出力（または指定テキスト）を分析し、クレームを抽出・検証・修正提案する。
 
@@ -42,9 +46,9 @@
    === ハルシネーション検証結果 ===
    
    【クレーム一覧】
-   #1 ✅ "..." — 出典: ...
-   #2 ⚠️ "..." — 経験則
-   #3 ❌ "..." — 推測、要削除
+   #1 ✅ "...": 出典: ...
+   #2 ⚠️ "...": 経験則
+   #3 ❌ "...": 推測、要削除
    
    【反証 3 段階】
    Step 1 (自己反証): ...
@@ -73,11 +77,37 @@
 - 純粋なコード修正のみ（事実主張なし）
 - ユーザーへの質問返し
 
+## Interleaved Thinking 活用（Claude 4 系新機能）
+
+> 出典: Anthropic Applied AI チーム（Hannah & Jeremy）公式知見。ツール呼び出しの間に毎回思考する機能を `/check-hallucination` に統合。
+
+### 適用ルール
+
+ツール実行直後（特に `WebFetch` / `WebSearch` 後）の thinking ブロックで以下を必ず問う。
+
+1. 結果は信頼できるか？（出典の権威性・更新日時・一次/二次情報）
+2. ハルシネーション可能性は？（数値・固有名詞・年次予測の捏造リスク）
+3. FACT / INFERENCE / SPECULATION のどれに該当するか先行判別
+
+### プロンプト例
+
+```
+extended thinking で以下を必ず実施してから本文生成へ進んで:
+- WebSearch 結果の信頼性評価（一次/二次情報・更新日時・著者の権威性）
+- 出典 3 ラベル先行判別（FACT/INFERENCE/SPECULATION）
+- 「業界調査により幅あり」「個人見立て」が必要な箇所の事前マーキング
+```
+
+### 効果
+ウェブ検索結果の盲信を防止、ハルシネーション率を構造的に低減。`/check-hallucination` の Step 0 として運用。
+
+---
+
 ## 関連
 
-- `.claude/skills/falsification-check.md` — 本体スキル（理論・方法論）
-- `CLAUDE.md` §🔺 反証モード — 全エージェント必須ルール
-- `.claude/skills/debug-methodology.md` §5 実戦ケーススタディ — 規律違反の学び
+- `.claude/skills/falsification-check.md`: 本体スキル（理論・方法論）
+- `CLAUDE.md` §🔺 反証モード: 全エージェント必須ルール
+- `.claude/skills/debug-methodology.md` §5 実戦ケーススタディ: 規律違反の学び
 
 ## バージョン履歴
 

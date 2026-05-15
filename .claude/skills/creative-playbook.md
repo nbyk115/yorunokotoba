@@ -1,4 +1,4 @@
-# Creative Playbook — デザイン・コンテンツ・マルチツール連携
+# Creative Playbook: デザイン・コンテンツ・マルチツール連携
 
 ## 概要
 Creative部門の全エージェントが参照するデザインプロセス・コンテンツ標準・デザインツール選定ガイド。
@@ -171,7 +171,7 @@ Creative部門の全エージェントが参照するデザインプロセス・
 
 ---
 
-## 2.5 デザイン品質管理 — L1/L2/L3 × Wave方式
+## 2.5 デザイン品質管理: L1/L2/L3 × Wave方式
 
 > **「品質を落とさない」の定義が曖昧なまま進めると破綻する。品質を3層に分け、Wave方式で全体を波のようになぞる。**
 
@@ -223,7 +223,7 @@ L1: 20画面（52%）→ サブ設定, 管理画面, 補助リスト
 
 > **原則**: ConsultingOS は「原則から導出」が本質。カタログは**参考書**であり SSOT ではない。案件の tokens.json/rules.json は必ず案件ごとに作る。
 
-- **外部参照**: [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) — 161業界ルール × 67スタイル × 161パレット × 57フォントペア × 15技術スタック
+- **外部参照**: [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill): 161業界ルール × 67スタイル × 161パレット × 57フォントペア × 15技術スタック
 - **使用シーン**: 新規クライアント案件で業界の標準的なデザイン傾向を素早く把握したい時（fintech/medtech/SaaS/e-commerce/wellness 等）
 - **使用者**: `creative-director`（起点）→ `ux-designer`（具体化）
 - **使い方**: 丸写ししない。**業界傾向の地図**として参照し、そこから佐藤×小野寺 + アイブ/ハットフィールドの視点で再解釈する
@@ -237,9 +237,9 @@ L1: 20画面（52%）→ サブ設定, 管理画面, 補助リスト
 | エージェント | Canva | Figma | Google Slides | html2pptx |
 |---|---|---|---|---|
 | `creative-director` 🎨 | ✅ 方針指示・レビュー | ✅ デザインレビュー | ✅ 資料レビュー | ✅ PPTX出力指示 |
-| `ux-designer` 🎨 | ✅ 簡易LP・モック | ✅ UX/UI設計 | — | — |
-| `frontend-dev` 🎨 | — | ✅ Figma→コード変換 | — | — |
-| `proposal-writer` | — | — | ✅ 提案書作成 | ✅ 提案書PPTX変換 |
+| `ux-designer` 🎨 | ✅ 簡易LP・モック | ✅ UX/UI設計 |: |: |
+| `frontend-dev` 🎨 |: | ✅ Figma→コード変換 |: |: |
+| `proposal-writer` |: |: | ✅ 提案書作成 | ✅ 提案書PPTX変換 |
 
 ### html2pptx（HTML→PowerPoint変換）
 > **HTMLスライドをPPTXに変換。提案書・ピッチデックをデザイン付きで納品可能に。**
@@ -484,89 +484,16 @@ Layer 3: 検証（破っても通さない）
 ```markdown
 # DESIGN.md
 
-## Colors
-- Primary: #XXXX
-- Secondary: #XXXX
-- Neutral: gray scale
-- Semantic: success/warning/error/info
 
-## Typography
-- Heading: font-family, weight, sizes (h1-h6)
-- Body: font-family, line-height, sizes
-- 日本語フォントスタック: Noto Sans JP → Hiragino → sans-serif
-- Monospace: JetBrains Mono
+## 補助セクション（references/ 分離）
 
-## Spacing
-- Base unit: 4px
-- Scale: 4, 8, 12, 16, 24, 32, 48, 64, 96
+ハードルール 13 遵守のため、DESIGN サンプル（Colors / Typography / Spacing / Components / Hover / Responsive）+ スキル横断リファレンス + 適用エージェント + バージョン履歴を分離（2026-05-05 PR #49）。
 
-## Components
-- Button: variants, sizes, states (default/hover/active/disabled)
-- Card: padding, border-radius, shadow
-- Form: input height, label position, error states
-- Navigation: header height, mobile breakpoint
+詳細: [`.claude/skills/references/creative-playbook-design-samples.md`](references/creative-playbook-design-samples.md)
 
-## Do / Don't
-- Do: [守るべきルール]
-- Don't: [やってはいけないこと]
+## Visual Loop 防止規律（2026-05-09）
+詳細: [`references/creative-playbook-visual-loop-prevention.md`](references/creative-playbook-visual-loop-prevention.md)（着手前 5 項目 + 防止規律 8 軸 + agent 監修フロー再設計）
 
-## Hover / Interaction
-- ホバー時の挙動（transition duration, opacity変化）
-- フォーカスリングのスタイル
-- アニメーションの原則（duration, easing）
+## 出典・依拠先
 
-## Responsive
-- Breakpoints: sm(640) / md(768) / lg(1024) / xl(1280)
-- モバイルファースト
-```
-
-### DESIGN.md生成フロー
-
-```
-1. brand-guidelines.md からトーン・カラー・フォント基準を抽出
-2. 既存のFigmaデザインがあれば、デザイントークンをエクスポート
-3. creative-director がプロジェクトのDESIGN.mdをドラフト
-4. brand-guardian がbrand-guidelinesとの整合性を検証
-5. frontend-dev が実装時にDESIGN.mdを自動参照
-```
-
-### 注意事項
-- **getdesign.md等の外部DESIGN.mdはお手本として参照するのみ**。そのまま本番利用は権利的にNG
-- 自社プロダクトは**自社のbrand-guidelinesをもとにDESIGN.mdを書く**のが本筋
-- Figmaは消えない。画面を見ながら詰める工程は人間に必要。DESIGN.mdはAIへの指示書
-- 複雑なコンポーネント（カルーセル・モーダル・アニメーション）はDESIGN.md単独ではカバーしきれない。追加指示が必要
-
----
-
-## スキル横断リファレンス
-
-| 状況 | 参照スキル |
-|---|---|
-| トーン・表現の品質チェック | → `brand-guidelines.md` |
-| AIに選ばれるコンテンツ設計 | → `prompt-engineering.md` §3 RAG設計 |
-| フロントエンドの品質ゲート | → `code-quality-gates.md` |
-| API連携画面の設計 | → `api-design-patterns.md` |
-| 収益に直結するコンテンツ | → `revenue-growth-framework.md` §3 アセット蓄積 |
-| 出力の事実検証が必要 | → `falsification-check.md` + `/check-hallucination` |
-
----
-
-## 適用エージェント
-- `creative/creative-director` — デザイン方針・レビュー
-- `creative/ux-designer` — UX/UI設計
-- `creative/frontend-dev` — フロントエンド実装
-- `creative/content-strategist` — コンテンツ制作
-- `creative/campaign-planner` — キャンペーンクリエイティブ
-- `creative/brand-guardian` — 品質チェック
-- `creative/agentic-content` — AIO最適化
-
-
-
-> 反証モード（トリプルチェック）の共通ルールは CLAUDE.md を参照。
----
-
-## バージョン履歴
-
-| Ver | 日付 | 変更内容 | 根拠 | 効果 |
-|---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+FACT: ConsultingOS 規律 (2026-05-05 PR #65 物理化) / INFERENCE: 佐藤裕介流 + Boris Cherny 9 規律派生 / SPECULATION: 4 週間ごと再評価で形骸化検出

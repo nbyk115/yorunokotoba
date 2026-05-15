@@ -1,0 +1,135 @@
+/* ============================================================
+ * sales-deck-designer 必須 CSS（Marp / HTML スライド共通）
+ * ============================================================
+ * このファイルは ConsultingOS が「規約集」ではなく「実装テンプレ」
+ * として物理化した必須 CSS の最小セット。
+ *
+ * 参照元: .claude/agents/creative/sales-deck-designer.md §3 必須CSS
+ *         .claude/skills/sales-deck-review/SKILL.md §4 レイアウト違和感
+ *
+ * 編集規律: creative-director 承認必須 + 形骸化検知 4 週間ルール
+ *           (CLAUDE.md ハードルール 13 / Boris #3 ruthlessly edit)
+ *
+ * 用途:
+ *   - Marp スライド: <style> ブロックまたは theme CSS にマージ
+ *   - HTML スライド: link rel="stylesheet" or インラインで読込
+ *
+ * 注意:
+ *   1. 日本語スライドは word-break: auto-phrase が必須
+ *      (Chrome 119+, Edge 119+ サポート / Safari は graceful fallback)
+ *   2. lang="ja" / lang="ja-JP" を <html> または <section> に設定
+ *   3. 中国字形フォールバック禁止 (CLAUDE.md ハードルール 10)
+ *
+ * クライアント別カスタマイズ:
+ *   .claude/templates/sales-deck-designer/<variant>.css を派生作成
+ *   (例: rsk-corp.css / dentsu.css 等のクライアント名 variant)
+ * ============================================================ */
+
+/* --- 1. 日本語改行制御 (最重要・関根案件で欠落していた箇所) --- */
+.slide,
+.slide *,
+section,
+section * {
+  word-break: auto-phrase;
+  line-break: strict;
+  overflow-wrap: break-word;
+}
+
+/* --- 2. 日本語フォントスタック (中国字形回避) --- */
+:root {
+  --font-ja-sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans",
+                  "Noto Sans JP", "BIZ UDPGothic", "Yu Gothic UI",
+                  "Meiryo", sans-serif;
+  --font-ja-serif: "Hiragino Mincho ProN", "Yu Mincho",
+                   "Noto Serif JP", "BIZ UDPMincho", serif;
+  --font-mono: "SF Mono", "Cascadia Mono", "Roboto Mono",
+               "Source Code Pro", Menlo, Consolas, monospace;
+}
+
+body,
+.slide,
+section {
+  font-family: var(--font-ja-sans);
+  font-feature-settings: "palt" 1;
+}
+
+/* --- 3. レイアウト禁則 (sales-deck-designer §4) --- */
+/* transform: scale() で擬似強調する誘惑を構造的に排除 */
+.slide [style*="transform: scale"],
+section [style*="transform: scale"] {
+  /* 警告レベルのアウトライン (本番では削除可) */
+  outline: 2px dashed transparent;
+}
+
+/* --- 4. 横揃えグリッド (sales-deck-designer §5) --- */
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  height: 100%;
+}
+
+/* --- 5. 下段要素の pin (sales-deck-designer §6) --- */
+.srcLine,
+.caseNote,
+.footnote {
+  margin-top: auto;
+}
+
+/* --- 6. 出典行の標準スタイル --- */
+.srcLine {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+}
+
+/* --- 7. 文字切れ防止 (bottom: -px による突き抜け禁止) --- */
+.slide,
+section {
+  overflow: hidden;
+  position: relative;
+}
+
+/* --- 8. ページ収まり強制 (CLAUDE.md ハードルール 16-④) --- */
+.slide,
+section {
+  /* PPT/PDF 1280x720 想定。はみ出しは page-break で分割 */
+  box-sizing: border-box;
+}
+
+/* --- 9. 統計カード semantic ラベリング (B2・関根さん案件 v16 学習・2026-05-07 物理化) --- */
+/* 数値が「課題」か「機会」か一目で判別できる必須ラベリング。
+ * sales-deck-designer.md §4.1 で必須化。
+ * 「いいのか悪いのか分からない」状態を構造的に排除。 */
+
+.stat-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.stat-tag.issue {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.stat-tag.chance {
+  background: #DCFCE7;
+  color: #166534;
+}
+.data-card.issue .stat { color: #B45309; }
+.data-card.chance .stat { color: #15803D; }
+
+/* --- 10. 出典ハイパーリンク (B3・関根さん案件 v16 学習・2026-05-07 物理化) --- */
+/* URL のテキスト直書きは禁止、必ず <a href> でハイパーリンク化。
+ * sales-deck-designer.md §8.1 で必須化。 */
+
+.src a {
+  color: #888;
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+}
+.src a:hover {
+  color: #E60012;
+}

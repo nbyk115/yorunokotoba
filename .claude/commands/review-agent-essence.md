@@ -1,4 +1,8 @@
-# /review-agent-essence — エージェント本質レビュー
+---
+description: エージェント本質レビュー
+---
+
+# /review-agent-essence: エージェント本質レビュー
 
 引数: $ARGUMENTS（エージェント名 or "all"）
 
