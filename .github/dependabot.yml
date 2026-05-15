@@ -1,0 +1,59 @@
+# Dependabot — 副業オーナーの依存更新自動化
+# 週1で npm + GitHub Actions の更新 PR を自動作成. CI が通ればマージするだけ.
+version: 2
+updates:
+  # frontend: React/Vite/Firebase 等
+  - package-ecosystem: 'npm'
+    directory: '/frontend'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '03:00'
+      timezone: 'Asia/Tokyo'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'frontend'
+    # メジャーバージョン更新は人間レビュー前提でグループ化しない
+    groups:
+      patch-and-minor:
+        update-types:
+          - 'patch'
+          - 'minor'
+
+  # root: firebase-admin, @vercel/node, @types/node
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '03:00'
+      timezone: 'Asia/Tokyo'
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: 'chore(deps)'
+      include: 'scope'
+    labels:
+      - 'dependencies'
+      - 'api'
+    groups:
+      patch-and-minor:
+        update-types:
+          - 'patch'
+          - 'minor'
+
+  # GitHub Actions ワークフロー（actions/checkout 等の SHA 更新）
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: 'chore(ci)'
+    labels:
+      - 'dependencies'
+      - 'ci'
