@@ -1,6 +1,7 @@
 import { useRef, type CSSProperties } from 'react';
 import { toPng } from 'html-to-image';
 import { CharaAvatar } from './CharaAvatar';
+import { track } from '@/lib/analytics';
 import type { CompatibilityRank } from '@/features/aura/compatibilityLogic';
 
 type CardTheme = 'rose' | 'gold' | 'lavender';
@@ -82,6 +83,8 @@ export function CompatibilityCard({
 
   const handleShare = async () => {
     if (!cardRef.current) return;
+    // K 値分子の計測（バイラル係数）
+    track('compatibility_share', { rank, charaIdA, charaIdB });
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
@@ -95,7 +98,7 @@ export function CompatibilityCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば 相性占い',
-          text: `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}`,
+          text: `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel} #よるのことば`,
           files: [file],
         });
       } else {

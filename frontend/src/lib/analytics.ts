@@ -6,7 +6,13 @@
  * banner_premium_tap, premium_cta_tap, sticky_cta_tap, teaser_cta_tap,
  * retention_teaser_tap）は実装統合により dead. 2026-05-14 削除.
  * 現在は compat_paywall_tap 1系統に集約.
+ *
+ * 2026-05-15 追加: purchase / subscription_active（GA4 e-commerce + コホート起点）.
+ * PaywallSource Enum で paywall_view source の typo を防止.
  */
+
+/** Paywall を発火させた画面の識別子. typo 防止のため Enum 化. */
+export type PaywallSource = 'deep_reading' | 'aura_result' | 'home_chip' | 'archive_teaser';
 
 type EventName =
   | 'dream_start'
@@ -19,6 +25,8 @@ type EventName =
   | 'paywall_view'
   | 'compat_paywall_tap'
   | 'checkout_open'
+  | 'purchase'
+  | 'subscription_active'
   | 'subscription_cancel'
   | 'image_save'
   | 'share_result'

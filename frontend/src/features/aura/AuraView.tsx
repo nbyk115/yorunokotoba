@@ -2,6 +2,8 @@ import { useState, type CSSProperties } from 'react';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
 import { CompatibilityCard } from '@/components/ui/CompatibilityCard';
+import { PremiumCTA } from '@/components/ui/PremiumCTA';
+import { useCurrentUser } from '@/lib/auth';
 import { SIGNS, getCharaIdBySign } from '@/data/signs';
 import {
   calculateCompatibility,
@@ -269,6 +271,7 @@ interface ResultProps {
 }
 
 function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
+  const { userId } = useCurrentUser();
   const sectionStyle: CSSProperties = {
     padding: '32px 24px',
     textAlign: 'center',
@@ -365,7 +368,17 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
 
         <div style={dividerStyle} aria-hidden="true" />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {/* 感情ピーク時の課金導線（growth-hacker 提案） */}
+        <div style={{ textAlign: 'left', padding: '0 8px' }}>
+          <PremiumCTA
+            source="aura_result"
+            userId={userId}
+            headline="この縁の深層を読み解く"
+            description="守護キャラからの私信で、二人の御縁の続きが分かるよ"
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 16 }}>
           <button
             type="button"
             style={ghostBtnStyle}

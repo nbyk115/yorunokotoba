@@ -25,6 +25,19 @@ interface CancelConfirmModalProps {
   currentPeriodEndIso: string | null;
 }
 
+/**
+ * 解約理由の選択肢. pricing-decision.md Section 5 の「"高すぎる" 比率 < 20%」
+ * 監視のため、解約イベントに reason を付与して GA4 で集計する.
+ */
+type CancelReason = 'too_expensive' | 'unused' | 'content_lacking' | 'other';
+
+const REASON_LABELS: Record<CancelReason, string> = {
+  too_expensive: '高いと感じた',
+  unused: 'あまり使わなかった',
+  content_lacking: '内容が物足りない',
+  other: 'その他',
+};
+
 export function CancelConfirmModal({
   onClose,
   onCanceled,
@@ -32,6 +45,7 @@ export function CancelConfirmModal({
 }: CancelConfirmModalProps) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reason, setReason] = useState<CancelReason | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const initialRef = useRef<HTMLButtonElement>(null);
 
@@ -43,11 +57,15 @@ export function CancelConfirmModal({
   });
 
   async function handleConfirm() {
+    if (!reason) {
+      setError('やめる理由を選んでね');
+      return;
+    }
     setPending(true);
     setError(null);
     try {
       await cancelSubscription();
-      track('subscription_cancel', { reason: 'user_initiated' });
+      track('subscription_cancel', { reason });
       onCanceled();
     } catch (err) {
       console.error('[CancelConfirmModal] cancel failed', err);
@@ -99,10 +117,51 @@ export function CancelConfirmModal({
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 8px' }}>
           解約しても、{currentPeriodEndIso ? formatIsoDate(currentPeriodEndIso) : '次回更新日'}まではそのまま使えるよ。
         </p>
-        <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.7, margin: '0 0 20px' }}>
+        <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.7, margin: '0 0 16px' }}>
           ※ 残り期間の日割返金はないよ。<br />
           ※ 次回更新日の前日23:59 までに解約すれば、翌日以降の課金は止まるよ。
         </p>
+
+        {/* 解約理由（M3 価格 A/B 判断材料、pricing-decision.md Section 5） */}
+        <fieldset style={{ border: 'none', padding: 0, margin: '0 0 16px' }}>
+          <legend
+            style={{
+              fontSize: 12,
+              color: 'var(--t2)',
+              margin: '0 0 8px',
+              fontWeight: 700,
+            }}
+          >
+            よかったら理由を教えてね
+          </legend>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {(Object.keys(REASON_LABELS) as CancelReason[]).map((key) => (
+              <label
+                key={key}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 4px',
+                  cursor: pending ? 'not-allowed' : 'pointer',
+                  fontSize: 13,
+                  color: 'var(--t1)',
+                }}
+              >
+                <input
+                  type="radio"
+                  name="cancel-reason"
+                  value={key}
+                  checked={reason === key}
+                  onChange={() => setReason(key)}
+                  disabled={pending}
+                  style={{ accentColor: 'var(--rose)' }}
+                />
+                {REASON_LABELS[key]}
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         {error && (
           <p

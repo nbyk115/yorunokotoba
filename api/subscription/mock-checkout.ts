@@ -69,7 +69,8 @@ export default function handler(
       });
       if (r.ok) {
         btn.textContent = '完了。アプリに戻ります…';
-        setTimeout(() => { window.location.href = '/'; }, 1200);
+        // 本番 UnivaPay success_url と整合: ?premium=1 で App.tsx が purchase 発火
+        setTimeout(() => { window.location.href = '/?premium=1'; }, 1200);
       } else {
         btn.textContent = '失敗: ' + r.status;
       }
