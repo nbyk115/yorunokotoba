@@ -686,10 +686,6 @@ function DeepReadingSection({
     color: 'var(--t1)',
     lineHeight: 1.9,
     margin: 0,
-    filter: isPremium ? 'none' : 'blur(6px)',
-    userSelect: isPremium ? 'auto' : 'none',
-    pointerEvents: isPremium ? 'auto' : 'none',
-    transition: 'filter 300ms ease',
   };
 
   const dividerStyle: React.CSSProperties = {
@@ -698,6 +694,31 @@ function DeepReadingSection({
     margin: '20px 0',
   };
 
+  // 非 Premium 時: 本文を一切描画せず（SR が読める blur 削除）、訴求 + CTA のみ.
+  if (!isPremium) {
+    return (
+      <Card style={wrapStyle}>
+        <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
+        <h4 style={titleStyle}>
+          {charaName}からの夜のことば
+        </h4>
+        <p
+          style={{
+            fontSize: 13,
+            color: 'var(--t2)',
+            lineHeight: 1.8,
+            margin: '0 0 4px',
+          }}
+        >
+          今夜のあなたへ、{charaName}からの私信が届いてるよ。
+          {moonWave && `${moonLabel}の波動を読み解く特別な夜のことばも。`}
+        </p>
+        <PremiumCTA source="deep_reading" userId={currentUserId} />
+      </Card>
+    );
+  }
+
+  // Premium 時: 全文表示
   return (
     <Card style={wrapStyle}>
       <p style={eyebrowStyle}>Deep Reading · 今夜の私信</p>
@@ -716,8 +737,6 @@ function DeepReadingSection({
           <p style={bodyStyle}>{moonWave.body}</p>
         </>
       )}
-
-      {!isPremium && <PremiumCTA source="deep_reading" userId={currentUserId} />}
     </Card>
   );
 }
