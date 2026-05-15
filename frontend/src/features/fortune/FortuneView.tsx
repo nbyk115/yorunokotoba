@@ -64,6 +64,43 @@ const CONSTELLATION_POINTS = [
 ].map((p) => p.join(',')).join(' ');
 
 /* ────────────────────────────────────────────── */
+/*  幕タイトル eyebrow（日本語の控えめなセクション見出し） */
+/* ────────────────────────────────────────────── */
+function ActEyebrow({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        margin: '28px 0 14px',
+      }}
+    >
+      <p
+        style={{
+          fontFamily: 'var(--font-accent)',
+          fontStyle: 'italic',
+          fontSize: 12,
+          color: 'var(--gold)',
+          letterSpacing: '0.32em',
+          margin: 0,
+          opacity: 0.85,
+        }}
+      >
+        {label}
+      </p>
+      <div
+        aria-hidden="true"
+        style={{
+          width: 32,
+          height: 1,
+          background: 'var(--border)',
+          margin: '8px auto 0',
+        }}
+      />
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────── */
 /*  星座結びアニメーション（SVG stroke-dasharray） */
 /* ────────────────────────────────────────────── */
 function ConstellationReveal({ color }: { color: string }) {
@@ -347,65 +384,9 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         </div>
 
         {/* ════════════════════════════════ */}
-        {/*  reading-cards                   */}
+        {/*  第二幕: 夜のおはなし              */}
         {/* ════════════════════════════════ */}
-
-        {/* lucky-time + risk グリッド */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 12,
-            margin: '0 16px 12px',
-          }}
-        >
-          <div
-            style={{
-              padding: '16px 14px',
-              background: 'var(--card)',
-              borderRadius: 14,
-              border: '1px solid var(--border)',
-            }}
-          >
-            <p
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: 'var(--t3)',
-                letterSpacing: '0.08em',
-                margin: 0,
-              }}
-            >
-              🕐 ラッキータイム
-            </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
-              {result.time}
-            </p>
-          </div>
-          <div
-            style={{
-              padding: '16px 14px',
-              background: 'var(--card)',
-              borderRadius: 14,
-              border: '1px solid var(--border)',
-            }}
-          >
-            <p
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: 'var(--t3)',
-                letterSpacing: '0.08em',
-                margin: 0,
-              }}
-            >
-              ⚠️ 注意
-            </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
-              {result.risk}
-            </p>
-          </div>
-        </div>
+        <ActEyebrow label="夜のおはなし" />
 
         {/* カード1: 今夜のあなたの波動 · 御縁のゆくえ · 指名の星まわり */}
         <Card
@@ -482,7 +463,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </p>
         </Card>
 
-        {/* カード2: 健康 · ラッキー3点 */}
+        {/* カード2: 健康（夜のおはなしの末尾） */}
         <Card
           className="slide-up-2"
           style={{ margin: '0 16px 12px' }}
@@ -503,16 +484,72 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyHealth}
           </p>
+        </Card>
 
+        {/* ════════════════════════════════ */}
+        {/*  第三幕: ねむる前に                 */}
+        {/* ════════════════════════════════ */}
+        <ActEyebrow label="ねむる前に" />
+
+        {/* lucky-time + risk グリッド（第三幕に移動） */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 12,
+            margin: '0 16px 12px',
+          }}
+        >
           <div
             style={{
-              height: 1,
-              background: 'var(--border)',
-              margin: '10px 0',
+              padding: '16px 14px',
+              background: 'var(--card)',
+              borderRadius: 14,
+              border: '1px solid var(--border)',
             }}
-            aria-hidden="true"
-          />
+          >
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: 'var(--t3)',
+                letterSpacing: '0.08em',
+                margin: 0,
+              }}
+            >
+              🕐 ラッキータイム
+            </p>
+            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
+              {result.time}
+            </p>
+          </div>
+          <div
+            style={{
+              padding: '16px 14px',
+              background: 'var(--card)',
+              borderRadius: 14,
+              border: '1px solid var(--border)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: 'var(--t3)',
+                letterSpacing: '0.08em',
+                margin: 0,
+              }}
+            >
+              ⚠️ 注意
+            </p>
+            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
+              {result.risk}
+            </p>
+          </div>
+        </div>
 
+        {/* ラッキー3点（第三幕） */}
+        <Card style={{ margin: '0 16px 12px' }}>
           <h4
             style={{
               fontSize: 14,
