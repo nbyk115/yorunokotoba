@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
-import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { RarityBadge } from '@/components/ui/RarityBadge';
+// CharaAvatar / RarityBadge は PR4 で夢占いから削除（夢占いとホロスコープ分離方針）.
+// ホロスコープ占い（FortuneView）でのみ使用.
 import { RitualButton } from '@/components/ui/RitualButton';
 import { BlurReveal } from '@/components/ui/BlurReveal';
 import { ShareCard } from '@/components/ui/ShareCard';
@@ -392,7 +392,7 @@ export function DreamView({ profile }: DreamViewProps) {
             className="no-scrollbar"
           >
 
-            {/* ── Card 1: キャラ + テーマ + type（ヒーローカード） ── */}
+            {/* ── Card 1: テーマ主役ヒーロー（夢占いはキャラなし）── */}
             <div
               style={{
                 ...cardBase,
@@ -403,84 +403,49 @@ export function DreamView({ profile }: DreamViewProps) {
                 textAlign: 'center',
                 position: 'relative',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-                minHeight: 420,
+                minHeight: 320,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
               }}
             >
-              {/* レアリティ + パーセント */}
+              {/* テーマ大型アイコン（キャラの代わり） */}
               <div
                 style={{
-                  position: 'absolute',
-                  top: 14,
-                  right: 14,
-                  display: 'flex',
-                  gap: 6,
-                  alignItems: 'center',
+                  fontSize: 96,
+                  lineHeight: 1,
+                  marginTop: 8,
+                  marginBottom: 16,
+                  filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.2))',
                 }}
+                aria-hidden="true"
               >
-                <RarityBadge rarity={result.type.rarity} />
-                <span style={{ fontSize: 11, opacity: 0.8 }}>{result.type.pct}</span>
+                {result.theme.icon}
               </div>
 
-              <p
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  opacity: 0.85,
-                  letterSpacing: 1,
-                }}
-              >
-                {result.theme.icon} {result.theme.label}
-              </p>
-
-              {/* キャラ 200px（仕様B-2: 既存120px → 200pxへ拡大） */}
-              <div style={{ margin: '16px auto 12px' }}>
-                <CharaAvatar
-                  id={result.type.id}
-                  size={200}
-                  animate
-                  border="3px solid rgba(255,255,255,0.35)"
-                />
-              </div>
-
-              {/* タイトル Cormorant 28px（ICP語彙核） */}
+              {/* テーマラベル H1 */}
               <h3
                 style={{
-                  fontFamily: 'var(--font-accent)',
-                  fontSize: 28,
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: 22,
                   fontWeight: 700,
-                  fontStyle: 'italic',
-                  letterSpacing: '0.02em',
+                  letterSpacing: '0.04em',
+                  marginBottom: 4,
                 }}
               >
-                {result.type.name}
+                {result.theme.label}
               </h3>
-              {/* サブ Zen Maru 14px */}
+
+              {/* シンボル 1 行サマリー */}
               <p
                 style={{
-                  fontFamily: 'var(--font-heading)',
                   fontSize: 14,
                   opacity: 0.92,
                   marginTop: 6,
                   lineHeight: 1.6,
                 }}
               >
-                {result.type.sub}
-              </p>
-
-              <p
-                style={{
-                  fontSize: 13,
-                  lineHeight: 1.9,
-                  marginTop: 16,
-                  textAlign: 'left',
-                  opacity: 0.96,
-                  width: '100%',
-                }}
-              >
-                {result.type.desc}
+                {result.symbols.slice(0, 3).map((s) => s.word).join('・')}
               </p>
 
               {/* ── フローティング「この夢を残す」ボタン ── */}
@@ -683,42 +648,10 @@ export function DreamView({ profile }: DreamViewProps) {
                 </p>
               </div>
 
-              {/* 区切り */}
-              <div
-                style={{
-                  height: 1,
-                  background: 'var(--border)',
-                  margin: '16px 0',
-                }}
-                aria-hidden="true"
-              />
-
-              <h4
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: 'var(--lavender)',
-                  marginBottom: 10,
-                }}
-              >
-                相性の良いタイプ
-              </h4>
-              <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
-                <strong>{result.type.bestMatch}</strong>
-                <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
-                  {result.type.bestWhy}
-                </span>
-              </p>
-              <p
-                style={{
-                  fontSize: 12,
-                  color: 'var(--t2)',
-                  lineHeight: 1.8,
-                  marginTop: 10,
-                }}
-              >
-                <strong>恋愛傾向:</strong> {result.type.love}
-              </p>
+              {/* 「相性タイプ・恋愛傾向」セクションは PR4 で削除.
+                  夢占いとホロスコープの分離方針: キャラ・恋愛傾向は
+                  ホロスコープ占い（FortuneView）専属とし、夢占いは
+                  テーマ・シンボル・夢のメッセージに集中. */}
             </div>
           </div>
 
@@ -812,11 +745,10 @@ export function DreamView({ profile }: DreamViewProps) {
             この夢を残す
           </p>
           <ShareCard
-            title={result.type.name}
-            subtitle={result.type.sub}
+            title={result.theme.label}
+            subtitle={result.symbols.slice(0, 2).map((s) => s.word).join(' · ')}
             body={result.mainReading.intro}
-            charaId={result.type.id}
-            theme="rose"
+            theme="lavender"
             signLabel={`${profile.sign} · ${profile.name}`}
           />
           <Button
