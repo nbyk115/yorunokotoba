@@ -643,16 +643,7 @@ export function DreamView({ profile }: DreamViewProps) {
                 </ul>
               </div>
 
-              <div style={{ marginTop: 16 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                  今日避けたいこと
-                </p>
-                <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
-                  {result.actions.avoid.map((a, i) => (
-                    <li key={i}>{a}</li>
-                  ))}
-                </ul>
-              </div>
+              {/* 「今日避けたいこと」は ux-designer 診断で認知過負荷判定 → 削除（should + aware の 2 点で十分）*/}
             </div>
 
             {/* ── Card 5: ラッキー3点 + 相性タイプ（統合） ── */}
