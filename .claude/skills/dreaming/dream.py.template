@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+"""ConsultingOS Dream Pass - Mnimiy @Mnilax 2026-05-15 ローカル実装ベース
+
+Phase 1 雛形: 実行禁止、Phase 2 で API key 設定 + sample 試走後に解禁。
+brand-guardian 4 修正要件 (README.md §3) 全件遵守必須。
+
+出典: Mnimiy @Mnilax 2026-05-15 "73% of my CLAUDE.md was lying to Claude"
+- 6M tokens / 100 sessions / 11 分 / $4.20 / 73% 削除 / 38 行出力 / 12 行 rubric
+"""
+
+import os
+import json
+import glob
+import subprocess
+from pathlib import Path
+from datetime import datetime, timedelta
+
+# IMPORTANT: anthropic SDK は Phase 2 で import 解禁、本雛形では未 import
+# from anthropic import Anthropic
+
+SESSION_DIR = Path.home() / ".claude" / "projects"
+MEMORY_DIR = Path.home() / ".claude" / "memory"
+OUTPUT = MEMORY_DIR / "dream_output.md"
+EXISTING = MEMORY_DIR / "MEMORY.md"
+LAST_RUN_FILE = MEMORY_DIR / "dream_last_run.txt"
+RUBRIC = Path(__file__).parent / "rubric.md.template"
+
+# brand-guardian 要件 4: 30 日超過トリップワイヤー
+TRIP_WIRE_DAYS = 30
+
+
+def check_trip_wire() -> bool:
+    """30 日超過 = brand-guardian 自動 REJECT、即実行禁止"""
+    if not LAST_RUN_FILE.exists():
+        return True
+    last = datetime.fromisoformat(LAST_RUN_FILE.read_text().strip())
+    delta = datetime.now() - last
+    if delta > timedelta(days=TRIP_WIRE_DAYS):
+        print(f"REJECT: 前回 dream pass から {delta.days} 日経過 (>30 日)")
+        print("brand-guardian 規律違反、規律改訂後に再実行")
+        return False
+    return True
+
+
+def gather_sessions(limit: int = 100) -> list[str]:
+    """Phase 1: jsonl 直接送信禁止、文書構造のみ抽出 (brand-guardian 要件 2 選択肢 B)"""
+    sessions = sorted(
+        glob.glob(str(SESSION_DIR / "*" / "sessions" / "*.jsonl")),
+        key=os.path.getmtime,
+        reverse=True,
+    )[:limit]
+
+    transcripts = []
+    for s in sessions:
+        with open(s) as f:
+            msgs = [json.loads(line) for line in f if line.strip()]
+        clean = [m for m in msgs if m.get("type") in ("user", "assistant")]
+        # 機密マスク: 関根さん / 水野さん / N&Y Craft / 財務数値
+        masked = mask_sensitive(clean)
+        transcripts.append("\n".join(json.dumps(m, ensure_ascii=False) for m in masked))
+    return transcripts
+
+
+def mask_sensitive(msgs: list[dict]) -> list[dict]:
+    """brand-guardian 要件 2: 固有名詞 / 財務数値マスク"""
+    import re
+    patterns = [
+        (r"関根さん", "[CLIENT_A]"),
+        (r"水野さん", "[CLIENT_B]"),
+        (r"N&Y Craft", "[CLIENT_A_COMPANY]"),
+        (r"\d+,?\d*\s*万円", "[REDACTED_JPY]"),
+        (r"\$\d+,?\d*[KMB]?", "[REDACTED_USD]"),
+    ]
+    masked = []
+    for m in msgs:
+        s = json.dumps(m, ensure_ascii=False)
+        for pat, repl in patterns:
+            s = re.sub(pat, repl, s)
+        masked.append(json.loads(s))
+    return masked
+
+
+def dream(transcripts: list[str], existing: str) -> str:
+    """Phase 2 で解禁: Anthropic API 呼出 (Opus 4.7 固定、ai-engineer 判定)"""
+    raise NotImplementedError(
+        "Phase 1: API 呼出禁止。Phase 2 で sample 20 sessions $0.84 試走後に解禁"
+    )
+    # Phase 2 実装雛形:
+    # client = Anthropic()
+    # rubric = RUBRIC.read_text()
+    # prompt = (
+    #     rubric + "\n\n"
+    #     + f"Existing memory:\n{existing}\n\n"
+    #     + "100 sessions follow:\n\n"
+    #     + "\n---\n".join(transcripts)
+    # )
+    # response = client.messages.create(
+    #     model="claude-opus-4-7",
+    #     max_tokens=8000,
+    #     messages=[{"role": "user", "content": prompt}],
+    # )
+    # return response.content[0].text
+
+
+def write_diff_only(new_content: str) -> None:
+    """brand-guardian 要件 1: 自動 apply 禁止、diff 提示のみ"""
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(new_content)
+    print(f"\n=== Dream output: {OUTPUT} ===")
+    if EXISTING.exists():
+        subprocess.run(
+            ["git", "diff", "--no-color", "--no-index", str(EXISTING), str(OUTPUT)]
+        )
+    print("\nIMPORTANT: 自動 apply 禁止。user 承認 + Phased Preamble 4 段階後に Edit 実行")
+
+
+def main():
+    if not check_trip_wire():
+        return
+    existing = EXISTING.read_text() if EXISTING.exists() else ""
+    transcripts = gather_sessions(limit=100)
+    print(f"Collected {len(transcripts)} sessions")
+    new = dream(transcripts, existing)
+    write_diff_only(new)
+    LAST_RUN_FILE.write_text(datetime.now().isoformat())
+
+
+if __name__ == "__main__":
+    main()

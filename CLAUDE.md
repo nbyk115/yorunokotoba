@@ -117,3 +117,4 @@
 | 業界別プレイブック（SaaS / D2C / 広告代理店 / 製造業 / 金融） | `.claude/skills/industry-playbooks/` |
 | プロンプトテンプレ集（30 本） | `.claude/skills/prompt-templates/` |
 | 進化ログ・規律違反記録 | `evolution-log.md` |
+| CLAUDE.md 監査 (transcript-driven dream pass、14-30 日サイクル、Mnimiy 流 73% 削除手法) | `.claude/skills/dreaming/README.md` |
