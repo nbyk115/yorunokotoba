@@ -277,6 +277,8 @@ interface ResultProps {
 }
 
 function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
+  const myCharaId = getCharaIdBySign(profile.sign, profile.gender);
+
   const sectionStyle: CSSProperties = {
     padding: '32px 24px',
     textAlign: 'center',
@@ -369,6 +371,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
           pairText={result.pairText}
           pairTitle={result.pairTitle}
           signLabel={`${profile.sign} · ${profile.name}`}
+          fromCharaId={myCharaId}
         />
 
         <div style={dividerStyle} aria-hidden="true" />

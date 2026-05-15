@@ -1,6 +1,7 @@
 import { useRef, type CSSProperties } from 'react';
 import { toPng } from 'html-to-image';
 import { CharaAvatar } from './CharaAvatar';
+import { track } from '@/lib/analytics';
 import type { CompatibilityRank } from '@/features/aura/compatibilityLogic';
 
 type CardTheme = 'rose' | 'gold' | 'lavender';
@@ -14,12 +15,14 @@ interface CompatibilityCardProps {
   pairTitle: string;
   signLabel?: string;
   dateLabel?: string;
+  /** 自分の charaId. シェアテキストに ?from= リンクを埋める（受信者ファネル用） */
+  fromCharaId?: string;
 }
 
 const THEME_GRADIENTS: Record<CardTheme, string> = {
-  rose: 'linear-gradient(135deg, #E8627C, #D4506A)',
-  gold: 'linear-gradient(135deg, #D4A853, #B8893A)',
-  lavender: 'linear-gradient(135deg, #B08ACF, #9068B0)',
+  rose: 'linear-gradient(160deg, #2A1A24 0%, #4A2A35 60%, #6B3245 100%)',
+  gold: 'linear-gradient(160deg, #2A2018 0%, #4A3520 60%, #6B4828 100%)',
+  lavender: 'linear-gradient(160deg, #1F1A2E 0%, #352848 60%, #4D3870 100%)',
 };
 
 const RANK_THEME: Record<CompatibilityRank, CardTheme> = {
@@ -40,13 +43,22 @@ const RANK_PREFIX: Record<CompatibilityRank, string> = {
   growth: '△',
 };
 
-const CARD_SIZE = 1080;
-const DISPLAY_SCALE = 0.32;
-const DISPLAY_SIZE = Math.round(CARD_SIZE * DISPLAY_SCALE);
+const CARD_W = 1080;
+const CARD_H = 1920;
+const DISPLAY_SCALE = 0.18;
+const DISPLAY_W = Math.round(CARD_W * DISPLAY_SCALE);
+const DISPLAY_H = Math.round(CARD_H * DISPLAY_SCALE);
 
 function getDefaultDateLabel(): string {
   const d = new Date();
-  return `${d.getMonth() + 1}.${d.getDate()} ✦`;
+  return `${d.getMonth() + 1}.${d.getDate()}`;
+}
+
+/** 受信者リンク + 招待誘引（K値ドライバー） */
+function buildShareText(pairTitle: string, rankLabel: string, rank: CompatibilityRank, fromCharaId?: string): string {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
+  return `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\n自分の星座でも相性見れるよ\n${inviteUrl} #よるのことば`;
 }
 
 export function CompatibilityCard({
@@ -58,6 +70,7 @@ export function CompatibilityCard({
   pairTitle,
   signLabel,
   dateLabel,
+  fromCharaId,
 }: CompatibilityCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const dateText = dateLabel ?? getDefaultDateLabel();
@@ -68,8 +81,8 @@ export function CompatibilityCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const link = document.createElement('a');
       link.download = 'yorunokotoba-aura.png';
@@ -85,8 +98,8 @@ export function CompatibilityCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const res = await fetch(dataUrl);
       const blob = await res.blob();
@@ -95,11 +108,13 @@ export function CompatibilityCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば 相性占い',
-          text: `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}`,
+          text: buildShareText(pairTitle, rankLabel, rank, fromCharaId),
           files: [file],
         });
+        track('compatibility_share', { rank, surface: 'web_share' });
       } else {
         await handleSave();
+        track('compatibility_share', { rank, surface: 'fallback_save' });
       }
     } catch (err) {
       if (err instanceof Error && err.name !== 'AbortError') {
@@ -109,60 +124,46 @@ export function CompatibilityCard({
   };
 
   const handleXPost = () => {
-    const text = `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\nよるのことば 相性占い`;
-    const url = typeof window !== 'undefined' ? window.location.href : '';
-    const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent('よるのことば')}`;
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
+    const text = `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\n自分の星座でも相性見れるよ\nよるのことば 相性占い`;
+    const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(inviteUrl)}&hashtags=${encodeURIComponent('よるのことば')}`;
     if (typeof window !== 'undefined') {
       window.open(intent, '_blank', 'noopener,noreferrer');
+      track('compatibility_share', { rank, surface: 'x_post' });
     }
   };
 
+  /* ────── カード本体（1080×1920 縦長・IG ストーリーズ）────── */
   const cardStyle: CSSProperties = {
-    width: CARD_SIZE,
-    height: CARD_SIZE,
-    background: '#0D0B0E',
-    borderRadius: 48,
+    width: CARD_W,
+    height: CARD_H,
+    background: THEME_GRADIENTS[theme],
+    borderRadius: 0,
+    padding: '280px 80px 280px',
+    position: 'relative',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 80,
-    gap: 32,
-    position: 'relative',
-    overflow: 'hidden',
-    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
+    gap: 40,
     transform: `scale(${DISPLAY_SCALE})`,
     transformOrigin: 'top left',
   };
 
-  const gradientOverlayStyle: CSSProperties = {
+  const topBarStyle: CSSProperties = {
     position: 'absolute',
-    inset: 0,
-    background: THEME_GRADIENTS[theme],
-    opacity: 0.30,
-    pointerEvents: 'none',
-  };
-
-  const dateBadgeStyle: CSSProperties = {
-    position: 'absolute',
-    top: 64,
-    right: 64,
-    fontFamily: "'Cormorant', serif",
-    fontStyle: 'italic',
+    top: 280,
+    left: 80,
+    right: 80,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     fontSize: 32,
-    fontWeight: 300,
-    color: '#E8C068',
-    letterSpacing: '0.06em',
-  };
-
-  const signBadgeStyle: CSSProperties = {
-    position: 'absolute',
-    top: 64,
-    left: 64,
-    fontFamily: "'Zen Maru Gothic', sans-serif",
-    fontSize: 24,
-    fontWeight: 500,
-    color: 'rgba(240,232,236,0.62)',
+    color: 'rgba(240,232,236,0.6)',
     letterSpacing: '0.08em',
   };
 
@@ -172,9 +173,21 @@ export function CompatibilityCard({
     gap: 32,
   };
 
+  const charaWrapStyle: CSSProperties = {
+    width: 280,
+    height: 280,
+    borderRadius: '50%',
+    background: 'rgba(255,255,255,0.08)',
+    border: '6px solid rgba(255,255,255,0.20)',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
   const separatorStyle: CSSProperties = {
     fontFamily: "'Cormorant', serif",
-    fontSize: 64,
+    fontSize: 96,
     fontWeight: 300,
     color: '#E8C068',
   };
@@ -182,103 +195,97 @@ export function CompatibilityCard({
   const rankBadgeStyle: CSSProperties = {
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 56,
-    fontWeight: 300,
+    fontSize: 140,
+    lineHeight: 1,
+    fontWeight: 400,
     color: RANK_COLOR[rank],
     margin: 0,
     letterSpacing: '0.02em',
+    textShadow: '0 6px 32px rgba(0,0,0,0.4)',
   };
 
   const rankLabelStyle: CSSProperties = {
-    fontSize: 36,
+    fontSize: 56,
     fontWeight: 700,
     color: '#F0E8EC',
     margin: 0,
     letterSpacing: '0.06em',
   };
 
-  const accentLineStyle: CSSProperties = {
-    width: 60,
-    height: 3,
-    background: THEME_GRADIENTS[theme],
-    borderRadius: 2,
-  };
-
   const pairTextStyle: CSSProperties = {
-    fontSize: 28,
+    fontSize: 36,
     fontWeight: 400,
-    color: 'rgba(240,232,236,0.78)',
+    color: 'rgba(240,232,236,0.82)',
     margin: 0,
     textAlign: 'center',
-    lineHeight: 1.7,
-    maxWidth: 840,
+    lineHeight: 1.6,
+    maxWidth: 900,
+    wordBreak: 'keep-all',
+    overflowWrap: 'break-word',
   };
 
   const footerStyle: CSSProperties = {
     position: 'absolute',
-    bottom: 56,
+    bottom: 280,
     left: 0,
     right: 0,
     textAlign: 'center',
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 30,
-    color: '#E8C068',
+    fontSize: 40,
+    color: 'rgba(232, 192, 104, 0.92)',
     fontWeight: 400,
-    letterSpacing: '0.10em',
+    letterSpacing: '0.14em',
   };
 
   const btnBase: CSSProperties = {
-    padding: '10px 20px',
-    borderRadius: 10,
-    fontSize: 13,
+    padding: '12px 24px',
+    borderRadius: 12,
+    fontSize: 14,
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
     cursor: 'pointer',
-    minHeight: 44,
+    minHeight: 48,
     border: 'none',
     transition: 'opacity 0.2s ease',
   };
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <div
         style={{
-          width: DISPLAY_SIZE,
-          height: DISPLAY_SIZE,
+          width: DISPLAY_W,
+          height: DISPLAY_H,
+          margin: '0 auto',
           overflow: 'hidden',
-          borderRadius: Math.round(48 * DISPLAY_SCALE),
-          boxShadow: '0 4px 24px rgba(0,0,0,0.20)',
+          borderRadius: 12,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
           position: 'relative',
         }}
-        aria-label="相性カードプレビュー"
+        aria-label="相性カードプレビュー（縦長 9:16）"
       >
         <div ref={cardRef} style={cardStyle}>
-          <div style={gradientOverlayStyle} aria-hidden="true" />
-
-          <span style={dateBadgeStyle} aria-hidden="true">
-            {dateText}
-          </span>
-
-          {signLabel && (
-            <span style={signBadgeStyle} aria-hidden="true">
-              {signLabel}
-            </span>
-          )}
+          <div style={topBarStyle} aria-hidden="true">
+            <span>{signLabel ?? ''}</span>
+            <span>{dateText}</span>
+          </div>
 
           <div style={charaRowStyle}>
-            <CharaAvatar id={charaIdA} size={180} />
+            <div style={charaWrapStyle}>
+              <CharaAvatar id={charaIdA} size={240} />
+            </div>
             <span style={separatorStyle} aria-hidden="true">×</span>
-            <CharaAvatar id={charaIdB} size={180} />
+            <div style={charaWrapStyle}>
+              <CharaAvatar id={charaIdB} size={240} />
+            </div>
           </div>
 
           <p style={rankBadgeStyle}>{RANK_PREFIX[rank]}</p>
           <p style={rankLabelStyle}>{rankLabel}</p>
-          <div style={accentLineStyle} aria-hidden="true" />
           <p style={pairTextStyle}>{pairText}</p>
 
           <span style={footerStyle} aria-hidden="true">
-            yorunokotoba · よるのことば
+            yorunokotoba
           </span>
         </div>
       </div>
@@ -287,18 +294,31 @@ export function CompatibilityCard({
         style={{
           display: 'flex',
           gap: 8,
-          marginTop: 12,
+          marginTop: 14,
           justifyContent: 'center',
           flexWrap: 'wrap',
         }}
       >
         <button
           type="button"
-          aria-label="画像を保存する"
+          aria-label="シェアする"
           style={{
             ...btnBase,
             background: 'linear-gradient(135deg, var(--rose), var(--pink))',
             color: '#fff',
+          }}
+          onClick={handleShare}
+        >
+          シェアする
+        </button>
+        <button
+          type="button"
+          aria-label="画像を保存"
+          style={{
+            ...btnBase,
+            background: 'var(--card)',
+            color: 'var(--t1)',
+            border: '1px solid var(--border)',
           }}
           onClick={handleSave}
         >
@@ -306,20 +326,7 @@ export function CompatibilityCard({
         </button>
         <button
           type="button"
-          aria-label="リンクをシェアする"
-          style={{
-            ...btnBase,
-            background: 'var(--card)',
-            color: 'var(--t1)',
-            border: '1px solid var(--border)',
-          }}
-          onClick={handleShare}
-        >
-          シェア
-        </button>
-        <button
-          type="button"
-          aria-label="Xに投稿する"
+          aria-label="Xに投稿"
           style={{
             ...btnBase,
             background: 'var(--card)',

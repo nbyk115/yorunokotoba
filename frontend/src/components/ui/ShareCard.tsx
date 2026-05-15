@@ -3,13 +3,6 @@ import { toPng } from 'html-to-image';
 import { CharaAvatar } from './CharaAvatar';
 import { track } from '@/lib/analytics';
 
-/** シェアテキストに添える招待誘引 + URL（K値計測用） */
-function buildShareText(title: string, subtitle: string): string {
-  const url = typeof window !== 'undefined' ? window.location.origin : '';
-  const head = subtitle ? `${title} · ${subtitle}` : title;
-  return `${head}\n友達の星座を入れると相性が見れるよ\n${url} #よるのことば`;
-}
-
 type CardTheme = 'rose' | 'gold' | 'lavender';
 
 interface ShareCardProps {
@@ -18,33 +11,37 @@ interface ShareCardProps {
   body: string;
   charaId?: string;
   theme?: CardTheme;
-  /** トップ右に出す日付ラベル（例: "5.8 ✦"）。未指定時は現在日付 */
+  /** トップ右に出す日付ラベル. 未指定時は現在日付 */
   dateLabel?: string;
-  /** トップ左に出すコンテキスト（例: "蠍座 · みおの夜"）。未指定なら非表示 */
+  /** トップ左の星座+名前. 例: "蠍座 · みおの夜" */
   signLabel?: string;
-  /** ラッキーナンバー（例: 12）。指定時は大型 Cormorant italic で中央上部に */
-  luckyNumber?: number | string;
-  /** ラッキーナンバーの注釈（例: "Lucky"）。luckyNumber と併用 */
-  luckyNumberLabel?: string;
-  /** 月相絵文字（例: 🌖）。トップ左の signLabel 下に併記 */
+  /** 月相絵文字 (任意) */
   moonPhase?: string;
 }
 
 function getDefaultDateLabel(): string {
   const d = new Date();
-  return `${d.getMonth() + 1}.${d.getDate()} ✦`;
+  return `${d.getMonth() + 1}.${d.getDate()}`;
+}
+
+function buildShareText(title: string, subtitle: string): string {
+  const url = typeof window !== 'undefined' ? window.location.origin : '';
+  const head = subtitle ? `${title} · ${subtitle}` : title;
+  return `${head}\n友達の星座を入れると相性が見れるよ\n${url} #よるのことば`;
 }
 
 const THEME_GRADIENTS: Record<CardTheme, string> = {
-  rose: 'linear-gradient(135deg, #E8627C, #D4506A)',
-  gold: 'linear-gradient(135deg, #D4A853, #B8893A)',
-  lavender: 'linear-gradient(135deg, #B08ACF, #9068B0)',
+  rose: 'linear-gradient(160deg, #2A1A24 0%, #4A2A35 60%, #6B3245 100%)',
+  gold: 'linear-gradient(160deg, #2A2018 0%, #4A3520 60%, #6B4828 100%)',
+  lavender: 'linear-gradient(160deg, #1F1A2E 0%, #352848 60%, #4D3870 100%)',
 };
 
-const CARD_SIZE = 1080;
-/** display 上の縮小比率 */
-const DISPLAY_SCALE = 0.32;
-const DISPLAY_SIZE = Math.round(CARD_SIZE * DISPLAY_SCALE);
+/** Instagram ストーリーズ標準 9:16. ICP は IG ストーリー世代 */
+const CARD_W = 1080;
+const CARD_H = 1920;
+const DISPLAY_SCALE = 0.18;
+const DISPLAY_W = Math.round(CARD_W * DISPLAY_SCALE);
+const DISPLAY_H = Math.round(CARD_H * DISPLAY_SCALE);
 
 export function ShareCard({
   title,
@@ -54,8 +51,6 @@ export function ShareCard({
   theme = 'rose',
   dateLabel,
   signLabel,
-  luckyNumber,
-  luckyNumberLabel,
   moonPhase,
 }: ShareCardProps) {
   const dateText = dateLabel ?? getDefaultDateLabel();
@@ -64,18 +59,17 @@ export function ShareCard({
   const handleSave = async () => {
     if (!cardRef.current) return;
     try {
-      // フル解像度でキャプチャするため scale を指定
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const link = document.createElement('a');
       link.download = 'yorunokotoba-share.png';
       link.href = dataUrl;
       link.click();
     } catch (err) {
-      console.error('ShareCard: PNG 生成に失敗しました', err);
+      console.error('ShareCard: PNG 生成に失敗', err);
     }
   };
 
@@ -84,8 +78,8 @@ export function ShareCard({
     try {
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 1,
-        width: CARD_SIZE,
-        height: CARD_SIZE,
+        width: CARD_W,
+        height: CARD_H,
       });
       const res = await fetch(dataUrl);
       const blob = await res.blob();
@@ -104,246 +98,207 @@ export function ShareCard({
       }
     } catch (err) {
       if (err instanceof Error && err.name !== 'AbortError') {
-        console.error('ShareCard: シェアに失敗しました', err);
+        console.error('ShareCard: シェア失敗', err);
       }
     }
   };
 
-  /* ────── カード本体スタイル（1080×1080px 固定） ────── */
+  /* ────── カード本体（1080×1920 縦長・Instagram ストーリーズ）────── */
   const cardStyle: CSSProperties = {
-    width: CARD_SIZE,
-    height: CARD_SIZE,
-    background: '#0D0B0E',
-    borderRadius: 48,
+    width: CARD_W,
+    height: CARD_H,
+    background: THEME_GRADIENTS[theme],
+    borderRadius: 0,
+    // IG ストーリー上下安全領域 280px（重要情報を置かない）
+    padding: '280px 80px 280px',
+    position: 'relative',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 80,
-    gap: 32,
-    position: 'relative',
-    overflow: 'hidden',
-    fontFamily: "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
-    // 縮小表示用
+    gap: 48,
     transform: `scale(${DISPLAY_SCALE})`,
     transformOrigin: 'top left',
   };
 
-  const gradientOverlayStyle: CSSProperties = {
+  /* ────── ヘッダー（safe area 内）────── */
+  const topBarStyle: CSSProperties = {
     position: 'absolute',
-    inset: 0,
-    background: THEME_GRADIENTS[theme],
-    opacity: 0.30,
-    pointerEvents: 'none',
-  };
-
-  const dateBadgeStyle: CSSProperties = {
-    position: 'absolute',
-    top: 64,
-    right: 64,
-    fontFamily: "'Cormorant', serif",
-    fontStyle: 'italic',
-    fontSize: 32,
-    fontWeight: 300,
-    color: '#E8C068',
-    letterSpacing: '0.06em',
-  };
-
-  const signBadgeStyle: CSSProperties = {
-    position: 'absolute',
-    top: 64,
-    left: 64,
+    top: 280,
+    left: 80,
+    right: 80,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     fontFamily: "'Zen Maru Gothic', sans-serif",
-    fontSize: 24,
-    fontWeight: 500,
-    color: 'rgba(240,232,236,0.62)',
+    fontSize: 32,
+    color: 'rgba(240,232,236,0.6)',
     letterSpacing: '0.08em',
   };
 
+  /* ────── キャララッパー（中央上部）────── */
+  const charaWrapStyle: CSSProperties = {
+    width: 360,
+    height: 360,
+    borderRadius: '50%',
+    background: 'rgba(255,255,255,0.08)',
+    border: '6px solid rgba(255,255,255,0.20)',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  /* ────── ランク英字（H1・縦長で巨大化、ただし極差3倍以内）────── */
   const titleStyle: CSSProperties = {
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontWeight: 300,
-    fontSize: 64,
-    lineHeight: 1.3,
+    fontWeight: 400,
+    fontSize: 140,
+    lineHeight: 1.1,
+    color: '#F0E8EC',
+    textAlign: 'center',
+    margin: 0,
+    letterSpacing: '0.01em',
+    textShadow: '0 6px 32px rgba(0,0,0,0.4)',
+    maxWidth: 920,
+    overflowWrap: 'break-word',
+  };
+
+  /* ────── タイプ識別子（H2）────── */
+  const subtitleStyle: CSSProperties = {
+    fontSize: 56,
+    fontWeight: 700,
     color: '#F0E8EC',
     margin: 0,
     textAlign: 'center',
-    letterSpacing: '0.01em',
+    letterSpacing: '0.04em',
+    maxWidth: 920,
   };
 
-  const subtitleStyle: CSSProperties = {
-    fontSize: 36,
-    fontWeight: 500,
-    color: 'rgba(240,232,236,0.75)',
-    margin: 0,
-    textAlign: 'center',
-  };
-
+  /* ────── 1 行詩（Body）────── */
   const bodyStyle: CSSProperties = {
-    fontSize: 30,
+    fontSize: 42,
     fontWeight: 400,
-    color: 'rgba(240,232,236,0.68)',
+    color: 'rgba(240,232,236,0.82)',
     margin: 0,
     textAlign: 'center',
-    lineHeight: 1.7,
-    maxWidth: 840,
+    lineHeight: 1.6,
+    maxWidth: 900,
+    wordBreak: 'keep-all',
+    overflowWrap: 'break-word',
   };
 
-  const accentLineStyle: CSSProperties = {
-    width: 60,
-    height: 3,
-    background: THEME_GRADIENTS[theme],
-    borderRadius: 2,
-  };
-
+  /* ────── footer（ブランド・safe area 内）────── */
   const footerStyle: CSSProperties = {
     position: 'absolute',
-    bottom: 56,
+    bottom: 280,
     left: 0,
     right: 0,
     textAlign: 'center',
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 30,
-    color: '#E8C068',
+    fontSize: 40,
+    color: 'rgba(232, 192, 104, 0.92)',
     fontWeight: 400,
-    letterSpacing: '0.10em',
+    letterSpacing: '0.14em',
   };
 
-  /* ────── ボタン共通スタイル ────── */
+  /* ────── ボタン共通 ────── */
   const btnBase: CSSProperties = {
-    padding: '10px 20px',
-    borderRadius: 10,
-    fontSize: 13,
+    padding: '12px 24px',
+    borderRadius: 12,
+    fontSize: 14,
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
     cursor: 'pointer',
-    minHeight: 44,
+    minHeight: 48,
     border: 'none',
     transition: 'opacity 0.2s ease',
   };
 
   return (
-    <div>
-      {/* 縮小表示ラッパー */}
+    <div style={{ width: '100%' }}>
+      {/* 縮小プレビュー: 9:16 縦長 (Instagram ストーリーズ標準) */}
       <div
         style={{
-          width: DISPLAY_SIZE,
-          height: DISPLAY_SIZE,
+          width: DISPLAY_W,
+          height: DISPLAY_H,
+          margin: '0 auto',
           overflow: 'hidden',
-          borderRadius: Math.round(48 * DISPLAY_SCALE),
-          boxShadow: '0 4px 24px rgba(0,0,0,0.20)',
+          borderRadius: 12,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
           position: 'relative',
         }}
-        aria-label="シェアカードプレビュー"
+        aria-label="シェアカードプレビュー（縦長 9:16）"
       >
         <div ref={cardRef} style={cardStyle}>
-          {/* グラデーションオーバーレイ */}
-          <div style={gradientOverlayStyle} aria-hidden="true" />
-
-          {/* トップ右: 日付（月+日） */}
-          <span style={dateBadgeStyle} aria-hidden="true">
-            {dateText}
-          </span>
-
-          {/* トップ左: 星座+名前（任意） + 月相絵文字（任意） */}
-          {signLabel && (
-            <span style={signBadgeStyle} aria-hidden="true">
-              {signLabel}
-              {moonPhase && <span style={{ marginLeft: 12, fontSize: 32 }}>{moonPhase}</span>}
+          {/* ヘッダー: 星座+名前（左）/ 日付（右）*/}
+          <div style={topBarStyle} aria-hidden="true">
+            <span>
+              {signLabel ?? ''}
+              {moonPhase && <span style={{ marginLeft: 12, fontSize: 36 }}>{moonPhase}</span>}
             </span>
-          )}
+            <span>{dateText}</span>
+          </div>
 
-          {/* 夜のキャラ */}
-          {charaId && <CharaAvatar id={charaId} size={180} />}
-
-          {/* ラッキーナンバー大型表示（任意） — Spotify Wrapped 型の "あなただけの数字" */}
-          {luckyNumber !== undefined && (
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 0,
-                margin: '8px 0',
-              }}
-              aria-hidden="true"
-            >
-              {luckyNumberLabel && (
-                <span
-                  style={{
-                    fontFamily: "'Cormorant', serif",
-                    fontStyle: 'italic',
-                    fontSize: 28,
-                    color: '#E8C068',
-                    letterSpacing: '0.15em',
-                    textTransform: 'uppercase',
-                    fontWeight: 300,
-                  }}
-                >
-                  {luckyNumberLabel}
-                </span>
-              )}
-              <span
-                style={{
-                  fontFamily: "'Cormorant', serif",
-                  fontStyle: 'italic',
-                  fontSize: 180,
-                  fontWeight: 300,
-                  lineHeight: 1,
-                  color: '#F0E8EC',
-                  textShadow: '0 4px 32px rgba(232, 192, 104, 0.3)',
-                  letterSpacing: '-0.04em',
-                }}
-              >
-                {luckyNumber}
-              </span>
+          {/* キャラ */}
+          {charaId && (
+            <div style={charaWrapStyle}>
+              <CharaAvatar id={charaId} size={320} />
             </div>
           )}
 
-          {/* テキスト群 */}
+          {/* ランク英字 */}
           <p style={titleStyle}>{title}</p>
-          <div style={accentLineStyle} aria-hidden="true" />
-          <p style={subtitleStyle}>{subtitle}</p>
-          <p style={bodyStyle}>{body}</p>
 
-          {/* フッター（gold Cormorant italic 30px・センタリング） */}
+          {/* タイプ識別子 */}
+          {subtitle && <p style={subtitleStyle}>{subtitle}</p>}
+
+          {/* 1 行詩 */}
+          {body && <p style={bodyStyle}>{body}</p>}
+
+          {/* footer */}
           <span style={footerStyle} aria-hidden="true">
-            yorunokotoba · よるのことば
+            yorunokotoba
           </span>
         </div>
       </div>
 
-      {/* アクションボタン群 */}
+      {/* アクションボタン群（プライマリ = シェア、セカンダリ = 保存）*/}
       <div
         style={{
           display: 'flex',
           gap: 8,
-          marginTop: 12,
+          marginTop: 14,
           justifyContent: 'center',
         }}
       >
         <button
+          type="button"
           style={{
             ...btnBase,
             background: 'linear-gradient(135deg, var(--rose), var(--pink))',
             color: '#fff',
           }}
-          onClick={handleSave}
+          onClick={handleShare}
         >
-          画像を保存
+          シェアする
         </button>
         <button
+          type="button"
           style={{
             ...btnBase,
             background: 'var(--card)',
             color: 'var(--t1)',
             border: '1px solid var(--border)',
           }}
-          onClick={handleShare}
+          onClick={handleSave}
         >
-          シェア
+          画像を保存
         </button>
       </div>
     </div>
