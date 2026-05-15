@@ -59,6 +59,32 @@ function AppInner() {
       .catch((err) => trackException(`auth_email_link_error: ${String(err)}`, false));
   }, []);
 
+  // 課金成功後リダイレクト検出: ?premium=1 → GA4 purchase 発火 + URL クリーン
+  // UnivaPay success_url = ${origin}/?premium=1 で設定（api/subscription/checkout.ts）
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const premium = params.get('premium');
+    if (premium === '1') {
+      // GA4 e-commerce 標準スキーマ
+      track('purchase', {
+        transaction_id: `txn_${Date.now()}`,
+        value: 980,
+        currency: 'JPY',
+        items: [
+          {
+            item_id: 'premium_monthly',
+            item_name: 'よるのことば Premium 月額',
+            price: 980,
+            quantity: 1,
+          },
+        ],
+      });
+      const url = new URL(window.location.href);
+      url.searchParams.delete('premium');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, []);
+
   useEffect(() => {
     if (profile) {
       const s = tickStreak();
