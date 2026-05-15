@@ -6,6 +6,7 @@ node_modules/
 *.key
 .DS_Store
 .claude/worktrees/
+.claude/memory/
 
 # Build artifacts
 dist/
