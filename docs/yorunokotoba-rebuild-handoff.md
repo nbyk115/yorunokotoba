@@ -19,9 +19,10 @@ yorunokotoba は claude.ai の design 機能で作った初期版（一貫した
 
 ## 次セッションの起点
 
+0. 実行体制（オーナー指示・厳守）: 最新の ConsultingOS（distribute-os-skills.sh で同期済）を全起動する。グローバルスキル（~/.claude/skills/）・CLAUDE.md・全ハードルールに全て従う。エージェントは product-manager / strategy-lead / creative-director / ux-designer / frontend-dev / content-strategist / brand-guardian / ai-engineer を役割に応じて起動し、委任は §6 テンプレート（creative-playbook §2.5 + 識別性ゲートの必読、参照取得 → 競合比較 → プロダクト反映 → 識別性ゲート → 2段階検証のフロー）を厳守する
 1. 本 handoff を Read
-2. Lazyweb MCP（前セッションでインストール済、次セッションで有効化）の `lazyweb_search` で「占いアプリ 女性向け UI」のデザイン参照を取得
-3. Wave L1 から着手
+2. Lazyweb MCP（前セッションでインストール済、次セッションで有効化）の `lazyweb_search` で「占いアプリ 女性向け UI」のデザイン参照を取得。ビジュアル要素は Canva MCP で実制作
+3. Wave L1 から着手。各 PR でデザインチームの手動アラインチェックを実施
 
 ## 1. 20PR の成果: 活かす / 捨てる仕分け
 
