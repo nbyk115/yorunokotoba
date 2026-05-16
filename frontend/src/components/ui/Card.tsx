@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode, MouseEvent } from 'react';
 import React from 'react';
 
 /**
- * Card プリミティブ — DESIGN.md 正典準拠（Phase 3）
+ * Card プリミティブ: DESIGN.md 正典準拠（Phase 3）
  *
  * variant='primary'  : メイン機能カード。1画面に1枚が原則。
  *   background   : var(--card-primary)
