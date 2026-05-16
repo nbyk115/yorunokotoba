@@ -417,6 +417,29 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </p>
         </Card>
 
+        {/* カード1.5: あなたの核（誕生数メッセージ） */}
+        {result.lifePathMessage && (
+          <Card
+            className="slide-up-1"
+            style={{ margin: '0 16px 12px' }}
+          >
+            <h4
+              style={{
+                fontSize: 'var(--fs-h3)',
+                fontWeight: 700,
+                color: 'var(--t3)',
+                marginBottom: 10,
+                letterSpacing: '0.06em',
+              }}
+            >
+              あなたの核
+            </h4>
+            <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t2)', lineHeight: 1.85 }}>
+              {result.lifePathMessage}
+            </p>
+          </Card>
+        )}
+
         {/* カード2: 恋愛・つながり */}
         <Card
           className="slide-up-1"
