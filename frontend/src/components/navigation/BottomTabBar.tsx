@@ -60,10 +60,10 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
               transition: 'color var(--anim-hover)',
             }}
           >
-            <span style={{ fontSize: 22, lineHeight: 1 }} aria-hidden="true">
+            <span style={{ fontSize: 'var(--fs-h1)', lineHeight: 1 }} aria-hidden="true">
               {tab.icon}
             </span>
-            <span style={{ fontSize: 11, fontWeight: 700 }}>{tab.label}</span>
+            <span style={{ fontSize: 'var(--fs-micro)', fontWeight: 700 }}>{tab.label}</span>
           </button>
         );
       })}

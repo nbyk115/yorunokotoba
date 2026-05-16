@@ -11,7 +11,11 @@
 | `--blush` | `#F2A0B0` | Secondary accent |
 | `--lavender` | `#B08ACF` | Tertiary accent |
 | `--gold` | `#D4A853` | Premium, highlight |
-| `--card` | `rgba(255,255,255,0.65)` | Card background |
+| `--card` | `rgba(255,255,255,0.92)` | Card background (migration alias for card-secondary) |
+| `--card-primary` | `rgba(255,255,255,0.96)` | Primary card background (main content card, 1 per screen) |
+| `--card-secondary` | `rgba(255,255,255,0.62)` | Secondary card background (sub cards, list items) |
+| `--border-primary` | `rgba(58,40,48,0.10)` | Primary card border |
+| `--border-secondary` | `rgba(58,40,48,0.05)` | Secondary card border |
 | `--card-solid` | `#fff` | Card background solid |
 | `--border` | `rgba(180,140,140,0.12)` | Border |
 | `--t1` | `#3A2830` | Text primary |
@@ -20,7 +24,9 @@
 | `--t4` | `rgba(58,40,48,0.40)` | Text quaternary |
 | `--grad` | `linear-gradient(135deg, #E8627C, #D4506A)` | Primary gradient |
 | `--grad2` | `linear-gradient(135deg, #E8627C, #B08ACF)` | Secondary gradient |
-| `--shadow` | `0 2px 16px rgba(180,100,120,0.08)` | Default shadow |
+| `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
+| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 22px rgba(180,100,120,0.12)` | Primary card shadow |
+| `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 10px rgba(180,100,120,0.06)` | Secondary card shadow |
 
 ### Dark Theme (`[data-theme="dark"]`)
 | Token | Value | Usage |
@@ -31,12 +37,18 @@
 | `--blush` | `#D4809A` | Secondary accent |
 | `--lavender` | `#C4A0E0` | Tertiary accent |
 | `--gold` | `#E8C068` | Premium, highlight |
-| `--card` | `rgba(28,22,30,0.85)` | Card background |
+| `--card` | `rgba(28,22,30,0.55)` | Card background (migration alias for card-secondary) |
+| `--card-primary` | `rgba(34,27,37,0.92)` | Primary card background |
+| `--card-secondary` | `rgba(28,22,30,0.55)` | Secondary card background |
+| `--border-primary` | `rgba(240,232,236,0.12)` | Primary card border |
+| `--border-secondary` | `rgba(240,232,236,0.06)` | Secondary card border |
 | `--card-solid` | `rgb(28,22,30)` | Card background solid |
 | `--t1` | `#F0E8EC` | Text primary |
 | `--t2` | `rgba(240,232,236,0.75)` | Text secondary |
 | `--t3` | `rgba(240,232,236,0.68)` | Text tertiary |
-| `--shadow` | `0 2px 16px rgba(0,0,0,0.25)` | Default shadow |
+| `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
+| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 28px rgba(0,0,0,0.45)` | Primary card shadow |
+| `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.30)` | Secondary card shadow |
 
 ### Semantic
 | Color | Usage |
@@ -104,6 +116,14 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 | Tag / Badge | 20px (pill) |
 | Avatar | 50% (circle) |
 | Modal / Sheet | 24px (top corners) |
+
+## ダークファースト・ライティング
+
+よるのことばは time-of-day モードの大半が夜色背景で表示される。暗背景では黒い drop-shadow が不可視になり立体感が失われるため、立体表現の主役は「上端の inset ハイライト線」とする。光源は常に画面上方に固定し、カード上辺へ内側から 1px の明るい線（dark: rgba(255,255,255,0.07)、light: rgba(255,255,255,0.6)）を入れる。外側影は輪郭づけ程度に弱く保ち、主役カードのみ rose 系のごく淡いグローで浮きを補強する。影の良し悪しは「重さ」ではなく「光源との整合」で判断する。--shadow-card-primary / --shadow-card-secondary を必ず使い、コンポーネントで影値を直書きしない。
+
+## 装飾とアイコン方針
+
+装飾は「深夜ラジオ × 姉貴分 × 占い師」のトーンに従い、足し算ではなく引き算で設計する。Cormorant はヒーロー英字（--fs-hero-en）と占い結果中の引用句のみに限定し、見出し・本文・caption には使わない。アイコンは線幅 1.5px 前後の細線スタイルで統一し、塗りつぶしアイコンは active 状態のタブのみに許容する。絵文字を UI 部品として常用しない。装飾要素（パーティクル・グロー・グラデーション）は主役カードと CTA に集約し、サブカードや一覧には載せない。1画面の装飾の主役は1つに絞り、視線が占い結果へ向かう導線を最優先する。
 
 ## Components
 

@@ -87,7 +87,7 @@ export function FtueOverlay({ onComplete }: FtueOverlayProps) {
         <h2
           id="ftue-title"
           style={{
-            fontSize: 20,
+            fontSize: 'var(--fs-h1)',
             fontWeight: 700,
             color: 'var(--rose)',
             marginBottom: 12,
@@ -95,7 +95,7 @@ export function FtueOverlay({ onComplete }: FtueOverlayProps) {
         >
           {current.title}
         </h2>
-        <p style={{ fontSize: 14, color: 'var(--t2)', lineHeight: 1.8 }}>{current.body}</p>
+        <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t2)', lineHeight: 1.8 }}>{current.body}</p>
 
         <div
           style={{

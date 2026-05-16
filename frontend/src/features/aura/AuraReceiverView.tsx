@@ -65,7 +65,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   const eyebrowStyle: CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--lavender)',
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
@@ -73,7 +73,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   };
 
   const h2Style: CSSProperties = {
-    fontSize: 18,
+    fontSize: 'var(--fs-h2)',
     fontWeight: 700,
     color: 'var(--t1)',
     margin: '0 0 8px',
@@ -85,14 +85,14 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
     alignItems: 'center',
     gap: 12,
     padding: 16,
-    background: 'var(--card)',
+    background: 'var(--card-secondary)',
     border: '1px solid var(--border)',
     borderRadius: 14,
     marginBottom: 24,
   };
 
   const fieldStyle: CSSProperties = {
-    background: 'var(--card)',
+    background: 'var(--card-secondary)',
     border: '1px solid var(--border)',
     borderRadius: 14,
     padding: '14px 16px',
@@ -100,7 +100,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   };
 
   const labelStyle: CSSProperties = {
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--t3)',
     letterSpacing: '0.06em',
     margin: '0 0 6px',
@@ -114,7 +114,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
     background: 'transparent',
     border: 'none',
     color: 'var(--t1)',
-    fontSize: 15,
+    fontSize: 'var(--fs-body)',
     fontFamily: 'var(--font-heading)',
     outline: 'none',
     cursor: 'pointer',
@@ -134,7 +134,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
     border: `1px solid ${active ? 'var(--rose)' : 'var(--border)'}`,
     background: active ? 'rgba(240, 128, 154, 0.12)' : 'transparent',
     color: active ? 'var(--rose)' : 'var(--t2)',
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: 'pointer',
     transition: 'all 200ms ease',
@@ -149,7 +149,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
             style={{
               fontFamily: 'var(--font-accent)',
               fontStyle: 'italic',
-              fontSize: 56,
+              fontSize: 'var(--fs-hero-en)',
               fontWeight: 300,
               margin: '0 0 4px',
               color:
@@ -164,7 +164,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           </p>
           <p
             style={{
-              fontSize: 18,
+              fontSize: 'var(--fs-h2)',
               fontWeight: 700,
               color: 'var(--t1)',
               margin: '0 0 16px',
@@ -173,12 +173,12 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           >
             {result.rankLabel}
           </p>
-          <p style={{ fontSize: 14, color: 'var(--t2)', margin: '0 0 20px' }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t2)', margin: '0 0 20px' }}>
             {result.pairTitle}
           </p>
           <p
             style={{
-              fontSize: 14,
+              fontSize: 'var(--fs-body)',
               color: 'var(--t1)',
               lineHeight: 1.9,
               margin: '0 0 32px',
@@ -199,7 +199,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
 
           <div style={{ height: 1, background: 'var(--border)', margin: '24px auto', maxWidth: 240 }} />
 
-          <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 12 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', marginBottom: 12 }}>
             あなたの星座占いもやってみる？
           </p>
           <button
@@ -211,7 +211,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
               border: 'none',
               borderRadius: 12,
               color: '#fff',
-              fontSize: 14,
+              fontSize: 'var(--fs-body)',
               fontWeight: 700,
               cursor: 'pointer',
               fontFamily: 'var(--font-heading)',
@@ -244,10 +244,10 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
         <div style={fromInfoStyle}>
           <CharaAvatar id={fromCharaId} size={48} />
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, color: 'var(--t3)', margin: '0 0 4px' }}>
+            <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', margin: '0 0 4px' }}>
               送ってくれた人
             </p>
-            <p style={{ fontSize: 13, color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
               {fromChara?.name ?? 'あの人'}が、あなたとの
               <br />
               相性を調べています

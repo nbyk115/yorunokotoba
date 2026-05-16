@@ -168,10 +168,10 @@ class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
             margin: 20,
           }}
         >
-          <p style={{ color: 'var(--rose)', fontWeight: 700, fontSize: 14 }}>
+          <p style={{ color: 'var(--rose)', fontWeight: 700, fontSize: 'var(--fs-body)' }}>
             ごめんね、表示でうまくいかなかったみたい
           </p>
-          <p style={{ fontSize: 11, color: 'var(--t3)', marginTop: 6, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', marginTop: 6, lineHeight: 1.6 }}>
             再読み込みすると直ることが多いよ。
           </p>
           <button

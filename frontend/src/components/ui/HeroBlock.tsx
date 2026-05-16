@@ -53,7 +53,7 @@ export function HeroBlock({
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
     fontWeight: 300,
-    fontSize: isCompact ? 11 : 13,
+    fontSize: isCompact ? 'var(--fs-micro)' : 'var(--fs-caption)',
     lineHeight: 1.5,
     color: 'var(--t3)',
     opacity: 0.7,
@@ -64,7 +64,7 @@ export function HeroBlock({
   const subtitleStyle: CSSProperties = {
     fontFamily: 'var(--font-heading)',
     fontWeight: 400,
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     lineHeight: 1.5,
     color: 'var(--t3)',
     margin: 0,

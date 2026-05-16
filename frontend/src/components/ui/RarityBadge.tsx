@@ -21,7 +21,7 @@ export function RarityBadge({ rarity }: RarityBadgeProps) {
         borderRadius: 'var(--r-tag)',
         background: s.bg,
         color: s.fg,
-        fontSize: 10,
+        fontSize: 'var(--fs-micro)',
         fontWeight: 800,
         letterSpacing: 1,
       }}

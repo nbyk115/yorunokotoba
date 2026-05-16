@@ -89,7 +89,7 @@ export function RitualButton({
     gap: 8,
     borderRadius: 'var(--r-button)',
     padding: '14px 28px',
-    fontSize: 16,
+    fontSize: 'var(--fs-h3)',
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
     cursor: disabled ? 'not-allowed' : isAnimating ? 'pointer' : 'pointer',
@@ -115,7 +115,7 @@ export function RitualButton({
   const moonStyle: CSSProperties = {
     position: 'absolute',
     right: 14,
-    fontSize: 16,
+    fontSize: 'var(--fs-h3)',
     opacity: moonProgress,
     transform: `scale(${moonProgress})`,
     transition: `opacity ${PHASE_DURATIONS.moon}ms var(--ritual-easing), transform ${PHASE_DURATIONS.moon}ms var(--ritual-easing)`,

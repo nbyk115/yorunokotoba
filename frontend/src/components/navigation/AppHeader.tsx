@@ -50,7 +50,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
             border: '1px solid var(--border)',
             borderRadius: 'var(--r-tag)',
             padding: '6px 12px',
-            fontSize: 16,
+            fontSize: 'var(--fs-h3)',
             cursor: 'pointer',
             color: 'var(--t1)',
             minHeight: 44,
@@ -73,7 +73,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
           border: '1px solid var(--border)',
           borderRadius: 'var(--r-tag)',
           padding: '6px 12px',
-          fontSize: 16,
+          fontSize: 'var(--fs-h3)',
           cursor: 'pointer',
           color: 'var(--t1)',
           minHeight: 44,
@@ -85,7 +85,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
       </button>
       <h1
         style={{
-          fontSize: 22,
+          fontSize: 'var(--fs-h1)',
           fontWeight: 700,
           color: 'var(--rose)',
           letterSpacing: 2,
@@ -95,7 +95,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
         {title}
       </h1>
       {subtitle && (
-        <p style={{ color: 'var(--t2)', fontSize: 12, marginTop: 4 }}>{subtitle}</p>
+        <p style={{ color: 'var(--t2)', fontSize: 'var(--fs-caption)', marginTop: 4 }}>{subtitle}</p>
       )}
     </header>
   );

@@ -78,7 +78,7 @@ function ActEyebrow({ label }: { label: string }) {
         style={{
           fontFamily: 'var(--font-accent)',
           fontStyle: 'italic',
-          fontSize: 12,
+          fontSize: 'var(--fs-caption)',
           color: 'var(--gold)',
           letterSpacing: '0.32em',
           margin: 0,
@@ -189,7 +189,7 @@ function ConstellationReveal({ color }: { color: string }) {
           position: 'absolute',
           bottom: '30%',
           color: 'rgba(240, 232, 236, 0.65)',
-          fontSize: 13,
+          fontSize: 'var(--fs-caption)',
           fontFamily: 'var(--font-accent)',
           fontStyle: 'italic',
           letterSpacing: '0.12em',
@@ -295,7 +295,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           <p
             style={{
               fontFamily: 'var(--font-accent)',
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontStyle: 'italic',
               color: 'var(--t3)',
               letterSpacing: '0.1em',
@@ -327,7 +327,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* rank-jp */}
           <p
             style={{
-              fontSize: 14,
+              fontSize: 'var(--fs-body)',
               fontWeight: 700,
               color: 'var(--t2)',
               letterSpacing: '0.12em',
@@ -345,7 +345,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* chara-name */}
           <p
             style={{
-              fontSize: 15,
+              fontSize: 'var(--fs-body)',
               fontWeight: 700,
               color: 'var(--t1)',
               marginTop: 12,
@@ -357,7 +357,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* chara-sub（タイプ識別子・MBTI 風ラベル） */}
           <p
             style={{
-              fontSize: 11,
+              fontSize: 'var(--fs-micro)',
               color: 'var(--t3)',
               marginTop: 4,
               letterSpacing: '0.04em',
@@ -369,7 +369,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* summary */}
           <p
             style={{
-              fontSize: 14,
+              fontSize: 'var(--fs-body)',
               color: 'var(--t2)',
               lineHeight: 1.9,
               marginTop: 12,
@@ -383,7 +383,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           {/* AI 免責（Hero 直下に配置・景表法対応） */}
           <p
             style={{
-              fontSize: 11,
+              fontSize: 'var(--fs-micro)',
               color: 'var(--t3)',
               textAlign: 'center',
               margin: '14px 0 0',
@@ -407,7 +407,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <h4
             style={{
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               fontWeight: 700,
               color: 'var(--lavender)',
               marginBottom: 10,
@@ -415,7 +415,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             今夜のエネルギー
           </h4>
-          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.trait}
           </p>
         </Card>
@@ -427,7 +427,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <h4
             style={{
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               fontWeight: 700,
               color: 'var(--rose)',
               marginBottom: 10,
@@ -435,10 +435,10 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             恋愛・つながり
           </h4>
-          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.love}
           </p>
-          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyLove}
           </p>
         </Card>
@@ -450,7 +450,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <h4
             style={{
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               fontWeight: 700,
               color: 'var(--gold)',
               marginBottom: 10,
@@ -458,10 +458,10 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             仕事・才能
           </h4>
-          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.work}
           </p>
-          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyWork}
           </p>
         </Card>
@@ -473,7 +473,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <h4
             style={{
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               fontWeight: 700,
               color: '#5BA87C',
               marginBottom: 10,
@@ -481,10 +481,10 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             健康・からだ
           </h4>
-          <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.85 }}>
+          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
             {result.personality.health}
           </p>
-          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyHealth}
           </p>
         </Card>
@@ -506,14 +506,14 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           <div
             style={{
               padding: '16px 14px',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               borderRadius: 14,
-              border: '1px solid var(--border)',
+              border: '1px solid var(--border-secondary)',
             }}
           >
             <p
               style={{
-                fontSize: 11,
+                fontSize: 'var(--fs-micro)',
                 fontWeight: 700,
                 color: 'var(--t3)',
                 letterSpacing: '0.08em',
@@ -522,21 +522,21 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             >
               🌙 今夜のいい時間帯
             </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.time}
             </p>
           </div>
           <div
             style={{
               padding: '16px 14px',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               borderRadius: 14,
-              border: '1px solid var(--border)',
+              border: '1px solid var(--border-secondary)',
             }}
           >
             <p
               style={{
-                fontSize: 11,
+                fontSize: 'var(--fs-micro)',
                 fontWeight: 700,
                 color: 'var(--t3)',
                 letterSpacing: '0.08em',
@@ -545,7 +545,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             >
               ひといき
             </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.risk}
             </p>
           </div>
@@ -555,7 +555,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         <Card style={{ margin: '0 16px 12px' }}>
           <h4
             style={{
-              fontSize: 14,
+              fontSize: 'var(--fs-body)',
               fontWeight: 700,
               color: 'var(--gold)',
               marginBottom: 10,
@@ -564,17 +564,17 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             💝 今日のお守り
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
               <strong style={{ color: result.lucky.color.hex }}>🎨 {result.lucky.color.v}</strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.color.reason}</span>
             </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
               <strong>
                 {result.lucky.item.e} {result.lucky.item.v}
               </strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.item.reason}</span>
             </p>
-            <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
               <strong>🔢 ナンバー {result.lucky.num.v}</strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
             </p>
@@ -602,7 +602,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         >
           <p
             style={{
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               color: 'var(--t2)',
               letterSpacing: '0.04em',
@@ -656,8 +656,8 @@ function DeepReadingSection({
   const wrapStyle: React.CSSProperties = {
     margin: '8px 16px 16px',
     padding: 20,
-    background: 'var(--card)',
-    border: '1px solid var(--border)',
+    background: 'var(--card-secondary)',
+    border: '1px solid var(--border-secondary)',
     borderRadius: 18,
     position: 'relative',
   };
@@ -665,7 +665,7 @@ function DeepReadingSection({
   const eyebrowStyle: React.CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--gold)',
     letterSpacing: '0.18em',
     textTransform: 'uppercase',
@@ -673,7 +673,7 @@ function DeepReadingSection({
   };
 
   const titleStyle: React.CSSProperties = {
-    fontSize: 15,
+    fontSize: 'var(--fs-body)',
     fontWeight: 700,
     color: 'var(--t1)',
     margin: '0 0 14px',
@@ -681,7 +681,7 @@ function DeepReadingSection({
   };
 
   const bodyStyle: React.CSSProperties = {
-    fontSize: 14,
+    fontSize: 'var(--fs-body)',
     color: 'var(--t1)',
     lineHeight: 1.9,
     margin: 0,
@@ -703,7 +703,7 @@ function DeepReadingSection({
         </h4>
         <p
           style={{
-            fontSize: 13,
+            fontSize: 'var(--fs-caption)',
             color: 'var(--t2)',
             lineHeight: 1.8,
             margin: '0 0 4px',

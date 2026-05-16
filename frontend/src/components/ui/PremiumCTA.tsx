@@ -114,7 +114,7 @@ export function PremiumCTA({
           style={{
             fontFamily: 'var(--font-accent)',
             fontStyle: 'italic',
-            fontSize: 14,
+            fontSize: 'var(--fs-body)',
             color: 'var(--gold)',
             margin: '0 0 4px',
             letterSpacing: '0.06em',
@@ -124,7 +124,7 @@ export function PremiumCTA({
         </p>
         <p
           style={{
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
             color: 'var(--t2)',
             margin: '0 0 12px',
             lineHeight: 1.7,
@@ -145,7 +145,7 @@ export function PremiumCTA({
             </button>
             <p
               style={{
-                fontSize: 10,
+                fontSize: 'var(--fs-micro)',
                 color: 'var(--t3)',
                 marginTop: 8,
                 lineHeight: 1.6,
@@ -158,7 +158,7 @@ export function PremiumCTA({
 
         {mode === 'email-input' && (
           <form onSubmit={handleSendEmailLink} style={{ marginTop: 4 }}>
-            <p style={{ fontSize: 11, color: 'var(--t2)', margin: '0 0 10px', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t2)', margin: '0 0 10px', lineHeight: 1.7 }}>
               続きを読むには、メールアドレスでログインしてね。
               <br />
               ※パスワード不要。届いたリンクをタップするだけ。
@@ -178,15 +178,15 @@ export function PremiumCTA({
                 padding: '10px 14px',
                 borderRadius: 10,
                 border: '1px solid var(--border)',
-                background: 'var(--card)',
+                background: 'var(--card-secondary)',
                 color: 'var(--t1)',
-                fontSize: 13,
+                fontSize: 'var(--fs-caption)',
                 marginBottom: 10,
               }}
             />
             <p
               style={{
-                fontSize: 10,
+                fontSize: 'var(--fs-micro)',
                 color: 'var(--t3)',
                 margin: '0 0 10px',
                 lineHeight: 1.6,
@@ -214,10 +214,10 @@ export function PremiumCTA({
 
         {mode === 'email-sent' && (
           <div style={{ marginTop: 4 }}>
-            <p style={{ fontSize: 13, color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7 }}>
               ✉️ メールを送ったよ
             </p>
-            <p style={{ fontSize: 11, color: 'var(--t2)', margin: '0 0 12px', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t2)', margin: '0 0 12px', lineHeight: 1.7 }}>
               届いたメールのリンクをタップして戻ってきてね。
               <br />
               ログインできたら、もう一度「続きを読む」を押してね。
@@ -236,7 +236,7 @@ export function PremiumCTA({
         )}
 
         {error && (
-          <p style={{ fontSize: 11, color: 'var(--rose)', marginTop: 8 }}>{error}</p>
+          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--rose)', marginTop: 8 }}>{error}</p>
         )}
       </div>
 
@@ -260,7 +260,7 @@ function primaryButtonStyle(pending: boolean): React.CSSProperties {
     border: 'none',
     background: 'linear-gradient(135deg, var(--rose), var(--pink))',
     color: '#fff',
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: pending ? 'wait' : 'pointer',
     fontFamily: 'var(--font-heading)',
@@ -278,7 +278,7 @@ function secondaryButtonStyle(pending: boolean): React.CSSProperties {
     border: '1px solid var(--border)',
     background: 'transparent',
     color: 'var(--t2)',
-    fontSize: 12,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: pending ? 'wait' : 'pointer',
     marginTop: 8,
