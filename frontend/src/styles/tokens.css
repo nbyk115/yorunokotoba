@@ -97,10 +97,6 @@
   --ritual-duration: 3000ms;
   --ritual-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Particle defaults */
-  --particle-color: var(--rose);
-  --particle-count: 6;
-  --particle-speed: 1;
 }
 
 [data-theme='dark'] {
@@ -128,27 +124,18 @@
 [data-time-of-day="night-deep"] {
   --bg1: #0B0A14;
   --bg-body: #0B0A14;
-  --particle-color: var(--gold);
-  --particle-count: 8;
-  --particle-speed: 0.6;
 }
 
 /* dawn: 05:00-11:00 — インクブルー中明度。夜明けの空が少し明るむ */
 [data-time-of-day="dawn"] {
   --bg1: #1A1826;
   --bg-body: #1A1826;
-  --particle-color: var(--accent);
-  --particle-count: 5;
-  --particle-speed: 0.8;
 }
 
 /* day: 11:00-17:00 — 温白 #F3EFEA 基調。昼間のみ明るいパレット */
 [data-time-of-day="day"] {
   --bg1: #F3EFEA;
   --bg-body: #F3EFEA;
-  --particle-color: var(--accent-rose);
-  --particle-count: 6;
-  --particle-speed: 1;
   /* restore light-mode card/shadow/border values when day mode overrides dark theme */
   --card-primary: rgba(255, 255, 255, 0.96);
   --card-secondary: rgba(255, 255, 255, 0.62);
@@ -168,18 +155,12 @@
 [data-time-of-day="dusk"] {
   --bg1: #161422;
   --bg-body: #161422;
-  --particle-color: var(--lavender);
-  --particle-count: 7;
-  --particle-speed: 0.9;
 }
 
 /* night: 22:00-02:00 — インクブルー標準。夜の帷 */
 [data-time-of-day="night"] {
   --bg1: #14121F;
   --bg-body: #14121F;
-  --particle-color: var(--accent-rose);
-  --particle-count: 6;
-  --particle-speed: 1;
 }
 
 /* 夜系4モード共通: theme が light のままでも暗背景に合わせてテキスト・カード・影をインクブルー前提に切替。
