@@ -1,12 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { DreamThemeIcon } from '@/components/ui/DreamThemeIcon';
-import { HeartHandshake, Palette, Hash } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
-// CharaAvatar / RarityBadge は PR4 で夢占いから削除（夢占いとホロスコープ分離方針）.
-// ホロスコープ占い（FortuneView）でのみ使用.
 import { RitualButton } from '@/components/ui/RitualButton';
-import { BlurReveal } from '@/components/ui/BlurReveal';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
@@ -18,12 +13,12 @@ interface DreamViewProps {
   profile: UserProfile;
 }
 
-/* ─── 解析フェーズテキスト（3秒 / 3段階） ─── */
+/* --- 解析フェーズテキスト（3秒 / 3段階） --- */
 const RITUAL_PHASES = ['夢を、読んでいる', 'シンボルをよみとく', '見えてきた'];
 
-/* ─── 月SVG（stroke-dasharray アニメーション） ─── */
+/* --- 月SVG（stroke-dasharray アニメーション） --- */
 function RitualMoonSvg({ progress }: { progress: number }) {
-  const CIRCUMFERENCE = 2 * Math.PI * 40; // ≈ 251
+  const CIRCUMFERENCE = 2 * Math.PI * 40; // approx 251
   const offset = CIRCUMFERENCE * (1 - progress);
   return (
     <svg
@@ -35,7 +30,6 @@ function RitualMoonSvg({ progress }: { progress: number }) {
     >
       <defs>
         <clipPath id="crescent-clip">
-          {/* 右半円を残して三日月を作る */}
           <path d="M40,0 A40,40 0 1,1 40,80 A28,28 0 1,0 40,0 Z" />
         </clipPath>
       </defs>
@@ -74,16 +68,12 @@ export function DreamView({ profile }: DreamViewProps) {
   const [phaseVisible, setPhaseVisible] = useState(true);
   const [moonProgress, setMoonProgress] = useState(0);
 
-  /* カルーセル用 */
-  const [activeCard, setActiveCard] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
-
   /* シェアシート表示フラグ */
   const [showShare, setShowShare] = useState(false);
 
   const signIdx = SIGNS.findIndex((s) => s.k === profile.sign);
 
-  /* ─── ロジック（既存流用） ─── */
+  /* --- ロジック（既存流用） --- */
   const handleConfirm = useCallback(async () => {
     if (!text.trim()) return;
     track('dream_start', { length: text.length });
@@ -92,10 +82,9 @@ export function DreamView({ profile }: DreamViewProps) {
     setPhaseVisible(true);
     setMoonProgress(0);
 
-    // 月のアニメーション開始トリガー（1フレーム後に進行開始）
     requestAnimationFrame(() => setMoonProgress(1));
 
-    const PHASE_INTERVAL = 1000; // 3フェーズ × 1秒
+    const PHASE_INTERVAL = 1000;
     let idx = 0;
     const phaseTimer = setInterval(() => {
       idx += 1;
@@ -116,7 +105,6 @@ export function DreamView({ profile }: DreamViewProps) {
     const r = analyzeDream(text, signIdx);
     setResult(r);
     setLoading(false);
-    setActiveCard(0);
     track('dream_complete', { typeId: r.type.id, theme: r.theme.key });
     saveArchiveEntry({
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
@@ -135,47 +123,12 @@ export function DreamView({ profile }: DreamViewProps) {
     setMoonProgress(0);
   }
 
-  /* ─── カルーセルのスクロール同期 ─── */
-  useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    function onScroll() {
-      if (!el) return;
-      const cardWidth = el.scrollWidth / 5; // 5枚
-      const idx = Math.round(el.scrollLeft / cardWidth);
-      setActiveCard(Math.min(Math.max(idx, 0), 4));
-    }
-    el.addEventListener('scroll', onScroll, { passive: true });
-    return () => el.removeEventListener('scroll', onScroll);
-  }, [result]);
-
-  /* ─── ドットクリックでスクロール ─── */
-  function scrollToCard(idx: number) {
-    if (!carouselRef.current) return;
-    const cardWidth = carouselRef.current.scrollWidth / 5;
-    carouselRef.current.scrollTo({ left: cardWidth * idx, behavior: 'smooth' });
-  }
-
-  /* ─── カード共通スタイル ─── */
-  const cardBase: React.CSSProperties = {
-    flexShrink: 0,
-    /* 次カードを ~24px 露出させスワイプ可能と分かるようにする */
-    width: 'clamp(260px, calc(100vw - 72px), 412px)',
-    scrollSnapAlign: 'start',
-    background: 'var(--card-secondary)',
-    backdropFilter: 'blur(20px)',
-    borderRadius: 'var(--r-card)',
-    border: '1px solid var(--border-secondary)',
-    padding: '20px',
-    boxSizing: 'border-box',
-  };
-
   return (
     <div style={{ paddingBottom: 32 }}>
 
-      {/* ══════════════════════════════════════════
-          ★ 入力フェーズ
-      ══════════════════════════════════════════ */}
+      {/* ======================================================
+          入力フェーズ
+      ====================================================== */}
       {!result && (
         <>
           {/* ritual-header */}
@@ -220,7 +173,7 @@ export function DreamView({ profile }: DreamViewProps) {
             </p>
           </div>
 
-          {/* textarea-card（罫線ノート風） */}
+          {/* textarea-card */}
           <div
             style={{
               margin: '0 16px 16px',
@@ -252,7 +205,6 @@ export function DreamView({ profile }: DreamViewProps) {
                 outline: 'none',
                 boxSizing: 'border-box',
               }}
-              // placeholder 色はグローバル CSS で制御できないため style タグ内に注入
             />
             <div
               style={{
@@ -275,7 +227,7 @@ export function DreamView({ profile }: DreamViewProps) {
             </div>
           </div>
 
-          {/* 期待値コピー（textarea-card と TabBar の間の余白を埋める） */}
+          {/* 期待値コピー */}
           <div
             style={{
               padding: '8px 32px 24px',
@@ -295,7 +247,6 @@ export function DreamView({ profile }: DreamViewProps) {
             </p>
           </div>
 
-          {/* placeholder の色を t3 に下げてノイズ感を解消 */}
           <style>{`
             textarea::placeholder {
               color: rgba(240, 232, 236, 0.40);
@@ -304,9 +255,9 @@ export function DreamView({ profile }: DreamViewProps) {
         </>
       )}
 
-      {/* ══════════════════════════════════════════
-          ★ 解析オーバーレイ（loading === true 時）
-      ══════════════════════════════════════════ */}
+      {/* ======================================================
+          解析オーバーレイ（loading === true 時）
+      ====================================================== */}
       {loading && (
         <div
           role="status"
@@ -327,6 +278,7 @@ export function DreamView({ profile }: DreamViewProps) {
         >
           <RitualMoonSvg progress={moonProgress} />
           <p
+            key={ritualPhaseIdx}
             style={{
               fontFamily: 'var(--font-accent)',
               fontSize: 'var(--fs-h1)',
@@ -353,387 +305,187 @@ export function DreamView({ profile }: DreamViewProps) {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════
-          ★ 結果フェーズ
-      ══════════════════════════════════════════ */}
+      {/* ======================================================
+          結果フェーズ（縦スクロール1カラム）
+      ====================================================== */}
       {result && (
         <>
-          {/* ── カルーセル ── */}
+          {/* 1. テーマヘッダー */}
           <div
-            ref={carouselRef}
             style={{
-              display: 'flex',
-              /* 各カードを最長カードの高さに引き伸ばさない（Card 1 のスカスカ防止） */
-              alignItems: 'flex-start',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              scrollPaddingLeft: 16,
-              WebkitOverflowScrolling: 'touch',
-              gap: 12,
-              padding: 16,
-              /* スクロールバー非表示 */
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
+              margin: '16px 16px 0',
+              padding: '28px 20px 24px',
+              background: 'var(--card-secondary)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: 'var(--r-card)',
+              border: '1px solid var(--border-secondary)',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
             }}
-            className="no-scrollbar"
           >
-
-            {/* ── Card 1: テーマ主役ヒーロー（夜色背景 + テーマ色アクセント）── */}
+            {/* テーマ色の放射光 */}
             <div
+              aria-hidden="true"
               style={{
-                ...cardBase,
-                padding: 'var(--sp-6) var(--sp-5)',
-                textAlign: 'center',
-                position: 'relative',
-                overflow: 'hidden',
-                minHeight: 300,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                boxShadow:
-                  'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.12)',
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                width: 200,
+                height: 200,
+                transform: 'translateX(-50%)',
+                background: `radial-gradient(circle, ${result.theme.color}38 0%, transparent 70%)`,
+                pointerEvents: 'none',
+              }}
+            />
+            <div style={{ position: 'relative', lineHeight: 1, marginBottom: 12 }}>
+              <DreamThemeIcon
+                themeKey={result.theme.key}
+                size={64}
+                color={result.theme.color}
+              />
+            </div>
+            <h3
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--fs-h1)',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                color: result.theme.color,
+                margin: '0 0 8px',
               }}
             >
-              {/* テーマ色の放射光（色は面でなく点で効かせる） */}
-              <div
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  top: 8,
-                  left: '50%',
-                  width: 220,
-                  height: 220,
-                  transform: 'translateX(-50%)',
-                  background: `radial-gradient(circle, ${result.theme.color}40 0%, transparent 70%)`,
-                  pointerEvents: 'none',
-                }}
-              />
-
-              {/* テーマアイコン (Phase C3: SVG line-art) */}
-              <div
-                style={{
-                  lineHeight: 1,
-                  marginTop: 4,
-                  marginBottom: 12,
-                  position: 'relative',
-                }}
-              >
-                <DreamThemeIcon
-                  themeKey={result.theme.key}
-                  size={80}
-                  color={result.theme.color}
-                />
-              </div>
-
-              {/* テーマラベル（テーマ色） */}
-              <h3
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 'var(--fs-h1)',
-                  fontWeight: 700,
-                  letterSpacing: '0.04em',
-                  color: result.theme.color,
-                  margin: 0,
-                }}
-              >
-                {result.theme.label}
-              </h3>
-
-              {/* シンボル 1 行サマリー */}
-              <p
-                style={{
-                  fontSize: 'var(--fs-caption)',
-                  color: 'var(--t3)',
-                  marginTop: 6,
-                  lineHeight: 1.6,
-                  letterSpacing: '0.04em',
-                }}
-              >
-                {result.symbols.slice(0, 3).map((s) => s.word).join(' · ')}
-              </p>
-
-              {/* テーマ色の細い区切り線 */}
-              <div
-                aria-hidden="true"
-                style={{
-                  width: 36,
-                  height: 2,
-                  borderRadius: 1,
-                  background: result.theme.color,
-                  opacity: 0.55,
-                  margin: '16px 0',
-                }}
-              />
-
-              {/* よみとき冒頭（結果の核心を Card 1 で見せる） */}
-              <p
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  lineHeight: 1.9,
-                  color: 'var(--t1)',
-                  margin: 0,
-                  textAlign: 'left',
-                }}
-              >
-                {result.mainReading.intro.split('。')[0]}。
-              </p>
-
-              {/* スワイプヒント */}
-              <p
-                style={{
-                  fontSize: 'var(--fs-micro)',
-                  color: 'var(--t3)',
-                  marginTop: 16,
-                  letterSpacing: '0.08em',
-                }}
-              >
-                ← スワイプして続きを読む
-              </p>
-
-              {/* 「この夢を残す」ボタン */}
-              <button
-                onClick={() => setShowShare(true)}
-                aria-label="この夢を残す"
-                style={{
-                  position: 'absolute',
-                  bottom: 14,
-                  right: 14,
-                  minHeight: 44,
-                  padding: '8px 18px',
-                  borderRadius: 999,
-                  background: result.theme.color,
-                  border: 'none',
-                  color: '#fff',
-                  fontSize: 'var(--fs-caption)',
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-heading)',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                }}
-              >
-                残す
-              </button>
-            </div>
-
-            {/* ── Card 2: 月が、あなたに残したことば（ICP語彙核） ── */}
-            <div style={{ ...cardBase }}>
-              <h4
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  fontWeight: 700,
-                  color: 'var(--lavender)',
-                  marginBottom: 10,
-                  fontFamily: 'var(--font-heading)',
-                }}
-              >
-                夢のよみとき
-              </h4>
-              <p
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  lineHeight: 1.9,
-                  color: 'var(--t1)',
-                  marginBottom: 16,
-                }}
-              >
-                {result.mainReading.intro}
-              </p>
-              {/* BlurReveal を mainReading.deep に適用 */}
-              <BlurReveal initialBlur={4} revealOnTap>
-                <p
-                  style={{
-                    fontSize: 'var(--fs-caption)',
-                    lineHeight: 1.9,
-                    color: 'var(--t2)',
-                  }}
-                >
-                  {result.mainReading.deep}
-                </p>
-              </BlurReveal>
-              <p
-                style={{
-                  fontSize: 'var(--fs-micro)',
-                  color: 'var(--t3)',
-                  marginTop: 8,
-                  textAlign: 'center',
-                }}
-              >
-                タップして続きを読む
-              </p>
-            </div>
-
-            {/* ── Card 3: シンボル一覧 ── */}
-            <div style={{ ...cardBase }}>
-              <h4
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  fontWeight: 700,
-                  color: 'var(--lavender)',
-                  marginBottom: 12,
-                }}
-              >
-                シンボル
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {result.symbols.map((s) => (
-                  <div
-                    key={s.word}
-                    style={{
-                      padding: '12px 14px',
-                      background: 'var(--bg1)',
-                      borderRadius: 'var(--r-input)',
-                      borderLeft: '3px solid var(--rose)',
-                    }}
-                  >
-                    <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--rose)' }}>
-                      {s.word} · {s.meaning}
-                    </p>
-                    <p
-                      style={{
-                        fontSize: 'var(--fs-caption)',
-                        color: 'var(--t2)',
-                        marginTop: 4,
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {s.detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ── Card 4: 今日のメッセージ + アクション3種 ── */}
-            <div style={{ ...cardBase }}>
-              <h4
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  fontWeight: 700,
-                  color: 'var(--rose)',
-                  marginBottom: 10,
-                }}
-              >
-                今日のメッセージ
-              </h4>
-              <p style={{ fontSize: 'var(--fs-body)', lineHeight: 1.9, color: 'var(--t1)' }}>
-                {result.todayMessage}
-              </p>
-
-              <div style={{ marginTop: 16 }}>
-                <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                  今日やるといいこと
-                </p>
-                <ul style={{ paddingLeft: 20, fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8 }}>
-                  {result.actions.should.map((a, i) => (
-                    <li key={i}>{a}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div style={{ marginTop: 16 }}>
-                <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                  気をつけること
-                </p>
-                <ul style={{ paddingLeft: 20, fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8 }}>
-                  {result.actions.aware.map((a, i) => (
-                    <li key={i}>{a}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* 「今日避けたいこと」は ux-designer 診断で認知過負荷判定 → 削除（should + aware の 2 点で十分）*/}
-            </div>
-
-            {/* ── Card 5: 今日のお守り + 相性タイプ（統合） ── */}
-            <div style={{ ...cardBase }}>
-              <h4
-                style={{
-                  fontSize: 'var(--fs-body)',
-                  fontWeight: 700,
-                  color: 'var(--gold)',
-                  marginBottom: 10,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                }}
-              >
-                <Icon icon={HeartHandshake} size={16} color="var(--gold)" />
-                今日のお守り
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-                  <strong style={{ color: result.lucky.color.hex, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <Icon icon={Palette} size={14} color={result.lucky.color.hex} />
-                    {result.lucky.color.v}
-                  </strong>
-                  <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
-                    {result.lucky.color.reason}
-                  </span>
-                </p>
-                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-                  <strong>
-                    {result.lucky.item.e} {result.lucky.item.v}
-                  </strong>
-                  <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
-                    {result.lucky.item.reason}
-                  </span>
-                </p>
-                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <strong style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                    <Icon icon={Hash} size={14} />
-                    ナンバー {result.lucky.num.v}
-                  </strong>
-                  <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
-                    {result.lucky.num.reason}
-                  </span>
-                </p>
-              </div>
-
-              {/* 「相性タイプ・恋愛傾向」セクションは PR4 で削除.
-                  夢占いとホロスコープの分離方針: キャラ・恋愛傾向は
-                  ホロスコープ占い（FortuneView）専属とし、夢占いは
-                  テーマ・シンボル・夢のメッセージに集中. */}
-            </div>
+              {result.theme.label}
+            </h3>
+            <p
+              style={{
+                fontSize: 'var(--fs-caption)',
+                color: 'var(--t2)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}
+            >
+              この夢が映していること
+            </p>
           </div>
 
-          {/* ── ドットインジケーター ── */}
+          {/* 2. 夢の意味（主役） */}
           <div
-            role="tablist"
-            aria-label="カードナビゲーション"
             style={{
-              display: 'flex',
-              gap: 6,
-              justifyContent: 'center',
-              padding: '12px 0',
+              margin: '12px 16px 0',
+              padding: '24px 20px',
+              background: 'var(--card-secondary)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: 'var(--r-card)',
+              border: '1px solid var(--border-secondary)',
             }}
           >
-            {[0, 1, 2, 3, 4].map((i) => (
-              <button
+            <h4
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--fs-body)',
+                fontWeight: 700,
+                color: 'var(--lavender)',
+                marginBottom: 16,
+              }}
+            >
+              夢のよみとき
+            </h4>
+            <p
+              style={{
+                fontSize: 'var(--fs-body)',
+                lineHeight: 1.9,
+                color: 'var(--t1)',
+                marginBottom: 20,
+              }}
+            >
+              {result.mainReading.intro}
+            </p>
+            {result.mainReading.deep.split('\n\n').map((para, i) => (
+              <p
                 key={i}
-                role="tab"
-                aria-selected={activeCard === i}
-                aria-label={`カード ${i + 1}`}
-                onClick={() => scrollToCard(i)}
                 style={{
-                  width: activeCard === i ? 18 : 6,
-                  height: 6,
-                  borderRadius: 3,
-                  background: activeCard === i ? 'var(--rose)' : 'var(--t3)',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  transition: 'width 300ms ease, background 300ms ease',
+                  fontSize: 'var(--fs-body)',
+                  lineHeight: 1.9,
+                  color: 'var(--t2)',
+                  marginBottom: i < result.mainReading.deep.split('\n\n').length - 1 ? 16 : 0,
                 }}
-              />
+              >
+                {para}
+              </p>
             ))}
           </div>
 
-          {/* ── reset-button ── */}
-          <div style={{ margin: '16px 16px 32px' }}>
+          {/* 3. 今日のヒント */}
+          <div
+            style={{
+              margin: '12px 16px 0',
+              padding: '24px 20px',
+              background: 'var(--card-secondary)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: 'var(--r-card)',
+              border: '1px solid var(--border-secondary)',
+            }}
+          >
+            <h4
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--fs-body)',
+                fontWeight: 700,
+                color: 'var(--rose)',
+                marginBottom: 12,
+              }}
+            >
+              今日のヒント
+            </h4>
+            <p
+              style={{
+                fontSize: 'var(--fs-body)',
+                lineHeight: 1.9,
+                color: 'var(--t1)',
+                marginBottom: 16,
+              }}
+            >
+              {result.todayMessage}
+            </p>
+            <ul
+              style={{
+                padding: '0 0 0 20px',
+                margin: 0,
+                fontSize: 'var(--fs-body)',
+                color: 'var(--t1)',
+                lineHeight: 1.9,
+              }}
+            >
+              {result.actions.should.map((a, i) => (
+                <li key={i} style={{ marginBottom: i < result.actions.should.length - 1 ? 6 : 0 }}>
+                  {a}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 4. 下部アクション */}
+          <div
+            style={{
+              margin: '24px 16px 0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+            }}
+          >
+            <Button
+              variant="primary"
+              onClick={() => setShowShare(true)}
+              fullWidth
+            >
+              シェアする
+            </Button>
             <Button variant="ghost" onClick={handleReset} fullWidth>
               別の夢をよみとく
             </Button>
           </div>
+
           <p
             style={{
               fontSize: 'var(--fs-micro)',
@@ -748,9 +500,9 @@ export function DreamView({ profile }: DreamViewProps) {
         </>
       )}
 
-      {/* ══════════════════════════════════════════
-          ★ シェアシート（モーダル）
-      ══════════════════════════════════════════ */}
+      {/* ======================================================
+          シェアシート（モーダル）
+      ====================================================== */}
       {showShare && result && (
         <div
           role="dialog"
@@ -800,11 +552,6 @@ export function DreamView({ profile }: DreamViewProps) {
           </Button>
         </div>
       )}
-
-      {/* no-scrollbar utility（スクロールバー非表示） */}
-      <style>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-      `}</style>
     </div>
   );
 }
