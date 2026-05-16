@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Share2 } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { ShareCard } from '@/components/ui/ShareCard';
@@ -109,7 +109,9 @@ function ShareModal({
   );
 }
 
-/** 1エントリーカード */
+/** 1エントリーカード
+ * 情報階層: テーマ + 日付 > 夢の内容(entry.text) > シンボル > シェア
+ */
 function EntryCard({
   entry,
   onShareRequest,
@@ -118,86 +120,114 @@ function EntryCard({
   onShareRequest: (e: ArchiveEntry) => void;
 }) {
   const type = getSafeDreamType(entry.typeId);
+
+  const dateLabel = (() => {
+    const d = new Date(entry.timestamp);
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const w = WEEKDAYS[d.getDay()];
+    return `${mm}/${dd}（${w}）`;
+  })();
+
   return (
     <div
       style={{
-        padding: 16,
+        padding: '14px 16px 12px',
         background: 'var(--card-secondary)',
         borderRadius: 14,
         border: '1px solid var(--border)',
+        boxShadow: 'var(--shadow-card-secondary)',
         marginBottom: 8,
-        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
       }}
     >
-      {/* 右上: 再びシェアボタン */}
-      <button
-        aria-label="再びシェア"
-        onClick={() => onShareRequest(entry)}
-        style={{
-          position: 'absolute',
-          top: 12,
-          right: 12,
-          fontSize: 'var(--fs-micro)',
-          fontWeight: 700,
-          color: 'var(--rose)',
-          background: 'rgba(232,98,124,0.10)',
-          border: '1px solid rgba(232,98,124,0.25)',
-          borderRadius: 8,
-          padding: '4px 10px',
-          cursor: 'pointer',
-          minHeight: 32,
-          lineHeight: 1,
-          letterSpacing: '0.04em',
-        }}
-      >
-        再びシェア
-      </button>
-
-      {/* ヘッダー */}
+      {/* 1. ヘッダー: テーマ名（主タイトル）+ 日付 */}
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          marginBottom: 8,
-          paddingRight: 72, // シェアボタン分の余白
         }}
       >
-        <p style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)' }}>
+        <p
+          style={{
+            fontSize: 'var(--fs-body)',
+            fontWeight: 700,
+            color: 'var(--t1)',
+            margin: 0,
+            letterSpacing: '0.02em',
+          }}
+        >
           {type?.name ?? '夢診断'}
         </p>
-        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)' }}>
-          {themeLabels[entry.themeKey] ?? entry.themeKey}
+        <p
+          style={{
+            fontSize: 'var(--fs-micro)',
+            color: 'var(--t3)',
+            margin: 0,
+            flexShrink: 0,
+            marginLeft: 8,
+          }}
+        >
+          {dateLabel}
         </p>
       </div>
 
-      {/* シンボル */}
+      {/* 2. 夢の内容（主役: body サイズ・5行クランプ） */}
       <p
         style={{
-          fontSize: 'var(--fs-caption)',
-          color: 'var(--lavender)',
-          fontWeight: 700,
-          marginBottom: 4,
-        }}
-      >
-        シンボル: {entry.summary}
-      </p>
-
-      {/* 本文（3行クランプ） */}
-      <p
-        style={{
-          fontSize: 'var(--fs-caption)',
+          fontSize: 'var(--fs-body)',
           color: 'var(--t2)',
-          lineHeight: 1.7,
+          lineHeight: 1.75,
+          margin: 0,
           overflow: 'hidden',
           display: '-webkit-box',
-          WebkitLineClamp: 3,
+          WebkitLineClamp: 5,
           WebkitBoxOrient: 'vertical',
           textOverflow: 'ellipsis',
         }}
       >
         {entry.text}
       </p>
+
+      {/* 3. シンボル（二次情報・小さく） */}
+      <p
+        style={{
+          fontSize: 'var(--fs-caption)',
+          color: 'var(--lavender)',
+          margin: 0,
+          letterSpacing: '0.03em',
+        }}
+      >
+        {entry.summary}
+      </p>
+
+      {/* 4. シェア（三次アクション: 下部右寄せ・控えめ） */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button
+          aria-label="再びシェア"
+          onClick={() => onShareRequest(entry)}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            fontSize: 'var(--fs-micro)',
+            color: 'var(--t3)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '6px 4px',
+            minHeight: 36,
+            borderRadius: 8,
+            letterSpacing: '0.03em',
+          }}
+        >
+          <Icon icon={Share2} size={13} strokeWidth={1.75} />
+          シェア
+        </button>
+      </div>
     </div>
   );
 }
