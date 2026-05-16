@@ -278,6 +278,7 @@ export function DreamView({ profile }: DreamViewProps) {
         >
           <RitualMoonSvg progress={moonProgress} />
           <p
+            key={ritualPhaseIdx}
             style={{
               fontFamily: 'var(--font-accent)',
               fontSize: 'var(--fs-h1)',
