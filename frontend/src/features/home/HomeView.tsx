@@ -175,12 +175,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           style={{
             margin: 'clamp(12px, 4.3vw, 20px) clamp(12px, 4.3vw, 20px) 0',
             padding: 'clamp(16px, 5.3vw, 24px)',
-            background: 'var(--card)',
+            background: 'var(--card-primary)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid var(--border)',
+            border: '1px solid var(--border-primary)',
             borderRadius: 18,
-            boxShadow: 'var(--shadow)',
+            boxShadow: 'var(--shadow-card-primary)',
             animation: 'slideUp 450ms ease both',
             transition: 'transform 200ms ease, box-shadow 200ms ease',
           }}
@@ -394,8 +394,8 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
 const chipStyle: CSSProperties = {
   flex: 1,
   padding: '16px 12px',
-  background: 'var(--card)',
-  border: '1px solid var(--border)',
+  background: 'var(--card-secondary)',
+  border: '1px solid var(--border-secondary)',
   borderRadius: 14,
   textAlign: 'center',
   cursor: 'pointer',

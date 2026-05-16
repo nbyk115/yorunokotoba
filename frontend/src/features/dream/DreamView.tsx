@@ -159,10 +159,10 @@ export function DreamView({ profile }: DreamViewProps) {
     /* 次カードを ~24px 露出させスワイプ可能と分かるようにする */
     width: 'clamp(260px, calc(100vw - 72px), 412px)',
     scrollSnapAlign: 'start',
-    background: 'var(--card)',
+    background: 'var(--card-secondary)',
     backdropFilter: 'blur(20px)',
     borderRadius: 'var(--r-card)',
-    border: '1px solid var(--border)',
+    border: '1px solid var(--border-secondary)',
     padding: '20px',
     boxSizing: 'border-box',
   };
@@ -221,11 +221,12 @@ export function DreamView({ profile }: DreamViewProps) {
           <div
             style={{
               margin: '0 16px 16px',
-              padding: 20,
-              background: 'var(--card)',
+              padding: 24,
+              background: 'var(--card-primary)',
               backdropFilter: 'blur(20px)',
               borderRadius: 18,
-              border: '1px solid var(--border)',
+              border: '1px solid var(--border-primary)',
+              boxShadow: 'var(--shadow-card-primary)',
             }}
           >
             <textarea

@@ -59,7 +59,7 @@ function ShareModal({
     >
       <div
         style={{
-          background: 'var(--card)',
+          background: 'var(--card-secondary)',
           borderRadius: 20,
           padding: '24px 20px',
           width: '100%',
@@ -120,7 +120,7 @@ function EntryCard({
     <div
       style={{
         padding: 16,
-        background: 'var(--card)',
+        background: 'var(--card-secondary)',
         borderRadius: 14,
         border: '1px solid var(--border)',
         marginBottom: 8,
@@ -454,7 +454,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                 width: '100%',
                 minHeight: 44,
                 padding: '12px 40px 12px 16px',
-                background: 'var(--card)',
+                background: 'var(--card-secondary)',
                 border: '1px solid var(--border)',
                 borderRadius: 14,
                 color: 'var(--t1)',
@@ -602,7 +602,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                     onClick={() => setShareTarget(entry)}
                     style={{
                       textAlign: 'left',
-                      background: 'var(--card)',
+                      background: 'var(--card-secondary)',
                       border: '1px solid var(--border)',
                       borderRadius: 14,
                       padding: 16,
@@ -676,7 +676,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               height: 44,
               borderRadius: '50%',
               border: '1px solid var(--border)',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               color: 'var(--t1)',
               display: 'flex',
               alignItems: 'center',
@@ -710,7 +710,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               height: 44,
               borderRadius: '50%',
               border: '1px solid var(--border)',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               color: 'var(--t1)',
               display: 'flex',
               alignItems: 'center',

@@ -506,9 +506,9 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           <div
             style={{
               padding: '16px 14px',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               borderRadius: 14,
-              border: '1px solid var(--border)',
+              border: '1px solid var(--border-secondary)',
             }}
           >
             <p
@@ -529,9 +529,9 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           <div
             style={{
               padding: '16px 14px',
-              background: 'var(--card)',
+              background: 'var(--card-secondary)',
               borderRadius: 14,
-              border: '1px solid var(--border)',
+              border: '1px solid var(--border-secondary)',
             }}
           >
             <p
@@ -656,8 +656,8 @@ function DeepReadingSection({
   const wrapStyle: React.CSSProperties = {
     margin: '8px 16px 16px',
     padding: 20,
-    background: 'var(--card)',
-    border: '1px solid var(--border)',
+    background: 'var(--card-secondary)',
+    border: '1px solid var(--border-secondary)',
     borderRadius: 18,
     position: 'relative',
   };

@@ -85,14 +85,14 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
     alignItems: 'center',
     gap: 12,
     padding: 16,
-    background: 'var(--card)',
+    background: 'var(--card-secondary)',
     border: '1px solid var(--border)',
     borderRadius: 14,
     marginBottom: 24,
   };
 
   const fieldStyle: CSSProperties = {
-    background: 'var(--card)',
+    background: 'var(--card-secondary)',
     border: '1px solid var(--border)',
     borderRadius: 14,
     padding: '14px 16px',

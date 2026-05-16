@@ -178,7 +178,7 @@ export function PremiumCTA({
                 padding: '10px 14px',
                 borderRadius: 10,
                 border: '1px solid var(--border)',
-                background: 'var(--card)',
+                background: 'var(--card-secondary)',
                 color: 'var(--t1)',
                 fontSize: 'var(--fs-caption)',
                 marginBottom: 10,

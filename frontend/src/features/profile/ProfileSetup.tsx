@@ -357,7 +357,7 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
           style={{
             marginTop: 16,
             padding: '14px 20px',
-            background: 'var(--card)',
+            background: 'var(--card-secondary)',
             borderRadius: 14,
             border: '1px solid var(--border)',
             display: 'flex',
