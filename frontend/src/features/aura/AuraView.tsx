@@ -63,6 +63,7 @@ export function AuraView({ profile, onNavigate }: AuraViewProps) {
       <ResultScreen
         profile={profile}
         result={result}
+        partnerSign={partnerSign}
         onReset={handleReset}
         onNavigate={onNavigate}
       />
@@ -266,11 +267,12 @@ function InputScreen({
 interface ResultProps {
   profile: UserProfile;
   result: CompatibilityResult;
+  partnerSign: string;
   onReset: () => void;
   onNavigate: (view: ViewKey) => void;
 }
 
-function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
+function ResultScreen({ profile, result, partnerSign, onReset, onNavigate }: ResultProps) {
   const { userId } = useCurrentUser();
   const myCharaId = getCharaIdBySign(profile.sign, profile.gender);
 
@@ -377,7 +379,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             source="aura_result"
             userId={userId}
             headline="ふたりの相性、もっと深く"
-            description="キャラクターからのメッセージで、ふたりの相性をもっと深く読めるよ"
+            description={`${partnerSign}のキャラからのメッセージで、あの人との相性をもっと深く読めるよ`}
           />
         </div>
 

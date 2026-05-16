@@ -381,20 +381,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             {result.summary}
           </p>
-
-          {/* AI 免責（Hero 直下に配置・景表法対応） */}
-          <p
-            style={{
-              fontSize: 'var(--fs-micro)',
-              color: 'var(--t3)',
-              textAlign: 'center',
-              margin: '14px 0 0',
-              lineHeight: 1.6,
-              opacity: 0.7,
-            }}
-          >
-            ※ AI が生成する娯楽の占いだよ
-          </p>
         </div>
 
         {/* ════════════════════════════════ */}
@@ -633,6 +619,20 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             theme={shareTheme}
             signLabel={`${profile.sign} · ${profile.name}`}
           />
+
+          {/* AI 免責（全コンテンツを読み終えた最後に配置・景表法対応） */}
+          <p
+            style={{
+              fontSize: 'var(--fs-micro)',
+              color: 'var(--t3)',
+              textAlign: 'center',
+              margin: '20px 0 0',
+              lineHeight: 1.6,
+              opacity: 0.7,
+            }}
+          >
+            ※ AI が生成する娯楽の占いだよ
+          </p>
         </div>
       </div>
     </>
