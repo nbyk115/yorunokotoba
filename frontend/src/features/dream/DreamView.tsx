@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { DreamThemeIcon } from '@/components/ui/DreamThemeIcon';
 import { HeartHandshake, Palette, Hash } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
@@ -408,18 +409,20 @@ export function DreamView({ profile }: DreamViewProps) {
                 }}
               />
 
-              {/* テーマアイコン */}
+              {/* テーマアイコン (Phase C3: SVG line-art) */}
               <div
                 style={{
-                  fontSize: 'var(--fs-hero-en)',
                   lineHeight: 1,
                   marginTop: 4,
                   marginBottom: 12,
                   position: 'relative',
                 }}
-                aria-hidden="true"
               >
-                {result.theme.icon}
+                <DreamThemeIcon
+                  themeKey={result.theme.key}
+                  size={80}
+                  color={result.theme.color}
+                />
               </div>
 
               {/* テーマラベル（テーマ色） */}
