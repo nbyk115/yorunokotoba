@@ -1,4 +1,4 @@
-# Uptime Monitoring — UptimeRobot 設定手順（運営者向け）
+# Uptime Monitoring : UptimeRobot 設定手順（運営者向け）
 
 > **目的**: 副業オーナーの運用負荷ゼロで死活監視 + Slack 自動通知
 > **コスト**: ¥0（UptimeRobot Free プラン）
@@ -80,6 +80,6 @@
 
 ## 関連
 
-- `docs/operations/error-monitoring.md` — Sentry エラー監視
-- `.github/workflows/ci.yml` — CI 自動 typecheck/build
-- `NORTH_STAR.md` — 月10時間運用上限の根拠
+- `docs/operations/error-monitoring.md` : Sentry エラー監視
+- `.github/workflows/ci.yml` : CI 自動 typecheck/build
+- `NORTH_STAR.md` : 月10時間運用上限の根拠

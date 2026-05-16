@@ -1,4 +1,4 @@
-# Evolution Log — yorunokotoba プロジェクト学習記録
+# Evolution Log : yorunokotoba プロジェクト学習記録
 
 > ConsultingOS の規律違反 / 失敗パターン / 学習を時系列で記録. 同じミスを繰り返さない構造化.
 

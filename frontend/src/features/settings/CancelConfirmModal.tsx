@@ -1,5 +1,5 @@
 /**
- * CancelConfirmModal — Premium 解約の確認モーダル.
+ * CancelConfirmModal: Premium 解約の確認モーダル.
  *
  * 法務的明示（特商法 + 利用規約準拠）:
  *   - 価格 ¥980/月 を再表示（消費者保護の観点）

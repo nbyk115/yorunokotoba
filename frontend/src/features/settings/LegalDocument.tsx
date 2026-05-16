@@ -1,5 +1,5 @@
 /**
- * LegalDocument — 法務文書を public/legal/*.md から fetch して表示.
+ * LegalDocument: 法務文書を public/legal/*.md から fetch して表示.
  *
  * SSOT は docs/legal/. ビルド時に scripts/sync-legal.mjs が
  * public/legal/ へ同期する（反証チェック等の内部メタ情報は除去済み）.

@@ -1,4 +1,4 @@
-# Pricing Decision — Premium Subscription（SSOT）
+# Pricing Decision : Premium Subscription（SSOT）
 
 - **Date**: 2026-05-14
 - **Decision Owner**: ConsultingOS オーケストレーター（strategy-lead × competitive-analyst × creator-instinct 統合）
@@ -135,7 +135,7 @@ M6:        Premium Plus ¥1,980 検討
 
 ## 8. 関連ドキュメント
 
-- `ICP.md` — Section 1 Primary ICP の支払い能力データ
-- `docs/payment/univapay-integration.md` — G6 価格セクション（要約）
-- `docs/strategy/market-research-and-strategy.md` — 競合分析
-- `frontend/src/components/ui/PremiumCTA.tsx` — `PREMIUM_PRICE_LABEL` 定数（コード SSOT）
+- `ICP.md` : Section 1 Primary ICP の支払い能力データ
+- `docs/payment/univapay-integration.md` : G6 価格セクション（要約）
+- `docs/strategy/market-research-and-strategy.md` : 競合分析
+- `frontend/src/components/ui/PremiumCTA.tsx` : `PREMIUM_PRICE_LABEL` 定数（コード SSOT）

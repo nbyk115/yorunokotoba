@@ -1,4 +1,4 @@
-# DESIGN.md — よるのことば
+# DESIGN.md : よるのことば
 
 ## Colors
 

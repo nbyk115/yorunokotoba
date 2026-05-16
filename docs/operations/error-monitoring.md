@@ -1,4 +1,4 @@
-# Error Monitoring — Sentry 設定手順（運営者向け）
+# Error Monitoring : Sentry 設定手順（運営者向け）
 
 > **目的**: 副業オーナーが Vercel ログを毎週見にいかなくて済むようにする
 > **コスト**: ¥0（Sentry Free プラン: 5,000 events/月）
@@ -98,6 +98,6 @@ componentDidCatch(err: Error) {
 
 ## 関連
 
-- `docs/operations/uptime-monitoring.md` — UptimeRobot 死活監視
-- `frontend/src/main.tsx` — Sentry 初期化（次 PR で実装）
-- `NORTH_STAR.md` — 月10時間運用上限の根拠
+- `docs/operations/uptime-monitoring.md` : UptimeRobot 死活監視
+- `frontend/src/main.tsx` : Sentry 初期化（次 PR で実装）
+- `NORTH_STAR.md` : 月10時間運用上限の根拠

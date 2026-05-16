@@ -1,4 +1,4 @@
-# よるのことば Rebuild — Phase 0: 現状棚卸し
+# よるのことば Rebuild : Phase 0: 現状棚卸し
 
 **作成日**: 2026-04-12
 **根拠**: PR #20-#37 のバグ再発ループ・スクロール不能・月絵シェイク等の構造的不具合
@@ -70,11 +70,11 @@ BMaXF44Ya4nZg-zfpfHKp6wr2gPRBlf3nkoCJ9z3CQxWmOGyOZFxLoSHYNCYrtHi0R0_mxW7u-mjTq5H
 
 ## 4. ビュー（画面）
 
-- `dream` — 夢診断モード
-- `fortune` — 星座占いモード
-- `love` — 相性占い（存在確認必要）
-- `archive` — 履歴画面
-- `home` — ホーム画面
+- `dream` : 夢診断モード
+- `fortune` : 星座占いモード
+- `love` : 相性占い（存在確認必要）
+- `archive` : 履歴画面
+- `home` : ホーム画面
 
 ## 5. 純粋ロジック（副作用なし・抽出対象）
 
@@ -106,15 +106,15 @@ BMaXF44Ya4nZg-zfpfHKp6wr2gPRBlf3nkoCJ9z3CQxWmOGyOZFxLoSHYNCYrtHi0R0_mxW7u-mjTq5H
 
 ## 8. 認証機能
 
-- Google Sign-In (Popup 方式 — Redirect からの移行済み)
+- Google Sign-In (Popup 方式 : Redirect からの移行済み)
 - Email Link (パスワードレス)
 
 ## 9. PWA関連
 
-- `manifest.json` — アイコン・テーマカラー・ショートカット
-- `firebase-messaging-sw.js` — Service Worker（push通知）
+- `manifest.json` : アイコン・テーマカラー・ショートカット
+- `firebase-messaging-sw.js` : Service Worker（push通知）
 - `icon-192.png`, `icon-512.png`
-- `ogp.png` — OGP画像
+- `ogp.png` : OGP画像
 
 ## 10. SEO/構造化データ
 
@@ -124,9 +124,9 @@ BMaXF44Ya4nZg-zfpfHKp6wr2gPRBlf3nkoCJ9z3CQxWmOGyOZFxLoSHYNCYrtHi0R0_mxW7u-mjTq5H
 
 ## 11. 法務ページ（HTML直書き・維持）
 
-- `legal.html` — 特定商取引法
-- `privacy.html` — プライバシーポリシー
-- `terms.html` — 利用規約
+- `legal.html` : 特定商取引法
+- `privacy.html` : プライバシーポリシー
+- `terms.html` : 利用規約
 
 → これらは静的HTMLのまま temploraryに `public/` に配置して維持。後続Phaseで React化の是非判断。
 
