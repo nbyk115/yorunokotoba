@@ -577,6 +577,11 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           charaName={result.type.name}
           sign={profile.sign}
           currentUserId={currentUserId}
+          birthday={
+            profile.birthYear && profile.birthMonth && profile.birthDay
+              ? `${profile.birthYear}-${profile.birthMonth.padStart(2, '0')}-${profile.birthDay.padStart(2, '0')}`
+              : null
+          }
         />
 
         {/* ════════════════════════════════ */}
@@ -638,6 +643,7 @@ interface DeepReadingSectionProps {
   charaName: string;
   sign: string;
   currentUserId: string | null;
+  birthday: string | null;
 }
 
 function DeepReadingSection({
@@ -645,13 +651,14 @@ function DeepReadingSection({
   charaName,
   sign,
   currentUserId,
+  birthday,
 }: DeepReadingSectionProps) {
   const { isPremium } = useSubscription(currentUserId);
-  const message = getGuardianMessage(charaId);
+  const message = getGuardianMessage(charaId, birthday);
   const moonPhaseCategory = getMoonPhaseCategory();
   const moonPhaseIdx = getMoonPhaseIndex();
   const moonLabel = getMoonPhaseLabel();
-  const moonWave = getMoonSignWave(sign, moonPhaseCategory);
+  const moonWave = getMoonSignWave(sign, moonPhaseCategory, birthday);
 
   if (!message) return null;
 
