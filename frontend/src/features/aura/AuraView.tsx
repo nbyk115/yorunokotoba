@@ -1,7 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
-import { CompatibilityCard } from '@/components/ui/CompatibilityCard';
 import { PremiumCTA } from '@/components/ui/PremiumCTA';
 import { useCurrentUser } from '@/lib/auth';
 import { SIGNS, getCharaIdBySign } from '@/data/signs';
@@ -61,7 +60,6 @@ export function AuraView({ profile, onNavigate }: AuraViewProps) {
   if (stage === 'result' && result) {
     return (
       <ResultScreen
-        profile={profile}
         result={result}
         partnerSign={partnerSign}
         onReset={handleReset}
@@ -264,16 +262,14 @@ function InputScreen({
 // ─────────────────────────────────────────────
 
 interface ResultProps {
-  profile: UserProfile;
   result: CompatibilityResult;
   partnerSign: string;
   onReset: () => void;
   onNavigate: (view: ViewKey) => void;
 }
 
-function ResultScreen({ profile, result, partnerSign, onReset, onNavigate }: ResultProps) {
+function ResultScreen({ result, partnerSign, onReset, onNavigate }: ResultProps) {
   const { userId } = useCurrentUser();
-  const myCharaId = getCharaIdBySign(profile.sign, profile.gender);
 
   const sectionStyle: CSSProperties = {
     padding: '32px 24px',
@@ -330,7 +326,7 @@ function ResultScreen({ profile, result, partnerSign, onReset, onNavigate }: Res
   const dividerStyle: CSSProperties = {
     height: 1,
     background: 'var(--border)',
-    margin: '24px auto',
+    margin: '0 auto 24px',
     maxWidth: 240,
   };
 
@@ -358,17 +354,6 @@ function ResultScreen({ profile, result, partnerSign, onReset, onNavigate }: Res
         <p style={pairTitleStyle}>{result.pairTitle}</p>
 
         <p style={pairTextStyle}>{result.pairText}</p>
-
-        <CompatibilityCard
-          charaIdA={result.charaA?.id ?? ''}
-          charaIdB={result.charaB?.id ?? ''}
-          rank={result.rank}
-          rankLabel={result.rankLabel}
-          pairText={result.pairText}
-          pairTitle={result.pairTitle}
-          signLabel={`${profile.sign} · ${profile.name}`}
-          fromCharaId={myCharaId}
-        />
 
         <div style={dividerStyle} aria-hidden="true" />
 
