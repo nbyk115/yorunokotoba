@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { HeartHandshake, Palette, Hash } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 // CharaAvatar / RarityBadge は PR4 で夢占いから削除（夢占いとホロスコープ分離方針）.
 // ホロスコープ占い（FortuneView）でのみ使用.
@@ -647,14 +649,19 @@ export function DreamView({ profile }: DreamViewProps) {
                   fontWeight: 700,
                   color: 'var(--gold)',
                   marginBottom: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
                 }}
               >
-                💝 今日のお守り
+                <Icon icon={HeartHandshake} size={16} color="var(--gold)" />
+                今日のお守り
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-                  <strong style={{ color: result.lucky.color.hex }}>
-                    🎨 {result.lucky.color.v}
+                  <strong style={{ color: result.lucky.color.hex, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon icon={Palette} size={14} color={result.lucky.color.hex} />
+                    {result.lucky.color.v}
                   </strong>
                   <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
                     {result.lucky.color.reason}
@@ -668,8 +675,11 @@ export function DreamView({ profile }: DreamViewProps) {
                     {result.lucky.item.reason}
                   </span>
                 </p>
-                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-                  <strong>🔢 ナンバー {result.lucky.num.v}</strong>
+                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <strong style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon icon={Hash} size={14} />
+                    ナンバー {result.lucky.num.v}
+                  </strong>
                   <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
                     {result.lucky.num.reason}
                   </span>

@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react';
+import { Sparkles, Stars, BookOpen } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
 import { BlurReveal } from '@/components/ui/BlurReveal';
@@ -289,9 +291,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
-              ✨
-            </span>
+            <Icon icon={Sparkles} size={22} />
             <span
               style={{
                 fontSize: 'var(--fs-caption)',
@@ -326,9 +326,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
-              💫
-            </span>
+            <Icon icon={Stars} size={22} />
             <span
               style={{
                 fontSize: 'var(--fs-caption)',
@@ -363,9 +361,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
-              📖
-            </span>
+            <Icon icon={BookOpen} size={22} />
             <span
               style={{
                 fontSize: 'var(--fs-caption)',

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { HeartHandshake, Palette, Hash } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Card } from '@/components/ui/Card';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { ShareCard } from '@/components/ui/ShareCard';
@@ -559,13 +561,20 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               fontWeight: 700,
               color: 'var(--gold)',
               marginBottom: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            💝 今日のお守り
+            <Icon icon={HeartHandshake} size={16} color="var(--gold)" />
+            今日のお守り
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-              <strong style={{ color: result.lucky.color.hex }}>🎨 {result.lucky.color.v}</strong>
+              <strong style={{ color: result.lucky.color.hex, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Icon icon={Palette} size={14} color={result.lucky.color.hex} />
+                {result.lucky.color.v}
+              </strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.color.reason}</span>
             </p>
             <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
@@ -574,8 +583,11 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               </strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.item.reason}</span>
             </p>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-              <strong>🔢 ナンバー {result.lucky.num.v}</strong>
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <strong style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                <Icon icon={Hash} size={14} />
+                ナンバー {result.lucky.num.v}
+              </strong>
               <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
             </p>
           </div>

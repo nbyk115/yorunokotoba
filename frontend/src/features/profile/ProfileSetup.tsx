@@ -1,4 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
+import { Flower2, Moon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { SIGNS, getSignIndex } from '@/data/signs';
 import type { UserProfile } from '@/lib/firestore';
@@ -390,9 +393,9 @@ interface Step3Props {
 }
 
 function Step3({ gender, onChange, animClass }: Step3Props) {
-  const options: { value: 'female' | 'male'; icon: string; label: string }[] = [
-    { value: 'female', icon: '🌸', label: '女性' },
-    { value: 'male', icon: '🌙', label: '男性' },
+  const options: { value: 'female' | 'male'; icon: LucideIcon; label: string }[] = [
+    { value: 'female', icon: Flower2, label: '女性' },
+    { value: 'male', icon: Moon, label: '男性' },
   ];
 
   return (
@@ -460,7 +463,7 @@ function Step3({ gender, onChange, animClass }: Step3Props) {
                 gap: 6,
               }}
             >
-              <span style={{ fontSize: 'var(--fs-hero-en)' }}>{opt.icon}</span>
+              <Icon icon={opt.icon} size={28} strokeWidth={1.5} />
               <span
                 style={{
                   fontSize: 'var(--fs-body)',
@@ -734,9 +737,14 @@ function EditMode({
                   cursor: 'pointer',
                   fontSize: 'var(--fs-body)',
                   transition: 'all 200ms ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
                 }}
               >
-                {g === 'female' ? '🌸 女性' : '🌙 男性'}
+                <Icon icon={g === 'female' ? Flower2 : Moon} size={18} strokeWidth={1.5} />
+                {g === 'female' ? '女性' : '男性'}
               </button>
             ))}
           </div>
