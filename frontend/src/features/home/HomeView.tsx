@@ -68,7 +68,7 @@ function getMoonPhaseEmoji(): string {
 const BLUR_PREVIEW_MESSAGES = [
   '今夜のよみとき、解放のほうを向いてる',
   '星があなたに言いたいことがある',
-  '引き寄せの扉が、そっと開きかけている',
+  '今夜のよみとき、いい流れが来てる',
   '夢の奥に、今のあなたへのメッセージが眠っている',
 ];
 
@@ -202,15 +202,13 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             style={{
               fontFamily: 'var(--font-accent)',
               fontSize: 11,
-              fontWeight: 400,
-              fontStyle: 'italic',
+              fontWeight: 700,
               color: 'var(--lavender)',
               letterSpacing: '0.12em',
-              textTransform: 'uppercase',
               marginBottom: 8,
             }}
           >
-            Dream Reading
+            夢占い
           </p>
 
           {/* card-title（ICP語彙: 「夢」「読み解く」）*/}
@@ -261,7 +259,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
 
           {/* 主要CTAボタン（ICP共感語彙: 「扉をひらく」）*/}
           <RitualButton
-            verb="今夜の扉をひらく"
+            verb="今夜の夢をよみとく"
             onConfirm={() => onNavigate('dream')}
             fullWidth
           />

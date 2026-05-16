@@ -200,7 +200,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           <div style={{ height: 1, background: 'var(--border)', margin: '24px auto', maxWidth: 240 }} />
 
           <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 12 }}>
-            あなたも自分の夜のキャラを見つけてみる？
+            あなたの星座占いもやってみる？
           </p>
           <button
             type="button"
@@ -222,7 +222,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
               }
             }}
           >
-            よるのことばを始める
+            夢・星座占いを始める
           </button>
         </section>
       </div>
@@ -245,21 +245,21 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           <CharaAvatar id={fromCharaId} size={48} />
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: 11, color: 'var(--t3)', margin: '0 0 4px' }}>
-              FROM
+              送ってくれた人
             </p>
             <p style={{ fontSize: 13, color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
-              {fromChara?.name ?? '夜のひと'}の夜のキャラが、
+              {fromChara?.name ?? 'あの人'}が、あなたとの
               <br />
-              あなたとの相性を占っています
+              相性を調べています
             </p>
           </div>
         </div>
 
-        <p style={eyebrowStyle}>Compatibility Reading</p>
+        <p style={eyebrowStyle}>相性占い</p>
         <h2 style={h2Style}>あなたの星座を選んで</h2>
 
         <div style={fieldStyle}>
-          <p style={labelStyle}>YOUR SIGN</p>
+          <p style={labelStyle}>あなたの星座</p>
           <select
             value={mySign}
             onChange={(e) => setMySign(e.target.value)}
@@ -275,7 +275,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
           </select>
         </div>
 
-        <p style={{ ...labelStyle, margin: '16px 0 6px' }}>YOUR GENDER</p>
+        <p style={{ ...labelStyle, margin: '16px 0 6px' }}>あなたの性別</p>
         <div style={genderToggleStyle}>
           <button
             type="button"
