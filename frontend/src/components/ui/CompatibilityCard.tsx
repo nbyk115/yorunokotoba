@@ -15,6 +15,30 @@ interface CompatibilityCardProps {
   pairTitle: string;
   signLabel?: string;
   dateLabel?: string;
+  /** 自分の charaId. シェアテキストに ?from= を埋めて受信者ファネルへ接続 */
+  fromCharaId?: string;
+}
+
+/** signLabel ("蠍座 · みおの夜" 形式) から自分の星座を抽出 */
+function extractSign(signLabel?: string): string {
+  if (!signLabel) return 'あなた';
+  const [signPart] = signLabel.split('·').map((s) => s.trim());
+  return signPart && signPart.length > 0 ? signPart : 'あなた';
+}
+
+/** content-strategist K値最大化シェアテキスト: 「結果の報告」型で社会的証明 */
+function buildShareText(
+  pairTitle: string,
+  rankLabel: string,
+  rank: CompatibilityRank,
+  fromCharaId?: string,
+  signLabel?: string,
+): string {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
+  const mySign = extractSign(signLabel);
+  const surprise = rank === 'best' ? '怖いくらい' : rank === 'good' ? '思ったより深い' : '意外と';
+  return `あなたとの相性、${mySign}は${rankLabel}だった。${surprise}。入れてみて→\n${inviteUrl} ${pairTitle} ${RANK_PREFIX[rank]} #よるのことば`;
 }
 
 const THEME_GRADIENTS: Record<CardTheme, string> = {
@@ -59,6 +83,7 @@ export function CompatibilityCard({
   pairTitle,
   signLabel,
   dateLabel,
+  fromCharaId,
 }: CompatibilityCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const dateText = dateLabel ?? getDefaultDateLabel();
@@ -98,7 +123,7 @@ export function CompatibilityCard({
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           title: 'よるのことば 相性占い',
-          text: `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel} #よるのことば`,
+          text: buildShareText(pairTitle, rankLabel, rank, fromCharaId, signLabel),
           files: [file],
         });
       } else {
@@ -112,9 +137,12 @@ export function CompatibilityCard({
   };
 
   const handleXPost = () => {
-    const text = `${pairTitle} ${RANK_PREFIX[rank]} ${rankLabel}\nよるのことば 相性占い`;
-    const url = typeof window !== 'undefined' ? window.location.href : '';
-    const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent('よるのことば')}`;
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const inviteUrl = fromCharaId ? `${origin}/?from=${fromCharaId}` : origin;
+    const mySign = extractSign(signLabel);
+    const surprise = rank === 'best' ? '怖いくらい' : rank === 'good' ? '思ったより深い' : '意外と';
+    const text = `あなたとの相性、${mySign}は${rankLabel}だった。${surprise}。${pairTitle} ${RANK_PREFIX[rank]}`;
+    const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(inviteUrl)}&hashtags=${encodeURIComponent('よるのことば')}`;
     if (typeof window !== 'undefined') {
       window.open(intent, '_blank', 'noopener,noreferrer');
     }

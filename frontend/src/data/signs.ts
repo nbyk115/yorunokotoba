@@ -42,7 +42,7 @@ export const SIGN_GENDER_CHAR: Record<string, { female: string; male: string }> 
   うお座: { female: 'ame_iruka', male: 'shizuku_penguin' },
 };
 
-/** 守護キャラID取得。性別が未指定 or 'female' なら female、'male' なら male、不明なら female fallback。 */
+/** 夜のキャラID取得。性別が未指定 or 'female' なら female、'male' なら male、不明なら female fallback。 */
 export function getCharaIdBySign(sign: string, gender: 'male' | 'female' | '' | undefined): string {
   const pair = SIGN_GENDER_CHAR[sign];
   if (!pair) return 'yume_kobuta'; // 不明な星座は fallback

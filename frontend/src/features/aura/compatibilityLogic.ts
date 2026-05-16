@@ -62,7 +62,7 @@ const RARITY_RANK: Record<DreamType['rarity'], number> = {
  *  4. rarity 同格 or どちらも SSR/SR → 'good'
  *  5. その他 → 'growth'
  *
- * 同一キャラ（自分自身と占う場合）は'good'固定（UX判断）。
+ * 同一キャラ（自分自身との相性）は'good'固定（UX判断）。
  */
 export function calculateCompatibility(
   charaIdA: string,

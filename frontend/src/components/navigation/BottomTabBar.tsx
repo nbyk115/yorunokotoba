@@ -42,7 +42,7 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
             role="tab"
             aria-selected={active}
             aria-label={tab.label}
-            tabIndex={active ? 0 : -1}
+            tabIndex={0}
             onClick={() => onChange(tab.key)}
             style={{
               background: 'transparent',
