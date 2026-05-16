@@ -72,8 +72,6 @@ function getDailyBlurMessage(): string {
   return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
 }
 
-// 夜のキャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
-
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const tod = useTimeOfDay();
   const heroCopy = HERO_COPIES[tod];
@@ -99,7 +97,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
         align="center"
         size="hero"
         charaId={charaId}
-        charaSize={160}
+        charaSize={88}
       />
 
       {/* スクロール領域 */}
@@ -112,24 +110,27 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             textAlign: 'center',
           }}
         >
+          {/* greeting label - Zen Maru 400 caption / t3 */}
           <p
             style={{
               fontSize: 'var(--fs-caption)',
               fontWeight: 400,
               color: 'var(--t3)',
-              letterSpacing: '0.08em',
+              letterSpacing: 'var(--ls-section)',
               lineHeight: 1.5,
               margin: 0,
             }}
           >
             {greeting}
           </p>
+          {/* ユーザー名 - Zen Maru 700 28px（PR4 ページ見出しスケール） */}
           <p
             style={{
-              fontSize: 'var(--fs-h1)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-page-h1)',
               fontWeight: 700,
               color: 'var(--t1)',
-              letterSpacing: '0.04em',
+              letterSpacing: '0.02em',
               marginTop: 4,
               lineHeight: 1.3,
             }}
@@ -167,64 +168,72 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           </p>
         </section>
 
-        {/* dream-card（画面の主役カード = variant primary）*/}
+        {/*
+          dream-card（画面の主役カード = variant primary）
+          PR4: 上辺に金（--accent）の極細線、濃い黒影、backdrop-filter blur
+          creative-playbook「1画面に主役1枚の原則」
+        */}
         <Card
           variant="primary"
           as="article"
           className="slide-up"
           style={{
-            margin: 'clamp(12px, 4.3vw, 20px) clamp(12px, 4.3vw, 20px) 0',
-            padding: 'clamp(16px, 5.3vw, 24px)',
+            margin: '20px 16px 0',
+            padding: '24px',
+            borderTop: 'none',
             animation: 'slideUp 450ms ease both',
             transition: 'transform 200ms ease, box-shadow 200ms ease',
+            /* 上辺に金の極細線（inset で実現）*/
+            boxShadow: 'inset 0 2px 0 var(--accent), 0 8px 28px rgba(0,0,0,0.32)',
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-card-primary)';
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-card-primary)';
           }}
           onMouseDown={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
           }}
         >
-          {/* eyebrow */}
+          {/* eyebrow - Zen Maru 700 / card-label スケール / t3 色 */}
           <p
             style={{
-              fontFamily: 'var(--font-accent)',
-              fontSize: 'var(--fs-micro)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-card-label)',
               fontWeight: 700,
-              color: 'var(--lavender)',
-              letterSpacing: '0.12em',
+              color: 'var(--text-low)',
+              letterSpacing: 'var(--ls-card-label)',
               marginBottom: 8,
+              margin: '0 0 8px',
             }}
           >
             夢占い
           </p>
 
-          {/* card-title（ICP語彙: 「夢」「よみとく」）*/}
+          {/* card-title - Zen Maru 700 / section スケール */}
           <h2
             style={{
-              fontSize: 'var(--fs-h2)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-section)',
               fontWeight: 700,
               color: 'var(--t1)',
               lineHeight: 1.4,
-              marginBottom: 8,
+              letterSpacing: '0.04em',
               margin: '0 0 8px',
             }}
           >
             今夜の夢をよみとく
           </h2>
 
-          {/* card-body（ICP語彙: 「シンボル」「メッセージ」）*/}
+          {/* card-body - Zen Maru 400 15px / line-height 1.8 */}
           <p
             style={{
-              fontSize: 'var(--fs-caption)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-body)',
+              fontWeight: 400,
               color: 'var(--t2)',
               lineHeight: 1.8,
-              marginBottom: 16,
               margin: '0 0 16px',
             }}
           >
@@ -237,7 +246,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             revealOnTap
             style={{
               padding: '12px 14px',
-              background: 'rgba(180, 100, 180, 0.06)',
+              background: 'rgba(201, 169, 97, 0.06)',
               borderRadius: 10,
               marginBottom: 20,
               fontSize: 'var(--fs-caption)',
@@ -245,6 +254,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               lineHeight: 1.6,
               letterSpacing: '0.02em',
               fontStyle: 'italic',
+              fontFamily: 'var(--font-accent)',
             }}
           >
             {blurMessage}
@@ -258,148 +268,141 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           />
         </Card>
 
-        {/* scroll-indicator（他画面への誘導チップ）*/}
+        {/*
+          PR4: 下部の他画面誘導
+          creative-playbook「箱で区切らず余白で区切る」
+          枠線（box）を消してテキストリンク化。8pxグリッド余白で区切る。
+        */}
         <nav
           aria-label="他のページへ"
           style={{
-            margin: '24px clamp(12px, 4.3vw, 20px) 0',
-            display: 'flex',
-            gap: 12,
-            paddingBottom: 24,
+            margin: '32px 16px 0',
+            paddingBottom: 32,
           }}
         >
-          {/* fortune-chip */}
-          <button
-            onClick={() => onNavigate('fortune')}
-            style={chipStyle}
-            onMouseEnter={(e) => applyChipHover(e, true)}
-            onMouseLeave={(e) => applyChipHover(e, false)}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
-              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = 'none';
+          {/* セクション見出し - Zen Maru 700 / card-label / t3 */}
+          <p
+            style={{
+              fontSize: 'var(--fs-card-label)',
+              fontWeight: 700,
+              color: 'var(--text-low)',
+              letterSpacing: 'var(--ls-card-label)',
+              marginBottom: 16,
+              textAlign: 'center',
             }}
           >
-            <Icon icon={Sparkles} size={22} />
-            <span
-              style={{
-                fontSize: 'var(--fs-caption)',
-                fontWeight: 700,
-                color: 'var(--t2)',
-              }}
-            >
-              星座占い
-            </span>
-            <span
-              style={{
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--rose)',
-                fontWeight: 600,
-              }}
-            >
-              みる
-            </span>
-          </button>
+            ほかにも
+          </p>
 
-          {/* aura-chip */}
-          <button
-            onClick={() => onNavigate('aura')}
-            style={chipStyle}
-            onMouseEnter={(e) => applyChipHover(e, true)}
-            onMouseLeave={(e) => applyChipHover(e, false)}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
-              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = 'none';
+          {/* テキストリンク3件 - 箱なし・余白区切り */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 0,
             }}
           >
-            <Icon icon={Stars} size={22} />
-            <span
-              style={{
-                fontSize: 'var(--fs-caption)',
-                fontWeight: 700,
-                color: 'var(--t2)',
-              }}
-            >
-              相性診断
-            </span>
-            <span
-              style={{
-                fontSize: 'var(--fs-micro)',
-                color: 'var(--gold)',
-                fontWeight: 600,
-              }}
-            >
-              無料でためす
-            </span>
-          </button>
-
-          {/* archive-chip */}
-          <button
-            onClick={() => onNavigate('archive')}
-            style={chipStyle}
-            onMouseEnter={(e) => applyChipHover(e, true)}
-            onMouseLeave={(e) => applyChipHover(e, false)}
-            onFocus={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
-              (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
-            }}
-            onBlur={(e) => {
-              (e.currentTarget as HTMLElement).style.outline = 'none';
-            }}
-          >
-            <Icon icon={BookOpen} size={22} />
-            <span
-              style={{
-                fontSize: 'var(--fs-caption)',
-                fontWeight: 700,
-                color: 'var(--t2)',
-              }}
-            >
-              夜の日記
-            </span>
-            <span
-              style={{
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--lavender)',
-                fontWeight: 600,
-              }}
-            >
-              しまう
-            </span>
-          </button>
+            {/* fortune link */}
+            <NavTextLink
+              icon={<Icon icon={Sparkles} size={16} color="var(--accent)" />}
+              label="星座占い"
+              action="みる"
+              actionColor="var(--accent)"
+              onClick={() => onNavigate('fortune')}
+            />
+            {/* divider */}
+            <div aria-hidden="true" style={{ height: 1, background: 'var(--border)', margin: '0 0' }} />
+            {/* aura link */}
+            <NavTextLink
+              icon={<Icon icon={Stars} size={16} color="var(--t3)" />}
+              label="相性診断"
+              action="ためす"
+              actionColor="var(--t2)"
+              onClick={() => onNavigate('aura')}
+            />
+            {/* divider */}
+            <div aria-hidden="true" style={{ height: 1, background: 'var(--border)', margin: '0 0' }} />
+            {/* archive link */}
+            <NavTextLink
+              icon={<Icon icon={BookOpen} size={16} color="var(--t3)" />}
+              label="夜の日記"
+              action="しまう"
+              actionColor="var(--t2)"
+              onClick={() => onNavigate('archive')}
+            />
+          </div>
         </nav>
       </main>
     </div>
   );
 }
 
-const chipStyle: CSSProperties = {
-  flex: 1,
-  padding: 'var(--sp-4) var(--sp-3)',
-  background: 'var(--card-secondary)',
-  border: '1px solid var(--border-secondary)',
-  borderRadius: 'var(--r-button)',
-  textAlign: 'center',
-  cursor: 'pointer',
-  minHeight: 56,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 4,
-  transition: 'border-color 200ms ease, transform 200ms ease',
-};
+// PR4: テキストリンクコンポーネント - 枠なし・余白区切り (creative-playbook「箱で区切らず余白で区切る」)
+interface NavTextLinkProps {
+  icon: React.ReactNode;
+  label: string;
+  action: string;
+  actionColor: string;
+  onClick: () => void;
+}
 
-function applyChipHover(
-  e: React.MouseEvent<HTMLButtonElement>,
-  entering: boolean,
-): void {
-  const el = e.currentTarget as HTMLElement;
-  el.style.borderColor = entering ? 'var(--rose)' : 'var(--border)';
-  el.style.transform = entering ? 'translateY(-1px)' : 'translateY(0)';
+function NavTextLink({ icon, label, action, actionColor, onClick }: NavTextLinkProps) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        width: '100%',
+        padding: '16px 4px',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        textAlign: 'left',
+        transition: 'opacity 150ms ease',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.opacity = '0.72';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.opacity = '1';
+      }}
+      onFocus={(e) => {
+        (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
+        (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
+      }}
+      onBlur={(e) => {
+        (e.currentTarget as HTMLElement).style.outline = 'none';
+      }}
+    >
+      {/* icon */}
+      <span aria-hidden="true" style={{ flexShrink: 0, lineHeight: 0 }}>
+        {icon}
+      </span>
+      {/* label */}
+      <span
+        style={{
+          flex: 1,
+          fontSize: 'var(--fs-body)',
+          fontWeight: 400,
+          color: 'var(--t2)',
+          letterSpacing: '0.02em',
+        }}
+      >
+        {label}
+      </span>
+      {/* action - 小さく右寄せ */}
+      <span
+        style={{
+          fontSize: 'var(--fs-caption)',
+          fontWeight: 400,
+          color: actionColor,
+          letterSpacing: '0.04em',
+        }}
+      >
+        {action}
+      </span>
+    </button>
+  );
 }
