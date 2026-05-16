@@ -6,6 +6,7 @@ import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { generateFortune, type FortuneRank, type FortuneResult } from '@/logic/fortune';
 import { SIGNS } from '@/data/signs';
+import { ZodiacIcon } from '@/components/ui/ZodiacIcon';
 import { getGuardianMessage } from '@/data/guardianMessages';
 import { getMoonSignWave } from '@/data/moonSignWaves';
 import { getMoonPhaseCategory, getMoonPhaseIndex, getMoonPhaseLabel } from '@/lib/moonPhase';
@@ -228,7 +229,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
     return () => clearTimeout(t);
   }, [profile]);
 
-  const signIcon = SIGNS.find((s) => s.k === profile.sign)?.icon ?? '✨';
+  const signIndex = SIGNS.findIndex((s) => s.k === profile.sign);
 
   /* ── ローディング ── */
   if (!result) {
@@ -304,9 +305,16 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               letterSpacing: '0.1em',
               marginBottom: 8,
               margin: '0 0 8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
             }}
           >
-            {signIcon} {profile.sign} · {profile.name}
+            {signIndex >= 0 && (
+              <ZodiacIcon signIndex={signIndex} size={14} color="var(--t3)" />
+            )}
+            {profile.sign} · {profile.name}
           </p>
 
           {/* rank-en（Cormorant 72px italic） */}
