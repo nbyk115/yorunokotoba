@@ -3,38 +3,41 @@
  * 出典: design/contracts/tokens.json
  * 変更時は tokens.json を先に更新し、validate.ts を通してから本ファイルを更新する
  *
- * PR2 Palette Redesign: インクブルー基調 + シャンパンゴールド1点アクセント
- * - 旧: ローズ多用・4アクセント信号機配色 → 新: 色相1系統（青紫）+金1点
- * - --rose: #E8627C → #E27A8E（彩度を抑えたローズ。CTA・アクティブのみ）
- * - --gold: #D4A853 → #C9A961（くすませたシャンパンゴールド。唯一の上質アクセント）
- * - --blush / --lavender: 旧ピンク系・紫系 → インクブルー系に寄せ（変数名は PR4-6 で整理）
- * - 夜モード背景: インクブルー1系統で明度差のみ
- * - 影: 黒系 rgba(0,0,0,...) に統一
+ * PR5 Palette Redesign: くすみピンク基調（日本20-40代女性向け再設計）
+ * - 旧: インクブルー1色相 → 新: くすみピンク軸（彩度45-58%）+ シャンパンゴールド1点
+ * - --rose: #E27A8E → #E0758C（彩度ダウン + 黄み寄せ。CTA・アクティブのみ）
+ * - --rose-deep: #C75E76（hover。旧 --pink #CF6A7C を置換）
+ * - --blush: #F3D9DC（淡ピンク。カード地ニュアンス用）
+ * - --lavender: 維持（パーティクル装飾用）
+ * - --bg1 day: #FBF4F2（ピンク混じり温白）
+ * - 夜モード背景: ワイン/バーガンディ軸（インクブルー廃止）
+ * - --t1 day: #3A2A30（ピンク寄り濃茶、純黒不使用）
  */
 
 :root {
   /* Colors — Light (day モード基準) */
-  --bg1: #F3EFEA;
-  --rose: #E27A8E;
-  --pink: #CF6A7C;
-  --blush: #7B7A9E;
+  --bg1: #FBF4F2;
+  --rose: #E0758C;
+  --rose-deep: #C75E76;
+  --pink: #C75E76;
+  --blush: #F3D9DC;
   --lavender: #8A87B8;
   --gold: #C9A961;
   --accent: #C9A961;
-  --accent-rose: #E27A8E;
-  --t1: #2A2530;
-  --t2: rgba(42, 37, 48, 0.72);
-  --t3: rgba(42, 37, 48, 0.56);
+  --accent-rose: #E0758C;
+  --t1: #3A2A30;
+  --t2: rgba(58, 42, 48, 0.70);
+  --t3: rgba(58, 42, 48, 0.52);
   --bg-body: var(--bg1);
   --card-primary: rgba(255, 255, 255, 0.96);
   --card-secondary: rgba(255, 255, 255, 0.62);
-  --border-primary: rgba(42, 37, 48, 0.10);
-  --border-secondary: rgba(42, 37, 48, 0.05);
+  --border-primary: rgba(58, 42, 48, 0.10);
+  --border-secondary: rgba(58, 42, 48, 0.05);
   /* migration alias: --card points to card-secondary for backward compat */
   --card: var(--card-secondary);
   --card-solid: #FFFFFF;
-  --border: rgba(42, 37, 48, 0.08);
-  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.55), 0 6px 22px rgba(0,0,0,0.14);
+  --border: rgba(58, 42, 48, 0.08);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 20px rgba(224,117,140,0.14);
   --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 10px rgba(0,0,0,0.08);
   /* migration aliases for old shadow vars */
   --card-highlight-shadow: var(--shadow-card-primary);
@@ -121,19 +124,21 @@
 }
 
 [data-theme='dark'] {
-  /* インクブルー夜基調（night モードと同等） */
-  --bg1: #14121F;
-  --rose: #E27A8E;
-  --card-primary: rgba(31, 27, 46, 0.92);
-  --card-secondary: rgba(20, 18, 31, 0.60);
-  --border-primary: rgba(244, 241, 246, 0.12);
-  --border-secondary: rgba(244, 241, 246, 0.06);
+  /* ワイン夜基調（night モードと同等） */
+  --bg1: #1C1620;
+  --rose: #EC8C9E;
+  --rose-deep: #D97088;
+  --pink: #D97088;
+  --t1: #F6ECEE;
+  --t2: rgba(246, 236, 238, 0.68);
+  --t3: rgba(246, 236, 238, 0.46);
+  --card-primary: rgba(40, 28, 34, 0.92);
+  --card-secondary: rgba(28, 20, 24, 0.60);
+  --border-primary: rgba(246, 236, 238, 0.12);
+  --border-secondary: rgba(246, 236, 238, 0.06);
   --card: var(--card-secondary);
-  --card-solid: #1F1B2E;
-  --t1: #F4F1F6;
-  --t2: rgba(244, 241, 246, 0.62);
-  --t3: rgba(244, 241, 246, 0.38);
-  --border: rgba(244, 241, 246, 0.08);
+  --card-solid: #281C22;
+  --border: rgba(246, 236, 238, 0.08);
   --bg-body: var(--bg1);
   --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40);
   --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28);
@@ -141,65 +146,65 @@
 
 /* Time of Day Modes — must come after [data-theme='dark'] so --bg1 wins */
 
-/* night-deep: 02:00-05:00 — 最暗のインクブルー。星空の深淵 */
+/* night-deep: 02:00-05:00 — 最暗。ワイン寄り深黒。星空の深淵 */
 [data-time-of-day="night-deep"] {
-  --bg1: #0B0A14;
-  --bg-body: #0B0A14;
+  --bg1: #150E14;
+  --bg-body: #150E14;
 }
 
-/* dawn: 05:00-11:00 — インクブルー中明度。夜明けの空が少し明るむ */
+/* dawn: 05:00-11:00 — ワインに寄せた夜明け前 */
 [data-time-of-day="dawn"] {
-  --bg1: #1A1826;
-  --bg-body: #1A1826;
+  --bg1: #2A1E28;
+  --bg-body: #2A1E28;
 }
 
-/* day: 11:00-17:00 — 温白 #F3EFEA 基調。昼間のみ明るいパレット */
+/* day: 11:00-17:00 — ピンク混じり温白。昼間のみ明るいパレット */
 [data-time-of-day="day"] {
-  --bg1: #F3EFEA;
-  --bg-body: #F3EFEA;
+  --bg1: #FBF4F2;
+  --bg-body: #FBF4F2;
   /* restore light-mode card/shadow/border values when day mode overrides dark theme */
   --card-primary: rgba(255, 255, 255, 0.96);
   --card-secondary: rgba(255, 255, 255, 0.62);
-  --border-primary: rgba(42, 37, 48, 0.10);
-  --border-secondary: rgba(42, 37, 48, 0.05);
-  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.55), 0 6px 22px rgba(0,0,0,0.14);
+  --border-primary: rgba(58, 42, 48, 0.10);
+  --border-secondary: rgba(58, 42, 48, 0.05);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 20px rgba(224,117,140,0.14);
   --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 10px rgba(0,0,0,0.08);
-  /* restore light text colors — 温白背景に暗い文字を戻す（白背景に白文字を防ぐ） */
-  --t1: #2A2530;
-  --t2: rgba(42, 37, 48, 0.72);
-  --t3: rgba(42, 37, 48, 0.56);
+  /* restore light text colors — ピンク温白背景に暗い文字を戻す（白背景に白文字を防ぐ） */
+  --t1: #3A2A30;
+  --t2: rgba(58, 42, 48, 0.70);
+  --t3: rgba(58, 42, 48, 0.52);
   --card-solid: #FFFFFF;
-  --border: rgba(42, 37, 48, 0.08);
+  --border: rgba(58, 42, 48, 0.08);
 }
 
-/* dusk: 17:00-22:00 — インクブルー中明度（night-deep より少し明るい夕暮れ） */
+/* dusk: 17:00-22:00 — ワイン中明度。宵闇 */
 [data-time-of-day="dusk"] {
-  --bg1: #161422;
-  --bg-body: #161422;
+  --bg1: #241823;
+  --bg-body: #241823;
 }
 
-/* night: 22:00-02:00 — インクブルー標準。夜の帷 */
+/* night: 22:00-02:00 — ワイン標準。夜の帷 */
 [data-time-of-day="night"] {
-  --bg1: #14121F;
-  --bg-body: #14121F;
+  --bg1: #1C1620;
+  --bg-body: #1C1620;
 }
 
-/* 夜系4モード共通: theme が light のままでも暗背景に合わせてテキスト・カード・影をインクブルー前提に切替。
+/* 夜系4モード共通: theme が light のままでも暗背景に合わせてテキスト・カード・影をワイン前提に切替。
    背景だけ暗くして文字色が明るいテーマのまま残ると「暗背景に暗文字」で全く読めなくなるため。 */
 [data-time-of-day="night-deep"],
 [data-time-of-day="dawn"],
 [data-time-of-day="dusk"],
 [data-time-of-day="night"] {
-  --t1: #F4F1F6;
-  --t2: rgba(244, 241, 246, 0.62);
-  --t3: rgba(244, 241, 246, 0.38);
-  --card-primary: rgba(31, 27, 46, 0.92);
-  --card-secondary: rgba(20, 18, 31, 0.60);
+  --t1: #F6ECEE;
+  --t2: rgba(246, 236, 238, 0.68);
+  --t3: rgba(246, 236, 238, 0.46);
+  --card-primary: rgba(40, 28, 34, 0.92);
+  --card-secondary: rgba(28, 20, 24, 0.60);
   --card: var(--card-secondary);
-  --card-solid: #1F1B2E;
-  --border-primary: rgba(244, 241, 246, 0.12);
-  --border-secondary: rgba(244, 241, 246, 0.06);
-  --border: rgba(244, 241, 246, 0.08);
+  --card-solid: #281C22;
+  --border-primary: rgba(246, 236, 238, 0.12);
+  --border-secondary: rgba(246, 236, 238, 0.06);
+  --border: rgba(246, 236, 238, 0.08);
   --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40);
   --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28);
 }

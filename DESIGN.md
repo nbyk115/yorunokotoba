@@ -2,62 +2,62 @@
 
 ## Colors
 
-PR2 リデザイン: 旧多色アクセント配色 → インクブルー1色相 + シャンパンゴールド1点アクセント。
+PR5 リデザイン: インクブルー単色 → くすみピンク基調（日本20-40代女性向け再設計）。彩度45-58%の「くすみピンク」で上質化。旧 #E8627C（彩度76%、安っぽい）を廃し、黄み寄せのローズへ。夜モード背景はインクブルーを廃止しワイン/バーガンディ軸で統一。
 
 ### Light Theme (day mode)
 | Token | Value | Usage |
 |---|---|---|
-| `--bg1` | `#F3EFEA` | Background primary (温白) |
-| `--rose` | `#E27A8E` | CTA and active states only (彩度を抑えたローズ) |
-| `--pink` | `#CF6A7C` | Rose hover variant |
-| `--blush` | `#7B7A9E` | Blue-purple muted (PR4-6 で変数名整理) |
-| `--lavender` | `#8A87B8` | Blue-purple particle accent (PR4-6 で変数名整理) |
+| `--bg1` | `#FBF4F2` | Background primary (ピンク混じり温白) |
+| `--rose` | `#E0758C` | CTA and active states only (くすみローズ。彩度ダウン + 黄み寄せ) |
+| `--rose-deep` | `#C75E76` | Rose hover variant |
+| `--pink` | `#C75E76` | Rose hover variant (--rose-deep の alias) |
+| `--blush` | `#F3D9DC` | 淡ピンク。カード地ニュアンス用 |
+| `--lavender` | `#8A87B8` | Particle accent (装飾用途のみ) |
 | `--gold` | `#C9A961` | Unique premium accent (シャンパンゴールド) |
 | `--accent` | `#C9A961` | Primary accent - gold. All modes. |
-| `--accent-rose` | `#E27A8E` | CTA and active state accent |
+| `--accent-rose` | `#E0758C` | CTA and active state accent |
 | `--card` | `var(--card-secondary)` | Card background (migration alias for card-secondary) |
 | `--card-primary` | `rgba(255,255,255,0.96)` | Primary card background (main content card, 1 per screen) |
 | `--card-secondary` | `rgba(255,255,255,0.62)` | Secondary card background (sub cards, list items) |
-| `--border-primary` | `rgba(42,37,48,0.10)` | Primary card border |
-| `--border-secondary` | `rgba(42,37,48,0.05)` | Secondary card border |
+| `--border-primary` | `rgba(58,42,48,0.10)` | Primary card border |
+| `--border-secondary` | `rgba(58,42,48,0.05)` | Secondary card border |
 | `--card-solid` | `#fff` | Card background solid |
-| `--border` | `rgba(42,37,48,0.08)` | Border |
-| `--t1` | `#2A2530` | Text primary |
-| `--t2` | `rgba(42,37,48,0.72)` | Text secondary |
-| `--t3` | `rgba(42,37,48,0.56)` | Text tertiary |
-| `--t4` | `rgba(42,37,48,0.40)` | Text quaternary |
-| `--grad` | `linear-gradient(135deg, #E27A8E, #CF6A7C)` | Primary gradient (PR3 で var 化) |
-| `--grad2` | `linear-gradient(135deg, #E27A8E, #8A87B8)` | Secondary gradient (PR3 で var 化) |
+| `--border` | `rgba(58,42,48,0.08)` | Border |
+| `--t1` | `#3A2A30` | Text primary (ピンク寄り濃茶、純黒不使用) |
+| `--t2` | `rgba(58,42,48,0.70)` | Text secondary |
+| `--t3` | `rgba(58,42,48,0.52)` | Text tertiary |
+| `--t4` | `rgba(58,42,48,0.36)` | Text quaternary |
 | `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
-| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.55), 0 6px 22px rgba(0,0,0,0.14)` | Primary card shadow |
+| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 20px rgba(224,117,140,0.14)` | Primary card shadow (淡ローズの弱いグロー) |
 | `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 10px rgba(0,0,0,0.08)` | Secondary card shadow |
 
 ### Dark Theme (`[data-theme="dark"]`) / Night Modes
 | Token | Value | Usage |
 |---|---|---|
-| `--bg1` | `#14121F` | Background primary (インクブルー夜色) |
-| `--rose` | `#E27A8E` | CTA and active states only |
+| `--bg1` | `#1C1620` | Background primary (ワインに寄せた黒。インクブルー廃止) |
+| `--rose` | `#EC8C9E` | CTA and active states only (暗背景で映える明度上げ) |
+| `--rose-deep` | `#D97088` | Rose hover (dark) |
 | `--card` | `var(--card-secondary)` | Card background (migration alias for card-secondary) |
-| `--card-primary` | `rgba(31,27,46,0.92)` | Primary card background |
-| `--card-secondary` | `rgba(20,18,31,0.60)` | Secondary card background |
-| `--border-primary` | `rgba(244,241,246,0.12)` | Primary card border |
-| `--border-secondary` | `rgba(244,241,246,0.06)` | Secondary card border |
-| `--card-solid` | `#1F1B2E` | Card background solid |
-| `--t1` | `#F4F1F6` | Text primary |
-| `--t2` | `rgba(244,241,246,0.62)` | Text secondary |
-| `--t3` | `rgba(244,241,246,0.38)` | Text tertiary |
+| `--card-primary` | `rgba(40,28,34,0.92)` | Primary card background |
+| `--card-secondary` | `rgba(28,20,24,0.60)` | Secondary card background |
+| `--border-primary` | `rgba(246,236,238,0.12)` | Primary card border |
+| `--border-secondary` | `rgba(246,236,238,0.06)` | Secondary card border |
+| `--card-solid` | `#281C22` | Card background solid |
+| `--t1` | `#F6ECEE` | Text primary (白に微ピンク) |
+| `--t2` | `rgba(246,236,238,0.68)` | Text secondary |
+| `--t3` | `rgba(246,236,238,0.46)` | Text tertiary |
 | `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
 | `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40)` | Primary card shadow |
 | `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28)` | Secondary card shadow |
 
-### Time of Day Background Colors (PR2 確定値)
+### Time of Day Background Colors (PR5 確定値: 青を完全排除、ピンク/ワイン軸で統一)
 | Mode | Hours | `--bg1` | Character |
 |---|---|---|---|
-| `night-deep` | 02:00-05:00 | `#0B0A14` | 最暗。星空の深淵 |
-| `dawn` | 05:00-11:00 | `#1A1826` | 夜明け前の群青 |
-| `day` | 11:00-17:00 | `#F3EFEA` | 温白。昼の光 |
-| `dusk` | 17:00-22:00 | `#161422` | 宵闇。深まる夜 |
-| `night` | 22:00-02:00 | `#14121F` | 夜の帷 |
+| `night-deep` | 02:00-05:00 | `#150E14` | 最暗。ワイン寄り深黒 |
+| `dawn` | 05:00-11:00 | `#2A1E28` | 夜明け前のワイン色 |
+| `day` | 11:00-17:00 | `#FBF4F2` | ピンク温白。昼の光 |
+| `dusk` | 17:00-22:00 | `#241823` | 宵闇。深まる夜 |
+| `night` | 22:00-02:00 | `#1C1620` | 夜の帷 |
 
 ### Semantic
 | Color | Usage |
@@ -95,8 +95,8 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 | Body | 15px | 400 | 1.7 |
 | Small / Caption | 13px | 400 | 1.5 |
 | Minimum | 11px | 400 | 1.4 |
-| **Hero (Cormorant italic)** | 32px | 300 | 1.4 |
-| **Hero JP (Zen Maru)** | 18px | 500 | 1.7 |
+| **Hero JP (Zen Maru, 主役)** | 24px | 700 | 1.4 |
+| Hero EN (Cormorant italic, 装飾降格) | 24px | 300 | 1.3 |
 
 ## Spacing
 
@@ -189,11 +189,11 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 
 | Mode | 時間帯 | `--bg1` | Particle Color | Count | Speed |
 |---|---|---|---|---|---|
-| `night-deep` | 02:00-05:00 | `#0B0A14` | `var(--gold)` | 8 | 0.6 |
-| `dawn` | 05:00-11:00 | `#1A1826` | `var(--accent)` | 5 | 0.8 |
-| `day` | 11:00-17:00 | `#F3EFEA` | `var(--accent-rose)` | 6 | 1.0 |
-| `dusk` | 17:00-22:00 | `#161422` | `var(--lavender)` | 7 | 0.9 |
-| `night` | 22:00-02:00 | `#14121F` | `var(--accent-rose)` | 6 | 1.0 |
+| `night-deep` | 02:00-05:00 | `#150E14` | `var(--gold)` | 8 | 0.6 |
+| `dawn` | 05:00-11:00 | `#2A1E28` | `var(--accent)` | 5 | 0.8 |
+| `day` | 11:00-17:00 | `#FBF4F2` | `var(--accent-rose)` | 6 | 1.0 |
+| `dusk` | 17:00-22:00 | `#241823` | `var(--lavender)` | 7 | 0.9 |
+| `night` | 22:00-02:00 | `#1C1620` | `var(--accent-rose)` | 6 | 1.0 |
 
 ### 設計原則
 - ライト/ダークテーマ(`data-theme`)とは独立して動作する
@@ -208,7 +208,7 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 - Use `backdrop-filter: blur()` for glass morphism cards
 - Use Zen Maru Gothic for all text (warm, rounded feel)
 - Use Cormorant for decorative elements only
-- Keep animations subtle (translateY max 2px, opacity transitions)
+- Keep animations subtle (translateY: hover max 2px, chara float max 6px, opacity transitions)
 - Use gradients for primary CTAs only
 - PWA: full-screen capable, standalone display mode
 
@@ -241,7 +241,7 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 ## PWA
 
 - Display: standalone
-- Theme color: `#F3EFEA` (light) / `#14121F` (dark)
-- Background color: `#FFF5F0`
+- Theme color: `#FBF4F2` (light) / `#1C1620` (dark)
+- Background color: `#FBF4F2`
 - Icons: 192x192, 512x512
 - Orientation: portrait
