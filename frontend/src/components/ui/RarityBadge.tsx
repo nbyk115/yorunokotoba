@@ -1,32 +1,44 @@
+/**
+ * RarityBadge — レア度バッジ
+ * Wave L1: hex 直書き廃止 → --rarity-* トークン参照
+ * DESIGN.md: --r-tag 20px (pill 形状)
+ */
 import type { DreamType } from '@/data/dreamTypes';
 
 interface RarityBadgeProps {
   rarity: DreamType['rarity'];
 }
 
-const RARITY_STYLES: Record<DreamType['rarity'], { bg: string; fg: string; label: string }> = {
-  N: { bg: 'rgba(58,40,48,0.08)', fg: 'var(--t2)', label: 'N' },
-  R: { bg: 'rgba(232,98,124,0.14)', fg: '#E8627C', label: 'R' },
-  SR: { bg: 'rgba(123,140,222,0.16)', fg: '#7B8CDE', label: 'SR' },
-  SSR: { bg: '#C9A961', fg: '#fff', label: 'SSR' },
+const RARITY_LABEL: Record<DreamType['rarity'], string> = {
+  N: 'N',
+  R: 'R',
+  SR: 'SR',
+  SSR: 'SSR',
+};
+
+/** 背景は前景色を低 alpha で重ねる（ガラス感）*/
+const RARITY_BG: Record<DreamType['rarity'], string> = {
+  N: 'rgba(246,236,238,0.08)',
+  R: 'rgba(236,140,158,0.14)',
+  SR: 'rgba(138,135,184,0.16)',
+  SSR: 'rgba(201,169,97,0.22)',
 };
 
 export function RarityBadge({ rarity }: RarityBadgeProps) {
-  const s = RARITY_STYLES[rarity];
   return (
     <span
       style={{
         display: 'inline-block',
         padding: '2px 10px',
         borderRadius: 'var(--r-tag)',
-        background: s.bg,
-        color: s.fg,
+        background: RARITY_BG[rarity],
+        color: `var(--rarity-${rarity.toLowerCase()})`,
         fontSize: 'var(--fs-micro)',
         fontWeight: 800,
         letterSpacing: 1,
       }}
     >
-      {s.label}
+      {RARITY_LABEL[rarity]}
     </span>
   );
 }

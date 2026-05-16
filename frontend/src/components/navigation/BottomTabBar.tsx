@@ -1,3 +1,8 @@
+/**
+ * BottomTabBar — Wave L1 リビルド
+ * タブ: ホーム / 夢占い / 星座占い / 履歴
+ * DESIGN.md: height 56px / active --rose / inactive --t3
+ */
 import { House, Moon, Sparkles, BookOpen } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
@@ -23,17 +28,18 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
       style={{
         position: 'fixed',
         bottom: 0,
-        left: 0,
-        right: 0,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '100%',
+        maxWidth: 430,
         zIndex: 900,
         background: 'var(--card-solid)',
         borderTop: '1px solid var(--border)',
         display: 'flex',
         justifyContent: 'space-around',
-        padding: `6px 0 calc(6px + env(safe-area-inset-bottom, 0px))`,
-        boxShadow: '0 -2px 12px rgba(0, 0, 0, 0.04)',
-        maxWidth: 'var(--app-max-width)',
-        margin: '0 auto',
+        height: 56,
+        alignItems: 'stretch',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
       {TABS.map((tab) => {
@@ -54,9 +60,11 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
               padding: '8px 12px',
               minHeight: 44,
               minWidth: 44,
+              flex: 1,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 2,
               color: active ? 'var(--rose)' : 'var(--t3)',
               fontFamily: 'var(--font-heading)',

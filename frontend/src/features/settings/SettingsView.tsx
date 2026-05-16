@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import { Sparkles, FileText, UserRound } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
+import { BackHeader } from '@/components/ui/BackHeader';
 import { useSubscription } from '@/lib/subscription';
 import { signOut, useCurrentUser } from '@/lib/auth';
 import { CancelConfirmModal } from './CancelConfirmModal';
@@ -16,9 +17,10 @@ import { Card } from '@/components/ui/Card';
 
 interface SettingsViewProps {
   onBack: () => void;
+  onPremium?: () => void;
 }
 
-export function SettingsView({ onBack }: SettingsViewProps) {
+export function SettingsView({ onBack, onPremium: _onPremium }: SettingsViewProps) {
   const { user, userId } = useCurrentUser();
   const { subscription, isPremium, loading } = useSubscription(userId);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -47,28 +49,9 @@ export function SettingsView({ onBack }: SettingsViewProps) {
   }
 
   return (
-    <div style={{ padding: 'var(--sp-5)', paddingBottom: 88 }}>
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="戻る"
-        style={{
-          background: 'transparent',
-          border: 'none',
-          color: 'var(--rose)',
-          fontSize: 'var(--fs-body)',
-          padding: '10px 4px',
-          minHeight: 44,
-          cursor: 'pointer',
-          marginBottom: 8,
-        }}
-      >
-        ← 戻る
-      </button>
-
-      <h2 style={{ fontSize: 'var(--fs-h1)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 20px' }}>
-        設定
-      </h2>
+    <div style={{ paddingBottom: 88 }}>
+      <BackHeader onBack={onBack} title="設定" />
+      <div style={{ padding: '0 var(--sp-5)' }}>
 
       <Card variant="secondary" style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -135,6 +118,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
           onCanceled={() => setShowCancelModal(false)}
         />
       )}
+      </div>{/* end padding wrapper */}
     </div>
   );
 }

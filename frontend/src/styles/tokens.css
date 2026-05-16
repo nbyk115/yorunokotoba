@@ -111,8 +111,8 @@
   --anim-hover: 200ms ease;
   --anim-theme: 300ms ease;
 
-  /* Layout */
-  --app-max-width: 480px;
+  /* Layout — Wave L1 設計書: max-width 430px */
+  --app-max-width: 430px;
 
   /* Hero typography - migration aliases */
   --hero-en-size: var(--fs-hero-en);

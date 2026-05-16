@@ -1,17 +1,22 @@
+/**
+ * ArchiveView — Wave L1 骨格: BackHeader 追加
+ */
 import { useMemo, useState } from 'react';
 import { X, Share2 } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
+import { BackHeader } from '@/components/ui/BackHeader';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
 import { getSafeDreamType } from '@/lib/contentFilter';
 import { getCharaIdBySign } from '@/data/signs';
 import type { UserProfile } from '@/lib/firestore';
+import type { ViewKey } from '@/App';
 
 interface ArchiveViewProps {
   profile?: UserProfile | null;
-  onNavigate?: (view: 'home' | 'dream' | 'fortune' | 'archive' | 'aura') => void;
+  onNavigate?: (view: ViewKey) => void;
 }
 
 const themeLabels: Record<string, string> = {
@@ -445,24 +450,16 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
       )}
 
       <div style={{ paddingBottom: 32 }}>
+        {/* BackHeader — Wave L1 */}
+        <BackHeader onBack={() => history.back()} title="履歴" />
+
         {/* archive-hero */}
         <header
           style={{
-            padding: '40px 24px 24px',
+            padding: '8px 24px 16px',
             textAlign: 'center',
           }}
         >
-          <h2
-            style={{
-              fontSize: 'var(--fs-h1)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              letterSpacing: '0.04em',
-              margin: '4px 0 8px',
-            }}
-          >
-            夜の日記
-          </h2>
           <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', margin: 0 }}>
             {entries.length}件の夢の記録
           </p>

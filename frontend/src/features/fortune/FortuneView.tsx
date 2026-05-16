@@ -1,4 +1,10 @@
+/**
+ * FortuneView — Wave L1 骨格実装
+ * BackHeader 追加 / history.pushState で iOS スワイプバック対応
+ */
 import { useEffect, useRef, useState } from 'react';
+import { BackHeader } from '@/components/ui/BackHeader';
+import { StatBar } from '@/components/ui/StatBar';
 import { Card } from '@/components/ui/Card';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { ShareCard } from '@/components/ui/ShareCard';
@@ -252,22 +258,25 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
   return (
     <>
       {/* ── 三日月オーバーレイ（1.2秒） ── */}
-      {showConstellation && <ConstellationReveal color={rankColor === 'var(--gold)' ? '#C9A961' : '#E27A8E'} />}
+      {showConstellation && <ConstellationReveal color={rankColor === 'var(--gold)' ? 'var(--gold)' : 'var(--rose)'} />}
 
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           background: 'var(--bg1)',
-          minHeight: '100vh',
+          minHeight: '100dvh',
         }}
       >
+        {/* BackHeader */}
+        <BackHeader onBack={() => history.back()} title="星座占い" />
+
         {/* ════════════════════════════════ */}
-        {/*  今日の運勢セクション見出し       */}
+        {/*  ZodiacIcon + ランク              */}
         {/* ════════════════════════════════ */}
         <div
           style={{
-            padding: '28px 16px 0',
+            padding: '8px 16px 0',
             textAlign: 'center',
           }}
         >
@@ -417,6 +426,14 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             </p>
           )}
         </div>
+
+        {/* 恋愛/仕事/健康 StatBar */}
+        <Card variant="secondary" style={{ margin: '0 16px 12px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Wave L2 でスコア計算追加予定。骨格として固定値3を表示 */}
+          <StatBar label="恋愛" value={3} colorToken="var(--rose)" />
+          <StatBar label="仕事" value={3} colorToken="var(--gold)" />
+          <StatBar label="健康" value={3} colorToken="var(--lavender)" />
+        </Card>
 
         {/* カード: 今日の恋愛 */}
         <FortuneCard label="今日の恋愛" className="slide-up-1">
