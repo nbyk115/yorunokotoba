@@ -232,12 +232,11 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
   return (
     <div>
       <HeroBlock
-        english="From someone you know"
         japanese="あの人から届いた、相性占い"
+        english="from someone you know"
         align="center"
         size="hero"
         charaId={fromCharaId}
-        charaSize={120}
       />
 
       <section style={sectionStyle}>

@@ -20,27 +20,27 @@ interface HomeViewProps {
   onNavigate: (view: ViewKey) => void;
 }
 
-// 時間帯別 HeroBlock テキスト
-const HERO_COPIES: Record<TimeOfDay, { en: string; jp: string }> = {
+// 時間帯別 HeroBlock テキスト（PR5: 日本語主役、英語装飾フレーズを添える）
+const HERO_COPIES: Record<TimeOfDay, { jp: string; en?: string }> = {
   'night-deep': {
-    en: 'Late nights talk to themselves',
     jp: '眠れない夜は、ちょっとだけ自分と話そう',
+    en: 'deep into the night',
   },
   dawn: {
-    en: 'A quiet good morning',
     jp: 'おはよう。今日のあなた、どんな日にする？',
+    en: 'a quiet morning',
   },
   day: {
-    en: 'Check in with yourself',
     jp: 'いま、自分の気持ち聞けてる？',
+    en: 'check in with yourself',
   },
   dusk: {
-    en: 'A breath before the night',
     jp: '今日もおつかれさま。ひといきつこう',
+    en: 'before the night deepens',
   },
   night: {
-    en: 'A little time for you',
     jp: '今夜は、自分のために少しだけ時間つくろう',
+    en: 'a little time for you',
   },
 };
 
@@ -91,13 +91,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
     <div style={mainStyle}>
       {/* ヒーロー 100dvh */}
       <HeroBlock
-        english={heroCopy.en}
         japanese={heroCopy.jp}
+        english={heroCopy.en}
         subtitle={isNightDeep ? getNightDeepSubCopy(profile.name) : undefined}
         align="center"
         size="hero"
         charaId={charaId}
-        charaSize={88}
       />
 
       {/* スクロール領域 */}

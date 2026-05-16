@@ -98,6 +98,12 @@ a {
   100% { background-position: 200% 0; }
 }
 
+/* PR5: キャラ浮遊アニメ。transform のみ使用（レイアウトプロパティ不使用） */
+@keyframes float-chara {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 /* Animation utility classes (legacy compatible) */
 .fade-in {
   animation: fadeIn 0.5s ease both;
