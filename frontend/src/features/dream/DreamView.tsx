@@ -156,7 +156,8 @@ export function DreamView({ profile }: DreamViewProps) {
   /* ─── カード共通スタイル ─── */
   const cardBase: React.CSSProperties = {
     flexShrink: 0,
-    width: 'clamp(280px, calc(100vw - 48px), 432px)',
+    /* 次カードを ~24px 露出させスワイプ可能と分かるようにする */
+    width: 'clamp(260px, calc(100vw - 72px), 412px)',
     scrollSnapAlign: 'start',
     background: 'var(--card)',
     backdropFilter: 'blur(20px)',
@@ -373,45 +374,60 @@ export function DreamView({ profile }: DreamViewProps) {
             className="no-scrollbar"
           >
 
-            {/* ── Card 1: テーマ主役ヒーロー（夢占いはキャラなし）── */}
+            {/* ── Card 1: テーマ主役ヒーロー（夜色背景 + テーマ色アクセント）── */}
             <div
               style={{
                 ...cardBase,
-                background: result.theme.grad,
-                border: 'none',
-                color: '#fff',
-                padding: 'var(--sp-6) var(--sp-5) var(--sp-5)',
+                padding: 'var(--sp-6) var(--sp-5)',
                 textAlign: 'center',
                 position: 'relative',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-                minHeight: 320,
+                overflow: 'hidden',
+                minHeight: 300,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                boxShadow:
+                  'inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.12)',
               }}
             >
-              {/* テーマ大型アイコン（キャラの代わり） */}
+              {/* テーマ色の放射光（色は面でなく点で効かせる） */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  left: '50%',
+                  width: 220,
+                  height: 220,
+                  transform: 'translateX(-50%)',
+                  background: `radial-gradient(circle, ${result.theme.color}40 0%, transparent 70%)`,
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* テーマアイコン */}
               <div
                 style={{
-                  fontSize: 96,
+                  fontSize: 80,
                   lineHeight: 1,
-                  marginTop: 8,
-                  marginBottom: 16,
-                  filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.2))',
+                  marginTop: 4,
+                  marginBottom: 12,
+                  position: 'relative',
                 }}
                 aria-hidden="true"
               >
                 {result.theme.icon}
               </div>
 
-              {/* テーマラベル H1 */}
+              {/* テーマラベル（テーマ色） */}
               <h3
                 style={{
                   fontFamily: 'var(--font-heading)',
                   fontSize: 22,
                   fontWeight: 700,
                   letterSpacing: '0.04em',
-                  marginBottom: 4,
+                  color: result.theme.color,
+                  margin: 0,
                 }}
               >
                 {result.theme.label}
@@ -420,46 +436,76 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* シンボル 1 行サマリー */}
               <p
                 style={{
-                  fontSize: 14,
-                  opacity: 0.92,
+                  fontSize: 13,
+                  color: 'var(--t3)',
                   marginTop: 6,
                   lineHeight: 1.6,
+                  letterSpacing: '0.04em',
                 }}
               >
-                {result.symbols.slice(0, 3).map((s) => s.word).join('・')}
+                {result.symbols.slice(0, 3).map((s) => s.word).join(' · ')}
               </p>
 
-              {/* ── フローティング「この夢を残す」ボタン ── */}
+              {/* テーマ色の細い区切り線 */}
+              <div
+                aria-hidden="true"
+                style={{
+                  width: 36,
+                  height: 2,
+                  borderRadius: 1,
+                  background: result.theme.color,
+                  opacity: 0.55,
+                  margin: '16px 0',
+                }}
+              />
+
+              {/* よみとき冒頭（結果の核心を Card 1 で見せる） */}
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.9,
+                  color: 'var(--t1)',
+                  margin: 0,
+                  textAlign: 'left',
+                }}
+              >
+                {result.mainReading.intro.split('。')[0]}。
+              </p>
+
+              {/* スワイプヒント */}
+              <p
+                style={{
+                  fontSize: 11,
+                  color: 'var(--t3)',
+                  marginTop: 16,
+                  letterSpacing: '0.08em',
+                }}
+              >
+                ← スワイプして続きを読む
+              </p>
+
+              {/* 「この夢を残す」ボタン */}
               <button
                 onClick={() => setShowShare(true)}
                 aria-label="この夢を残す"
                 style={{
                   position: 'absolute',
-                  bottom: 16,
-                  right: 16,
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.18)',
-                  backdropFilter: 'blur(8px)',
-                  border: '1px solid rgba(255,255,255,0.3)',
+                  bottom: 14,
+                  right: 14,
+                  minHeight: 44,
+                  padding: '8px 18px',
+                  borderRadius: 999,
+                  background: result.theme.color,
+                  border: 'none',
                   color: '#fff',
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: 700,
                   fontFamily: 'var(--font-heading)',
                   cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  lineHeight: 1.3,
-                  gap: 2,
-                  padding: 4,
-                  textAlign: 'center',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
                 }}
               >
-                <span style={{ fontSize: 16 }}>🌙</span>
-                <span>残す</span>
+                残す
               </button>
             </div>
 
