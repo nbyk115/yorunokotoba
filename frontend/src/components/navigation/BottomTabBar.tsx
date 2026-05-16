@@ -11,7 +11,7 @@ interface BottomTabBarProps {
 const TABS: { key: ViewKey; icon: LucideIcon; label: string }[] = [
   { key: 'home', icon: House, label: 'ホーム' },
   { key: 'dream', icon: Moon, label: '夢占い' },
-  { key: 'fortune', icon: Sparkles, label: '星座占い' },
+  { key: 'fortune', icon: Sparkles, label: '今日の運勢' },
   { key: 'archive', icon: BookOpen, label: '履歴' },
 ];
 

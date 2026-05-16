@@ -190,21 +190,11 @@ function Step1({ name, onChange, animClass }: Step1Props) {
           fontStyle: 'italic',
           fontWeight: 300,
           color: 'var(--t1)',
-          marginBottom: 4,
-        }}
-      >
-        Your name
-      </h2>
-      <p
-        style={{
-          fontSize: 'var(--fs-body)',
-          color: 'var(--t2)',
-          lineHeight: 1.8,
           marginBottom: 24,
         }}
       >
         なんて呼ぼうか？
-      </p>
+      </h2>
 
       <label>
         <span
@@ -299,7 +289,7 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
           marginBottom: 4,
         }}
       >
-        Your birthday
+        生年月日
       </h2>
       <p
         style={{
@@ -416,23 +406,13 @@ function Step3({ gender, onChange, animClass }: Step3Props) {
           marginBottom: 4,
         }}
       >
-        Who are you
+        性別
       </h2>
       <p
         style={{
           fontSize: 'var(--fs-body)',
           color: 'var(--t2)',
           lineHeight: 1.8,
-          marginBottom: 4,
-        }}
-      >
-        あなたを表す星のかたち
-      </p>
-      <p
-        style={{
-          fontSize: 'var(--fs-caption)',
-          color: 'var(--t3)',
-          lineHeight: 1.6,
           marginBottom: 0,
         }}
       >
@@ -901,7 +881,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
             marginBottom: 8,
           }}
         >
-          はじめまして、夜のひと
+          はじめまして。夢と星座で、あなたの夜に寄り添うよ。
         </h1>
         <p
           style={{
@@ -911,7 +891,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
             letterSpacing: '0.04em',
           }}
         >
-          あなたの星のために、3つだけ教えて
+          占いに使うから、3つだけ教えて
         </p>
       </div>
 

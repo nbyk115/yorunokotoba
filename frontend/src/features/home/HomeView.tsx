@@ -316,7 +316,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             <NavTextLink
               icon={<Icon icon={Stars} size={16} color="var(--t3)" />}
               label="相性診断"
-              action="ためす"
+              action="みる"
               actionColor="var(--t2)"
               onClick={() => onNavigate('aura')}
             />
@@ -325,8 +325,8 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             {/* archive link */}
             <NavTextLink
               icon={<Icon icon={BookOpen} size={16} color="var(--t3)" />}
-              label="夜の日記"
-              action="しまう"
+              label="これまでの記録"
+              action="見る"
               actionColor="var(--t2)"
               onClick={() => onNavigate('archive')}
             />
