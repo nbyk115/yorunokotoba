@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Settings, Sun, Moon } from 'lucide-react';
+/**
+ * AppHeader — Wave L1 リビルド
+ *
+ * ナイトモードトグルを廃止。常時ダーク + time-of-day のみで配色制御。
+ * 設定ページへのアクセスは SettingsView 内で完結させる。
+ */
 import { Icon } from '@/components/ui/Icon';
-import {
-  getNightMode,
-  setNightMode,
-  isDarkActive,
-  type NightMode,
-} from '@/lib/theme';
-import { track } from '@/lib/analytics';
+import { Settings } from 'lucide-react';
 
 interface AppHeaderProps {
   title?: string;
@@ -15,22 +13,7 @@ interface AppHeaderProps {
   onSettingsClick?: () => void;
 }
 
-export function AppHeader({ title = '🌙 よるのことば', subtitle, onSettingsClick }: AppHeaderProps) {
-  const [mode, setMode] = useState<NightMode>(() => getNightMode());
-  const [dark, setDark] = useState(() => isDarkActive());
-
-  useEffect(() => {
-    setDark(isDarkActive());
-  }, [mode]);
-
-  function cycle() {
-    const next: NightMode = dark ? 'off' : 'on';
-    setNightMode(next);
-    setMode(next);
-    setDark(isDarkActive());
-    track('night_mode_toggle', { to: next });
-  }
-
+export function AppHeader({ title = 'よるのことば', subtitle, onSettingsClick }: AppHeaderProps) {
   return (
     <header
       style={{
@@ -65,30 +48,6 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
           <Icon icon={Settings} size={20} />
         </button>
       )}
-      <button
-        type="button"
-        onClick={cycle}
-        aria-label={dark ? 'ライトモードに切替' : 'ダークモードに切替'}
-        style={{
-          position: 'absolute',
-          top: 'var(--sp-5)',
-          right: 'var(--sp-4)',
-          background: 'transparent',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--r-tag)',
-          padding: '6px 12px',
-          cursor: 'pointer',
-          color: 'var(--t1)',
-          minHeight: 44,
-          minWidth: 44,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background var(--anim-hover)',
-        }}
-      >
-        <Icon icon={dark ? Sun : Moon} size={20} />
-      </button>
       <h1
         style={{
           fontSize: 'var(--fs-h1)',

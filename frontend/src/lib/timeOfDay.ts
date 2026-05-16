@@ -2,6 +2,8 @@
  * Time of Day logic — 5段階の時間帯モード判定
  *
  * 02-05 night-deep / 05-11 dawn / 11-17 day / 17-22 dusk / 22-02 night
+ *
+ * Wave L1: data-theme 廃止。常時ダーク + time-of-day セレクタのみで配色制御。
  */
 
 export type TimeOfDay = 'night-deep' | 'dawn' | 'day' | 'dusk' | 'night';
@@ -19,22 +21,10 @@ export function getTimeOfDay(hour = new Date().getHours()): TimeOfDay {
 }
 
 /**
- * 暗い背景の時間帯モードでは dark テーマを適用する。
- * day のみ light テーマ。dawn/dusk/night/night-deep は dark テーマ
- * （tokens.css の time-of-day bg はすべて暗色なため）。
- */
-const DARK_TIME_MODES: ReadonlySet<TimeOfDay> = new Set([
-  'night-deep',
-  'dawn',
-  'dusk',
-  'night',
-]);
-
-/**
- * document.documentElement.dataset.timeOfDay と data-theme を設定する。
- * TokensCSS の [data-time-of-day="..."] と [data-theme="dark"] が CSS 変数を上書きする。
+ * document.documentElement.dataset.timeOfDay を設定する。
+ * tokens.css の [data-time-of-day="..."] セレクタが CSS 変数を上書きする。
+ * data-theme は Wave L1 で廃止。
  */
 export function applyTimeOfDay(tod: TimeOfDay): void {
   document.documentElement.dataset.timeOfDay = tod;
-  document.documentElement.dataset.theme = DARK_TIME_MODES.has(tod) ? 'dark' : 'light';
 }
