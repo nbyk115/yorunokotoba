@@ -250,7 +250,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
             <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', margin: 0, lineHeight: 1.6 }}>
               {fromChara?.name ?? 'あの人'}が、あなたとの
               <br />
-              相性を調べています
+              相性を調べてる
             </p>
           </div>
         </div>

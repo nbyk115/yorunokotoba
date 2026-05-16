@@ -598,7 +598,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                 letterSpacing: '0.04em',
               }}
             >
-              {searchResults.length}件の夢が見つかりました
+              {searchResults.length}件の夢が見つかったよ
             </p>
             {searchResults.length === 0 ? (
               <div

@@ -60,7 +60,7 @@ function getNightDeepSubCopy(name: string): string {
 // BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
 const BLUR_PREVIEW_MESSAGES = [
   '今夜のよみとき、解放のほうを向いてる',
-  '星があなたに言いたいことがある',
+  '今夜のよみとき、もう準備できてる',
   '今夜のよみとき、いい流れが来てる',
   '夢の奥に、今のあなたへのメッセージが眠っている',
 ];
@@ -208,7 +208,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             夢占い
           </p>
 
-          {/* card-title（ICP語彙: 「夢」「読み解く」）*/}
+          {/* card-title（ICP語彙: 「夢」「よみとく」）*/}
           <h2
             style={{
               fontSize: 'var(--fs-h2)',
@@ -219,7 +219,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               margin: '0 0 8px',
             }}
           >
-            今夜の夢を読み解く
+            今夜の夢をよみとく
           </h2>
 
           {/* card-body（ICP語彙: 「シンボル」「メッセージ」）*/}
@@ -232,7 +232,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               margin: '0 0 16px',
             }}
           >
-            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージを読み解くよ。
+            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージをよみとくよ。
           </p>
 
           {/* チラ見せ占い結果プレビュー（BlurReveal）*/}

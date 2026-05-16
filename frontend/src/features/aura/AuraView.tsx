@@ -204,7 +204,7 @@ function InputScreen({
         <p style={eyebrowStyle}>相性占い</p>
         <h2 style={h2Style}>気になるあの人との相性</h2>
         <p style={bodyStyle}>
-          星座でふたりの相性を診断するよ。
+          星座でふたりの相性をよみとくよ。
         </p>
 
         <div style={fieldStyle}>
