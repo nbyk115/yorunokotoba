@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="深夜2-4時の、あなただけの占い。夢占いと星座占いで、誰にも言えないあの気持ちを整理する。月¥980。">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="よるのことば - 深夜の占いアプリ">
+  <meta property="og:description" content="深夜2-4時の、あなただけの占い。夢占いと星座占いで、誰にも言えないあの気持ちを整理する。月¥980。">
+  <meta property="og:image" content="https://yorunokotoba.app/ogp.png">
+  <meta property="og:url" content="https://yorunokotoba.app">
+  <meta property="og:site_name" content="よるのことば">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="よるのことば - 深夜の占いアプリ">
+  <meta name="twitter:description" content="深夜2-4時の、あなただけの占い。夢占いと星座占いで、誰にも言えないあの気持ちを整理する。月¥980。">
+  <meta name="twitter:image" content="https://yorunokotoba.app/ogp.png">
+  <title>よるのことば - 深夜の占いアプリ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       Design Tokens - DESIGN.md 準拠（夜モード固定: night相当）
+       ============================================================ */
+    :root {
+      --bg1: #150E14;
+      --rose: #E396A4;
+      --rose-deep: #CF7B8E;
+      --gold: #C9A961;
+      --accent: #C9A961;
+      --blush: #F3D9DC;
+      --lavender: #8A87B8;
+      --t1: #F6ECEE;
+      --t2: rgba(246, 236, 238, 0.68);
+      --t3: rgba(246, 236, 238, 0.46);
+      --t4: rgba(246, 236, 238, 0.28);
+      --card-primary: rgba(40, 28, 34, 0.92);
+      --card-secondary: rgba(28, 20, 24, 0.60);
+      --border-primary: rgba(246, 236, 238, 0.12);
+      --border-secondary: rgba(246, 236, 238, 0.06);
+      --border: rgba(246, 236, 238, 0.08);
+      --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40);
+      --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28);
+      --card-accent-line: 2px solid var(--accent);
+      --font-heading: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans-serif;
+      --font-accent: 'Cormorant', serif;
+      --fs-hero-jp: 24px;
+      --fs-h1: 22px;
+      --fs-h2: 18px;
+      --fs-h3: 16px;
+      --fs-body: 15px;
+      --fs-caption: 13px;
+      --fs-section: 17px;
+      --r-card: 18px;
+      --r-button: 14px;
+      --r-tag: 20px;
+      --sp-2: 8px;
+      --sp-3: 12px;
+      --sp-4: 16px;
+      --sp-5: 20px;
+      --sp-6: 24px;
+      --sp-7: 32px;
+      --sp-8: 48px;
+    }
+
+    /* ============================================================
+       Reset / Base
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-heading);
+      font-size: var(--fs-body);
+      line-height: 1.7;
+      color: var(--t1);
+      background-color: var(--bg1);
+      word-break: auto-phrase;
+      overflow-x: hidden;
+      min-height: 100dvh;
+    }
+
+    /* ============================================================
+       LP wrapper
+       ============================================================ */
+    .lp-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ============================================================
+       Canvas: particles
+       ============================================================ */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ============================================================
+       Section base
+       ============================================================ */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 0 var(--sp-5);
+    }
+
+    /* ============================================================
+       HERO (Firstview)
+       Z: 左上 = ロゴ・タグライン / 右上 = (空白/装飾) / 
+          左下 = キャラ・コピー / 右下 = CTA
+       ============================================================ */
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding-top: max(env(safe-area-inset-top), 40px);
+      padding-bottom: max(env(safe-area-inset-bottom), var(--sp-8));
+    }
+
+    /* Logo row (左上) */
+    .hero__logo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-7);
+    }
+
+    .hero__logo-text {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--t3);
+      letter-spacing: 0.12em;
+    }
+
+    .hero__moon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    /* Tag (右上 align-items:flex-end を使い右寄せ) */
+    .hero__tag {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--t3);
+      letter-spacing: 0.14em;
+      border: 1px solid var(--border-secondary);
+      padding: 4px 10px;
+      border-radius: var(--r-tag);
+      margin-left: auto;
+    }
+
+    /* Chara block (center) */
+    .hero__chara-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--sp-6);
+      position: relative;
+    }
+
+    .hero__chara {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      animation: float 4000ms ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(227, 150, 164, 0.18));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* Catchcopy block (左下方向: 左寄せ) */
+    .hero__copy {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .hero__eyebrow {
+      font-size: var(--fs-caption);
+      font-weight: 400;
+      color: var(--t3);
+      letter-spacing: 0.14em;
+      margin-bottom: var(--sp-3);
+    }
+
+    .hero__headline {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--t1);
+      margin-bottom: var(--sp-4);
+      letter-spacing: 0.02em;
+    }
+
+    .hero__headline em {
+      font-style: normal;
+      color: var(--rose);
+    }
+
+    .hero__sub {
+      font-size: var(--fs-body);
+      color: var(--t2);
+      line-height: 1.8;
+      margin-bottom: var(--sp-7);
+    }
+
+    /* CTA block (右下方向: 右寄せ) */
+    .hero__cta-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--sp-3);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--rose-deep) 100%);
+      color: #F6ECEE;
+      font-family: var(--font-heading);
+      font-size: var(--fs-body);
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: var(--r-button);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: transform 200ms ease, box-shadow 200ms ease;
+      box-shadow: 0 4px 18px rgba(227, 150, 164, 0.28);
+      min-height: 52px;
+      min-width: 44px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(227, 150, 164, 0.36);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .hero__cta-note {
+      font-size: var(--fs-caption);
+      color: var(--t4);
+      text-align: right;
+    }
+
+    /* Scroll indicator */
+    .hero__scroll {
+      position: absolute;
+      bottom: max(env(safe-area-inset-bottom), 24px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--t4);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      animation: fadeInUp 1.5s ease 1s both;
+    }
+
+    .hero__scroll::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 28px;
+      background: linear-gradient(to bottom, var(--t4), transparent);
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       SECTION: 共感 / ペイン
+       ============================================================ */
+    .section-pain {
+      padding-top: var(--sp-8);
+      padding-bottom: var(--sp-8);
+    }
+
+    .section-label {
+      font-size: var(--fs-caption);
+      font-weight: 400;
+      color: var(--t3);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: var(--sp-4);
+    }
+
+    .section-title {
+      font-size: var(--fs-hero-jp);
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--t1);
+      margin-bottom: var(--sp-6);
+    }
+
+    .pain-card {
+      background: var(--card-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--r-card);
+      padding: var(--sp-5);
+      box-shadow: var(--shadow-card-primary);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: var(--sp-3);
+      border-left: var(--card-accent-line);
+      animation: fadeInUp 600ms ease both;
+    }
+
+    .pain-card__time {
+      font-family: var(--font-accent);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .pain-card__text {
+      font-size: var(--fs-body);
+      color: var(--t1);
+      line-height: 1.75;
+    }
+
+    .pain-divider {
+      text-align: center;
+      color: var(--t4);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      padding: var(--sp-4) 0;
+    }
+
+    .pain-answer {
+      background: var(--card-secondary);
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--r-card);
+      padding: var(--sp-5);
+      box-shadow: var(--shadow-card-secondary);
+      text-align: center;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .pain-answer__text {
+      font-size: var(--fs-section);
+      font-weight: 700;
+      color: var(--t1);
+      line-height: 1.6;
+      margin-bottom: var(--sp-2);
+    }
+
+    .pain-answer__sub {
+      font-size: var(--fs-caption);
+      color: var(--t3);
+    }
+
+    /* ============================================================
+       SECTION: 機能
+       ============================================================ */
+    .section-features {
+      padding-top: var(--sp-8);
+      padding-bottom: var(--sp-8);
+    }
+
+    .feature-card {
+      background: var(--card-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--r-card);
+      padding: var(--sp-6);
+      box-shadow: var(--shadow-card-primary);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: var(--sp-3);
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: var(--sp-5);
+      align-items: start;
+    }
+
+    .feature-card__chara {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .feature-card__label {
+      font-size: var(--fs-caption);
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .feature-card__title {
+      font-size: var(--fs-h2);
+      font-weight: 700;
+      color: var(--t1);
+      line-height: 1.4;
+      margin-bottom: var(--sp-3);
+    }
+
+    .feature-card__body {
+      font-size: var(--fs-body);
+      color: var(--t2);
+      line-height: 1.75;
+    }
+
+    .feature-card__quote {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--t3);
+      margin-top: var(--sp-3);
+      padding-top: var(--sp-3);
+      border-top: 1px solid var(--border-secondary);
+    }
+
+    /* ============================================================
+       SECTION: 誕生日パーソナライズ
+       ============================================================ */
+    .section-personal {
+      padding-top: var(--sp-8);
+      padding-bottom: var(--sp-8);
+    }
+
+    .personal-card {
+      background: var(--card-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--r-card);
+      padding: var(--sp-6);
+      box-shadow: var(--shadow-card-primary);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      text-align: center;
+      border-top: 2px solid var(--gold);
+    }
+
+    .personal-card__icon {
+      font-size: 40px;
+      margin-bottom: var(--sp-4);
+      line-height: 1;
+    }
+
+    .personal-card__title {
+      font-size: var(--fs-h2);
+      font-weight: 700;
+      color: var(--t1);
+      margin-bottom: var(--sp-3);
+    }
+
+    .personal-card__body {
+      font-size: var(--fs-body);
+      color: var(--t2);
+      line-height: 1.8;
+      margin-bottom: var(--sp-6);
+    }
+
+    .zodiac-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-bottom: var(--sp-4);
+    }
+
+    .zodiac-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 2px;
+      border-radius: 10px;
+      background: var(--card-secondary);
+      border: 1px solid var(--border-secondary);
+    }
+
+    .zodiac-item__symbol {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .zodiac-item__name {
+      font-size: 9px;
+      color: var(--t3);
+      letter-spacing: 0;
+    }
+
+    /* ============================================================
+       SECTION: 料金
+       ============================================================ */
+    .section-price {
+      padding-top: var(--sp-8);
+      padding-bottom: var(--sp-8);
+    }
+
+    .price-card {
+      background: var(--card-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 24px;
+      padding: var(--sp-7);
+      box-shadow: var(--shadow-card-primary);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .price-card__badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold) 0%, #A88640 100%);
+      color: #1C1620;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: var(--r-tag);
+      letter-spacing: 0.1em;
+      margin-bottom: var(--sp-5);
+    }
+
+    .price-card__amount {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: var(--sp-2);
+    }
+
+    .price-card__currency {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--t2);
+    }
+
+    .price-card__number {
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--t1);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .price-card__unit {
+      font-size: 16px;
+      color: var(--t3);
+      margin-bottom: var(--sp-4);
+    }
+
+    .price-card__note {
+      font-size: var(--fs-caption);
+      color: var(--t3);
+      margin-bottom: var(--sp-6);
+    }
+
+    .price-features {
+      text-align: left;
+      margin-bottom: var(--sp-6);
+    }
+
+    .price-features__item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-3);
+      padding: var(--sp-3) 0;
+      border-bottom: 1px solid var(--border-secondary);
+      font-size: var(--fs-body);
+      color: var(--t1);
+    }
+
+    .price-features__item:last-child {
+      border-bottom: none;
+    }
+
+    .price-features__check {
+      color: var(--gold);
+      font-size: 14px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .price-comparison {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--sp-5);
+      padding: var(--sp-4) var(--sp-4);
+      background: var(--card-secondary);
+      border-radius: 12px;
+      margin-bottom: var(--sp-6);
+    }
+
+    .price-comparison__item {
+      text-align: center;
+    }
+
+    .price-comparison__label {
+      font-size: 11px;
+      color: var(--t3);
+      margin-bottom: 4px;
+    }
+
+    .price-comparison__val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--t1);
+    }
+
+    .price-comparison__val--rose {
+      color: var(--rose);
+    }
+
+    .price-comparison__sep {
+      color: var(--t4);
+      font-size: 20px;
+    }
+
+    /* ============================================================
+       SECTION: CTA bottom
+       ============================================================ */
+    .section-cta {
+      padding-top: var(--sp-8);
+      padding-bottom: max(env(safe-area-inset-bottom), var(--sp-8));
+      text-align: center;
+    }
+
+    .cta-headline {
+      font-size: var(--fs-hero-jp);
+      font-weight: 700;
+      color: var(--t1);
+      line-height: 1.45;
+      margin-bottom: var(--sp-4);
+    }
+
+    .cta-sub {
+      font-size: var(--fs-body);
+      color: var(--t2);
+      line-height: 1.8;
+      margin-bottom: var(--sp-7);
+    }
+
+    .btn-primary--large {
+      width: 100%;
+      max-width: 320px;
+      justify-content: center;
+      font-size: 17px;
+      padding: 18px 32px;
+      min-height: 56px;
+    }
+
+    .cta-legal {
+      margin-top: var(--sp-5);
+      font-size: 11px;
+      color: var(--t4);
+      line-height: 1.8;
+    }
+
+    .cta-legal a {
+      color: var(--t3);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .lp-footer {
+      padding: var(--sp-6) var(--sp-5);
+      padding-bottom: max(env(safe-area-inset-bottom), var(--sp-6));
+      border-top: 1px solid var(--border-secondary);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lp-footer__logo {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--t3);
+      letter-spacing: 0.12em;
+      margin-bottom: var(--sp-3);
+    }
+
+    .lp-footer__links {
+      display: flex;
+      justify-content: center;
+      gap: var(--sp-5);
+      flex-wrap: wrap;
+    }
+
+    .lp-footer__links a {
+      font-size: 12px;
+      color: var(--t4);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+
+    .lp-footer__links a:hover {
+      color: var(--t3);
+    }
+
+    .lp-footer__copy {
+      margin-top: var(--sp-4);
+      font-size: 11px;
+      color: var(--t4);
+    }
+
+    /* ============================================================
+       Animations
+       ============================================================ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .anim-fadein {
+      animation: fadeIn 700ms ease both;
+    }
+
+    .anim-fadein-up {
+      animation: fadeInUp 600ms ease both;
+    }
+
+    .anim-delay-1 { animation-delay: 100ms; }
+    .anim-delay-2 { animation-delay: 200ms; }
+    .anim-delay-3 { animation-delay: 350ms; }
+    .anim-delay-4 { animation-delay: 500ms; }
+
+    /* ============================================================
+       Responsive: Tablet / Desktop
+       (DESIGN.md: Desktop = max-width 480px centered)
+       ============================================================ */
+    @media (min-width: 601px) {
+      .lp-wrap {
+        /* tablet: slightly wider constraint */
+        max-width: 540px;
+      }
+
+      .hero__headline {
+        font-size: 32px;
+      }
+
+      .price-card__number {
+        font-size: 64px;
+      }
+    }
+
+    @media (min-width: 901px) {
+      body {
+        /* desktop: center the app-like column */
+        background-image: radial-gradient(ellipse at 30% 40%, rgba(227,150,164,0.04) 0%, transparent 60%),
+                          radial-gradient(ellipse at 70% 70%, rgba(201,169,97,0.04) 0%, transparent 50%);
+      }
+
+      .lp-wrap {
+        max-width: 480px;
+        /* add subtle border on desktop to frame the mobile-like column */
+        box-shadow: 0 0 80px rgba(0,0,0,0.6);
+        border-left: 1px solid var(--border-secondary);
+        border-right: 1px solid var(--border-secondary);
+      }
+
+      .hero {
+        min-height: 100dvh;
+      }
+    }
+
+    /* ============================================================
+       Divider
+       ============================================================ */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      margin: 0 0 var(--sp-5);
+    }
+
+    /* Section spacing on mobile */
+    .section-pain,
+    .section-features,
+    .section-personal,
+    .section-price,
+    .section-cta {
+      padding-left: var(--sp-5);
+      padding-right: var(--sp-5);
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<div class="lp-wrap">
+
+  <!-- ========================================================
+       HERO: ファーストビュー
+       Z字: 左上=ロゴ / 右上=タグ / 中央=キャラ / 左下=コピー / 右下=CTA
+       ======================================================== -->
+  <section class="hero" aria-label="ファーストビュー">
+    <div class="hero__logo-row anim-fadein">
+      <span class="hero__moon" aria-hidden="true">🌙</span>
+      <span class="hero__logo-text">よるのことば</span>
+      <span class="hero__tag">FORTUNE APP</span>
+    </div>
+
+    <div class="hero__chara-wrap anim-fadein anim-delay-1">
+      <img
+        class="hero__chara"
+        src="data:image/webp;base64,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"
+        alt="よるのことばキャラクター"
+        width="140"
+        height="140"
+        loading="eager"
+      >
+    </div>
+
+    <div class="hero__copy anim-fadein-up anim-delay-2">
+      <p class="hero__eyebrow">深夜2-4時のためだけの占い</p>
+      <h1 class="hero__headline">
+        まだ起きてるんだ。<br>
+        <em>…まあ、わたしもだけど</em>
+      </h1>
+      <p class="hero__sub">
+        夜中3時に、誰にも相談できないこと、ある。<br>
+        夢占いと星座占いで、<br>
+        今夜のもやもやを整理しよう。
+      </p>
+
+      <div class="hero__cta-row">
+        <a href="#cta" class="btn-primary" role="button">
+          開いてみる
+          <span aria-hidden="true">→</span>
+        </a>
+        <p class="hero__cta-note">月¥980 / いつでも解約</p>
+      </div>
+    </div>
+
+    <p class="hero__scroll" aria-hidden="true">scroll</p>
+  </section>
+
+
+  <!-- ========================================================
+       PAIN: 共感セクション
+       ======================================================== -->
+  <section class="section-pain" aria-label="共感">
+    <p class="section-label">tonight</p>
+    <h2 class="section-title">こんな夜、ない？</h2>
+
+    <div class="pain-card">
+      <p class="pain-card__time">AM 2:47</p>
+      <p class="pain-card__text">
+        退勤してタクシーで帰りながら、なんか胸騒ぎ。<br>
+        友達は寝てる、インスタ占い師はDMできない時間。
+      </p>
+    </div>
+
+    <div class="pain-card" style="animation-delay: 150ms;">
+      <p class="pain-card__time">AM 3:22</p>
+      <p class="pain-card__text">
+        お風呂入りながら、今夜の夢がずっと頭に残ってる。<br>
+        あの夢、何かの前兆な気がして…
+      </p>
+    </div>
+
+    <div class="pain-card" style="animation-delay: 300ms;">
+      <p class="pain-card__time">AM 4:01</p>
+      <p class="pain-card__text">
+        就寝前にひとりで答えを探してる。<br>
+        でも何も見つからないまま、また朝になる。
+      </p>
+    </div>
+
+    <p class="pain-divider" aria-hidden="true">- - -</p>
+
+    <div class="pain-answer">
+      <p class="pain-answer__text">
+        その時間に、ちゃんといるよ。<br>
+        答えはもう、自分でわかってるでしょ。
+      </p>
+      <p class="pain-answer__sub">よるのことば は、深夜2-4時が本番</p>
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       FEATURES: 機能紹介
+       ======================================================== -->
+  <section class="section-features" aria-label="機能紹介">
+    <div class="divider" aria-hidden="true"></div>
+    <p class="section-label">features</p>
+    <h2 class="section-title">できること</h2>
+
+    <article class="feature-card">
+      <img
+        class="feature-card__chara"
+        src="data:image/webp;base64,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"
+        alt="夢占いキャラクター"
+        width="80"
+        height="80"
+        loading="lazy"
+      >
+      <div>
+        <p class="feature-card__label">Dream</p>
+        <h3 class="feature-card__title">夢占い</h3>
+        <p class="feature-card__body">
+          今朝見た夢を入力するだけ。AIが深層心理を読み解いて、今の自分の状態を言語化してくれる。
+        </p>
+        <p class="feature-card__quote">「なんかこの夢、気になる」を放置しない。</p>
+      </div>
+    </article>
+
+    <article class="feature-card">
+      <img
+        class="feature-card__chara"
+        src="data:image/webp;base64,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"
+        alt="星座占いキャラクター"
+        width="80"
+        height="80"
+        loading="lazy"
+      >
+      <div>
+        <p class="feature-card__label">Zodiac</p>
+        <h3 class="feature-card__title">星座占い</h3>
+        <p class="feature-card__body">
+          今夜の運勢、恋愛・仕事・健康。星読みをベースにした本格的な鑑定を、毎日更新で届ける。
+        </p>
+        <p class="feature-card__quote">「今日どう動くべきか」の道標になる。</p>
+      </div>
+    </article>
+
+    <article class="feature-card">
+      <img
+        class="feature-card__chara"
+        src="data:image/webp;base64,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"
+        alt="パーソナライズキャラクター"
+        width="80"
+        height="80"
+        loading="lazy"
+      >
+      <div>
+        <p class="feature-card__label">Personal</p>
+        <h3 class="feature-card__title">誕生日パーソナライズ</h3>
+        <p class="feature-card__body">
+          生年月日と星座から、あなた専用のキャラクターが決まる。24体の中であなただけの存在。
+        </p>
+        <p class="feature-card__quote">「これ私じゃん」を最初に感じさせる。</p>
+      </div>
+    </article>
+  </section>
+
+
+  <!-- ========================================================
+       PERSONAL: 12星座 / 24キャラ
+       ======================================================== -->
+  <section class="section-personal" aria-label="12星座・24キャラクター">
+    <div class="personal-card">
+      <p class="personal-card__icon" aria-hidden="true">✨</p>
+      <h2 class="personal-card__title">12星座 × 24キャラ</h2>
+      <p class="personal-card__body">
+        あなたの星座と性別から、あなただけのキャラクターが決まる。<br>
+        毎日そのキャラがあなたに寄り添う。
+      </p>
+      <div class="zodiac-grid" aria-label="12星座一覧">
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♈</span><span class="zodiac-item__name">おひつじ</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♉</span><span class="zodiac-item__name">おうし</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♊</span><span class="zodiac-item__name">ふたご</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♋</span><span class="zodiac-item__name">かに</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♌</span><span class="zodiac-item__name">しし</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♍</span><span class="zodiac-item__name">おとめ</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♎</span><span class="zodiac-item__name">てんびん</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♏</span><span class="zodiac-item__name">さそり</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♐</span><span class="zodiac-item__name">いて</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♑</span><span class="zodiac-item__name">やぎ</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♒</span><span class="zodiac-item__name">みずがめ</span></div>
+        <div class="zodiac-item"><span class="zodiac-item__symbol" aria-hidden="true">♓</span><span class="zodiac-item__name">うお</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       PRICE: 料金
+       ======================================================== -->
+  <section class="section-price" aria-label="料金">
+    <div class="divider" aria-hidden="true"></div>
+    <p class="section-label">price</p>
+    <h2 class="section-title">シンプルな料金</h2>
+
+    <div class="price-card">
+      <span class="price-card__badge">プレミアムプラン</span>
+
+      <div class="price-card__amount">
+        <span class="price-card__currency">¥</span>
+        <span class="price-card__number">980</span>
+      </div>
+      <p class="price-card__unit">/ 月</p>
+      <p class="price-card__note">初月からフル機能。いつでも解約できる。</p>
+
+      <div class="price-comparison">
+        <div class="price-comparison__item">
+          <p class="price-comparison__label">インスタ占い師DM</p>
+          <p class="price-comparison__val">¥3,000〜</p>
+        </div>
+        <p class="price-comparison__sep" aria-hidden="true">vs</p>
+        <div class="price-comparison__item">
+          <p class="price-comparison__label">よるのことば</p>
+          <p class="price-comparison__val price-comparison__val--rose">¥980</p>
+        </div>
+      </div>
+
+      <ul class="price-features" aria-label="プレミアム機能一覧">
+        <li class="price-features__item">
+          <span class="price-features__check" aria-hidden="true">✦</span>
+          <span>夢占い：毎日何度でも使える</span>
+        </li>
+        <li class="price-features__item">
+          <span class="price-features__check" aria-hidden="true">✦</span>
+          <span>星座占い：恋愛・仕事・健康の深層よみとき</span>
+        </li>
+        <li class="price-features__item">
+          <span class="price-features__check" aria-hidden="true">✦</span>
+          <span>履歴：過去の鑑定を無制限に保存</span>
+        </li>
+        <li class="price-features__item">
+          <span class="price-features__check" aria-hidden="true">✦</span>
+          <span>あなただけのキャラクター</span>
+        </li>
+        <li class="price-features__item">
+          <span class="price-features__check" aria-hidden="true">✦</span>
+          <span>深夜2-4時に本気を出すアプリ</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- ========================================================
+       CTA BOTTOM
+       ======================================================== -->
+  <section id="cta" class="section-cta" aria-label="開始">
+    <h2 class="cta-headline">
+      今夜の答えを<br>
+      探しに来て。
+    </h2>
+    <p class="cta-sub">
+      深夜に起きてる人だけに届けたい。<br>
+      よるのことばは、そういうアプリ。
+    </p>
+
+    <a href="https://app.yorunokotoba.app" class="btn-primary btn-primary--large" role="button">
+      よるのことばを開く
+      <span aria-hidden="true">→</span>
+    </a>
+
+    <p class="cta-legal">
+      <a href="/privacy.html">プライバシーポリシー</a>
+      ・
+      <a href="/terms.html">利用規約</a>
+      <br>
+      月¥980のサブスクリプション。App Store / Google Play 経由で課金。<br>
+      いつでもキャンセル可能。
+    </p>
+  </section>
+
+
+  <!-- ========================================================
+       FOOTER
+       ======================================================== -->
+  <footer class="lp-footer">
+    <p class="lp-footer__logo">🌙 よるのことば</p>
+    <nav class="lp-footer__links" aria-label="フッターナビゲーション">
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/legal.html">特定商取引法に基づく表記</a>
+    </nav>
+    <p class="lp-footer__copy">&copy; 2025 よるのことば</p>
+  </footer>
+
+</div><!-- /.lp-wrap -->
+
+
+<!-- ============================================================
+     Particle script: rose/gold/lavender 少数パーティクル
+     キャラ周辺のみ。カード/リンクには載せない（DESIGN.md 方針）
+     ============================================================ -->
+<script>
+(function() {
+  'use strict';
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas || !canvas.getContext) return;
+  const ctx = canvas.getContext('2d');
+
+  const COLORS = [
+    'rgba(227, 150, 164, 0.5)',  /* rose */
+    'rgba(201, 169, 97, 0.4)',   /* gold */
+    'rgba(138, 135, 184, 0.35)', /* lavender */
+  ];
+  const COUNT = 8;
+  let W, H, particles;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function mkParticle() {
+    return {
+      x: Math.random() * W,
+      y: H + Math.random() * 80,
+      r: 1.5 + Math.random() * 2,
+      speed: 0.3 + Math.random() * 0.5,
+      opacity: 0.3 + Math.random() * 0.5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      drift: (Math.random() - 0.5) * 0.3,
+    };
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({length: COUNT}, mkParticle);
+    // stagger initial positions
+    particles.forEach(function(p, i) {
+      p.y = Math.random() * H;
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(function(p) {
+      p.y -= p.speed;
+      p.x += p.drift;
+      if (p.y < -10) {
+        Object.assign(p, mkParticle());
+        p.y = H + 10;
+      }
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize, {passive: true});
+  init();
+  draw();
+})();
+</script>
+
+<!-- Intersection Observer: fade-in cards on scroll -->
+<script>
+(function() {
+  'use strict';
+  if (!('IntersectionObserver' in window)) return;
+
+  var targets = document.querySelectorAll('.pain-card, .feature-card, .personal-card, .price-card');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.12});
+
+  targets.forEach(function(el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 600ms ease, transform 600ms ease';
+    observer.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>
