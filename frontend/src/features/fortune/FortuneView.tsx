@@ -167,42 +167,6 @@ function MoonCrescentPath({ color }: { color: string }) {
   );
 }
 
-/* ────────────────────────────────────────────── */
-/*  幕タイトル eyebrow                            */
-/* ────────────────────────────────────────────── */
-function ActEyebrow({ label }: { label: string }) {
-  return (
-    <div
-      style={{
-        textAlign: 'center',
-        margin: '32px 0 16px',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-accent)',
-          fontStyle: 'italic',
-          fontSize: 'var(--fs-caption)',
-          color: 'var(--gold)',
-          letterSpacing: '0.32em',
-          margin: 0,
-          opacity: 0.85,
-        }}
-      >
-        {label}
-      </p>
-      <div
-        aria-hidden="true"
-        style={{
-          width: 32,
-          height: 1,
-          background: 'var(--border)',
-          margin: '8px auto 0',
-        }}
-      />
-    </div>
-  );
-}
 
 /* ────────────────────────────────────────────── */
 /*  FortuneCard - PR4 リデザイン                  */
@@ -412,49 +376,27 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           >
             {result.summary}
           </p>
-        </div>
 
-        {/* ════════════════════════════════ */}
-        {/*  第二幕: 今夜のよみとき              */}
-        {/* ════════════════════════════════ */}
-        <ActEyebrow label="今夜のよみとき" />
-
-        {/* カード1: 今夜のエネルギー */}
-        <FortuneCard label="今夜のエネルギー" className="slide-up-1">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.personality.trait}
-          </p>
-        </FortuneCard>
-
-        {/* カード1.5: あなたの核（誕生数メッセージ）*/}
-        {result.lifePathMessage && (
-          <FortuneCard label="あなたの核" className="slide-up-1">
+          {/* 気をつけたいこと: risk をインライン 1行 / fs-caption / --t2 */}
+          {result.risk && (
             <p
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-fortune-body)',
-                fontWeight: 400,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--t2)',
-                lineHeight: 'var(--lh-fortune-body)',
-                margin: 0,
+                lineHeight: 1.6,
+                marginTop: 10,
+                textAlign: 'left',
+                padding: '0 4px',
               }}
             >
-              {result.lifePathMessage}
+              今日、気をつけたいこと: {result.risk}
             </p>
-          </FortuneCard>
-        )}
+          )}
+        </div>
 
-        {/* カード2: 恋愛・つながり */}
-        <FortuneCard label="恋愛・つながり" className="slide-up-1">
+        {/* カード: 今日の恋愛 */}
+        <FortuneCard label="今日の恋愛" className="slide-up-1">
           <p
             style={{
               fontFamily: 'var(--font-heading)',
@@ -462,18 +404,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               fontWeight: 400,
               color: 'var(--t1)',
               lineHeight: 'var(--lh-fortune-body)',
-              margin: '0 0 10px',
-            }}
-          >
-            {result.personality.love}
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 400,
-              color: 'var(--t2)',
-              lineHeight: 1.8,
               margin: 0,
             }}
           >
@@ -481,8 +411,8 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </p>
         </FortuneCard>
 
-        {/* カード3: 仕事・才能 */}
-        <FortuneCard label="仕事・才能" className="slide-up-1">
+        {/* カード: 今日の仕事 */}
+        <FortuneCard label="今日の仕事" className="slide-up-1">
           <p
             style={{
               fontFamily: 'var(--font-heading)',
@@ -490,18 +420,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               fontWeight: 400,
               color: 'var(--t1)',
               lineHeight: 'var(--lh-fortune-body)',
-              margin: '0 0 10px',
-            }}
-          >
-            {result.personality.work}
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 400,
-              color: 'var(--t2)',
-              lineHeight: 1.8,
               margin: 0,
             }}
           >
@@ -509,8 +427,8 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
           </p>
         </FortuneCard>
 
-        {/* カード4: 健康・からだ */}
-        <FortuneCard label="健康・からだ" className="slide-up-2">
+        {/* カード: 今日の健康 */}
+        <FortuneCard label="今日の健康" className="slide-up-2">
           <p
             style={{
               fontFamily: 'var(--font-heading)',
@@ -518,90 +436,12 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               fontWeight: 400,
               color: 'var(--t1)',
               lineHeight: 'var(--lh-fortune-body)',
-              margin: '0 0 10px',
-            }}
-          >
-            {result.personality.health}
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 400,
-              color: 'var(--t2)',
-              lineHeight: 1.8,
               margin: 0,
             }}
           >
             {result.dailyHealth}
           </p>
         </FortuneCard>
-
-        {/* ════════════════════════════════ */}
-        {/*  第三幕: 今夜のおわりに            */}
-        {/* ════════════════════════════════ */}
-        <ActEyebrow label="今夜のおわりに" />
-
-        {/* lucky-time + risk グリッド */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 12,
-            margin: '0 16px 12px',
-          }}
-        >
-          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-card-label)',
-                fontWeight: 700,
-                color: 'var(--text-low)',
-                letterSpacing: 'var(--ls-card-label)',
-                margin: 0,
-              }}
-            >
-              今夜のいい時間帯
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--t1)',
-                marginTop: 6,
-                lineHeight: 1.6,
-              }}
-            >
-              {result.time}
-            </p>
-          </Card>
-          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-card-label)',
-                fontWeight: 700,
-                color: 'var(--text-low)',
-                letterSpacing: 'var(--ls-card-label)',
-                margin: 0,
-              }}
-            >
-              ひといき
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--t1)',
-                marginTop: 6,
-                lineHeight: 1.6,
-              }}
-            >
-              {result.risk}
-            </p>
-          </Card>
-        </div>
 
         {/* ════════════════════════════════ */}
         {/*  深層セクション（Premium限定）   */}
