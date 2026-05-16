@@ -6,7 +6,16 @@
  * - 同じ日 + 同じ charaId なら常に同じ組み合わせを返す（再現性保証）
  * - 日が変わると組み合わせが変わる（毎晩違う体験）
  * - birthSeed を加えると「あなただけの」体感が出る
+ *
+ * アルゴリズム:
+ * 全組み合わせ (intro × core × closing) を列挙し、誕生日+キャラ seed で
+ * Fisher-Yates シャッフルして順序を固定。基点からの経過日数でインデックスを
+ * 決定することで「N日間に全組み合わせが重複なく登場」を保証する。
+ *   N = intro数 × core数 × closing数 (例: 3×2×3=18)
  */
+
+/** 基点日（JST 2000-01-01、経過日数計算用） */
+const BASE_DAY_MS = Date.UTC(2000, 0, 1); // 2000-01-01 00:00:00 UTC
 
 /**
  * 数値列を xorshift32 で混合する超軽量 PRNG。
@@ -33,34 +42,69 @@ function hashString(str: string): number {
 }
 
 /**
- * 今日の日付を YYYYMMDD 整数で返す（JST 基準）。
+ * 現在時刻から JST 基点の経過日数インデックスを返す。
+ * dayInt ではなく経過日数を使うことで % N が均一に回る。
  */
-function todayInt(now: number = Date.now()): number {
+function dayIndex(now: number = Date.now()): number {
   const d = new Date(now + 9 * 60 * 60 * 1000); // UTC+9
-  const y = d.getUTCFullYear();
-  const m = d.getUTCMonth() + 1;
-  const day = d.getUTCDate();
-  return y * 10000 + m * 100 + day;
+  const epoch = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  return Math.floor((epoch - BASE_DAY_MS) / 86_400_000);
 }
 
 /**
- * 日次 PRNG インスタンスを返す。
- *
- * seed 列: todayInt + charaHash + birthSeed を xorshift で混合。
- * pick(n) を呼ぶたびに次の乱数から 0..n-1 を返す。
+ * Fisher-Yates シャッフル（seed で決定論的）。
  */
-export function createDailyRng(charaId: string, birthSeed: number = 0, now?: number) {
-  const day = todayInt(now);
-  const charaHash = hashString(charaId);
-  let state = xorshift32(day ^ charaHash ^ (birthSeed >>> 0));
+function shuffleWithSeed<T>(arr: readonly T[], seed: number): T[] {
+  const a = [...arr];
+  let s = seed >>> 0;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = xorshift32(s);
+    const j = s % (i + 1);
+    const tmp = a[i];
+    a[i] = a[j]!;
+    a[j] = tmp!;
+  }
+  return a;
+}
 
-  return {
-    /** 0 以上 n 未満の整数を返す */
-    pick(n: number): number {
-      state = xorshift32(state);
-      return state % n;
-    },
-  };
+/**
+ * パーツ選択インデックスのトリプレットを返す。
+ *
+ * @param charaId    - キャラ or 組み合わせキー（グローバルユニーク）
+ * @param birthSeed  - 誕生日由来の seed（0 でフォールバック）
+ * @param introLen   - 導入パーツのバリアント数
+ * @param coreLen    - 核心パーツのバリアント数
+ * @param closingLen - 結びパーツのバリアント数
+ * @param now        - テスト用現在時刻 ms（省略時は Date.now()）
+ * @returns [introIdx, coreIdx, closingIdx]
+ */
+export function getDailyPartIndices(
+  charaId: string,
+  birthSeed: number,
+  introLen: number,
+  coreLen: number,
+  closingLen: number,
+  now?: number
+): [number, number, number] {
+  // 全組み合わせを列挙
+  type Combo = [number, number, number];
+  const combos: Combo[] = [];
+  for (let c = 0; c < closingLen; c++) {
+    for (let k = 0; k < coreLen; k++) {
+      for (let i = 0; i < introLen; i++) {
+        combos.push([i, k, c]);
+      }
+    }
+  }
+
+  // キャラ + 誕生日 seed でシャッフル順を固定
+  const charaHash = hashString(charaId);
+  const shuffleSeed = xorshift32(charaHash ^ (birthSeed >>> 0));
+  const shuffled = shuffleWithSeed(combos, shuffleSeed);
+
+  // 経過日数で今日のインデックスを決定（N日周期で全組み合わせを網羅）
+  const idx = dayIndex(now) % shuffled.length;
+  return shuffled[idx]!;
 }
 
 /**

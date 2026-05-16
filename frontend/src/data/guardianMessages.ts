@@ -15,7 +15,7 @@
  * - NG表現耐性: contentFilter.ts で検出されないことを確認済み
  */
 
-import { createDailyRng, birthSeedFromDate } from '@/lib/dailySeed';
+import { getDailyPartIndices, birthSeedFromDate } from '@/lib/dailySeed';
 
 /** パーツ化されたメッセージ構造 */
 export interface GuardianMessageParts {
@@ -618,11 +618,18 @@ export function getGuardianMessage(
   if (!parts) return undefined;
 
   const birthSeed = birthSeedFromDate(birthday);
-  const rng = createDailyRng(charaId, birthSeed, now);
+  const [ii, ci, ei] = getDailyPartIndices(
+    charaId,
+    birthSeed,
+    parts.intro.length,
+    parts.core.length,
+    parts.closing.length,
+    now
+  );
 
-  const intro = parts.intro[rng.pick(parts.intro.length)];
-  const core = parts.core[rng.pick(parts.core.length)];
-  const closing = parts.closing[rng.pick(parts.closing.length)];
+  const intro = parts.intro[ii];
+  const core = parts.core[ci];
+  const closing = parts.closing[ei];
 
   return {
     charaId: parts.charaId,

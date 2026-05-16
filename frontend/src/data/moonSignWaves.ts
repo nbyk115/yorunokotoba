@@ -24,7 +24,7 @@
  */
 
 import { type MoonPhaseCategory } from '@/lib/moonPhase';
-import { createDailyRng, birthSeedFromDate } from '@/lib/dailySeed';
+import { getDailyPartIndices, birthSeedFromDate } from '@/lib/dailySeed';
 
 /** パーツ化された月×星座メッセージ構造 */
 export interface MoonSignWaveParts {
@@ -540,11 +540,18 @@ export function getMoonSignWave(
   if (!parts) return undefined;
 
   const birthSeed = birthSeedFromDate(birthday);
-  const rng = createDailyRng(`${sign}:${phase}`, birthSeed, now);
+  const [mi, si, ai] = getDailyPartIndices(
+    `${sign}:${phase}`,
+    birthSeed,
+    parts.moonText.length,
+    parts.signText.length,
+    parts.actionText.length,
+    now
+  );
 
-  const moonText = parts.moonText[rng.pick(parts.moonText.length)];
-  const signText = parts.signText[rng.pick(parts.signText.length)];
-  const actionText = parts.actionText[rng.pick(parts.actionText.length)];
+  const moonText = parts.moonText[mi];
+  const signText = parts.signText[si];
+  const actionText = parts.actionText[ai];
 
   return {
     sign: parts.sign,
