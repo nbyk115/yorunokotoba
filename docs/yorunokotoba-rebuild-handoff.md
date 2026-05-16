@@ -1,0 +1,122 @@
+# yorunokotoba 作り直し handoff
+
+> 次セッションはこのドキュメントを最初に Read してから着手すること。
+
+## 背景
+
+yorunokotoba は claude.ai の design 機能で作った初期版（一貫したデザイン）を Claude Code に持ち込み、122コミット・PR #98-117 を重ねた。その結果1つ直すと別が崩れる「継ぎ接ぎ」状態になり、オーナーが実機で不具合を多数発見。オーナー結論:「全部やり直し」「claude.ai 版のがよかった」「キャラクターは残して設計から根本やり直し」。
+
+「claude.ai 版が良かった」の本質 = 一貫性。Claude Code で個別 PR を積むほど一貫性が失われた。作り直しは「一貫した設計図を最初に固め、その図に沿って Wave 方式で実装」する。
+
+## 次セッションの起点
+
+1. 本 handoff を Read
+2. Lazyweb MCP（前セッションでインストール済、次セッションで有効化）の `lazyweb_search` で「占いアプリ 女性向け UI」のデザイン参照を取得
+3. Wave L1 から着手
+
+## 1. 20PR の成果: 活かす / 捨てる仕分け
+
+| 区分 | 対象 |
+|---|---|
+| 活かす（データ層）| `logic/fortune.ts` 誕生数ロジック / `data/guardianMessages.ts` 等306本コンテンツ / `data/signs.ts` キャラ定義 / CharaAvatar・ZodiacIcon SVG / `logic/hash.ts` seed再現性 |
+| 活かす（規律）| DESIGN.md トークン / BRAND_RULES 禁止ワード / 識別性ゲート（姉貴分の本音モード ICP §5-1）|
+| 捨てる（UI 全廃）| 全 `features/*/*.tsx` のレイアウト / AppHeader のナイトモードトグル / BlurReveal / ConstellationReveal 等の演出 / FtueOverlay |
+| 作り直す | `logic/dream.ts` の正規表現マッチング（「セックス」→「謎・水」の適当診断バグの根源）→ AI推論ベースへ |
+| 廃止（機能削除）| 相性占い（PR #114 でシェアカード削除済）/ お守り / 今夜のいい時間帯 |
+
+キャラクターは残す（オーナー明示）。
+
+## 2. 全画面 情報設計
+
+| 画面 | ユーザーは何をする | 見せる | 見せない |
+|---|---|---|---|
+| オンボーディング（1画面に統合）| 名前・生年月日・性別を入力 | 入力3項目、完了で即ホーム | FtueOverlay の使い方説明（廃止）|
+| ホーム | 今夜やる1つを選ぶ | 時間帯あいさつ + 夢占いカード1枚（主役）+ 星座占い/履歴へのテキストリンク | BlurReveal モザイク（廃止）|
+| 夢占い 入力 | 夢を書く | textarea + 送信ボタン | 過剰な演出ヘッダー |
+| 夢占い 結果 | 読む・シェア・履歴に残る | テーマ + よみとき本文 + 今日のヒント + シェア | luckyNumber |
+| 星座占い | 今日の運勢を読む | ランク + キャラ + 恋愛/仕事/健康 + ホロスコープ（星座の本質）+ 深層よみとき（Premium壁）| お守り |
+| 履歴 | 過去の夢/占いを見返す | 日付順リスト、夢の内容が主役 | 過剰な装飾 |
+| 設定 | 解約・規約確認 | アカウント・Premium状態・法務 | ナイトモードトグル（廃止）|
+| Premium | 課金する | 月¥980の価値 = 深層よみとき + 履歴無制限、CTA1つ | 機能羅列 |
+
+画面遷移は `App.tsx` の `useState<ViewKey>` を維持しつつ、結果系画面を `history.pushState` で戻る対象にする（iOS スワイプバック対応）。
+
+## 3. ホーム画面 確定デザイン仕様（creative-director、L1 実装用）
+
+レイアウト（mobile max-width 430px、縦1スクロール完結）:
+- 上端 safe-area + 24px → 時間帯あいさつ（左寄せ 0 20px、H2相当、2行まで）
+- 32px 空け → キャラクター 128px 中央配置（浮遊）
+- 24px 空け → 夢占いカード（主役、width calc(100% - 32px)、padding 24px、radius 18px、左辺 2px gold line）
+- 28px 空け → 「星座占い ・ これまでの記録」テキストリンク2点（中央、13px）
+- flex-grow → bottom tab bar 56px
+
+縦1カラム。主役カード以外に「囲み」を作らない、余白で区切る。
+
+配色（常時ダーク、tokens.css 変数のみ、hex直書き禁止）:
+- 背景 `--bg1`（time-of-day 自動切替）
+- 主役カード地 `--card-primary` + 左辺 `--card-accent-line` + 影 `--shadow-card-primary`
+- テキストリンク `--t3`、タップ領域44px
+- CTA色 `--rose` はカード内操作要素のみ。背景・あいさつには使わない
+- パーティクルはキャラ周辺のみ、カード/リンクに載せない
+
+タイポgrafい:
+- 時間帯あいさつ: `--fs-section` 17px / Zen Maru 700 / `--t1`
+- カード見出しラベル: `--fs-card-label` 14px / 700 / `--t3`（小さく薄く）
+- カード内本文: `--fs-hero-jp` 24px / 700 / lh 1.4 / `--t1`
+- テキストリンク: `--fs-caption` 13px / `--t3`
+- 英字 Cormorant はカード内引用句1箇所のみ
+
+キャラクター: 128px、`transform: translateY()` で 0→-6px→0、4000ms ease-in-out infinite（layout プロパティ不可）。影なし。
+
+夢占いカード（主役）: `--card-primary` + blur(20px)、radius 18px、padding 24px、上辺 inset 1px ハイライト。構成 = 小ラベル「今夜の夢占い」→ 24px見出しコピー → 控えめな rose の操作アフォーダンス（「ひらく →」テキスト、塗りボタンにしない）。
+
+時間帯あいさつ コピー（姉貴分の本音トーン、ICP §5-1）:
+- night-deep（深夜2-4時）:「まだ起きてるんだ。…まあ、わたしもだけど」
+- night:「おつかれ。今夜もよく帰ってきたね」
+- dawn:「もう朝が来るね。眠れた?」
+「きっとうまくいく」式の万人向けポジティブは禁止。time-of-day 5段階で分岐。
+
+## 4. 実機不具合の構造的解決方針
+
+| 不具合 | 根本原因 | 作り直し方針 |
+|---|---|---|
+| シェアバグ | toPng のフォント未ロードで画像生成失敗 | `document.fonts.ready` を待ってから生成。失敗時は明示フィードバック |
+| ナイトモードトグル不動 | 夜前提アプリにライト/ダーク両対応は矛盾 | トグル機能ごと廃止、常時ダーク1テーマに確定 |
+| キャラ浮遊不動・配色が暗すぎ | インライン style 散在で CSS が相互上書き | DESIGN.md トークンを唯一の真実とし、インライン style 全廃 |
+| モバイルサイズ不一致 | 固定 px 散在 | 全画面 max-width 430px + dvh 基準、Wave L1 で全画面構造を先に確定 |
+| iOS スワイプバック不可 | view が state 切替のみで履歴に乗らない | 結果画面を history API に乗せる |
+| 夢占いの精度（謎・水）| `dream.ts` の正規表現キーワード辞書。辞書外語は mystery + 知らない にフォールバック | dream.ts を AI推論ベースに作り直す。受け入れ基準 =「セックス」入力で love テーマかつ性・感情に言及する結果。実装手段は ai-engineer/fullstack-dev が決定。API コスト試算（月¥980×100人の原価）を着手前に必須化 |
+
+## 5. Wave 実装ロードマップ
+
+- 第1波 L1 構造（creative-director → frontend-dev）: DESIGN.md/tokens.json を憲法として確定 → 全8画面のワイヤーと ViewKey 遷移 → Card/Button 等プリミティブ最小セット。インライン style 禁止を CI で物理化
+- 第2波 L2 体験（frontend-dev）: ホーム → 夢占い → 星座占いの順。カード/余白パターンを全画面へ波及。シェア・履歴の不具合修正
+- 第3波 L3 感動（creative-director 方針 → frontend-dev）: オンボーディング初回体験と夢占い結果に集中。識別性ゲート（姉貴分の本音）をコピー全件に適用
+- 並行（ai-engineer）: dream.ts の AI推論化。第2波の夢占い実装に間に合わせる
+
+## 6. 委任プロンプトテンプレート（ConsultingOS 識別性運用）
+
+```
+[agent 名] として [タスク] を実施。
+着手前に必ず Read:
+- ~/.claude/skills/creative-playbook.md（§2.5 品質ルーブリック）
+- ~/.claude/skills/references/creative-playbook-distinctiveness.md（識別性ゲート）
+- [案件固有の参照ファイル: ICP.md / DESIGN.md 等]
+デザイン作業時は参照取得 → 競合比較 → プロダクト反映 → 識別性ゲート → 2段階検証 のフローを厳守。
+成果物に「AI/参考事例が推奨する平均値をどこで断ったか」を1行明示。
+結論 + 反証チェック Step 1-4。
+```
+
+## 7. 既知の制約・環境
+
+- Figma MCP: View シート（tier starter）= 編集（書き込み）不可。UI 実装はコードで行う
+- Canva MCP: 接続済み、ブランドキットは空
+- Lazyweb MCP: 前セッションでインストール済（`claude plugin install lazyweb@lazyweb`、token は `~/.lazyweb/lazyweb_mcp_token`）。次セッションで有効化され `lazyweb_search` / `/lazyweb:` スキルが使える
+- /goal: オーナーの副収入 月10-20万（月¥980 サブスク = 有料会員100-200人規模）
+
+## 8. 進め方の教訓（次セッションで繰り返さない）
+
+- 「build pass」を「完了」としない。実機で動くまで検証する。マージ前にオーナー実機確認
+- 個別 PR を闇雲に積まない。一貫した設計図（本 handoff）に沿って Wave で
+- agent 委任は skill + 競合比較 + デザイン参照を必ず含める。「skill を読め」で終わらせず成果物への反映を検証
+- オーケストレーターと agent が同一作業ツリーで並行 git 操作しない（ブランチ競合の原因）
