@@ -54,7 +54,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
           background: 'transparent',
           border: 'none',
           color: 'var(--rose)',
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           padding: '10px 4px',
           minHeight: 44,
           cursor: 'pointer',
@@ -64,16 +64,16 @@ export function SettingsView({ onBack }: SettingsViewProps) {
         ← 戻る
       </button>
 
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--t1)', margin: '0 0 20px' }}>
+      <h2 style={{ fontSize: 'var(--fs-h1)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 20px' }}>
         設定
       </h2>
 
       <Card style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px' }}>
+        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px' }}>
           ✨ Premium ステータス
         </h3>
         {loading ? (
-          <p style={{ fontSize: 13, color: 'var(--t2)' }}>読み込み中…</p>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)' }}>読み込み中…</p>
         ) : (
           <SubscriptionStatusBlock
             isPremium={isPremium}
@@ -85,7 +85,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
       </Card>
 
       <Card style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
+        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
           📄 規約・ポリシー
         </h3>
         <LegalLinkRow onClick={() => openLegal('tokushoho')} label="特定商取引法に基づく表記" />
@@ -95,10 +95,10 @@ export function SettingsView({ onBack }: SettingsViewProps) {
 
       {user && (
         <Card>
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
+          <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
             👤 アカウント
           </h3>
-          <p style={{ fontSize: 12, color: 'var(--t2)', margin: '0 0 12px' }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', margin: '0 0 12px' }}>
             ログイン中: {user.email ?? user.uid}
           </p>
           <button
@@ -112,7 +112,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
               border: '1px solid var(--border)',
               background: 'transparent',
               color: 'var(--t1)',
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               cursor: signOutPending ? 'wait' : 'pointer',
               opacity: signOutPending ? 0.6 : 1,
@@ -150,11 +150,11 @@ function SubscriptionStatusBlock({
   if (status === 'active' && isPremium) {
     return (
       <div>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
+        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
           🌙 Premium 利用中
         </p>
         {currentPeriodEnd && (
-          <p style={{ fontSize: 11, color: 'var(--t3)', margin: '0 0 14px' }}>
+          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', margin: '0 0 14px' }}>
             次回更新日: {formatDate(currentPeriodEnd)}
           </p>
         )}
@@ -168,7 +168,7 @@ function SubscriptionStatusBlock({
             border: '1px solid var(--border)',
             background: 'transparent',
             color: 'var(--t2)',
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
             fontWeight: 700,
             cursor: 'pointer',
           }}
@@ -182,11 +182,11 @@ function SubscriptionStatusBlock({
   if (status === 'canceled') {
     return (
       <div>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
+        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
           解約済み
         </p>
         {currentPeriodEnd && (
-          <p style={{ fontSize: 11, color: 'var(--t3)', margin: 0 }}>
+          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', margin: 0 }}>
             {formatDate(currentPeriodEnd)} までは引き続き使えるよ
           </p>
         )}
@@ -197,10 +197,10 @@ function SubscriptionStatusBlock({
   if (status === 'past_due') {
     return (
       <div>
-        <p style={{ fontSize: 13, color: 'var(--rose)', lineHeight: 1.8, margin: '0 0 10px' }}>
+        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--rose)', lineHeight: 1.8, margin: '0 0 10px' }}>
           ひといき お支払いに問題が発生したみたい
         </p>
-        <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
+        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
           カードの有効期限切れや残高不足が原因かも。<br />
           次回更新日までに解決できない場合は自動で解約になるよ。
         </p>
@@ -214,7 +214,7 @@ function SubscriptionStatusBlock({
             border: '1px solid var(--border)',
             background: 'transparent',
             color: 'var(--t2)',
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
             fontWeight: 700,
             cursor: 'pointer',
           }}
@@ -226,7 +226,7 @@ function SubscriptionStatusBlock({
   }
 
   return (
-    <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, margin: 0 }}>
+    <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, margin: 0 }}>
       Premium は未契約だよ。占いタブの末尾から始められるよ。
     </p>
   );
@@ -245,7 +245,7 @@ function LegalLinkRow({ label, onClick }: { label: string; onClick: () => void }
         border: 'none',
         borderTop: '1px solid var(--border)',
         color: 'var(--t1)',
-        fontSize: 13,
+        fontSize: 'var(--fs-caption)',
         textAlign: 'left',
         cursor: 'pointer',
         display: 'flex',

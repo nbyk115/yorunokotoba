@@ -40,7 +40,7 @@ export function Button({
       style={{
         borderRadius: 'var(--r-button)',
         padding: '14px 28px',
-        fontSize: 15,
+        fontSize: 'var(--fs-body)',
         fontWeight: 700,
         fontFamily: 'var(--font-heading)',
         cursor: 'pointer',

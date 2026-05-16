@@ -180,7 +180,7 @@ export function CompatibilityCard({
     right: 64,
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 32,
+    fontSize: 'var(--fs-hero-en)',
     fontWeight: 300,
     color: '#E8C068',
     letterSpacing: '0.06em',
@@ -213,7 +213,7 @@ export function CompatibilityCard({
   const rankBadgeStyle: CSSProperties = {
     fontFamily: "'Cormorant', serif",
     fontStyle: 'italic',
-    fontSize: 56,
+    fontSize: 'var(--fs-hero-en)',
     fontWeight: 300,
     color: RANK_COLOR[rank],
     margin: 0,
@@ -262,7 +262,7 @@ export function CompatibilityCard({
   const btnBase: CSSProperties = {
     padding: '10px 20px',
     borderRadius: 10,
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
     cursor: 'pointer',

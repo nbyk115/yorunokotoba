@@ -97,7 +97,7 @@ export function CheckoutConsentModal({
       >
         <h3
           id="consent-modal-title"
-          style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', margin: '0 0 14px' }}
+          style={{ fontSize: 'var(--fs-h3)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 14px' }}
         >
           Premium を始める前に
         </h3>
@@ -160,14 +160,14 @@ export function CheckoutConsentModal({
               cursor: 'pointer',
             }}
           />
-          <span style={{ fontSize: 12, color: 'var(--t1)', lineHeight: 1.6 }}>
+          <span style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.6 }}>
             私は18歳以上です（民法上、未成年は親権者の同意が必要）
           </span>
         </label>
 
         <div
           style={{
-            fontSize: 11,
+            fontSize: 'var(--fs-micro)',
             color: 'var(--t3)',
             lineHeight: 1.7,
             margin: '0 0 16px',
@@ -198,7 +198,7 @@ export function CheckoutConsentModal({
                   ? 'var(--border)'
                   : 'linear-gradient(135deg, var(--rose), var(--pink))',
               color: '#fff',
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               cursor: pending || !ageConfirmed ? 'not-allowed' : 'pointer',
               opacity: pending ? 0.6 : 1,
@@ -217,7 +217,7 @@ export function CheckoutConsentModal({
               border: '1px solid var(--border)',
               background: 'transparent',
               color: 'var(--t1)',
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               cursor: pending ? 'wait' : 'pointer',
               opacity: pending ? 0.6 : 1,
@@ -243,7 +243,7 @@ function ConsentRow({ label, value, note }: ConsentRowProps) {
       <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
         <span
           style={{
-            fontSize: 11,
+            fontSize: 'var(--fs-micro)',
             color: 'var(--t3)',
             fontWeight: 700,
             minWidth: 56,
@@ -251,11 +251,11 @@ function ConsentRow({ label, value, note }: ConsentRowProps) {
         >
           {label}
         </span>
-        <span style={{ fontSize: 14, color: 'var(--t1)', fontWeight: 700 }}>{value}</span>
+        <span style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', fontWeight: 700 }}>{value}</span>
       </div>
       <p
         style={{
-          fontSize: 11,
+          fontSize: 'var(--fs-micro)',
           color: 'var(--t2)',
           lineHeight: 1.6,
           margin: '2px 0 0 64px',

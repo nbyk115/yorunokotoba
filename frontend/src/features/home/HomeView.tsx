@@ -120,7 +120,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
         >
           <p
             style={{
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 400,
               color: 'var(--t3)',
               letterSpacing: '0.08em',
@@ -132,7 +132,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           </p>
           <p
             style={{
-              fontSize: 22,
+              fontSize: 'var(--fs-h1)',
               fontWeight: 700,
               color: 'var(--t1)',
               letterSpacing: '0.04em',
@@ -144,7 +144,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           </p>
           <p
             style={{
-              fontSize: 12,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 400,
               color: 'var(--t3)',
               marginTop: 4,
@@ -156,7 +156,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             {streak.count > 0 && (
               <span
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--fs-micro)',
                   color: 'var(--t3)',
                   marginLeft: 6,
                   opacity: 0.7,
@@ -201,7 +201,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           <p
             style={{
               fontFamily: 'var(--font-accent)',
-              fontSize: 11,
+              fontSize: 'var(--fs-micro)',
               fontWeight: 700,
               color: 'var(--lavender)',
               letterSpacing: '0.12em',
@@ -214,7 +214,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           {/* card-title（ICP語彙: 「夢」「読み解く」）*/}
           <h2
             style={{
-              fontSize: 18,
+              fontSize: 'var(--fs-h2)',
               fontWeight: 700,
               color: 'var(--t1)',
               lineHeight: 1.4,
@@ -228,7 +228,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           {/* card-body（ICP語彙: 「シンボル」「メッセージ」）*/}
           <p
             style={{
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               color: 'var(--t2)',
               lineHeight: 1.8,
               marginBottom: 16,
@@ -247,7 +247,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               background: 'rgba(180, 100, 180, 0.06)',
               borderRadius: 10,
               marginBottom: 20,
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               color: 'var(--t2)',
               lineHeight: 1.6,
               letterSpacing: '0.02em',
@@ -289,12 +289,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 18 }} aria-hidden="true">
+            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
               ✨
             </span>
             <span
               style={{
-                fontSize: 12,
+                fontSize: 'var(--fs-caption)',
                 fontWeight: 700,
                 color: 'var(--t2)',
               }}
@@ -303,7 +303,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             </span>
             <span
               style={{
-                fontSize: 13,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--rose)',
                 fontWeight: 600,
               }}
@@ -326,12 +326,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 18 }} aria-hidden="true">
+            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
               💫
             </span>
             <span
               style={{
-                fontSize: 12,
+                fontSize: 'var(--fs-caption)',
                 fontWeight: 700,
                 color: 'var(--t2)',
               }}
@@ -340,7 +340,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             </span>
             <span
               style={{
-                fontSize: 11,
+                fontSize: 'var(--fs-micro)',
                 color: 'var(--gold)',
                 fontWeight: 600,
               }}
@@ -363,12 +363,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               (e.currentTarget as HTMLElement).style.outline = 'none';
             }}
           >
-            <span style={{ fontSize: 18 }} aria-hidden="true">
+            <span style={{ fontSize: 'var(--fs-h2)' }} aria-hidden="true">
               📖
             </span>
             <span
               style={{
-                fontSize: 12,
+                fontSize: 'var(--fs-caption)',
                 fontWeight: 700,
                 color: 'var(--t2)',
               }}
@@ -377,7 +377,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             </span>
             <span
               style={{
-                fontSize: 13,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--lavender)',
                 fontWeight: 600,
               }}

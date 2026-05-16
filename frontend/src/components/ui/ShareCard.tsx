@@ -125,7 +125,7 @@ export function ShareCard({
     justifyContent: 'space-between',
     alignItems: 'center',
     fontFamily: "'Zen Maru Gothic', sans-serif",
-    fontSize: 32,
+    fontSize: 'var(--fs-hero-en)',
     color: 'rgba(240,232,236,0.6)',
     letterSpacing: '0.08em',
   };
@@ -163,7 +163,7 @@ export function ShareCard({
 
   /* ────── タイプ識別子（H2）────── */
   const subtitleStyle: CSSProperties = {
-    fontSize: 56,
+    fontSize: 'var(--fs-hero-en)',
     fontWeight: 700,
     color: '#F0E8EC',
     margin: 0,
@@ -201,7 +201,7 @@ export function ShareCard({
   const btnBase: CSSProperties = {
     padding: '12px 24px',
     borderRadius: 12,
-    fontSize: 14,
+    fontSize: 'var(--fs-body)',
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
     cursor: 'pointer',

@@ -70,7 +70,7 @@ export function LegalDocument({ category, onBack }: LegalDocumentProps) {
           background: 'transparent',
           border: 'none',
           color: 'var(--rose)',
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           padding: '10px 4px',
           minHeight: 44,
           cursor: 'pointer',
@@ -82,7 +82,7 @@ export function LegalDocument({ category, onBack }: LegalDocumentProps) {
 
       <h2
         style={{
-          fontSize: 18,
+          fontSize: 'var(--fs-h2)',
           fontWeight: 700,
           color: 'var(--t1)',
           margin: '0 0 16px',
@@ -109,7 +109,7 @@ interface MarkdownLiteProps {
 function MarkdownLite({ text }: MarkdownLiteProps) {
   const blocks = parseBlocks(text);
   return (
-    <div style={{ color: 'var(--t1)', fontSize: 13, lineHeight: 1.8 }}>
+    <div style={{ color: 'var(--t1)', fontSize: 'var(--fs-caption)', lineHeight: 1.8 }}>
       {blocks.map((block, i) => (
         <BlockRenderer key={i} block={block} />
       ))}
@@ -227,7 +227,7 @@ function BlockRenderer({ block }: { block: Block }) {
             paddingLeft: 12,
             margin: '10px 0',
             color: 'var(--t2)',
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
           }}
         >
           <InlineFormatter text={block.text} />
@@ -256,7 +256,7 @@ function BlockRenderer({ block }: { block: Block }) {
             whiteSpace: 'pre',
             overflowX: 'auto',
             fontFamily: 'inherit',
-            fontSize: 11,
+            fontSize: 'var(--fs-micro)',
             color: 'var(--t1)',
             background: 'rgba(255,255,255,0.03)',
             border: '1px solid var(--border)',

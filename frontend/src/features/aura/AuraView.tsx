@@ -111,7 +111,7 @@ function InputScreen({
   const eyebrowStyle: CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--lavender)',
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
@@ -119,7 +119,7 @@ function InputScreen({
   };
 
   const h2Style: CSSProperties = {
-    fontSize: 18,
+    fontSize: 'var(--fs-h2)',
     fontWeight: 700,
     color: 'var(--t1)',
     margin: '0 0 8px',
@@ -127,7 +127,7 @@ function InputScreen({
   };
 
   const bodyStyle: CSSProperties = {
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     color: 'var(--t2)',
     lineHeight: 1.8,
     margin: '0 0 24px',
@@ -142,7 +142,7 @@ function InputScreen({
   };
 
   const labelStyle: CSSProperties = {
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--t3)',
     letterSpacing: '0.06em',
     margin: '0 0 6px',
@@ -150,7 +150,7 @@ function InputScreen({
   };
 
   const valueStyle: CSSProperties = {
-    fontSize: 15,
+    fontSize: 'var(--fs-body)',
     color: 'var(--t1)',
     fontWeight: 700,
   };
@@ -162,7 +162,7 @@ function InputScreen({
     background: 'transparent',
     border: 'none',
     color: 'var(--t1)',
-    fontSize: 15,
+    fontSize: 'var(--fs-body)',
     fontFamily: 'var(--font-heading)',
     outline: 'none',
     cursor: 'pointer',
@@ -182,7 +182,7 @@ function InputScreen({
     border: `1px solid ${active ? 'var(--rose)' : 'var(--border)'}`,
     background: active ? 'rgba(240, 128, 154, 0.12)' : 'transparent',
     color: active ? 'var(--rose)' : 'var(--t2)',
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: 'pointer',
     transition: 'all 200ms ease',
@@ -282,7 +282,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   const eyebrowStyle: CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
-    fontSize: 11,
+    fontSize: 'var(--fs-micro)',
     color: 'var(--lavender)',
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
@@ -292,7 +292,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   const rankStyle: CSSProperties = {
     fontFamily: 'var(--font-accent)',
     fontStyle: 'italic',
-    fontSize: 56,
+    fontSize: 'var(--fs-hero-en)',
     fontWeight: 300,
     margin: '0 0 4px',
     color:
@@ -304,7 +304,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   };
 
   const rankLabelStyle: CSSProperties = {
-    fontSize: 18,
+    fontSize: 'var(--fs-h2)',
     fontWeight: 700,
     color: 'var(--t1)',
     margin: '0 0 16px',
@@ -312,14 +312,14 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   };
 
   const pairTitleStyle: CSSProperties = {
-    fontSize: 14,
+    fontSize: 'var(--fs-body)',
     color: 'var(--t2)',
     margin: '0 0 20px',
     letterSpacing: '0.04em',
   };
 
   const pairTextStyle: CSSProperties = {
-    fontSize: 14,
+    fontSize: 'var(--fs-body)',
     color: 'var(--t1)',
     lineHeight: 1.9,
     margin: '0 0 32px',
@@ -340,7 +340,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
     border: '1px solid var(--border)',
     borderRadius: 12,
     color: 'var(--t2)',
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 600,
     cursor: 'pointer',
     margin: '4px',

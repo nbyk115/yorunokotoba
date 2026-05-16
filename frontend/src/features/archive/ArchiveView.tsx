@@ -72,7 +72,7 @@ function ShareModal({
       >
         <p
           style={{
-            fontSize: 13,
+            fontSize: 'var(--fs-caption)',
             fontWeight: 700,
             color: 'var(--t1)',
             letterSpacing: '0.05em',
@@ -91,7 +91,7 @@ function ShareModal({
           onClick={onClose}
           style={{
             marginTop: 4,
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
             color: 'var(--t3)',
             background: 'none',
             border: 'none',
@@ -135,7 +135,7 @@ function EntryCard({
           position: 'absolute',
           top: 12,
           right: 12,
-          fontSize: 11,
+          fontSize: 'var(--fs-micro)',
           fontWeight: 700,
           color: 'var(--rose)',
           background: 'rgba(232,98,124,0.10)',
@@ -161,10 +161,10 @@ function EntryCard({
           paddingRight: 72, // シェアボタン分の余白
         }}
       >
-        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--t1)' }}>
+        <p style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)' }}>
           {type?.name ?? '夢診断'}
         </p>
-        <p style={{ fontSize: 11, color: 'var(--t3)' }}>
+        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)' }}>
           {themeLabels[entry.themeKey] ?? entry.themeKey}
         </p>
       </div>
@@ -172,7 +172,7 @@ function EntryCard({
       {/* シンボル */}
       <p
         style={{
-          fontSize: 12,
+          fontSize: 'var(--fs-caption)',
           color: 'var(--lavender)',
           fontWeight: 700,
           marginBottom: 4,
@@ -184,7 +184,7 @@ function EntryCard({
       {/* 本文（3行クランプ） */}
       <p
         style={{
-          fontSize: 12,
+          fontSize: 'var(--fs-caption)',
           color: 'var(--t2)',
           lineHeight: 1.7,
           overflow: 'hidden',
@@ -361,7 +361,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             style={{
               fontFamily: 'var(--font-accent)',
               fontStyle: 'italic',
-              fontSize: 24,
+              fontSize: 'var(--fs-hero-en)',
               color: 'var(--t1)',
               lineHeight: 1.6,
               marginBottom: 8,
@@ -369,7 +369,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           >
             まだ夢の記録がないよ
           </p>
-          <p style={{ fontSize: 13, color: 'var(--t3)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', lineHeight: 1.7 }}>
             最初の夢を、記録してみて
           </p>
         </div>
@@ -384,7 +384,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               border: 'none',
               background: 'var(--grad)',
               color: '#fff',
-              fontSize: 15,
+              fontSize: 'var(--fs-body)',
               fontWeight: 700,
               letterSpacing: '0.04em',
               cursor: 'pointer',
@@ -422,7 +422,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
         >
           <h2
             style={{
-              fontSize: 22,
+              fontSize: 'var(--fs-h1)',
               fontWeight: 700,
               color: 'var(--t1)',
               letterSpacing: '0.04em',
@@ -431,7 +431,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           >
             夜の日記
           </h2>
-          <p style={{ fontSize: 12, color: 'var(--t3)', margin: 0 }}>
+          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', margin: 0 }}>
             {entries.length}件の夢の記録
           </p>
         </header>
@@ -458,7 +458,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                 border: '1px solid var(--border)',
                 borderRadius: 14,
                 color: 'var(--t1)',
-                fontSize: 14,
+                fontSize: 'var(--fs-body)',
                 fontFamily: 'var(--font-heading)',
                 outline: 'none',
                 boxSizing: 'border-box',
@@ -480,7 +480,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   border: 'none',
                   background: 'var(--border)',
                   color: 'var(--t2)',
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -518,7 +518,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                     border: `1px solid ${active ? 'var(--rose)' : 'var(--border)'}`,
                     background: active ? 'rgba(240, 128, 154, 0.14)' : 'transparent',
                     color: active ? 'var(--rose)' : 'var(--t2)',
-                    fontSize: 12,
+                    fontSize: 'var(--fs-caption)',
                     fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'var(--font-heading)',
@@ -542,7 +542,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   border: '1px solid var(--border)',
                   background: 'transparent',
                   color: 'var(--t3)',
-                  fontSize: 12,
+                  fontSize: 'var(--fs-caption)',
                   fontWeight: 600,
                   cursor: 'pointer',
                   fontFamily: 'var(--font-heading)',
@@ -560,7 +560,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           <div style={{ padding: '0 16px 16px' }}>
             <p
               style={{
-                fontSize: 12,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--t3)',
                 margin: '0 0 12px',
                 letterSpacing: '0.04em',
@@ -574,7 +574,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   textAlign: 'center',
                   padding: '40px 16px',
                   color: 'var(--t3)',
-                  fontSize: 13,
+                  fontSize: 'var(--fs-caption)',
                   lineHeight: 1.8,
                 }}
               >
@@ -582,14 +582,14 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   style={{
                     fontFamily: 'var(--font-accent)',
                     fontStyle: 'italic',
-                    fontSize: 18,
+                    fontSize: 'var(--fs-h2)',
                     color: 'var(--t2)',
                     margin: '0 0 8px',
                   }}
                 >
                   その夢の記録は見つからなかったよ
                 </p>
-                <p style={{ margin: 0, fontSize: 12 }}>
+                <p style={{ margin: 0, fontSize: 'var(--fs-caption)' }}>
                   別のことばや、テーマで探してみて
                 </p>
               </div>
@@ -622,7 +622,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                     >
                       <span
                         style={{
-                          fontSize: 11,
+                          fontSize: 'var(--fs-micro)',
                           color: 'var(--rose)',
                           fontWeight: 700,
                           letterSpacing: '0.04em',
@@ -630,7 +630,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                       >
                         {themeLabels[entry.themeKey] ?? entry.themeKey}
                       </span>
-                      <span style={{ fontSize: 11, color: 'var(--t3)' }}>
+                      <span style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)' }}>
                         {new Date(entry.timestamp).toLocaleDateString('ja-JP', {
                           year: 'numeric',
                           month: 'short',
@@ -640,7 +640,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                     </div>
                     <p
                       style={{
-                        fontSize: 13,
+                        fontSize: 'var(--fs-caption)',
                         color: 'var(--t1)',
                         lineHeight: 1.7,
                         margin: 0,
@@ -682,7 +682,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               minHeight: 44,
               minWidth: 44,
             }}
@@ -694,7 +694,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             style={{
               fontFamily: 'var(--font-accent)',
               fontStyle: 'italic',
-              fontSize: 20,
+              fontSize: 'var(--fs-h1)',
               color: 'var(--t1)',
               margin: 0,
             }}
@@ -716,7 +716,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              fontSize: 16,
+              fontSize: 'var(--fs-h3)',
               minHeight: 44,
               minWidth: 44,
             }}
@@ -738,7 +738,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             <span
               key={w}
               style={{
-                fontSize: 11,
+                fontSize: 'var(--fs-micro)',
                 fontWeight: 700,
                 color: 'var(--t3)',
                 letterSpacing: '0.06em',
@@ -773,7 +773,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               justifyContent: 'center',
               position: 'relative',
               minHeight: 40,
-              fontSize: 13,
+              fontSize: 'var(--fs-caption)',
               cursor: cell.isCurrentMonth && hasEntry ? 'pointer' : 'default',
               transition: 'background 200ms ease',
               border: isTodayCell ? '1.5px solid var(--lavender)' : 'none',
@@ -849,7 +849,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                 style={{
                   padding: '20px 16px',
                   textAlign: 'center',
-                  fontSize: 13,
+                  fontSize: 'var(--fs-caption)',
                   color: 'var(--t3)',
                 }}
               >

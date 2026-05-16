@@ -185,7 +185,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <p
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 13,
+                fontSize: 'var(--fs-caption)',
                 fontWeight: 700,
                 color: 'var(--lavender)',
                 letterSpacing: '0.1em',
@@ -196,7 +196,7 @@ export function DreamView({ profile }: DreamViewProps) {
             </p>
             <h2
               style={{
-                fontSize: 22,
+                fontSize: 'var(--fs-h1)',
                 fontWeight: 700,
                 color: 'var(--t1)',
                 letterSpacing: '0.04em',
@@ -208,7 +208,7 @@ export function DreamView({ profile }: DreamViewProps) {
             </h2>
             <p
               style={{
-                fontSize: 13,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--t2)',
                 lineHeight: 1.8,
               }}
@@ -241,7 +241,7 @@ export function DreamView({ profile }: DreamViewProps) {
                 color: 'var(--t1)',
                 caretColor: 'var(--rose)',
                 fontFamily: 'var(--font-heading)',
-                fontSize: 15,
+                fontSize: 'var(--fs-body)',
                 lineHeight: 1.9,
                 resize: 'none',
                 minHeight: 'clamp(120px, 28vw, 200px)',
@@ -253,7 +253,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <div
               style={{
                 textAlign: 'right',
-                fontSize: 11,
+                fontSize: 'var(--fs-micro)',
                 color: 'var(--t3)',
                 marginTop: 8,
               }}
@@ -280,7 +280,7 @@ export function DreamView({ profile }: DreamViewProps) {
           >
             <p
               style={{
-                fontSize: 12,
+                fontSize: 'var(--fs-caption)',
                 color: 'var(--t3)',
                 lineHeight: 1.7,
                 margin: 0,
@@ -325,7 +325,7 @@ export function DreamView({ profile }: DreamViewProps) {
           <p
             style={{
               fontFamily: 'var(--font-accent)',
-              fontSize: 20,
+              fontSize: 'var(--fs-h1)',
               fontStyle: 'italic',
               color: 'rgba(240,232,236,0.85)',
               letterSpacing: '0.06em',
@@ -408,7 +408,7 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* テーマアイコン */}
               <div
                 style={{
-                  fontSize: 80,
+                  fontSize: 'var(--fs-hero-en)',
                   lineHeight: 1,
                   marginTop: 4,
                   marginBottom: 12,
@@ -423,7 +423,7 @@ export function DreamView({ profile }: DreamViewProps) {
               <h3
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: 22,
+                  fontSize: 'var(--fs-h1)',
                   fontWeight: 700,
                   letterSpacing: '0.04em',
                   color: result.theme.color,
@@ -436,7 +436,7 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* シンボル 1 行サマリー */}
               <p
                 style={{
-                  fontSize: 13,
+                  fontSize: 'var(--fs-caption)',
                   color: 'var(--t3)',
                   marginTop: 6,
                   lineHeight: 1.6,
@@ -462,7 +462,7 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* よみとき冒頭（結果の核心を Card 1 で見せる） */}
               <p
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   lineHeight: 1.9,
                   color: 'var(--t1)',
                   margin: 0,
@@ -475,7 +475,7 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* スワイプヒント */}
               <p
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--fs-micro)',
                   color: 'var(--t3)',
                   marginTop: 16,
                   letterSpacing: '0.08em',
@@ -498,7 +498,7 @@ export function DreamView({ profile }: DreamViewProps) {
                   background: result.theme.color,
                   border: 'none',
                   color: '#fff',
-                  fontSize: 12,
+                  fontSize: 'var(--fs-caption)',
                   fontWeight: 700,
                   fontFamily: 'var(--font-heading)',
                   cursor: 'pointer',
@@ -513,7 +513,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <div style={{ ...cardBase }}>
               <h4
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   fontWeight: 700,
                   color: 'var(--lavender)',
                   marginBottom: 10,
@@ -524,7 +524,7 @@ export function DreamView({ profile }: DreamViewProps) {
               </h4>
               <p
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   lineHeight: 1.9,
                   color: 'var(--t1)',
                   marginBottom: 16,
@@ -536,7 +536,7 @@ export function DreamView({ profile }: DreamViewProps) {
               <BlurReveal initialBlur={4} revealOnTap>
                 <p
                   style={{
-                    fontSize: 13,
+                    fontSize: 'var(--fs-caption)',
                     lineHeight: 1.9,
                     color: 'var(--t2)',
                   }}
@@ -546,7 +546,7 @@ export function DreamView({ profile }: DreamViewProps) {
               </BlurReveal>
               <p
                 style={{
-                  fontSize: 11,
+                  fontSize: 'var(--fs-micro)',
                   color: 'var(--t3)',
                   marginTop: 8,
                   textAlign: 'center',
@@ -560,7 +560,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <div style={{ ...cardBase }}>
               <h4
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   fontWeight: 700,
                   color: 'var(--lavender)',
                   marginBottom: 12,
@@ -579,12 +579,12 @@ export function DreamView({ profile }: DreamViewProps) {
                       borderLeft: '3px solid var(--rose)',
                     }}
                   >
-                    <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--rose)' }}>
+                    <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--rose)' }}>
                       {s.word} · {s.meaning}
                     </p>
                     <p
                       style={{
-                        fontSize: 12,
+                        fontSize: 'var(--fs-caption)',
                         color: 'var(--t2)',
                         marginTop: 4,
                         lineHeight: 1.7,
@@ -601,7 +601,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <div style={{ ...cardBase }}>
               <h4
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   fontWeight: 700,
                   color: 'var(--rose)',
                   marginBottom: 10,
@@ -609,15 +609,15 @@ export function DreamView({ profile }: DreamViewProps) {
               >
                 今日のメッセージ
               </h4>
-              <p style={{ fontSize: 14, lineHeight: 1.9, color: 'var(--t1)' }}>
+              <p style={{ fontSize: 'var(--fs-body)', lineHeight: 1.9, color: 'var(--t1)' }}>
                 {result.todayMessage}
               </p>
 
               <div style={{ marginTop: 16 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
+                <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
                   今日やるといいこと
                 </p>
-                <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
+                <ul style={{ paddingLeft: 20, fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8 }}>
                   {result.actions.should.map((a, i) => (
                     <li key={i}>{a}</li>
                   ))}
@@ -625,10 +625,10 @@ export function DreamView({ profile }: DreamViewProps) {
               </div>
 
               <div style={{ marginTop: 16 }}>
-                <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
+                <p style={{ fontSize: 'var(--fs-caption)', fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
                   気をつけること
                 </p>
-                <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
+                <ul style={{ paddingLeft: 20, fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8 }}>
                   {result.actions.aware.map((a, i) => (
                     <li key={i}>{a}</li>
                   ))}
@@ -642,7 +642,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <div style={{ ...cardBase }}>
               <h4
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   fontWeight: 700,
                   color: 'var(--gold)',
                   marginBottom: 10,
@@ -651,7 +651,7 @@ export function DreamView({ profile }: DreamViewProps) {
                 💝 今日のお守り
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
                   <strong style={{ color: result.lucky.color.hex }}>
                     🎨 {result.lucky.color.v}
                   </strong>
@@ -659,7 +659,7 @@ export function DreamView({ profile }: DreamViewProps) {
                     {result.lucky.color.reason}
                   </span>
                 </p>
-                <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
                   <strong>
                     {result.lucky.item.e} {result.lucky.item.v}
                   </strong>
@@ -667,7 +667,7 @@ export function DreamView({ profile }: DreamViewProps) {
                     {result.lucky.item.reason}
                   </span>
                 </p>
-                <p style={{ fontSize: 13, color: 'var(--t1)' }}>
+                <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
                   <strong>🔢 ナンバー {result.lucky.num.v}</strong>
                   <span style={{ color: 'var(--t2)', marginLeft: 8 }}>
                     {result.lucky.num.reason}
@@ -722,7 +722,7 @@ export function DreamView({ profile }: DreamViewProps) {
           </div>
           <p
             style={{
-              fontSize: 11,
+              fontSize: 'var(--fs-micro)',
               color: 'var(--t3)',
               textAlign: 'center',
               margin: '16px 16px 4px',
@@ -763,7 +763,7 @@ export function DreamView({ profile }: DreamViewProps) {
           <p
             style={{
               fontFamily: 'var(--font-accent)',
-              fontSize: 18,
+              fontSize: 'var(--fs-h2)',
               fontStyle: 'italic',
               color: 'var(--t1)',
               letterSpacing: '0.06em',

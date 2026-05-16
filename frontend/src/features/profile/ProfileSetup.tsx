@@ -78,7 +78,7 @@ function MoonPhaseProgress({ currentStep }: MoonPhaseProgressProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 14,
+                fontSize: 'var(--fs-body)',
                 color: isDone ? '#fff' : isCurrent ? 'var(--rose)' : 'var(--t3)',
                 animation: isCurrent ? 'breathe 2s ease infinite' : undefined,
                 transition: 'all 300ms ease',
@@ -95,7 +95,7 @@ function MoonPhaseProgress({ currentStep }: MoonPhaseProgressProps) {
         style={{
           textAlign: 'center',
           marginTop: 8,
-          fontSize: 11,
+          fontSize: 'var(--fs-micro)',
           color: 'var(--t3)',
           letterSpacing: '0.08em',
         }}
@@ -152,7 +152,7 @@ const underlineInputStyle = {
   border: 'none',
   borderBottom: '1px solid var(--border)',
   borderRadius: 0,
-  fontSize: 18,
+  fontSize: 'var(--fs-h2)',
   color: 'var(--t1)',
   fontFamily: 'var(--font-heading)',
   textAlign: 'center' as const,
@@ -193,7 +193,7 @@ function Step1({ name, onChange, animClass }: Step1Props) {
       </h2>
       <p
         style={{
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           color: 'var(--t2)',
           lineHeight: 1.8,
           marginBottom: 24,
@@ -205,7 +205,7 @@ function Step1({ name, onChange, animClass }: Step1Props) {
       <label>
         <span
           style={{
-            fontSize: 12,
+            fontSize: 'var(--fs-caption)',
             fontWeight: 700,
             color: 'var(--t3)',
             display: 'block',
@@ -265,7 +265,7 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
 
   const dateInputStyle = (field: 'year' | 'month' | 'day') => ({
     padding: '14px 16px',
-    fontSize: 16,
+    fontSize: 'var(--fs-h3)',
     textAlign: 'center' as const,
     borderRadius: 12,
     border: `1.5px solid ${focusedField === field ? 'var(--rose)' : 'var(--border)'}`,
@@ -299,7 +299,7 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
       </h2>
       <p
         style={{
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           color: 'var(--t2)',
           lineHeight: 1.8,
           marginBottom: 24,
@@ -366,12 +366,12 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
             animation: 'fadeIn 300ms ease forwards',
           }}
         >
-          <span style={{ fontSize: 24 }}>{sign.icon ?? '✨'}</span>
+          <span style={{ fontSize: 'var(--fs-hero-en)' }}>{sign.icon ?? '✨'}</span>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)' }}>
+            <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--rose)' }}>
               {sign.k}
             </div>
-            <div style={{ fontSize: 11, color: 'var(--t3)' }}>
+            <div style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)' }}>
               あなたの星座はこれだよ
             </div>
           </div>
@@ -416,7 +416,7 @@ function Step3({ gender, onChange, animClass }: Step3Props) {
       </h2>
       <p
         style={{
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           color: 'var(--t2)',
           lineHeight: 1.8,
           marginBottom: 4,
@@ -426,7 +426,7 @@ function Step3({ gender, onChange, animClass }: Step3Props) {
       </p>
       <p
         style={{
-          fontSize: 12,
+          fontSize: 'var(--fs-caption)',
           color: 'var(--t3)',
           lineHeight: 1.6,
           marginBottom: 0,
@@ -460,10 +460,10 @@ function Step3({ gender, onChange, animClass }: Step3Props) {
                 gap: 6,
               }}
             >
-              <span style={{ fontSize: 28 }}>{opt.icon}</span>
+              <span style={{ fontSize: 'var(--fs-hero-en)' }}>{opt.icon}</span>
               <span
                 style={{
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   fontWeight: 700,
                   color: selected ? 'var(--rose)' : 'var(--t1)',
                   fontFamily: 'var(--font-heading)',
@@ -538,7 +538,7 @@ function CompletionScreen({ signName, onDone }: CompletionScreenProps) {
       <h2
         style={{
           fontFamily: 'var(--font-accent)',
-          fontSize: 24,
+          fontSize: 'var(--fs-hero-en)',
           fontStyle: 'italic',
           fontWeight: 300,
           color: 'var(--t1)',
@@ -549,7 +549,7 @@ function CompletionScreen({ signName, onDone }: CompletionScreenProps) {
       </h2>
       <p
         style={{
-          fontSize: 14,
+          fontSize: 'var(--fs-body)',
           color: 'var(--rose)',
           fontWeight: 700,
           letterSpacing: '0.06em',
@@ -586,7 +586,7 @@ function EditMode({
       <h2
         style={{
           fontFamily: 'var(--font-accent)',
-          fontSize: 22,
+          fontSize: 'var(--fs-h1)',
           fontStyle: 'italic',
           fontWeight: 300,
           color: 'var(--t1)',
@@ -595,7 +595,7 @@ function EditMode({
       >
         Your profile
       </h2>
-      <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 24, lineHeight: 1.8 }}>
+      <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', marginBottom: 24, lineHeight: 1.8 }}>
         情報を更新できるよ
       </p>
 
@@ -606,7 +606,7 @@ function EditMode({
         <label>
           <span
             style={{
-              fontSize: 12,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               color: 'var(--t3)',
               display: 'block',
@@ -632,7 +632,7 @@ function EditMode({
         <div>
           <span
             style={{
-              fontSize: 12,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               color: 'var(--t3)',
               display: 'block',
@@ -654,7 +654,7 @@ function EditMode({
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg1)',
                 color: 'var(--t1)',
-                fontSize: 15,
+                fontSize: 'var(--fs-body)',
                 fontFamily: 'var(--font-heading)',
                 outline: 'none',
               }}
@@ -673,7 +673,7 @@ function EditMode({
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg1)',
                 color: 'var(--t1)',
-                fontSize: 15,
+                fontSize: 'var(--fs-body)',
                 fontFamily: 'var(--font-heading)',
                 outline: 'none',
               }}
@@ -693,7 +693,7 @@ function EditMode({
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg1)',
                 color: 'var(--t1)',
-                fontSize: 15,
+                fontSize: 'var(--fs-body)',
                 fontFamily: 'var(--font-heading)',
                 outline: 'none',
               }}
@@ -707,7 +707,7 @@ function EditMode({
         <div>
           <span
             style={{
-              fontSize: 12,
+              fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               color: 'var(--t3)',
               display: 'block',
@@ -732,7 +732,7 @@ function EditMode({
                   fontWeight: 700,
                   fontFamily: 'var(--font-heading)',
                   cursor: 'pointer',
-                  fontSize: 14,
+                  fontSize: 'var(--fs-body)',
                   transition: 'all 200ms ease',
                 }}
               >
@@ -885,7 +885,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
         <h1
           style={{
             fontFamily: 'var(--font-accent)',
-            fontSize: 28,
+            fontSize: 'var(--fs-hero-en)',
             fontStyle: 'italic',
             fontWeight: 300,
             color: 'var(--t1)',
@@ -896,7 +896,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
         </h1>
         <p
           style={{
-            fontSize: 14,
+            fontSize: 'var(--fs-body)',
             color: 'var(--t2)',
             lineHeight: 1.8,
             letterSpacing: '0.04em',

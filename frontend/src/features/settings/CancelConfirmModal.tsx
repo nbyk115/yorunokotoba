@@ -107,17 +107,17 @@ export function CancelConfirmModal({
       >
         <h3
           id="cancel-modal-title"
-          style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}
+          style={{ fontSize: 'var(--fs-h3)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}
         >
           Premium を解約する？
         </h3>
-        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
+        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
           現在: {PREMIUM_PRICE_LABEL}
         </p>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 8px' }}>
+        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 8px' }}>
           解約しても、{currentPeriodEndIso ? formatIsoDate(currentPeriodEndIso) : '次回更新日'}まではそのまま使えるよ。
         </p>
-        <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.7, margin: '0 0 16px' }}>
+        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', lineHeight: 1.7, margin: '0 0 16px' }}>
           ※ 残り期間の日割返金はないよ。<br />
           ※ 次回更新日の前日23:59 までに解約すれば、翌日以降の課金は止まるよ。
         </p>
@@ -126,7 +126,7 @@ export function CancelConfirmModal({
         <fieldset style={{ border: 'none', padding: 0, margin: '0 0 16px' }}>
           <legend
             style={{
-              fontSize: 12,
+              fontSize: 'var(--fs-caption)',
               color: 'var(--t2)',
               margin: '0 0 8px',
               fontWeight: 700,
@@ -144,7 +144,7 @@ export function CancelConfirmModal({
                   gap: 8,
                   padding: '8px 4px',
                   cursor: pending ? 'not-allowed' : 'pointer',
-                  fontSize: 13,
+                  fontSize: 'var(--fs-caption)',
                   color: 'var(--t1)',
                 }}
               >
@@ -166,7 +166,7 @@ export function CancelConfirmModal({
         {error && (
           <p
             role="alert"
-            style={{ fontSize: 11, color: 'var(--rose)', margin: '0 0 12px' }}
+            style={{ fontSize: 'var(--fs-micro)', color: 'var(--rose)', margin: '0 0 12px' }}
           >
             {error}
           </p>
@@ -215,7 +215,7 @@ function equalWeightButtonStyle(
     border: `1px solid ${borderColor}`,
     background: 'transparent',
     color,
-    fontSize: 13,
+    fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: pending ? 'wait' : 'pointer',
     opacity: pending ? 0.6 : 1,
