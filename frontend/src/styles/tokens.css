@@ -103,8 +103,8 @@
   --card: var(--card-secondary);
   --card-solid: #1C161E;
   --t1: #F0E8EC;
-  --t2: rgba(240, 232, 236, 0.72);
-  --t3: rgba(240, 232, 236, 0.56);
+  --t2: rgba(240, 232, 236, 0.86);
+  --t3: rgba(240, 232, 236, 0.70);
   --border: rgba(240, 232, 236, 0.10);
   --bg-body: var(--bg1);
   --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 28px rgba(0,0,0,0.45);
@@ -141,6 +141,12 @@
   --border-secondary: rgba(58, 40, 48, 0.05);
   --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 22px rgba(180,100,120,0.12);
   --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 10px rgba(180,100,120,0.06);
+  /* restore light text colors — 明るい背景に暗い文字を戻す（白背景に白文字を防ぐ） */
+  --t1: #3A2830;
+  --t2: rgba(58, 40, 48, 0.72);
+  --t3: rgba(58, 40, 48, 0.56);
+  --card-solid: #FFFFFF;
+  --border: rgba(58, 40, 48, 0.08);
 }
 
 [data-time-of-day="dusk"] {
