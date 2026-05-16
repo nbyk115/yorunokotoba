@@ -451,6 +451,21 @@ ClaudeCodeStudio 独自調査記事（2026-04-23 時点・Boris X 投稿 + Anthr
 - 新規取り込みは「現状の弱点を補強するか」「実需顕在化済か」で判定
 - 研究プレビュー機能は仕様変更リスク、商用案件には未投入
 
+## 12. Claude Code 2.1.142 claude agents フラグ（2026-05 公開）
+
+FACT: `claude agents` の 8 フラグは Claude Code 公式 CHANGELOG 記載（一次出典 URL 末尾参照）。INFERENCE: ConsultingOS 規律対応表は assistant 判断、フラグ追加バージョンの厳密な番号は CHANGELOG 原典で都度確認推奨。
+
+`claude agents` コマンドに dispatched background session 設定フラグ 8 種追加。ConsultingOS 規律との対応:
+
+| フラグ | ConsultingOS 運用 |
+|---|---|
+| `--permission-mode` | YOU MUST: agent dispatch 時に明示。Hard Rule 15（不可逆操作ユーザー承認）を CLI で強制 |
+| `--add-dir` | アクセス許可フォルダ限定。Hard Rule 3（.env / secrets 読取禁止）の構造担保 |
+| `--model` / `--effort` | タスク別モデル選定（戦略 = Opus 4.7 / 軽作業 = Haiku）を dispatch 時に明示 |
+| `--plugin-dir` / `--settings` / `--mcp-config` | プロジェクト別設定切替 |
+| `--dangerously-skip-permissions` | NEVER: Hard Rule 4 で実行禁止。2.1.142 で追加されたが ConsultingOS では使用禁止を継続 |
+
+Grep tool は embedded ripgrep の ENOENT 時に system `rg` へ自動フォールバック + self-heal（Claude Code 2.1.x 系で改善済、運用者操作不要。tech-lead 検証: ENOENT fallback の厳密な修正バージョンは CHANGELOG 上 2.1.142 でなく別バージョンの可能性あり、バージョン断定は回避）。出典: [Claude Code CHANGELOG](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)。
 
 | Ver | 日付 | 変更内容 |
 |---|---|---|
@@ -463,6 +478,7 @@ ClaudeCodeStudio 独自調査記事（2026-04-23 時点・Boris X 投稿 + Anthr
 | 2.2.0 | 2026-05-02 | Boris Cherny 公式 Claude Code 機能 3 項目取り込み（worktree -w / /batch / --bare）。5 項目は実需顕在化次第保留（/loop /schedule / teleport / /branch / /voice / --add-dir）|
 | 2.3.0 | 2026-05-02 | ClaudeCodeStudio 30 Tips から 4 項目取り込み（status line / Interview ファースト / Chrome 拡張 / Issue→実装直結）。13 項目は既存内包、13 項目は研究プレビュー or 実需未顕在化で保留 |
 | 2.4.0 | 2026-05-04 | Orchestration プロトコル節新設（起動前 4 点ゲート + 起動プロンプト必須項目 + 出力検証ゲート + 形骸化防止）。2026-05-04 legal-compliance-checker ファイル不在判定事例の構造的解決 |
+| 2.5.0 | 2026-05-15 | Claude Code 2.1.142 claude agents フラグ 8 種の ConsultingOS 規律対応表追加（§12）。--permission-mode / --add-dir を Hard Rule 15/3 の CLI 強制手段化、--dangerously-skip-permissions は Hard Rule 4 で使用禁止継続 |
 
 
 ## 出典・依拠先

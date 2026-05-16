@@ -294,11 +294,14 @@ strategy-lead + product-manager + feedback-synthesizer + kpi-analytics + brand-g
 
 ---
 
-## 小野寺信行（電通デジタル / DII Connect）の追加フレーム
+## 小野寺信行（電通デジタル DDGC / DJIB 統合ソリューション室 / DII Connect）の追加フレーム
 - **3Sフレーム（動画広告 × ファネル）**: Show（認知）/ Story（自分ゴト化）/ Sale（next action）の3段階で、それぞれ専用 KPI（再生数・好意度・CVR）。混在計測禁止
 - **広告体験ガード**: ROAS 効率最大化が UX を毀損していないか必ず検証。「数値目標が優先されるあまりユーザーの広告体験が配慮されていない」状態を反証
 - **ナーチャリングのオムニチャネル原則**: オウンドメディア・店頭パンフ・メルマガ・他デジタル施策をシナリオで統合。デジタル単体最適は局所解
-- **代理店は R&D 機関**: 「運用屋」ではなく「プラットフォーム研究機関」へ。グローバル協業前提（出典: [MarkeZine](https://markezine.jp/article/detail/39924) / [Trade Desk Press Room](https://www.thetradedesk.com/jp/press-room/dentsu-digital-aims-to-transform-marketing-methods-in-an-era-of-increasingly-complex-advertising-environments)）
+- **代理店は R&D 機関**: 「運用屋」ではなく「プラットフォーム研究機関」へ。グローバル協業前提
+- **広告 = 信頼構築手段**: 広告を情報発信でなく「ユーザーとの信頼を築く手段」と捉える。ユーザーの生活・価値観に寄り添い意味のあるつながりを設計、KGI 達成へ戦略設計の一貫性 + メディア選定 + クリエイティブ + ブランドセーフティ配信環境 + KPI 設計を一気通貫で徹底（出典: [MarkeZine](https://markezine.jp/article/detail/39924) / [Trade Desk Press Room](https://www.thetradedesk.com/jp/press-room/dentsu-digital-aims-to-transform-marketing-methods-in-an-era-of-increasingly-complex-advertising-environments) / [Unyoo.jp 対談](https://www.atara.co.jp/unyoojp/2025/01/dentsudigital_fourm_part1/)）
+- **コンテクスチュアル広告でブランディング**: 3rd party Cookie 規制後の配信設計。特定の人物を追跡せず、Web ページの文脈・キーワード・画像・動画を AI が自動解析し、ブランドとマッチしたコンテンツ上に配信。Cookie 非依存でブランドセーフティを構造的に担保、「ターゲティング」でなく「ブランディング手段」として設計（出典: [ウェブ電通報 コンテクスチュアル広告連載](https://dentsu-ho.com/en/booklets/509) / [MarkeZine 文脈・情緒ターゲティング](https://markezine.jp/article/detail/34251)）
+- **リテールメディア設計**: 小売事業者の 1stParty 購買データ + 販売チャネルを広告メディア化。メーカー（広告主）と小売（メディア）の共創構造で、購買データと広告配信を統合。ConsultingOS §7 ファーストパーティデータ戦略 + 佐藤アセット帰属診断（顧客資産が事業者側に残るモデル優先）と連結（出典: [Retail Media Summit](https://www.retailmedia-japan.com/) / [MarkeZine リテールメディア統合ネットワーク](https://markezine.jp/article/detail/50260)）
 
 ## 佐藤裕介（フリークアウト/STORES）の追加フレーム
 - **3変数交点**: 技術 × ユーザー × 市場構造の3変化が重なる地点だけが勝つ。1つでも欠けると「良いプロダクトだが負ける」になる
@@ -308,6 +311,8 @@ strategy-lead + product-manager + feedback-synthesizer + kpi-analytics + brand-g
 - **5年蓄積前提の業界精通**: 速読・要約では到達できない。5年スパンの一次情報蓄積が業界精通の唯一の道
 - **JDで組織を作る**: ヒーロー依存より職務定義の精度（出典: [STARTUP DB](https://journal.startup-db.com/articles/hey) / [Digiday](https://digiday.jp/modern-retail/interview-with-stores-yusuke-sato/) / [Diamond](https://diamond.jp/articles/-/335825)）
 - **新市場挑戦**: 「参入できる力があるのに挑戦しない」を最大リスクとして指摘
+- **プロダクトバリュー定期更新**: 2 年弱に 1 度プロダクト価値を柔軟に変化させる（FreakOut 7 年で 4 回実証）。技術・ユーザー環境・市場構造の変化に追従、「成功体験」に固執しない
+- **先行事例マーケット構造比較**: 新市場分析はゼロから推測せず、類似先行事例のマーケット構造を比較分析（例: VR 市場を PlayStation / Wii の普及曲線で読む）。参入タイミングは普及率の定量閾値で判断（例: スマホ浸透率 10% で参入）（出典: [ONE CAREER](https://www.onecareer.jp/articles/1583) / [CareerHack](https://careerhack.en-japan.com/report/detail/887) / [Schoo](https://schoo.jp/minute/226)）
 
 ---
 
