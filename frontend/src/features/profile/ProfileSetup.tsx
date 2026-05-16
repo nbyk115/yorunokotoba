@@ -4,6 +4,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { SIGNS, getSignIndex } from '@/data/signs';
+import { ZodiacIcon } from '@/components/ui/ZodiacIcon';
 import type { UserProfile } from '@/lib/firestore';
 import { saveLocalProfile } from '@/lib/firestore';
 import { track } from '@/lib/analytics';
@@ -369,7 +370,7 @@ function Step2({ birthYear, birthMonth, birthDay, onYear, onMonth, onDay, animCl
             animation: 'fadeIn 300ms ease forwards',
           }}
         >
-          <span style={{ fontSize: 'var(--fs-hero-en)' }}>{sign.icon ?? '✨'}</span>
+          <ZodiacIcon signIndex={signIdx} size={40} color="var(--rose)" />
           <div>
             <div style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--rose)' }}>
               {sign.k}
