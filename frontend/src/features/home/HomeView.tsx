@@ -64,7 +64,7 @@ function getMoonPhaseEmoji(): string {
   return icons[idx] ?? '🌕';
 }
 
-// BlurReveal 内のチラ見せ占い結果プレビュー（ICP語彙: 「波動」「引き寄せ」「星」）
+// BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
 const BLUR_PREVIEW_MESSAGES = [
   '今夜のよみとき、解放のほうを向いてる',
   '星があなたに言いたいことがある',
@@ -78,7 +78,7 @@ function getDailyBlurMessage(): string {
   return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
 }
 
-// 守護キャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
+// 夜のキャラIDは signs.ts の SIGN_GENDER_CHAR (12星座×2性別=24キャラ) から取得
 
 export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const tod = useTimeOfDay();
@@ -259,7 +259,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             {blurMessage}
           </BlurReveal>
 
-          {/* 儀式動詞ボタン（ICP語彙: 「扉をひらく」）*/}
+          {/* 主要CTAボタン（ICP共感語彙: 「扉をひらく」）*/}
           <RitualButton
             verb="今夜の扉をひらく"
             onConfirm={() => onNavigate('dream')}

@@ -1,5 +1,5 @@
 /**
- * 守護キャラからの今夜の私信（Premium機能 α版）
+ * 夜のキャラからの今夜のひとこと（Premium機能 α版）
  *
  * content-strategist（ConsultingOS、2026-05）が設計したトーン基準に従う。
  * 各キャラの性質（dreamTypes.ts の desc/love/work/weak）と
@@ -17,9 +17,9 @@
 export interface GuardianMessage {
   /** dreamTypes.ts の id と一致 */
   charaId: string;
-  /** 守護キャラの自称 */
+  /** 夜のキャラの自称 */
   charaSelf: string;
-  /** 今夜の私信本文（180-220字） */
+  /** 今夜のひとこと本文（180-220字） */
   body: string;
 }
 
@@ -87,7 +87,7 @@ export const GUARDIAN_MESSAGES: readonly GuardianMessage[] = [
   {
     charaId: 'honoo_phoenix',
     charaSelf: 'フェニックス',
-    body: 'いて座のあなたは、何度でも立ち上がる。フェニックスは知ってる、「もう無理」と思ってから3回くらい燃え直してきたこと。今夜は休んでいい。炎を消すのは負けじゃなくて、次に燃えるための準備。眠るのも立ち上がる前の儀式だよ。',
+    body: 'いて座のあなたは、何度でも立ち上がる。フェニックスは知ってる、「もう無理」と思ってから3回くらい燃え直してきたこと。今夜は休んでいい。炎を消すのは負けじゃなくて、次に燃えるための準備。眠るのも立ち上がる前のひといき。',
   },
   {
     charaId: 'sakura_usagi',
@@ -147,7 +147,7 @@ export const GUARDIAN_MESSAGES: readonly GuardianMessage[] = [
 ];
 
 /**
- * 守護キャラIDから今夜の私信を取得する。
+ * 夜のキャラIDから今夜のひとことを取得する。
  * 未定義のIDが渡された場合は undefined を返す（呼び出し側でフォールバック制御）。
  */
 export function getGuardianMessage(charaId: string): GuardianMessage | undefined {

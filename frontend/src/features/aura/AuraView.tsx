@@ -272,6 +272,8 @@ interface ResultProps {
 
 function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
   const { userId } = useCurrentUser();
+  const myCharaId = getCharaIdBySign(profile.sign, profile.gender);
+
   const sectionStyle: CSSProperties = {
     padding: '32px 24px',
     textAlign: 'center',
@@ -364,6 +366,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
           pairText={result.pairText}
           pairTitle={result.pairTitle}
           signLabel={`${profile.sign} · ${profile.name}`}
+          fromCharaId={myCharaId}
         />
 
         <div style={dividerStyle} aria-hidden="true" />
@@ -384,7 +387,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             style={ghostBtnStyle}
             onClick={onReset}
           >
-            別の人と占う
+            別の人と試す
           </button>
           <button
             type="button"

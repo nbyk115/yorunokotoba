@@ -15,7 +15,7 @@ interface DreamViewProps {
   profile: UserProfile;
 }
 
-/* ─── 儀式フェーズテキスト（3秒 / 3段階） ─── */
+/* ─── 解析フェーズテキスト（3秒 / 3段階） ─── */
 const RITUAL_PHASES = ['夢を、読んでいる', 'シンボルをひらく', '見えてきた'];
 
 /* ─── 月SVG（stroke-dasharray アニメーション） ─── */
@@ -66,7 +66,7 @@ export function DreamView({ profile }: DreamViewProps) {
   const [result, setResult] = useState<DreamResult | null>(null);
   const [loading, setLoading] = useState(false);
 
-  /* 儀式オーバーレイ用 */
+  /* 解析オーバーレイ用 */
   const [ritualPhaseIdx, setRitualPhaseIdx] = useState(0);
   const [phaseVisible, setPhaseVisible] = useState(true);
   const [moonProgress, setMoonProgress] = useState(0);
@@ -312,7 +312,7 @@ export function DreamView({ profile }: DreamViewProps) {
       )}
 
       {/* ══════════════════════════════════════════
-          ★ 儀式オーバーレイ（loading === true 時）
+          ★ 解析オーバーレイ（loading === true 時）
       ══════════════════════════════════════════ */}
       {loading && (
         <div
@@ -602,7 +602,7 @@ export function DreamView({ profile }: DreamViewProps) {
               {/* 「今日避けたいこと」は ux-designer 診断で認知過負荷判定 → 削除（should + aware の 2 点で十分）*/}
             </div>
 
-            {/* ── Card 5: ラッキー3点 + 相性タイプ（統合） ── */}
+            {/* ── Card 5: 今日のお守り + 相性タイプ（統合） ── */}
             <div style={{ ...cardBase }}>
               <h4
                 style={{
@@ -612,7 +612,7 @@ export function DreamView({ profile }: DreamViewProps) {
                   marginBottom: 10,
                 }}
               >
-                ラッキー3点
+                💝 今日のお守り
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <p style={{ fontSize: 13, color: 'var(--t1)' }}>
