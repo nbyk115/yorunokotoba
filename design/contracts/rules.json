@@ -117,7 +117,7 @@
     },
     {
       "id": "GRADIENT-001",
-      "severity": "warning",
+      "severity": "error",
       "category": "colors",
       "description": "グラデーション直書き禁止: linear-gradient / radial-gradient のハードコードを検出",
       "detector": {
@@ -125,8 +125,8 @@
         "pattern": "(?:linear-gradient|radial-gradient)\\s*\\(",
         "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
       },
-      "fix": "グラデーションは --grad / --grad2 トークン変数を使用。直書き全廃予定 (PR3 で error 昇格)",
-      "why": "グラデーション直書きの乱用を CI で可視化。PR3 完了後に error 昇格する"
+      "fix": "グラデーションはソリッドトークン変数に置き換える。linear/radial-gradient 直書きは全廃済み (PR3 完了)",
+      "why": "PR3 でグラデ全廃完了。再混入を CI で物理ブロックするため error に昇格"
     },
     {
       "id": "DASH-001",
