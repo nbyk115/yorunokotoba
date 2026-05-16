@@ -70,7 +70,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
         設定
       </h2>
 
-      <Card style={{ marginBottom: 16 }}>
+      <Card variant="secondary" style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
           <Icon icon={Sparkles} size={16} color="var(--gold)" />
           Premium ステータス
@@ -87,7 +87,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
         )}
       </Card>
 
-      <Card style={{ marginBottom: 16 }}>
+      <Card variant="secondary" style={{ marginBottom: 16 }}>
         <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
           <Icon icon={FileText} size={16} />
           規約・ポリシー
@@ -98,7 +98,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
       </Card>
 
       {user && (
-        <Card>
+        <Card variant="secondary">
           <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
             <Icon icon={UserRound} size={16} />
             アカウント
@@ -113,7 +113,7 @@ export function SettingsView({ onBack }: SettingsViewProps) {
             style={{
               minHeight: 44,
               padding: '10px 16px',
-              borderRadius: 12,
+              borderRadius: 'var(--r-input)',
               border: '1px solid var(--border)',
               background: 'transparent',
               color: 'var(--t1)',
@@ -169,7 +169,7 @@ function SubscriptionStatusBlock({
           style={{
             minHeight: 44,
             padding: '10px 16px',
-            borderRadius: 12,
+            borderRadius: 'var(--r-input)',
             border: '1px solid var(--border)',
             background: 'transparent',
             color: 'var(--t2)',
@@ -215,7 +215,7 @@ function SubscriptionStatusBlock({
           style={{
             minHeight: 44,
             padding: '10px 16px',
-            borderRadius: 12,
+            borderRadius: 'var(--r-input)',
             border: '1px solid var(--border)',
             background: 'transparent',
             color: 'var(--t2)',

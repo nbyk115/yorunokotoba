@@ -397,6 +397,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
         {/* カード1: 今夜のエネルギー（1カード1テーマ） */}
         <Card
+          variant="secondary"
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
@@ -418,6 +419,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         {/* カード1.5: あなたの核（誕生数メッセージ） */}
         {result.lifePathMessage && (
           <Card
+            variant="secondary"
             className="slide-up-1"
             style={{ margin: '0 16px 12px' }}
           >
@@ -440,6 +442,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
         {/* カード2: 恋愛・つながり */}
         <Card
+          variant="secondary"
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
@@ -463,6 +466,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
         {/* カード3: 仕事・才能 */}
         <Card
+          variant="secondary"
           className="slide-up-1"
           style={{ margin: '0 16px 12px' }}
         >
@@ -486,6 +490,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
         {/* カード4: 健康（今夜のよみとき末尾） */}
         <Card
+          variant="secondary"
           className="slide-up-2"
           style={{ margin: '0 16px 12px' }}
         >
@@ -521,14 +526,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             margin: '0 16px 12px',
           }}
         >
-          <div
-            style={{
-              padding: '16px 14px',
-              background: 'var(--card-secondary)',
-              borderRadius: 14,
-              border: '1px solid var(--border-secondary)',
-            }}
-          >
+          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
             <p
               style={{
                 fontSize: 'var(--fs-micro)',
@@ -543,15 +541,8 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.time}
             </p>
-          </div>
-          <div
-            style={{
-              padding: '16px 14px',
-              background: 'var(--card-secondary)',
-              borderRadius: 14,
-              border: '1px solid var(--border-secondary)',
-            }}
-          >
+          </Card>
+          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
             <p
               style={{
                 fontSize: 'var(--fs-micro)',
@@ -566,7 +557,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.risk}
             </p>
-          </div>
+          </Card>
         </div>
 
         {/* ════════════════════════════════ */}
@@ -664,10 +655,6 @@ function DeepReadingSection({
 
   const wrapStyle: React.CSSProperties = {
     margin: '8px 16px 16px',
-    padding: 20,
-    background: 'var(--card-secondary)',
-    border: '1px solid var(--border-secondary)',
-    borderRadius: 18,
     position: 'relative',
   };
 
@@ -705,7 +692,7 @@ function DeepReadingSection({
   // 非 Premium 時: 本文を一切描画せず（SR が読める blur 削除）、訴求 + CTA のみ.
   if (!isPremium) {
     return (
-      <Card style={wrapStyle}>
+      <Card variant="secondary" style={wrapStyle}>
         <p style={eyebrowStyle}>今夜のことば</p>
         <h4 style={titleStyle}>
           {charaName}からのメッセージ
@@ -728,7 +715,7 @@ function DeepReadingSection({
 
   // Premium 時: 全文表示
   return (
-    <Card style={wrapStyle}>
+    <Card variant="secondary" style={wrapStyle}>
       <p style={eyebrowStyle}>今夜のことば</p>
       <h4 style={titleStyle}>
         {charaName}からのメッセージ

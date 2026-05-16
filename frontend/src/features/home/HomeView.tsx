@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Sparkles, Stars, BookOpen } from 'lucide-react';
+import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/ui/Icon';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
@@ -166,29 +167,24 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
           </p>
         </section>
 
-        {/* dream-card（唯一の機能カード）*/}
-        <article
+        {/* dream-card（画面の主役カード = variant primary）*/}
+        <Card
+          variant="primary"
+          as="article"
           className="slide-up"
           style={{
             margin: 'clamp(12px, 4.3vw, 20px) clamp(12px, 4.3vw, 20px) 0',
             padding: 'clamp(16px, 5.3vw, 24px)',
-            background: 'var(--card-primary)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid var(--border-primary)',
-            borderRadius: 18,
-            boxShadow: 'var(--shadow-card-primary)',
             animation: 'slideUp 450ms ease both',
             transition: 'transform 200ms ease, box-shadow 200ms ease',
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-            (e.currentTarget as HTMLElement).style.boxShadow =
-              '0 8px 32px rgba(180, 100, 120, 0.12)';
+            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-card-primary)';
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow)';
+            (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-card-primary)';
           }}
           onMouseDown={(e) => {
             (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
@@ -260,7 +256,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             onConfirm={() => onNavigate('dream')}
             fullWidth
           />
-        </article>
+        </Card>
 
         {/* scroll-indicator（他画面への誘導チップ）*/}
         <nav
@@ -384,10 +380,10 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
 
 const chipStyle: CSSProperties = {
   flex: 1,
-  padding: '16px 12px',
+  padding: 'var(--sp-4) var(--sp-3)',
   background: 'var(--card-secondary)',
   border: '1px solid var(--border-secondary)',
-  borderRadius: 14,
+  borderRadius: 'var(--r-button)',
   textAlign: 'center',
   cursor: 'pointer',
   minHeight: 56,
