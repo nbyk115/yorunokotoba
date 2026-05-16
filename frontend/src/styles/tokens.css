@@ -63,6 +63,27 @@
   --lh-caption: 1.5;
   --lh-micro: 1.4;
 
+  /* PR4 タイポグラフィ階層 — Cormorant vs Zen Maru の種別差で強い階層を作る */
+  /* ヒーロー英文: Cormorant 400 italic 40px (ページの主役・読ませる) */
+  --fs-hero-cormorant: 40px;
+  --fw-hero-cormorant: 400;
+  /* ページ見出し H1: Cormorant 400 28px */
+  --fs-page-h1: 28px;
+  --fw-page-h1: 400;
+  /* セクション見出し: Zen Maru 700 17px / letter-spacing 0.08em */
+  --fs-section: 17px;
+  --ls-section: 0.08em;
+  /* カード見出し H3: Zen Maru 700 14px — 小さく・薄く・字間広い (Co-Star 方式) */
+  --fs-card-label: 14px;
+  --ls-card-label: 0.14em;
+  /* 占い結果本文: 16px / line-height 2.0 — 読ませる主役 */
+  --fs-fortune-body: 16px;
+  --lh-fortune-body: 2.0;
+  /* テキストカラーバリアント */
+  --text-low: var(--t3);
+  /* カード縦線アクセント (左辺 2px 金) */
+  --card-accent-line: 2px solid var(--accent);
+
   /* Spacing scale */
   --sp-1: 4px;
   --sp-2: 8px;

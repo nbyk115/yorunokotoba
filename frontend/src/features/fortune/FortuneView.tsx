@@ -28,22 +28,13 @@ const RANK_TO_EN: Record<FortuneRank, string> = {
   末吉: 'Hope',
 };
 
-/* ── ランク別テーマカラー ── */
+/* ── ランク別テーマカラー: 金か淡いローズのみ（信号機廃止）── */
 const RANK_COLOR: Record<FortuneRank, string> = {
   大吉: 'var(--gold)',
   中吉: 'var(--gold)',
   小吉: 'var(--rose)',
   吉: 'var(--rose)',
   末吉: 'var(--rose)',
-};
-
-/* ── ランク別テーマカラー（ConstellationReveal に使用） ── */
-const RANK_PARTICLE_COLOR: Record<FortuneRank, string> = {
-  大吉: '#D4A853',
-  中吉: '#B08ACF',
-  小吉: '#E8627C',
-  吉: '#E8627C',
-  末吉: '#E8627C',
 };
 
 /* ── ランク別 ShareCard テーマ ── */
@@ -56,79 +47,17 @@ const RANK_SHARE_THEME: Record<FortuneRank, CardTheme> = {
   末吉: 'rose',
 };
 
-/* ── 星座アニメ用 SVG パス（五角形を回転させた星型） ── */
-const CONSTELLATION_POINTS = [
-  [50, 8],
-  [79, 90],
-  [2, 35],
-  [98, 35],
-  [21, 90],
-].map((p) => p.join(',')).join(' ');
-
 /* ────────────────────────────────────────────── */
-/*  幕タイトル eyebrow（日本語の控えめなセクション見出し） */
-/* ────────────────────────────────────────────── */
-function ActEyebrow({ label }: { label: string }) {
-  return (
-    <div
-      style={{
-        textAlign: 'center',
-        margin: '28px 0 14px',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--font-accent)',
-          fontStyle: 'italic',
-          fontSize: 'var(--fs-caption)',
-          color: 'var(--gold)',
-          letterSpacing: '0.32em',
-          margin: 0,
-          opacity: 0.85,
-        }}
-      >
-        {label}
-      </p>
-      <div
-        aria-hidden="true"
-        style={{
-          width: 32,
-          height: 1,
-          background: 'var(--border)',
-          margin: '8px auto 0',
-        }}
-      />
-    </div>
-  );
-}
-
-/* ────────────────────────────────────────────── */
-/*  星座結びアニメーション（SVG stroke-dasharray） */
+/*  三日月オーバーレイ（ConstellationReveal 代替）  */
+/*  creative-director 評価「幾何学的に不正確」      */
+/*  シンプルな三日月1つ + 金の細線（1.5px）で再設計  */
 /* ────────────────────────────────────────────── */
 function ConstellationReveal({ color }: { color: string }) {
-  const pathRef = useRef<SVGPolylineElement>(null);
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const path = pathRef.current;
-    if (!path) return;
-
-    const length = path.getTotalLength();
-    path.style.strokeDasharray = String(length);
-    path.style.strokeDashoffset = String(length);
-
-    // フレームを跨いでアニメ開始
-    const raf = requestAnimationFrame(() => {
-      path.style.transition = 'stroke-dashoffset 2.4s cubic-bezier(0.4, 0, 0.2, 1)';
-      path.style.strokeDashoffset = '0';
-    });
-
-    // ICP（夜中3時・即時性重視）に合わせ 1.2秒で消す（ドーシー流即時性 + 演出余韻のバランス）
     const timer = setTimeout(() => setVisible(false), 1200);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   if (!visible) return null;
@@ -149,41 +78,26 @@ function ConstellationReveal({ color }: { color: string }) {
         opacity: visible ? 1 : 0,
       }}
     >
+      {/* 三日月 SVG - 金の細線 1.5px */}
       <svg
         viewBox="0 0 100 100"
-        width="200"
-        height="200"
+        width="160"
+        height="160"
         style={{ overflow: 'visible' }}
       >
-        {/* 頂点ドット */}
-        {[
-          [50, 8],
-          [79, 90],
-          [2, 35],
-          [98, 35],
-          [21, 90],
-        ].map(([cx, cy], i) => (
-          <circle
-            key={i}
-            cx={cx}
-            cy={cy}
-            r="2.4"
-            fill={color}
-            opacity="0.85"
-          />
-        ))}
-
-        {/* 星型のライン（stroke-dasharray で描画） */}
-        <polyline
-          ref={pathRef}
-          points={CONSTELLATION_POINTS}
-          fill="none"
-          stroke={color}
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity="0.75"
-        />
+        {/*
+          三日月: 大円から小円を差し引いたクリップマスクで実装。
+          大円 cx=50,cy=50,r=36 / 小円 cx=62,cy=44,r=30 の差分が三日月形。
+          stroke-dasharray アニメーションで描画演出を付ける。
+        */}
+        <defs>
+          <clipPath id="crescent-clip">
+            {/* 大円の内側だけ残す */}
+            <circle cx="50" cy="50" r="36" />
+          </clipPath>
+        </defs>
+        {/* 大円（fill なし、大円の縁だけ描く）*/}
+        <MoonCrescentPath color={color} />
       </svg>
 
       <p
@@ -200,6 +114,99 @@ function ConstellationReveal({ color }: { color: string }) {
         星を読んでいる…
       </p>
     </div>
+  );
+}
+
+/* 三日月パス（stroke-dasharray でアニメ） */
+function MoonCrescentPath({ color }: { color: string }) {
+  const pathRef = useRef<SVGPathElement>(null);
+
+  useEffect(() => {
+    const el = pathRef.current;
+    if (!el) return;
+    // 三日月パスの長さを取得してdasharray設定
+    const length = el.getTotalLength();
+    el.style.strokeDasharray = String(length);
+    el.style.strokeDashoffset = String(length);
+    const raf = requestAnimationFrame(() => {
+      el.style.transition = 'stroke-dashoffset 2.0s cubic-bezier(0.4, 0, 0.2, 1)';
+      el.style.strokeDashoffset = '0';
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  /*
+    三日月パス: SVG path の arc コマンドで描く。
+    大円: 中心(50,50) r=36 を描いてから、
+    小円(中心60,44 r=28) を反対方向で差し引く形の path。
+    簡易的に: 三日月の外縁を arc で直接描く。
+  */
+  return (
+    <path
+      ref={pathRef}
+      d="
+        M 50 14
+        A 36 36 0 1 1 14 50
+        A 36 36 0 0 1 50 14
+        Z
+        M 62 20
+        A 30 30 0 0 0 20 58
+        A 30 30 0 0 0 62 20
+        Z
+      "
+      fill={color}
+      fillOpacity="0.18"
+      stroke={color}
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.85"
+      clipRule="evenodd"
+      fillRule="evenodd"
+    />
+  );
+}
+
+
+/* ────────────────────────────────────────────── */
+/*  FortuneCard - PR4 リデザイン                  */
+/*  見出し色分け（信号機状態）を全廃。               */
+/*  全部 --text-low の小ラベルに統一し、             */
+/*  左辺に金（--accent）の極細縦線 2px で各カードを区別 */
+/* ────────────────────────────────────────────── */
+interface FortuneCardProps {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+function FortuneCard({ label, children, className }: FortuneCardProps) {
+  return (
+    <Card
+      variant="secondary"
+      className={className}
+      style={{
+        margin: '0 16px 12px',
+        /* 左辺に金の極細縦線 2px - カード区別のアクセント */
+        borderLeft: 'var(--card-accent-line)',
+        /* ソリッド縁のみ（backdrop-filter は secondary から継承）*/
+      }}
+    >
+      {/* ラベル: Zen Maru 700 14px / --text-low / ls 0.14em (Co-Star 方式) */}
+      <p
+        style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: 'var(--fs-card-label)',
+          fontWeight: 700,
+          color: 'var(--text-low)',
+          letterSpacing: 'var(--ls-card-label)',
+          margin: '0 0 10px',
+        }}
+      >
+        {label}
+      </p>
+      {children}
+    </Card>
   );
 }
 
@@ -240,13 +247,12 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
 
   const rankEn = RANK_TO_EN[result.rank];
   const rankColor = RANK_COLOR[result.rank];
-  const particleColor = RANK_PARTICLE_COLOR[result.rank];
   const shareTheme = RANK_SHARE_THEME[result.rank];
 
   return (
     <>
-      {/* ── 星座結びオーバーレイ（1.2秒） ── */}
-      {showConstellation && <ConstellationReveal color={particleColor} />}
+      {/* ── 三日月オーバーレイ（1.2秒） ── */}
+      {showConstellation && <ConstellationReveal color={rankColor === 'var(--gold)' ? '#C9A961' : '#E27A8E'} />}
 
       <div
         style={{
@@ -261,14 +267,13 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         {/* ════════════════════════════════ */}
         <div
           style={{
-            padding: '28px 24px 20px',
+            padding: '32px 24px 24px',
             textAlign: 'center',
             background: 'var(--bg1)',
             position: 'relative',
           }}
         >
-
-          {/* eyebrow */}
+          {/* eyebrow - Cormorant italic / t3 / 星座アイコン */}
           <p
             style={{
               fontFamily: 'var(--font-accent)',
@@ -276,7 +281,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               fontStyle: 'italic',
               color: 'var(--t3)',
               letterSpacing: '0.1em',
-              marginBottom: 8,
               margin: '0 0 8px',
               display: 'flex',
               alignItems: 'center',
@@ -290,7 +294,10 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             {profile.sign} · {profile.name}
           </p>
 
-          {/* rank-en（Cormorant 72px italic） */}
+          {/*
+            rank-en: Cormorant italic 72px - PR4 指定「維持」
+            色: --accent（金）または --rose。textShadow は PR3 で削除済。
+          */}
           <h2
             className="slide-up"
             style={{
@@ -307,37 +314,39 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             {rankEn}
           </h2>
 
-          {/* rank-jp */}
+          {/* rank-jp - Zen Maru 700 / section スケール 17px */}
           <p
             style={{
-              fontSize: 'var(--fs-body)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-section)',
               fontWeight: 700,
-              color: 'var(--t2)',
-              letterSpacing: '0.12em',
-              marginBottom: 16,
+              color: 'var(--t1)',
+              letterSpacing: 'var(--ls-section)',
+              margin: '0 0 16px',
             }}
           >
             {result.rank}
           </p>
 
-          {/* chara-wrapper */}
-          <div style={{ margin: '0 auto', width: 120, height: 120 }}>
-            <CharaAvatar id={result.type.id} size={120} animate />
+          {/* chara-wrapper - PR4: 80px（FortuneView のアバターも小さく）*/}
+          <div style={{ margin: '0 auto', width: 80, height: 80 }}>
+            <CharaAvatar id={result.type.id} size={80} animate />
           </div>
 
-          {/* chara-name */}
+          {/* chara-name - Zen Maru 700 / body スケール */}
           <p
             style={{
+              fontFamily: 'var(--font-heading)',
               fontSize: 'var(--fs-body)',
               fontWeight: 700,
               color: 'var(--t1)',
-              marginTop: 12,
+              marginTop: 10,
             }}
           >
             {result.type.name}
           </p>
 
-          {/* chara-sub（タイプ識別子・MBTI 風ラベル） */}
+          {/* chara-sub - micro / t3 */}
           <p
             style={{
               fontSize: 'var(--fs-micro)',
@@ -349,190 +358,90 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             {result.type.sub}
           </p>
 
-          {/* summary */}
+          {/*
+            summary - PR4「占い結果本文は読ませる主役」
+            Zen Maru 400 / 16px / line-height 2.0
+          */}
           <p
             style={{
-              fontSize: 'var(--fs-body)',
-              color: 'var(--t2)',
-              lineHeight: 1.9,
-              marginTop: 12,
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              marginTop: 16,
               textAlign: 'left',
               padding: '0 4px',
             }}
           >
             {result.summary}
           </p>
-        </div>
 
-        {/* ════════════════════════════════ */}
-        {/*  第二幕: 今夜のよみとき              */}
-        {/* ════════════════════════════════ */}
-        <ActEyebrow label="今夜のよみとき" />
-
-        {/* カード1: 今夜のエネルギー（1カード1テーマ） */}
-        <Card
-          variant="secondary"
-          className="slide-up-1"
-          style={{ margin: '0 16px 12px' }}
-        >
-          <h4
-            style={{
-              fontSize: 'var(--fs-h3)',
-              fontWeight: 700,
-              color: 'var(--lavender)',
-              marginBottom: 10,
-            }}
-          >
-            今夜のエネルギー
-          </h4>
-          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
-            {result.personality.trait}
-          </p>
-        </Card>
-
-        {/* カード1.5: あなたの核（誕生数メッセージ） */}
-        {result.lifePathMessage && (
-          <Card
-            variant="secondary"
-            className="slide-up-1"
-            style={{ margin: '0 16px 12px' }}
-          >
-            <h4
+          {/* 気をつけたいこと: risk をインライン 1行 / fs-caption / --t2 */}
+          {result.risk && (
+            <p
               style={{
-                fontSize: 'var(--fs-h3)',
-                fontWeight: 700,
-                color: 'var(--t3)',
-                marginBottom: 10,
-                letterSpacing: '0.06em',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--fs-caption)',
+                color: 'var(--t2)',
+                lineHeight: 1.6,
+                marginTop: 10,
+                textAlign: 'left',
+                padding: '0 4px',
               }}
             >
-              あなたの核
-            </h4>
-            <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t2)', lineHeight: 1.85 }}>
-              {result.lifePathMessage}
+              今日、気をつけたいこと: {result.risk}
             </p>
-          </Card>
-        )}
+          )}
+        </div>
 
-        {/* カード2: 恋愛・つながり */}
-        <Card
-          variant="secondary"
-          className="slide-up-1"
-          style={{ margin: '0 16px 12px' }}
-        >
-          <h4
+        {/* カード: 今日の恋愛 */}
+        <FortuneCard label="今日の恋愛" className="slide-up-1">
+          <p
             style={{
-              fontSize: 'var(--fs-h3)',
-              fontWeight: 700,
-              color: 'var(--rose)',
-              marginBottom: 10,
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
             }}
           >
-            恋愛・つながり
-          </h4>
-          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
-            {result.personality.love}
-          </p>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyLove}
           </p>
-        </Card>
+        </FortuneCard>
 
-        {/* カード3: 仕事・才能 */}
-        <Card
-          variant="secondary"
-          className="slide-up-1"
-          style={{ margin: '0 16px 12px' }}
-        >
-          <h4
+        {/* カード: 今日の仕事 */}
+        <FortuneCard label="今日の仕事" className="slide-up-1">
+          <p
             style={{
-              fontSize: 'var(--fs-h3)',
-              fontWeight: 700,
-              color: 'var(--gold)',
-              marginBottom: 10,
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
             }}
           >
-            仕事・才能
-          </h4>
-          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
-            {result.personality.work}
-          </p>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyWork}
           </p>
-        </Card>
+        </FortuneCard>
 
-        {/* カード4: 健康（今夜のよみとき末尾） */}
-        <Card
-          variant="secondary"
-          className="slide-up-2"
-          style={{ margin: '0 16px 12px' }}
-        >
-          <h4
+        {/* カード: 今日の健康 */}
+        <FortuneCard label="今日の健康" className="slide-up-2">
+          <p
             style={{
-              fontSize: 'var(--fs-h3)',
-              fontWeight: 700,
-              color: '#5BA87C',
-              marginBottom: 10,
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
             }}
           >
-            健康・からだ
-          </h4>
-          <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t1)', lineHeight: 1.85 }}>
-            {result.personality.health}
-          </p>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
             {result.dailyHealth}
           </p>
-        </Card>
-
-        {/* ════════════════════════════════ */}
-        {/*  第三幕: 今夜のおわりに            */}
-        {/* ════════════════════════════════ */}
-        <ActEyebrow label="今夜のおわりに" />
-
-        {/* lucky-time + risk グリッド（第三幕に移動） */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 12,
-            margin: '0 16px 12px',
-          }}
-        >
-          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
-            <p
-              style={{
-                fontSize: 'var(--fs-micro)',
-                fontWeight: 700,
-                color: 'var(--t3)',
-                letterSpacing: '0.08em',
-                margin: 0,
-              }}
-            >
-              🌙 今夜のいい時間帯
-            </p>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
-              {result.time}
-            </p>
-          </Card>
-          <Card variant="secondary" style={{ padding: 'var(--sp-4) 14px', borderRadius: 'var(--r-button)' }}>
-            <p
-              style={{
-                fontSize: 'var(--fs-micro)',
-                fontWeight: 700,
-                color: 'var(--t3)',
-                letterSpacing: '0.08em',
-                margin: 0,
-              }}
-            >
-              ひといき
-            </p>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
-              {result.risk}
-            </p>
-          </Card>
-        </div>
+        </FortuneCard>
 
         {/* ════════════════════════════════ */}
         {/*  深層セクション（Premium限定）   */}
@@ -558,12 +467,14 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             padding: '24px 0 32px',
           }}
         >
+          {/* セクションラベル */}
           <p
             style={{
-              fontSize: 'var(--fs-caption)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-card-label)',
               fontWeight: 700,
-              color: 'var(--t2)',
-              letterSpacing: '0.04em',
+              color: 'var(--text-low)',
+              letterSpacing: 'var(--ls-card-label)',
               textAlign: 'center',
               marginBottom: 16,
             }}
@@ -643,6 +554,7 @@ function DeepReadingSection({
   };
 
   const titleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading)',
     fontSize: 'var(--fs-body)',
     fontWeight: 700,
     color: 'var(--t1)',
@@ -651,9 +563,11 @@ function DeepReadingSection({
   };
 
   const bodyStyle: React.CSSProperties = {
-    fontSize: 'var(--fs-body)',
+    fontFamily: 'var(--font-heading)',
+    fontSize: 'var(--fs-fortune-body)',
+    fontWeight: 400,
     color: 'var(--t1)',
-    lineHeight: 1.9,
+    lineHeight: 'var(--lh-fortune-body)' as string,
     margin: 0,
   };
 
@@ -673,6 +587,7 @@ function DeepReadingSection({
         </h4>
         <p
           style={{
+            fontFamily: 'var(--font-heading)',
             fontSize: 'var(--fs-caption)',
             color: 'var(--t2)',
             lineHeight: 1.8,
@@ -709,7 +624,7 @@ function DeepReadingSection({
             }}
           >
             <MoonPhaseIcon phaseIndex={moonPhaseIdx} size={12} color="var(--lavender)" />
-            {' '}Moon × Sign · {moonLabel}のエネルギー
+            {' '}Moon x Sign · {moonLabel}のエネルギー
           </p>
           <h4 style={titleStyle}>{moonWave.title}</h4>
           <p style={bodyStyle}>{moonWave.body}</p>
