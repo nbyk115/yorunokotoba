@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { HeartHandshake, Palette, Hash } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
 import { Card } from '@/components/ui/Card';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { ShareCard } from '@/components/ui/ShareCard';
@@ -510,9 +508,9 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         </Card>
 
         {/* ════════════════════════════════ */}
-        {/*  第三幕: 眠る前に                 */}
+        {/*  第三幕: 今夜のおわりに            */}
         {/* ════════════════════════════════ */}
-        <ActEyebrow label="眠る前に" />
+        <ActEyebrow label="今夜のおわりに" />
 
         {/* lucky-time + risk グリッド（第三幕に移動） */}
         <div
@@ -570,46 +568,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             </p>
           </div>
         </div>
-
-        {/* 今日のお守り（第三幕） */}
-        <Card style={{ margin: '0 16px 12px' }}>
-          <h4
-            style={{
-              fontSize: 'var(--fs-body)',
-              fontWeight: 700,
-              color: 'var(--gold)',
-              marginBottom: 10,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
-          >
-            <Icon icon={HeartHandshake} size={16} color="var(--gold)" />
-            今日のお守り
-          </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-              <strong style={{ color: result.lucky.color.hex, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <Icon icon={Palette} size={14} color={result.lucky.color.hex} />
-                {result.lucky.color.v}
-              </strong>
-              <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.color.reason}</span>
-            </p>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)' }}>
-              <strong>
-                {result.lucky.item.e} {result.lucky.item.v}
-              </strong>
-              <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.item.reason}</span>
-            </p>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <strong style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <Icon icon={Hash} size={14} />
-                ナンバー {result.lucky.num.v}
-              </strong>
-              <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
-            </p>
-          </div>
-        </Card>
 
         {/* ════════════════════════════════ */}
         {/*  深層セクション（Premium限定）   */}
