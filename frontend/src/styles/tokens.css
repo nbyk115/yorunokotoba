@@ -16,14 +16,42 @@
   --t2: rgba(58, 40, 48, 0.72);
   --t3: rgba(58, 40, 48, 0.56);
   --bg-body: var(--bg1);
-  --card: rgba(255, 255, 255, 0.92);
+  --card-primary: rgba(255, 255, 255, 0.96);
+  --card-secondary: rgba(255, 255, 255, 0.62);
+  --border-primary: rgba(58, 40, 48, 0.10);
+  --border-secondary: rgba(58, 40, 48, 0.05);
+  /* migration alias: --card points to card-secondary for backward compat */
+  --card: var(--card-secondary);
   --card-solid: #FFFFFF;
   --border: rgba(58, 40, 48, 0.08);
-  --card-highlight-shadow: 0 4px 20px rgba(232, 98, 124, 0.12);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 22px rgba(180,100,120,0.12);
+  --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 10px rgba(180,100,120,0.06);
+  /* migration aliases for old shadow vars */
+  --card-highlight-shadow: var(--shadow-card-primary);
+  --shadow: var(--shadow-card-secondary);
 
   /* Typography */
   --font-heading: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans-serif;
   --font-accent: 'Cormorant', serif;
+
+  /* Type scale - Phase B */
+  --fs-h1: 22px;
+  --fs-h2: 18px;
+  --fs-h3: 16px;
+  --fs-body: 15px;
+  --fs-caption: 13px;
+  --fs-micro: 11px;
+  --fs-hero-en: 32px;
+  --fs-hero-jp: 18px;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+  --lh-h1: 1.3;
+  --lh-h2: 1.4;
+  --lh-h3: 1.45;
+  --lh-body: 1.7;
+  --lh-caption: 1.5;
+  --lh-micro: 1.4;
 
   /* Spacing scale */
   --sp-1: 4px;
@@ -51,9 +79,9 @@
   /* Layout */
   --app-max-width: 480px;
 
-  /* Hero typography */
-  --hero-cormorant-size: 32px;
-  --hero-jp-size: 18px;
+  /* Hero typography - migration aliases pointing to Phase B vars */
+  --hero-cormorant-size: var(--fs-hero-en);
+  --hero-jp-size: var(--fs-hero-jp);
 
   /* Ritual animation */
   --ritual-duration: 3000ms;
@@ -68,13 +96,19 @@
 [data-theme='dark'] {
   --bg1: #0D0B0E;
   --rose: #F0809A;
-  --card: rgba(28, 22, 30, 0.85);
+  --card-primary: rgba(34, 27, 37, 0.92);
+  --card-secondary: rgba(28, 22, 30, 0.55);
+  --border-primary: rgba(240, 232, 236, 0.12);
+  --border-secondary: rgba(240, 232, 236, 0.06);
+  --card: var(--card-secondary);
   --card-solid: #1C161E;
   --t1: #F0E8EC;
   --t2: rgba(240, 232, 236, 0.72);
   --t3: rgba(240, 232, 236, 0.56);
   --border: rgba(240, 232, 236, 0.10);
   --bg-body: var(--bg1);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 28px rgba(0,0,0,0.45);
+  --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.30);
 }
 
 /* Time of Day Modes — must come after [data-theme='dark'] so --bg1 wins */
@@ -100,6 +134,13 @@
   --particle-color: var(--rose);
   --particle-count: 6;
   --particle-speed: 1;
+  /* restore light-mode card/shadow/border values when day mode overrides dark theme */
+  --card-primary: rgba(255, 255, 255, 0.96);
+  --card-secondary: rgba(255, 255, 255, 0.62);
+  --border-primary: rgba(58, 40, 48, 0.10);
+  --border-secondary: rgba(58, 40, 48, 0.05);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.6), 0 6px 22px rgba(180,100,120,0.12);
+  --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 10px rgba(180,100,120,0.06);
 }
 
 [data-time-of-day="dusk"] {
