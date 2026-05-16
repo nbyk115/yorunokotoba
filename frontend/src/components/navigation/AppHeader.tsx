@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Settings, Sun, Moon } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import {
   getNightMode,
   setNightMode,
@@ -50,15 +52,17 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
             border: '1px solid var(--border)',
             borderRadius: 'var(--r-tag)',
             padding: '6px 12px',
-            fontSize: 'var(--fs-h3)',
             cursor: 'pointer',
             color: 'var(--t1)',
             minHeight: 44,
             minWidth: 44,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             transition: 'background var(--anim-hover)',
           }}
         >
-          ⚙️
+          <Icon icon={Settings} size={20} />
         </button>
       )}
       <button
@@ -73,15 +77,17 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
           border: '1px solid var(--border)',
           borderRadius: 'var(--r-tag)',
           padding: '6px 12px',
-          fontSize: 'var(--fs-h3)',
           cursor: 'pointer',
           color: 'var(--t1)',
           minHeight: 44,
           minWidth: 44,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           transition: 'background var(--anim-hover)',
         }}
       >
-        {dark ? '☀️' : '🌙'}
+        <Icon icon={dark ? Sun : Moon} size={20} />
       </button>
       <h1
         style={{
