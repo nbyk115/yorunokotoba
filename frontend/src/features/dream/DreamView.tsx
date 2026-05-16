@@ -156,7 +156,7 @@ export function DreamView({ profile }: DreamViewProps) {
   /* ─── カード共通スタイル ─── */
   const cardBase: React.CSSProperties = {
     flexShrink: 0,
-    width: 'clamp(calc(100vw - 32px), calc(100vw - 48px), 432px)',
+    width: 'clamp(280px, calc(100vw - 48px), 432px)',
     scrollSnapAlign: 'start',
     background: 'var(--card)',
     backdropFilter: 'blur(20px)',
@@ -370,6 +370,8 @@ export function DreamView({ profile }: DreamViewProps) {
             ref={carouselRef}
             style={{
               display: 'flex',
+              /* 各カードを最長カードの高さに引き伸ばさない（Card 1 のスカスカ防止） */
+              alignItems: 'flex-start',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               scrollPaddingLeft: 16,
