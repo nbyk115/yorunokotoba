@@ -207,7 +207,7 @@ export function AuraReceiverView({ fromCharaId }: AuraReceiverViewProps) {
             style={{
               minHeight: 48,
               padding: '12px 24px',
-              background: 'linear-gradient(135deg, var(--rose), var(--pink))',
+              background: 'var(--accent-rose)',
               border: 'none',
               borderRadius: 12,
               color: '#fff',

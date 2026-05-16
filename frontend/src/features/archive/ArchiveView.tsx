@@ -414,7 +414,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               padding: '14px 32px',
               borderRadius: 14,
               border: 'none',
-              background: 'var(--grad)',
+              background: 'var(--accent-rose)',
               color: '#fff',
               fontSize: 'var(--fs-body)',
               fontWeight: 700,

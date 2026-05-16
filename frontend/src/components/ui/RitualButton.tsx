@@ -99,8 +99,8 @@ export function RitualButton({
     width: fullWidth ? '100%' : undefined,
     border: 'none',
     background: isAnimating
-      ? 'linear-gradient(135deg, var(--lavender), var(--rose))'
-      : 'linear-gradient(135deg, var(--rose), var(--pink))',
+      ? 'var(--blush)'
+      : 'var(--accent-rose)',
     color: '#fff',
     boxShadow: isAnimating
       ? '0 4px 24px rgba(176,138,207,0.4)'
@@ -129,7 +129,7 @@ export function RitualButton({
     pointerEvents: 'none',
     background:
       phase === 'ripple'
-        ? 'radial-gradient(circle at center, rgba(176,138,207,0.35) 0%, transparent 70%)'
+        ? 'rgba(255,255,255,0.12)'
         : 'transparent',
     transition: `background ${PHASE_DURATIONS.ripple}ms var(--ritual-easing)`,
   };

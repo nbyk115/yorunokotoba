@@ -21,10 +21,10 @@ function getDefaultDateLabel(): string {
   return `${d.getMonth() + 1}.${d.getDate()}`;
 }
 
-const THEME_GRADIENTS: Record<CardTheme, string> = {
-  rose: 'linear-gradient(160deg, #2A1A24 0%, #4A2A35 60%, #6B3245 100%)',
-  gold: 'linear-gradient(160deg, #2A2018 0%, #4A3520 60%, #6B4828 100%)',
-  lavender: 'linear-gradient(160deg, #1F1A2E 0%, #352848 60%, #4D3870 100%)',
+const THEME_SOLIDS: Record<CardTheme, string> = {
+  rose: '#2A1A24',
+  gold: '#2A2018',
+  lavender: '#1F1A2E',
 };
 
 /** Instagram ストーリーズ標準 9:16. ICP は IG ストーリー世代 */
@@ -98,7 +98,7 @@ export function ShareCard({
   const cardStyle: CSSProperties = {
     width: CARD_W,
     height: CARD_H,
-    background: THEME_GRADIENTS[theme],
+    background: THEME_SOLIDS[theme],
     borderRadius: 0,
     // IG ストーリー上下安全領域 250px（上下に重要情報を置かない）
     padding: '280px 80px 280px',
@@ -268,7 +268,7 @@ export function ShareCard({
           type="button"
           style={{
             ...btnBase,
-            background: 'linear-gradient(135deg, var(--rose), var(--pink))',
+            background: 'var(--accent-rose)',
             color: '#fff',
           }}
           onClick={handleShare}

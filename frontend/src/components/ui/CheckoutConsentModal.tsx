@@ -196,7 +196,7 @@ export function CheckoutConsentModal({
               background:
                 pending || !ageConfirmed
                   ? 'var(--border)'
-                  : 'linear-gradient(135deg, var(--rose), var(--pink))',
+                  : 'var(--accent-rose)',
               color: '#fff',
               fontSize: 'var(--fs-caption)',
               fontWeight: 700,
