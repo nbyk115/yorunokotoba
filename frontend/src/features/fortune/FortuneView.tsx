@@ -263,11 +263,34 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
         }}
       >
         {/* ════════════════════════════════ */}
+        {/*  今日の運勢セクション見出し       */}
+        {/* ════════════════════════════════ */}
+        <div
+          style={{
+            padding: '28px 16px 0',
+            textAlign: 'center',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-card-label)',
+              fontWeight: 700,
+              color: 'var(--text-low)',
+              letterSpacing: 'var(--ls-card-label)',
+              margin: 0,
+            }}
+          >
+            今日の運勢
+          </p>
+        </div>
+
+        {/* ════════════════════════════════ */}
         {/*  fortune-hero                    */}
         {/* ════════════════════════════════ */}
         <div
           style={{
-            padding: '32px 24px 24px',
+            padding: '16px 24px 24px',
             textAlign: 'center',
             background: 'var(--bg1)',
             position: 'relative',
@@ -442,6 +465,127 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             {result.dailyHealth}
           </p>
         </FortuneCard>
+
+        {/* ════════════════════════════════ */}
+        {/*  ホロスコープセクション           */}
+        {/*  星座の本質・性格（恒常情報）      */}
+        {/* ════════════════════════════════ */}
+        <div
+          style={{
+            margin: '20px 16px 0',
+            padding: '0 0 4px',
+          }}
+        >
+          {/* セクション見出し */}
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-card-label)',
+              fontWeight: 700,
+              color: 'var(--text-low)',
+              letterSpacing: 'var(--ls-card-label)',
+              textAlign: 'center',
+              margin: '0 0 12px',
+            }}
+          >
+            ホロスコープ
+          </p>
+          <p
+            style={{
+              fontFamily: 'var(--font-accent)',
+              fontSize: 'var(--fs-caption)',
+              fontStyle: 'italic',
+              color: 'var(--t3)',
+              textAlign: 'center',
+              letterSpacing: '0.08em',
+              margin: '0 0 16px',
+            }}
+          >
+            {profile.sign}のあなた
+          </p>
+        </div>
+
+        {/* カード: 今夜の性質 */}
+        <FortuneCard label="今夜のあなたの性質" className="slide-up-2">
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
+            }}
+          >
+            {result.personality.trait}
+          </p>
+        </FortuneCard>
+
+        {/* カード: 星座の恋愛傾向 */}
+        <FortuneCard label="恋愛の傾向" className="slide-up-2">
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
+            }}
+          >
+            {result.personality.love}
+          </p>
+        </FortuneCard>
+
+        {/* カード: 星座の仕事傾向 */}
+        <FortuneCard label="仕事の傾向" className="slide-up-2">
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
+            }}
+          >
+            {result.personality.work}
+          </p>
+        </FortuneCard>
+
+        {/* カード: 星座の健康傾向 */}
+        <FortuneCard label="体と心の傾向" className="slide-up-2">
+          <p
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'var(--fs-fortune-body)',
+              fontWeight: 400,
+              color: 'var(--t1)',
+              lineHeight: 'var(--lh-fortune-body)',
+              margin: 0,
+            }}
+          >
+            {result.personality.health}
+          </p>
+        </FortuneCard>
+
+        {/* カード: 誕生数の核（lifePathMessage） */}
+        {result.lifePathMessage && (
+          <FortuneCard label="あなたの核" className="slide-up-2">
+            <p
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--fs-fortune-body)',
+                fontWeight: 400,
+                color: 'var(--t1)',
+                lineHeight: 'var(--lh-fortune-body)',
+                margin: 0,
+              }}
+            >
+              {result.lifePathMessage}
+            </p>
+          </FortuneCard>
+        )}
 
         {/* ════════════════════════════════ */}
         {/*  深層セクション（Premium限定）   */}
