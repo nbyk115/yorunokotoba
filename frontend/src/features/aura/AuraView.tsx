@@ -192,12 +192,11 @@ function InputScreen({
   return (
     <div>
       <HeroBlock
-        english="How you two fit"
-        japanese="あの人との相性、見てみる？"
+        japanese="ふたりの距離"
+        english="how you two fit"
         align="center"
         size="hero"
         charaId={myCharaId}
-        charaSize={120}
       />
 
       <section style={sectionStyle}>

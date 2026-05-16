@@ -54,8 +54,6 @@
   --fs-body: 15px;
   --fs-caption: 13px;
   --fs-micro: 11px;
-  --fs-hero-en: 32px;
-  --fs-hero-jp: 18px;
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-bold: 700;
@@ -66,10 +64,13 @@
   --lh-caption: 1.5;
   --lh-micro: 1.4;
 
-  /* PR4 タイポグラフィ階層 — Cormorant vs Zen Maru の種別差で強い階層を作る */
-  /* ヒーロー英文: Cormorant 400 italic 40px (ページの主役・読ませる) */
-  --fs-hero-cormorant: 40px;
-  --fw-hero-cormorant: 400;
+  /* PR5 タイポグラフィ階層 — 日本語主役昇格 */
+  /* ヒーロー日本語: Zen Maru 700 24px (ページの主役・日本語ファースト) */
+  --fs-hero-jp: 24px;
+  --fw-hero-jp: 700;
+  /* ヒーロー装飾英文: Cormorant 400 italic 22px (占い結果引用句・装飾のみ) */
+  --fs-hero-en: 22px;
+  --fw-hero-en: 400;
   /* ページ見出し H1: Cormorant 400 28px */
   --fs-page-h1: 28px;
   --fw-page-h1: 400;
@@ -113,8 +114,8 @@
   /* Layout */
   --app-max-width: 480px;
 
-  /* Hero typography - migration aliases pointing to Phase B vars */
-  --hero-cormorant-size: var(--fs-hero-en);
+  /* Hero typography - migration aliases */
+  --hero-en-size: var(--fs-hero-en);
   --hero-jp-size: var(--fs-hero-jp);
 
   /* Ritual animation */
