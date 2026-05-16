@@ -26,7 +26,7 @@ const STEPS: FtueStep[] = [
   },
   {
     icon: Sparkles,
-    title: '毎日の運勢も',
+    title: '毎日の運勢',
     body: '星座に応じた恋愛・仕事・健康のヒントと、今日のお守りが毎日更新されるよ。',
   },
 ];
