@@ -103,6 +103,24 @@ YOU MUST:
 | sales-deck-designer + creative-director | ④ ストーリー (HTML 配信層) + ⑥ 最終化 |
 | brand-guardian | ⑥ 最終化 (機械検証) |
 
+## フォーマット選定 (HTML / Markdown 判断軸、2026-05-15 Thariq @trq212 完全版統合)
+
+ux-designer + creative-director 合意 (5 agent 並列判定): ④ ストーリー段階で読者 / 用途別にフォーマットを物理判定。出典: Thariq @trq212「Using Claude Code: The Unreasonable Effectiveness of HTML」(FACT、ユーザー画像) + 既存 `html-output-patterns.md` (PR #140)。
+
+| 読者 / 用途 | デフォルト | 理由 |
+|---|---|---|
+| 単発提案 (印刷 / PDF / メール添付) | Canva / PPTX / PDF | 承認フロー + CMS 整合性優先 |
+| 反復操作 (パラメータ調整 / 比較 / annotation) | HTML | Two-way Interaction + Information Density |
+| 長期運用 (デザインシステム + frontend 統合) | Figma + frontend-dev | コンポーネント再利用 + デザイントークン同期 |
+| 内部 PR / commit message / 短メモ | Markdown | 差分精度 + git diff 整合 (content-strategist 判定) |
+| 内部スペック / 設計 100 行超 | HTML | 「Markdown 100 行超は読まれない」(Thariq、INFERENCE) |
+
+### Thariq 5 ユースケース別デフォルト
+
+Specs/Planning = HTML grid 比較 / Code Review = HTML diff + annotation / Design/Prototypes = HTML slider+knob / Reports/Research = HTML SVG diagram / Custom Editing = throwaway HTML editor + copy-as-prompt。
+
+NEVER (content-strategist 反証): Hard Rule 化 (「100 行超 Markdown 禁止」等の行数閾値) は Goodhart 法則該当、Brevity Test 20% 削除テストで代替。
+
 ## ConsultingOS 既存規律との統合
 
 - HTML-First (PR #140): ④ ストーリー = Markdown 設計層 + HTML 配信層 2 層構造

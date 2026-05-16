@@ -60,10 +60,21 @@ evolution-log に `dream_last_run: YYYY-MM-DD` フィールド追加、30 日超
 
 ## 5. Phase 2 (実需確認後、次セッション)
 
-- API key 設定 (user 環境)
-- sample 20 sessions で試走 (コスト実測 $0.84 想定)
-- output 検証 + 機密リスク確認
-- diff 提示フロー実装
+### 5.1 解禁条件 (全件満たし必須)
+
+1. user 環境で `ANTHROPIC_API_KEY` 設定済
+2. `dream.py.template` → `dream.py` rename (本 PR 雛形時点では .template 拡張子で実行禁止)
+3. brand-guardian 4 修正要件 (§3) 全件遵守確認: diff-only / 機密マスク / 数値実測 / 30 日トリップワイヤー
+4. sample 20 sessions 試走 (推定コスト $0.84) で output 内容 + 機密リスク + 数値妥当性確認
+5. Mnimiy ベンチマーク (§10.1) 達成度測定: 削除率 50%+ / 出力 40 行以下 / 未文書化パターン 3 件以上浮上
+6. 1-5 全件通過時のみ Phase 3 (全 100 sessions 実行) 解禁
+
+### 5.2 試走手順
+
+- `python3 dream.py` で sample 20 sessions モード実行 (gather_sessions limit=20)
+- output (`~/.claude/memory/dream_output.md`) を `git diff` で検証
+- diff 内に関根さん / 水野さん / N&Y Craft / 財務数値の漏洩がないか機械検証 (`grep -E "関根さん|水野さん|N&Y|万円|\$\d+"`)
+- ゼロ件 = mask_sensitive() PASS、検出時は mask_sensitive() 拡張で再実行
 
 ## 6. Phase 3 (Phase 2 成功後)
 

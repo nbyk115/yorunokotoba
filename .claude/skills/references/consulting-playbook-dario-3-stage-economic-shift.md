@@ -39,6 +39,14 @@ Dario 核心: 「経済的レバレッジ = 一人の時間と判断を不均衡
 
 = アルトマン式原則 10 資本主義再設計 (PR #143) + LayerX Be Animal (PR #152) Case 1 同モノサシ評価の罠回避 + PoC 地獄脱出 (PR #161) 戦略 4 自社 SaaS 「1 人 SaaS 企業」の Dario 公式 anchor。
 
+## 4.5 Hassabis 同方向予測 (Google DeepMind CEO、2026-05-15 統合)
+
+Demis Hassabis (Google DeepMind CEO) ケンブリッジ大学講演: 「近い将来、AI を使いこなす一人がスタートアップチーム全員を凌駕する」(FACT、ユーザー提示、一次出典 x.com/AnatoliKopadze INFERENCE fetch 未実施)。
+
+3 ポイント: ① 認知リソース自律型スケーリング (= Dario §3 経済単位構築) / ② 組織摩擦の構造的排除 (= アルトマン 1 AI 1 人チーム + Medvi 2 人 $1.8B) / ③ 出力の非線形増大 (= 経済的レバレッジ民主化)。
+
+= Dario (Anthropic CEO) + Hassabis (Google DeepMind CEO) の 2 大 AI ラボ CEO が同方向予測 = 水野さん v4 ピッチで「業界最有力 2 社の公式予測一致」と引用可能な強力 anchor。
+
 ## 5. US ソロプレナー数値ベースライン (FACT、Dario 提示)
 
 - 米国ソロプレナー: 3,040 万人

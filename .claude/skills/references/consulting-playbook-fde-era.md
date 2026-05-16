@@ -63,6 +63,35 @@ ConsultingOS の本質的価値:
 
 YOU MUST: ConsultingOS 提案で「ツールとしての AI」でなく「思考 OS としての AI」を訴求軸化。視認性のあるツール（チャット UI / ダッシュボード）でなく、不可視の orchestrator（裏で 27 体が動く）が本質。
 
+## FDE 実装 4 ステッププロセス（2026-05-15 統合、関根さん Phase 1 実装フレーム）
+
+原則論 (原則 1-5) に対する実行プロセス論。出典: ユーザー提示テキスト 2026-05-15 (INFERENCE、一次出典なし)。
+
+| ステップ | 内容 | ConsultingOS 実装 |
+|---|---|---|
+| 1 現状把握 + 課題の握り込み | AI が状況把握できる権限 / データ接続、議事録 / 背景インプット + 経営課題の握り込み | document-creation-6-steps ① 論点設定 + Feynman method 理解確認 |
+| 2 実行環境整備 | managed Agents + MCP (M365 / GCloud / Salesforce 等) | Anthropic Managed Agents (PR #189 判定) + MCP エコシステム |
+| 3 モニタリング / Eval 整備 | Langfuse / Datadog / Snowflake で計測 → FB (改善) ループ | score-os-health.sh + outcomes-judge + dream pass (PR #192) |
+| 4 カスタムツール作成 | スキル / サブエージェント の案件特化実装 | 60+ skill + 27 agent の案件別カスタム |
+
+### 横断的に重要な 4 点
+
+1. (1)-(4) を貫くアーキテクチャの見極め (案件ごとの構成判断)
+2. 使い回せる部分の再利用モジュール化 (skill / agent の汎用化)
+3. その後の Agent 起点 OS 化 (単発実装でなく OS 化)
+4. 最初の課題の握り (ステップ 1 の経営課題定義が全体品質を決める)
+
+### Palantir 版対比 (FACT、ユーザー提示)
+
+| ステップ | Palantir | ConsultingOS |
+|---|---|---|
+| 1 | Foundry / Ontology | document-creation-6-steps + 反証チェック |
+| 2 | 自社で実装 | Managed Agents + MCP |
+| 3 | Foundry | score-os-health + dream pass |
+| 4 | テンプレ化 (Workshop) | skill / sub-agent カスタム + OEM パッケージ化 |
+
+Palantir は全工程に「チェンジマネジメント + FB ループ構築」を併走。ConsultingOS も関根さん Phase 1 で「業務 OS 化に伴う組織変化管理」を提案スコープに含める。
+
 ## ConsultingOS 自己診断（2026-05-09 時点）
 
 | 原則 | 自己適用度 | 次セッション課題 |

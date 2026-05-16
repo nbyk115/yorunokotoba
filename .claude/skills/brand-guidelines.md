@@ -369,52 +369,18 @@ grep -nE '[、。]$' file.slides.md
 
 ---
 
-## 5.7 出典 URL ハイパーリンク必須化（2026-05-03 学習）
+## 5.7 出典 URL ハイパーリンク必須化
 
-WebSearch ツールルール「Sources セクション必須・markdown ハイパーリンク」を全成果物に拡張。
-
-### 適用範囲
-
-| 成果物 | URL ハイパーリンク必須 |
-|---|---|
-| 投資家向け資料 / ピッチデッキ | 必須 |
-| 戦略文書 / 提案書 | 必須 |
-| コンサル納品物 | 必須 |
-| 公開資料 / SNS 投稿 | 必須 |
-| ブログ記事 / ホワイトペーパー | 必須 |
-| 内部メモ（短い 1-2 文回答）| 推奨 |
-| コミットメッセージ | 不要 |
-
-### フォーマット
-
-```markdown
-# OK
-[Gartner プレスリリース 2025-08-26](https://www.gartner.com/en/newsroom/...)
-[FACT / [Anthropic 公式](https://www.anthropic.com/news/...)] Claude Sonnet 4.6
-
-# NG（出典名のみ・URL なし）
-Gartner プレスリリース 2025-08-26
-Anthropic 公式リリース 2026
-```
-
-### 違反検知
-
-```bash
-# 出典名らしき表記に URL が付いていない箇所を検知
-grep -nE '(Gartner|McKinsey|BCG|Anthropic|Dario Amodei|Sam Altman|Metaculus|MarketsandMarkets|TechCrunch|Prosus|総務省)' file.md | grep -v 'http\|]('
-```
-
-### 自動化（PostToolUse hook）
-
-`.md` / `.slides.md` 書き込み時に出典名 + URL 不付与を機械検知。settings.json で実装。
-
-### 違反学習（2026-05-03 事例）
-
-水野さんピッチデッキ初版で出典名のみ記載・URL 不付与。brand-guardian 機械検査で REJECT 判定。原因: WebSearch tool description にあるルールが brand-guidelines / CLAUDE.md に未明文化、assistant が「投資家ピッチで URL は見栄え悪い」と勝手に判断。再発防止策: 本ルール明文化 + PostToolUse hook 自動検知。
+> 詳細は `.claude/skills/references/brand-guidelines-source-url-rule.md` 参照 (500 行制限遵守のため 2026-05-15 PR #199 で分離、元 2026-05-03 水野さんピッチデッキ違反学習)。投資家資料 / 戦略文書 / 提案書 / SNS 投稿等で出典名 + URL ハイパーリンク必須、PostToolUse hook で機械検知。
 
 ---
 
+
 ## 6. 品質ゲート
+
+### 識別性ゲート（2026-05-15 PR #226、AI 時代の反スロップ）
+
+YOU MUST: creative 成果物の brand-guardian レビュー時、「AI / 参考事例が合理的に推奨する案を、どこで断ったか」を 1 行明示。未記載は REVISE。AI 生成物は均質化 (研究 FACT: ポジティブ感情 +107% / 意味類似性 +33%) に向かうため、床ゲート (スロップ回避) だけでなく天井ゲート (識別性確保) を併用。詳細: `.claude/skills/references/creative-playbook-distinctiveness.md` (断る力 3 能力 = テイスト / 意思と勇気 / ユーモア)。
 
 ### brand-guardian チェックフロー
 ```
@@ -500,62 +466,12 @@ AI文章バレ対策:
 > 反証モード（トリプルチェック）の共通ルールは CLAUDE.md を参照。
 ---
 
-## 5.8 em-dash / en-dash 物理化ゲート（PR AU 実装 2026-05-06）
+## 5.8 em-dash / en-dash 物理化ゲート
 
-CLAUDE.md ハードルール 16 ⑥ の em-dash (U+2014) / en-dash (U+2013) 禁止規律をターン内で物理検出する hook を追加。
-
-### 背景・違反学習（2026-05-06 関根さん案件）
-
-assistant 応答「User指摘は正鵠 - sales-deck-designer」の中に em-dash が混入。
-stop-validator.sh は assistant 応答完了後の検証であり、ターン中の生成テキストには介入できない構造的空白があった。
-PR AU で PostToolUse + Stop の両フックに emdash-detector.sh を物理化し、構造的に発生不可能化。
-
-### 検出対象・除外対象
-
-| 対象 | 処理 |
-|---|---|
-| assistant 応答テキスト全体 | Stop hook で検証（transcript の最終 assistant message） |
-| ファイル書き込みコンテンツ（Edit/Write/MultiEdit） | PostToolUse hook で検証 |
-| .claude/skills/ / .claude/agents/ / docs/ / CLAUDE.md | 除外（規律定義書は学習目的で em-dash 表記あり、正当使用） |
-| evolution-log.md | 除外（違反記録ファイル自体が em-dash を記録する場合あり） |
-
-### 動作モード
-
-```bash
-# 環境変数で制御（default: warn）
-CONSULTINGOS_EMDASH_ENFORCEMENT=off    # 即時通過
-CONSULTINGOS_EMDASH_ENFORCEMENT=warn   # stderr 警告のみ（default）
-CONSULTINGOS_EMDASH_ENFORCEMENT=block  # exit 2 でブロック
-```
-
-### 検証コマンド（手動実行）
-
-```bash
-# em-dash 検出テスト（ヒットすれば検出OK）
-printf '{"content": "test em-dash here"}' | .claude/hooks/emdash-detector.sh 2>&1
-
-# 規律定義書内は通過することを確認
-printf '{"file_path": ".claude/skills/brand-guidelines.md", "content": "test em-dash"}'   | .claude/hooks/emdash-detector.sh 2>&1 && echo "PASS (excluded)" || echo "FAIL"
-
-# リポジトリ全体の em-dash 残存チェック（外部出力ファイルのみ）
-grep -rn $'\xe2\x80\x94' /home/user/consulting-os/strategy/ /home/user/consulting-os/examples/ 2>/dev/null | head -10 || echo "0件: クリア"
-```
-
-### hook ファイルパス
-
-- `.claude/hooks/emdash-detector.sh` （PostToolUse + Stop から呼び出し）
-- `settings.json` の PostToolUse `Edit|Write|MultiEdit` マッチャーと Stop 両方に登録済み
-
-### 代替表現リファレンス
-
-| NG | OK |
-|---|---|
-| `This is important &#x2014; it affects revenue` | `This is important: it affects revenue` |
-| `Result &#x2014; 30% improvement` | `Result: 30% improvement` |
-| `Phase 1 &#x2013; Discovery` | `Phase 1: Discovery` |
-| `User指摘は正鵠 &#x2014; sales-deck-designer` | `User指摘は正鵠 - sales-deck-designer` |
+> 詳細は `.claude/skills/references/brand-guidelines-emdash-gate.md` 参照 (500 行制限遵守のため 2026-05-15 PR #199 で分離、元 PR AU 実装 2026-05-06)。CLAUDE.md ハードルール 16 ⑥ em-dash / en-dash 禁止を Stop hook + PostToolUse hook で物理検出、規律定義書 (`.claude/skills/` 等) は除外。動作モード: warn (default) / off / block (環境変数 `CONSULTINGOS_EMDASH_ENFORCEMENT`)。
 
 ---
+
 
 ## バージョン履歴
 
