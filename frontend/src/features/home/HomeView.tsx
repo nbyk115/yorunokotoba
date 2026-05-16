@@ -4,12 +4,14 @@ import { Icon } from '@/components/ui/Icon';
 import { HeroBlock } from '@/components/ui/HeroBlock';
 import { RitualButton } from '@/components/ui/RitualButton';
 import { BlurReveal } from '@/components/ui/BlurReveal';
+import { MoonPhaseIcon } from '@/components/ui/MoonPhaseIcon';
 import { useTimeOfDay } from '@/components/providers/TimeOfDayProvider';
 import type { TimeOfDay } from '@/lib/timeOfDay';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
 import type { StreakState } from '@/logic/streak';
 import { getCharaIdBySign } from '@/data/signs';
+import { getMoonPhaseIndex } from '@/lib/moonPhase';
 
 interface HomeViewProps {
   profile: UserProfile;
@@ -55,17 +57,6 @@ function getNightDeepSubCopy(name: string): string {
   return `おつかれ、${name}。今夜もよく帰ってきたね`;
 }
 
-// 月相アイコン（新月〜満月〜新月のサイクル約29.5日）
-function getMoonPhaseEmoji(): string {
-  const knownNewMoon = new Date('2000-01-06T18:14:00Z').getTime();
-  const now = Date.now();
-  const cycleMs = 29.530589 * 24 * 60 * 60 * 1000;
-  const phase = ((now - knownNewMoon) % cycleMs) / cycleMs;
-  const icons = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
-  const idx = Math.round(phase * 8) % 8;
-  return icons[idx] ?? '🌕';
-}
-
 // BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
 const BLUR_PREVIEW_MESSAGES = [
   '今夜のよみとき、解放のほうを向いてる',
@@ -86,7 +77,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
   const tod = useTimeOfDay();
   const heroCopy = HERO_COPIES[tod];
   const greeting = getGreeting(tod);
-  const moonEmoji = getMoonPhaseEmoji();
+  const moonPhaseIndex = getMoonPhaseIndex();
   const blurMessage = getDailyBlurMessage();
   const charaId = getCharaIdBySign(profile.sign, profile.gender);
   const isNightDeep = tod === 'night-deep';
@@ -150,10 +141,14 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               fontWeight: 400,
               color: 'var(--t3)',
               marginTop: 4,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
             }}
           >
             {/* 月相 + 星座 + 連続日数（極小表示）*/}
-            {moonEmoji}{' '}
+            <MoonPhaseIcon phaseIndex={moonPhaseIndex} size={14} />{' '}
             {profile.sign}
             {streak.count > 0 && (
               <span

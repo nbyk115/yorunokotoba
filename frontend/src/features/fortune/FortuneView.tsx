@@ -8,7 +8,8 @@ import { generateFortune, type FortuneRank, type FortuneResult } from '@/logic/f
 import { SIGNS } from '@/data/signs';
 import { getGuardianMessage } from '@/data/guardianMessages';
 import { getMoonSignWave } from '@/data/moonSignWaves';
-import { getMoonPhaseCategory, getMoonPhaseEmoji, getMoonPhaseLabel } from '@/lib/moonPhase';
+import { getMoonPhaseCategory, getMoonPhaseIndex, getMoonPhaseLabel } from '@/lib/moonPhase';
+import { MoonPhaseIcon } from '@/components/ui/MoonPhaseIcon';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 import { useSubscription } from '@/lib/subscription';
@@ -659,7 +660,7 @@ function DeepReadingSection({
   const { isPremium } = useSubscription(currentUserId);
   const message = getGuardianMessage(charaId);
   const moonPhaseCategory = getMoonPhaseCategory();
-  const moonEmoji = getMoonPhaseEmoji();
+  const moonPhaseIdx = getMoonPhaseIndex();
   const moonLabel = getMoonPhaseLabel();
   const moonWave = getMoonSignWave(sign, moonPhaseCategory);
 
@@ -741,8 +742,17 @@ function DeepReadingSection({
       {moonWave && (
         <>
           <div style={dividerStyle} aria-hidden="true" />
-          <p style={{ ...eyebrowStyle, color: 'var(--lavender)' }}>
-            {moonEmoji} Moon × Sign · {moonLabel}のエネルギー
+          <p
+            style={{
+              ...eyebrowStyle,
+              color: 'var(--lavender)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <MoonPhaseIcon phaseIndex={moonPhaseIdx} size={12} color="var(--lavender)" />
+            {' '}Moon × Sign · {moonLabel}のエネルギー
           </p>
           <h4 style={titleStyle}>{moonWave.title}</h4>
           <p style={bodyStyle}>{moonWave.body}</p>

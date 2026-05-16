@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, type CSSProperties } from 'react';
+import { MoonPhaseIcon } from '@/components/ui/MoonPhaseIcon';
 
 type RitualVerb = 'よみとく' | 'ひらく' | '残す' | 'しまう' | string;
 
@@ -148,7 +149,7 @@ export function RitualButton({
 
       {/* 月アイコン (phase: moon / fadeIn) */}
       <span aria-hidden="true" style={moonStyle}>
-        🌕
+        <MoonPhaseIcon phaseIndex={4} glow size={20} color="rgba(255,255,255,0.95)" />
       </span>
     </button>
   );
