@@ -326,7 +326,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               color: rankColor,
               lineHeight: 1.0,
               letterSpacing: '-0.02em',
-              textShadow: `0 4px 40px ${particleColor}72`,
               margin: '0 0 8px',
             }}
           >

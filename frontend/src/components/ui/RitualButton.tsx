@@ -102,9 +102,7 @@ export function RitualButton({
       ? 'var(--blush)'
       : 'var(--accent-rose)',
     color: '#fff',
-    boxShadow: isAnimating
-      ? '0 4px 24px rgba(176,138,207,0.4)'
-      : '0 4px 20px rgba(232, 98, 124, 0.28)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
     opacity: disabled ? 0.5 : 1,
     pointerEvents: disabled ? 'none' : 'auto',
     transition: `background 800ms var(--ritual-easing), box-shadow 800ms var(--ritual-easing)`,

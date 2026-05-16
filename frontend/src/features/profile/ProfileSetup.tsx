@@ -235,7 +235,7 @@ function Step1({ name, onChange, animClass }: Step1Props) {
                 ? 'var(--border)'
                 : 'var(--border)',
             boxShadow: focused
-              ? '0 2px 0 0 rgba(232,98,124,0.35)'
+              ? '0 2px 0 0 rgba(0,0,0,0.18)'
               : 'none',
           }}
           onFocus={() => setFocused(true)}
