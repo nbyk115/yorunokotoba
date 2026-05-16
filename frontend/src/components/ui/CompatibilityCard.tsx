@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { toPng } from 'html-to-image';
 import { CharaAvatar } from './CharaAvatar';
 import { track } from '@/lib/analytics';
@@ -74,6 +74,31 @@ function getDefaultDateLabel(): string {
   return `${d.getMonth() + 1}.${d.getDate()} ✦`;
 }
 
+/**
+ * iOS Safari html-to-image 既知問題対策: Webフォント未ロードで初回失敗する。
+ * リトライ間隔を 300ms 空けて最大 3 回試行する。
+ * cacheBust: true でキャッシュ由来の空レンダリングを防ぐ。
+ */
+async function toPngWithRetry(
+  node: HTMLElement,
+  options: Parameters<typeof toPng>[1],
+  maxRetry = 3,
+): Promise<string> {
+  let lastErr: unknown;
+  for (let i = 0; i < maxRetry; i++) {
+    try {
+      const dataUrl = await toPng(node, { ...options, cacheBust: true });
+      if (dataUrl && dataUrl !== 'data:,') return dataUrl;
+    } catch (err) {
+      lastErr = err;
+    }
+    await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+  }
+  throw lastErr ?? new Error('toPng: 空のデータURLが返されました');
+}
+
+type ShareStatus = 'idle' | 'loading' | 'success' | 'error' | 'saved';
+
 export function CompatibilityCard({
   charaIdA,
   charaIdB,
@@ -88,11 +113,13 @@ export function CompatibilityCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const dateText = dateLabel ?? getDefaultDateLabel();
   const theme = RANK_THEME[rank];
+  const [status, setStatus] = useState<ShareStatus>('idle');
 
   const handleSave = async () => {
     if (!cardRef.current) return;
+    setStatus('loading');
     try {
-      const dataUrl = await toPng(cardRef.current, {
+      const dataUrl = await toPngWithRetry(cardRef.current, {
         pixelRatio: 1,
         width: CARD_SIZE,
         height: CARD_SIZE,
@@ -101,17 +128,23 @@ export function CompatibilityCard({
       link.download = 'yorunokotoba-aura.png';
       link.href = dataUrl;
       link.click();
+      track('image_save', { context: 'compat_card' });
+      setStatus('saved');
     } catch (err) {
       console.error('CompatibilityCard: PNG 生成に失敗', err);
+      setStatus('error');
+    } finally {
+      setTimeout(() => setStatus('idle'), 3000);
     }
   };
 
   const handleShare = async () => {
     if (!cardRef.current) return;
+    setStatus('loading');
     // K 値分子の計測（バイラル係数）
     track('compatibility_share', { rank, charaIdA, charaIdB });
     try {
-      const dataUrl = await toPng(cardRef.current, {
+      const dataUrl = await toPngWithRetry(cardRef.current, {
         pixelRatio: 1,
         width: CARD_SIZE,
         height: CARD_SIZE,
@@ -126,13 +159,25 @@ export function CompatibilityCard({
           text: buildShareText(pairTitle, rankLabel, rank, fromCharaId, signLabel),
           files: [file],
         });
+        setStatus('success');
       } else {
-        await handleSave();
+        // canShare が false (PCブラウザ等): ダウンロードにフォールバックしてユーザーに明示
+        const link = document.createElement('a');
+        link.download = 'yorunokotoba-aura.png';
+        link.href = dataUrl;
+        link.click();
+        track('image_save', { context: 'compat_card_fallback' });
+        setStatus('saved');
       }
     } catch (err) {
-      if (err instanceof Error && err.name !== 'AbortError') {
-        console.error('CompatibilityCard: シェアに失敗', err);
+      if (err instanceof Error && err.name === 'AbortError') {
+        setStatus('idle');
+        return;
       }
+      console.error('CompatibilityCard: シェアに失敗', err);
+      setStatus('error');
+    } finally {
+      setTimeout(() => setStatus((s) => (s !== 'idle' ? 'idle' : s)), 3500);
     }
   };
 
@@ -146,6 +191,15 @@ export function CompatibilityCard({
     if (typeof window !== 'undefined') {
       window.open(intent, '_blank', 'noopener,noreferrer');
     }
+  };
+
+  /* ────── フィードバックメッセージ ────── */
+  const feedbackMessage: Record<ShareStatus, string> = {
+    idle: '',
+    loading: '画像を生成中...',
+    success: 'シェアしました',
+    error: 'うまくいかなかった。もう一度試してみて',
+    saved: '画像を保存しました',
   };
 
   const cardStyle: CSSProperties = {
@@ -265,10 +319,11 @@ export function CompatibilityCard({
     fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
-    cursor: 'pointer',
+    cursor: status === 'loading' ? 'not-allowed' : 'pointer',
     minHeight: 44,
     border: 'none',
     transition: 'opacity 0.2s ease',
+    opacity: status === 'loading' ? 0.6 : 1,
   };
 
   return (
@@ -317,17 +372,35 @@ export function CompatibilityCard({
         </div>
       </div>
 
+      {/* フィードバックメッセージ */}
+      {status !== 'idle' && (
+        <p
+          role={status === 'error' ? 'alert' : 'status'}
+          style={{
+            fontSize: 'var(--fs-caption)',
+            color: status === 'error' ? 'var(--rose)' : 'var(--t2)',
+            textAlign: 'center',
+            marginTop: 8,
+            marginBottom: 0,
+            lineHeight: 1.5,
+          }}
+        >
+          {feedbackMessage[status]}
+        </p>
+      )}
+
       <div
         style={{
           display: 'flex',
           gap: 8,
-          marginTop: 12,
+          marginTop: status !== 'idle' ? 8 : 12,
           justifyContent: 'center',
           flexWrap: 'wrap',
         }}
       >
         <button
           type="button"
+          disabled={status === 'loading'}
           aria-label="リンクをシェアする"
           style={{
             ...btnBase,
@@ -336,10 +409,11 @@ export function CompatibilityCard({
           }}
           onClick={handleShare}
         >
-          シェアする
+          {status === 'loading' ? '生成中...' : 'シェアする'}
         </button>
         <button
           type="button"
+          disabled={status === 'loading'}
           aria-label="画像を保存する"
           style={{
             ...btnBase,
