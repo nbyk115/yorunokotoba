@@ -200,21 +200,21 @@ function InputScreen({
       />
 
       <section style={sectionStyle}>
-        <p style={eyebrowStyle}>Compatibility Reading</p>
+        <p style={eyebrowStyle}>相性占い</p>
         <h2 style={h2Style}>気になるあの人との相性</h2>
         <p style={bodyStyle}>
-          星が、ふたりの縁を照らし出す。
+          星座でふたりの相性を診断するよ。
         </p>
 
         <div style={fieldStyle}>
-          <p style={labelStyle}>YOUR SIGN（自分の星座）</p>
+          <p style={labelStyle}>自分の星座</p>
           <p style={valueStyle}>
             ✦ {profile.sign}
           </p>
         </div>
 
         <div style={fieldStyle}>
-          <p style={labelStyle}>PARTNER SIGN（相手の星座）</p>
+          <p style={labelStyle}>相手の星座</p>
           <select
             value={partnerSign}
             onChange={(e) => setPartnerSign(e.target.value)}
@@ -230,7 +230,7 @@ function InputScreen({
           </select>
         </div>
 
-        <p style={{ ...labelStyle, margin: '16px 0 6px' }}>PARTNER GENDER（相手の性別）</p>
+        <p style={{ ...labelStyle, margin: '16px 0 6px' }}>相手の性別</p>
         <div style={genderToggleStyle}>
           <button
             type="button"
@@ -377,7 +377,7 @@ function ResultScreen({ profile, result, onReset, onNavigate }: ResultProps) {
             source="aura_result"
             userId={userId}
             headline="ふたりの相性、もっと深く"
-            description="キャラクターからのことばで、二人の縁の続きが分かるよ"
+            description="キャラクターからのメッセージで、ふたりの相性をもっと深く読めるよ"
           />
         </div>
 

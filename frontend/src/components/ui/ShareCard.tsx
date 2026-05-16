@@ -45,6 +45,9 @@ export function ShareCard({
 }: ShareCardProps) {
   const dateText = dateLabel ?? getDefaultDateLabel();
   const cardRef = useRef<HTMLDivElement>(null);
+  // title はランク英字 (GREAT FORTUNE 等) 用に巨大表示する設計.
+  // 夢占い・相性などで日本語 title が渡る場合は崩れるためサイズを落とす.
+  const isAsciiTitle = /^[\x00-\x7F]*$/.test(title);
 
   const handleSave = async () => {
     if (!cardRef.current) return;
@@ -109,7 +112,7 @@ export function ShareCard({
     justifyContent: 'center',
     gap: 48,
     transform: `scale(${DISPLAY_SCALE})`,
-    transformOrigin: 'top center',
+    transformOrigin: 'top left',
   };
 
   /* ────── ヘッダー（safe area 内）────── */
@@ -142,16 +145,20 @@ export function ShareCard({
 
   /* ────── ランク英字（H1・縦長で巨大化）────── */
   const titleStyle: CSSProperties = {
-    fontFamily: "'Cormorant', serif",
-    fontStyle: 'italic',
-    fontWeight: 400,
-    fontSize: 180,
-    lineHeight: 1.1,
+    fontFamily: isAsciiTitle
+      ? "'Cormorant', serif"
+      : "'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', sans-serif",
+    fontStyle: isAsciiTitle ? 'italic' : 'normal',
+    fontWeight: isAsciiTitle ? 400 : 700,
+    fontSize: isAsciiTitle ? 180 : 88,
+    lineHeight: 1.15,
     color: '#F0E8EC',
     textAlign: 'center',
     margin: 0,
     letterSpacing: '0.01em',
     textShadow: '0 6px 32px rgba(0,0,0,0.4)',
+    maxWidth: 880,
+    wordBreak: 'keep-all',
   };
 
   /* ────── タイプ識別子（H2）────── */

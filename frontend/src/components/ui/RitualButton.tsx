@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, type CSSProperties } from 'react';
 
-type RitualVerb = 'ひらく' | 'あずける' | '残す' | 'しまう' | string;
+type RitualVerb = 'よみとく' | 'ひらく' | '残す' | 'しまう' | string;
 
 interface RitualButtonProps {
   verb: RitualVerb;

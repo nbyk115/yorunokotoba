@@ -195,7 +195,7 @@ function ConstellationReveal({ color }: { color: string }) {
           letterSpacing: '0.12em',
         }}
       >
-        reading the stars…
+        星を読んでいる…
       </p>
     </div>
   );
@@ -520,7 +520,7 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
                 margin: 0,
               }}
             >
-              🌙 今夜の引きどき
+              🌙 今夜のいい時間帯
             </p>
             <p style={{ fontSize: 13, color: 'var(--t1)', marginTop: 4, lineHeight: 1.6 }}>
               {result.time}
@@ -697,9 +697,9 @@ function DeepReadingSection({
   if (!isPremium) {
     return (
       <Card style={wrapStyle}>
-        <p style={eyebrowStyle}>Deep Reading · 今夜のことば</p>
+        <p style={eyebrowStyle}>今夜のことば</p>
         <h4 style={titleStyle}>
-          {charaName}からの夜のことば
+          {charaName}からのメッセージ
         </h4>
         <p
           style={{
@@ -709,8 +709,8 @@ function DeepReadingSection({
             margin: '0 0 4px',
           }}
         >
-          今夜のあなたへ、{charaName}からのことばが届いてるよ。
-          {moonWave && `${moonLabel}のエネルギーを読み解く特別な夜のことばも。`}
+          {charaName}から今夜のあなたへのメッセージが届いてるよ。
+          {moonWave && `${moonLabel}のエネルギーを読み解く特別なメッセージも。`}
         </p>
         <PremiumCTA source="deep_reading" userId={currentUserId} />
       </Card>
@@ -720,9 +720,9 @@ function DeepReadingSection({
   // Premium 時: 全文表示
   return (
     <Card style={wrapStyle}>
-      <p style={eyebrowStyle}>Deep Reading · 今夜のことば</p>
+      <p style={eyebrowStyle}>今夜のことば</p>
       <h4 style={titleStyle}>
-        {charaName}からの夜のことば
+        {charaName}からのメッセージ
       </h4>
       <p style={bodyStyle}>{message.body}</p>
 

@@ -328,7 +328,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   };
 
   const handleClear = () => {
-    if (window.confirm('この日記をしまうよ。すべての夜の記録が消えるよ。いい？')) {
+    if (window.confirm('夢の記録を全部削除するよ。もとに戻せないよ。本当にいい？')) {
       clearArchive();
       setEntries([]);
       setSelectedDay(null);
@@ -367,10 +367,10 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               marginBottom: 8,
             }}
           >
-            まだあなたの夜は、白紙のまま
+            まだ夢の記録がないよ
           </p>
           <p style={{ fontSize: 13, color: 'var(--t3)', lineHeight: 1.7 }}>
-            最初の1夜を、ここに。
+            最初の夢を、記録してみて
           </p>
         </div>
         {onNavigate && (
@@ -395,7 +395,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           >
-            夢を、夜にあずける
+            夢をよみとく
           </button>
         )}
       </div>
@@ -420,18 +420,6 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             textAlign: 'center',
           }}
         >
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontStyle: 'italic',
-              fontSize: 13,
-              color: 'var(--t3)',
-              letterSpacing: '0.1em',
-              margin: 0,
-            }}
-          >
-            Dream Journal
-          </p>
           <h2
             style={{
               fontSize: 22,
@@ -599,7 +587,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                     margin: '0 0 8px',
                   }}
                 >
-                  まだ、その夢に出会っていない
+                  その夢の記録は見つからなかったよ
                 </p>
                 <p style={{ margin: 0, fontSize: 12 }}>
                   別のことばや、テーマで探してみて
@@ -874,7 +862,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
         {/* clear-button */}
         <div style={{ margin: '16px 16px 32px' }}>
           <Button variant="ghost" fullWidth onClick={handleClear}>
-            この日記をしまう（全削除）
+            夢の記録を全部削除
           </Button>
         </div>
         </>

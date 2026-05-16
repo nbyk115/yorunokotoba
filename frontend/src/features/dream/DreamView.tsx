@@ -16,7 +16,7 @@ interface DreamViewProps {
 }
 
 /* ─── 解析フェーズテキスト（3秒 / 3段階） ─── */
-const RITUAL_PHASES = ['夢を、読んでいる', 'シンボルをひらく', '見えてきた'];
+const RITUAL_PHASES = ['夢を、読んでいる', 'シンボルをよみとく', '見えてきた'];
 
 /* ─── 月SVG（stroke-dasharray アニメーション） ─── */
 function RitualMoonSvg({ progress }: { progress: number }) {
@@ -156,7 +156,7 @@ export function DreamView({ profile }: DreamViewProps) {
   /* ─── カード共通スタイル ─── */
   const cardBase: React.CSSProperties = {
     flexShrink: 0,
-    width: 'clamp(calc(100vw - 32px), calc(100vw - 48px), 432px)',
+    width: 'clamp(280px, calc(100vw - 48px), 432px)',
     scrollSnapAlign: 'start',
     background: 'var(--card)',
     backdropFilter: 'blur(20px)',
@@ -183,15 +183,15 @@ export function DreamView({ profile }: DreamViewProps) {
           >
             <p
               style={{
-                fontFamily: 'var(--font-accent)',
+                fontFamily: 'var(--font-heading)',
                 fontSize: 13,
-                fontStyle: 'italic',
+                fontWeight: 700,
                 color: 'var(--lavender)',
                 letterSpacing: '0.1em',
                 marginBottom: 12,
               }}
             >
-              Dream Oracle
+              夢占い
             </p>
             <h2
               style={{
@@ -203,7 +203,7 @@ export function DreamView({ profile }: DreamViewProps) {
                 marginBottom: 8,
               }}
             >
-              夢を、あずけて
+              今夜の夢を書いて
             </h2>
             <p
               style={{
@@ -262,7 +262,7 @@ export function DreamView({ profile }: DreamViewProps) {
 
             <div style={{ marginTop: 16 }}>
               <RitualButton
-                verb="夜にあずける"
+                verb="夢をよみとく"
                 onConfirm={handleConfirm}
                 disabled={!text.trim() || loading}
                 fullWidth
@@ -279,26 +279,14 @@ export function DreamView({ profile }: DreamViewProps) {
           >
             <p
               style={{
-                fontFamily: 'var(--font-accent)',
-                fontStyle: 'italic',
-                fontSize: 14,
-                color: 'var(--t3)',
-                lineHeight: 1.7,
-                margin: 0,
-              }}
-            >
-              You leave it to the night.
-            </p>
-            <p
-              style={{
                 fontSize: 12,
                 color: 'var(--t3)',
                 lineHeight: 1.7,
-                marginTop: 4,
+                margin: 0,
                 letterSpacing: '0.04em',
               }}
             >
-              夜にあずけると、あなたへのことばが返ってくる
+              書いたら、あなたへのメッセージが出てくるよ
             </p>
           </div>
 
@@ -370,6 +358,8 @@ export function DreamView({ profile }: DreamViewProps) {
             ref={carouselRef}
             style={{
               display: 'flex',
+              /* 各カードを最長カードの高さに引き伸ばさない（Card 1 のスカスカ防止） */
+              alignItems: 'flex-start',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               scrollPaddingLeft: 16,
@@ -484,7 +474,7 @@ export function DreamView({ profile }: DreamViewProps) {
                   fontFamily: 'var(--font-heading)',
                 }}
               >
-                月が、あなたに残したことば
+                夢のよみとき
               </h4>
               <p
                 style={{
@@ -681,7 +671,7 @@ export function DreamView({ profile }: DreamViewProps) {
           {/* ── reset-button ── */}
           <div style={{ margin: '16px 16px 32px' }}>
             <Button variant="ghost" onClick={handleReset} fullWidth>
-              もう一度あずける
+              別の夢をよみとく
             </Button>
           </div>
           <p
