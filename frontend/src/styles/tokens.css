@@ -164,3 +164,25 @@
   --particle-count: 6;
   --particle-speed: 1;
 }
+
+/* 暗い time-of-day（夜系4モード）は theme が light のままでも
+   テキスト・カード・影をダーク前提にする。
+   背景だけ暗くして文字色が明るいテーマのまま残ると
+   「暗背景に暗文字」で全く読めなくなるため。 */
+[data-time-of-day="night-deep"],
+[data-time-of-day="dawn"],
+[data-time-of-day="dusk"],
+[data-time-of-day="night"] {
+  --t1: #F0E8EC;
+  --t2: rgba(240, 232, 236, 0.86);
+  --t3: rgba(240, 232, 236, 0.70);
+  --card-primary: rgba(34, 27, 37, 0.92);
+  --card-secondary: rgba(28, 22, 30, 0.55);
+  --card: var(--card-secondary);
+  --card-solid: #1C161E;
+  --border-primary: rgba(240, 232, 236, 0.12);
+  --border-secondary: rgba(240, 232, 236, 0.06);
+  --border: rgba(240, 232, 236, 0.10);
+  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 28px rgba(0,0,0,0.45);
+  --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.30);
+}
