@@ -13,7 +13,7 @@ const variantStyles: Record<Variant, React.CSSProperties> = {
     background: 'linear-gradient(135deg, var(--rose), var(--pink))',
     color: '#fff',
     border: 'none',
-    boxShadow: '0 4px 20px rgba(232, 98, 124, 0.28)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
   },
   secondary: {
     background: 'var(--card-solid)',

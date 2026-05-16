@@ -420,7 +420,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               fontWeight: 700,
               letterSpacing: '0.04em',
               cursor: 'pointer',
-              boxShadow: '0 8px 24px rgba(240, 128, 154, 0.28)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
               transition: 'transform 200ms ease, box-shadow 200ms ease',
             }}
             onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.98)')}

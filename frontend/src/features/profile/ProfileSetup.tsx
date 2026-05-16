@@ -119,8 +119,8 @@ function ensureKeyframes() {
     el.id = STYLE_ID;
     el.textContent = `
       @keyframes breathe {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(232,98,124,0.4); }
-        50%       { box-shadow: 0 0 0 6px rgba(232,98,124,0); }
+        0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0.25); }
+        50%       { box-shadow: 0 0 0 6px rgba(0,0,0,0); }
       }
       @keyframes slideUp {
         from { opacity: 0; transform: translateY(16px); }

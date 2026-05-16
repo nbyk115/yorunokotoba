@@ -209,7 +209,7 @@ font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans
 - Don't use pure black (#000) or pure white (#fff) as text color
 - Don't use more than 2 fonts
 - Don't animate layout properties (width, height, top, left). Use transform and opacity only
-- Don't use box-shadow heavier than `0 4px 24px rgba(..., 0.15)`
+- Don't use colored glow (box-shadow with non-black rgba above alpha 0.15). Use black shadow rgba(0,0,0,...) for depth; black shadow up to alpha 0.5 is acceptable
 - Don't place text directly on gradients without sufficient contrast
 - Don't use system fonts. Always load Zen Maru Gothic
 - Don't use em dash or en dash in English output
