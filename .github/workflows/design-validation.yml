@@ -29,7 +29,9 @@ jobs:
         run: npm install -g ts-node typescript
 
       - name: Validate design contracts
-        run: npx ts-node scripts/design/validate.ts
+        # validate.ts は __dirname を使う CommonJS スクリプト.
+        # ルート tsconfig が ESM だと __dirname 未定義でクラッシュするため module を固定する.
+        run: npx ts-node --compiler-options '{"module":"commonjs"}' scripts/design/validate.ts
 
       - name: Check DESIGN.md exists
         run: test -f DESIGN.md

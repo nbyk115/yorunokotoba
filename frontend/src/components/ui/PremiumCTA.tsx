@@ -1,5 +1,5 @@
 /**
- * PremiumCTA — Premium 課金導線（UnivaPay + Email link auth + 課金前同意モーダル）.
+ * PremiumCTA: Premium 課金導線（UnivaPay + Email link auth + 課金前同意モーダル）.
  *
  * フロー:
  *   1. userId なし → email 入力 → リンク送信 → メール開いて戻る → ログイン → 再タップ

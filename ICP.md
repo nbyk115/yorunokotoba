@@ -1,4 +1,4 @@
-# ICP.md — よるのことば Ideal Customer Profile
+# ICP.md : よるのことば Ideal Customer Profile
 
 - **Date**: 2026-04-12
 - **Lead**: market-researcher + strategy-lead

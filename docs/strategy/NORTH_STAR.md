@@ -1,4 +1,4 @@
-# North Star — yorunokotoba 戦略ゴール
+# North Star : yorunokotoba 戦略ゴール
 
 > **最終更新**: 2026-05-15
 > **ゴール所有者**: 運営者（個人事業主）
@@ -90,10 +90,10 @@
 
 ## 🔄 関連ドキュメント
 
-- `ICP.md` — ターゲットセグメント定義
-- `docs/strategy/pricing-decision.md` — 価格戦略（¥980/月確定、ドーシー流アンカリングなし）
-- `docs/payment/univapay-integration.md` — 決済実装
-- `DESIGN.md` — UI 規範
+- `ICP.md` : ターゲットセグメント定義
+- `docs/strategy/pricing-decision.md` : 価格戦略（¥980/月確定、ドーシー流アンカリングなし）
+- `docs/payment/univapay-integration.md` : 決済実装
+- `DESIGN.md` : UI 規範
 
 ---
 

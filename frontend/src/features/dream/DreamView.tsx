@@ -544,7 +544,7 @@ export function DreamView({ profile }: DreamViewProps) {
                     }}
                   >
                     <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--rose)' }}>
-                      {s.word} — {s.meaning}
+                      {s.word} · {s.meaning}
                     </p>
                     <p
                       style={{

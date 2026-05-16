@@ -1,5 +1,5 @@
 /**
- * CheckoutConsentModal — 課金前の重要事項確認モーダル.
+ * CheckoutConsentModal: 課金前の重要事項確認モーダル.
  *
  * 根拠法令:
  *   - 電子契約法第3条（申込内容の確認措置）

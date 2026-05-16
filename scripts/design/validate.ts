@@ -77,7 +77,16 @@ function findFiles(root: string, patterns: string[]): string[] {
     .filter(ext => ext.length > 0);
 
   function walk(dir: string) {
-    if (dir.includes('node_modules') || dir.includes('.git') || dir.includes('.claude')) return;
+    // node_modules / VCS / ConsultingOS 内部 / ビルド成果物 / 静的アセットは検証対象外.
+    // dist は生成物, public は docs/legal からの自動生成 html を含むため除外.
+    if (
+      dir.includes('node_modules') ||
+      dir.includes('.git') ||
+      dir.includes('.claude') ||
+      dir.includes(`${path.sep}dist`) ||
+      dir.includes(`${path.sep}public`)
+    )
+      return;
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);

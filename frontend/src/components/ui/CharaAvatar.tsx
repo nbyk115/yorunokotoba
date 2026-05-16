@@ -30,9 +30,8 @@ export function CharaAvatar({ id, size = 80, animate = false, border }: CharaAva
     );
   }
   return (
-    <img
+    <img alt=""
       src={src}
-      alt=""
       width={size}
       height={size}
       loading="lazy"

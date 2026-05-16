@@ -98,12 +98,12 @@ v8 の `index.html` は単一ファイル 649KB / 629行のモノリスで、以
 | 8 | Self-Pentest + 品質ゲート | 進行中 |
 
 ## References
-- `backlog/rebuild/inventory.md` — 詳細な棚卸し
-- `.claude/skills/debug-methodology.md` — 根本原因分析
-- `.claude/skills/engineering-playbook.md` §8-10 — Source-Driven / CWV / ADR
-- `.claude/skills/migration-safety.md` §5.5 — Shift Left + 段階的ロールアウト
-- `.claude/skills/code-quality-gates.md` Gate 0 — 外科的変更
-- `CLAUDE.md` — 外科的変更の原則 / 冗長性禁止の原則
+- `backlog/rebuild/inventory.md` : 詳細な棚卸し
+- `.claude/skills/debug-methodology.md` : 根本原因分析
+- `.claude/skills/engineering-playbook.md` §8-10 : Source-Driven / CWV / ADR
+- `.claude/skills/migration-safety.md` §5.5 : Shift Left + 段階的ロールアウト
+- `.claude/skills/code-quality-gates.md` Gate 0 : 外科的変更
+- `CLAUDE.md` : 外科的変更の原則 / 冗長性禁止の原則
 
 ## 反証チェック結果
 ✅ **Step 1（自己反証）**: 「これ以上デカいPRを作ると Surgical Change Principle 違反では？」→ 反論: 対症療法を17回繰り返して失敗した時点で、rebuild こそが最小コスト。内容を見ると各 Phase は surgical（依頼範囲に忠実）

@@ -99,6 +99,6 @@ Firebase Console で以下を設定推奨:
 
 ## 関連ファイル
 
-- `/firestore.rules` — Rules 本体
-- `/firebase.json` — Firebase プロジェクト設定（Rules ファイルパス指定）
-- `/.firebaserc` — デフォルトプロジェクト ID
+- `/firestore.rules` : Rules 本体
+- `/firebase.json` : Firebase プロジェクト設定（Rules ファイルパス指定）
+- `/.firebaserc` : デフォルトプロジェクト ID

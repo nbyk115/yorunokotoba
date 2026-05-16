@@ -220,8 +220,8 @@ npx vercel dev
 
 ## 9. 関連ドキュメント
 
-- `docs/security/legal-scheme-migration.md` — 法務スキームC
-- `docs/security/firestore-rules-deploy.md` — Firestore Rules
-- `docs/growth-strategy/kpi-design.md` — MRR/CVR 目標
-- `docs/strategy/market-research-and-strategy.md` — 市場戦略
-- `ICP.md` — ターゲットペルソナ
+- `docs/security/legal-scheme-migration.md` : 法務スキームC
+- `docs/security/firestore-rules-deploy.md` : Firestore Rules
+- `docs/growth-strategy/kpi-design.md` : MRR/CVR 目標
+- `docs/strategy/market-research-and-strategy.md` : 市場戦略
+- `ICP.md` : ターゲットペルソナ
