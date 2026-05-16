@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { X } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { ShareCard } from '@/components/ui/ShareCard';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
@@ -480,14 +482,14 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   border: 'none',
                   background: 'var(--border)',
                   color: 'var(--t2)',
-                  fontSize: 'var(--fs-body)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  padding: 0,
                 }}
               >
-                ✕
+                <Icon icon={X} size={14} />
               </button>
             )}
           </div>

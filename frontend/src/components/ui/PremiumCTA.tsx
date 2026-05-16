@@ -11,6 +11,8 @@
  */
 
 import { useEffect, useState } from 'react';
+import { MailCheck } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { track } from '@/lib/analytics';
 import { startCheckout, recordConsent } from '@/lib/subscription';
 import { sendEmailLink } from '@/lib/auth';
@@ -214,8 +216,9 @@ export function PremiumCTA({
 
         {mode === 'email-sent' && (
           <div style={{ marginTop: 4 }}>
-            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7 }}>
-              ✉️ メールを送ったよ
+            <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', margin: '0 0 6px', lineHeight: 1.7, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Icon icon={MailCheck} size={18} />
+              メールを送ったよ
             </p>
             <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t2)', margin: '0 0 12px', lineHeight: 1.7 }}>
               届いたメールのリンクをタップして戻ってきてね。

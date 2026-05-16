@@ -6,6 +6,8 @@
  */
 
 import { useState } from 'react';
+import { Sparkles, FileText, UserRound } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { useSubscription } from '@/lib/subscription';
 import { signOut, useCurrentUser } from '@/lib/auth';
 import { CancelConfirmModal } from './CancelConfirmModal';
@@ -69,8 +71,9 @@ export function SettingsView({ onBack }: SettingsViewProps) {
       </h2>
 
       <Card style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px' }}>
-          ✨ Premium ステータス
+        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Icon icon={Sparkles} size={16} color="var(--gold)" />
+          Premium ステータス
         </h3>
         {loading ? (
           <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)' }}>読み込み中…</p>
@@ -85,8 +88,9 @@ export function SettingsView({ onBack }: SettingsViewProps) {
       </Card>
 
       <Card style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
-          📄 規約・ポリシー
+        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Icon icon={FileText} size={16} />
+          規約・ポリシー
         </h3>
         <LegalLinkRow onClick={() => openLegal('tokushoho')} label="特定商取引法に基づく表記" />
         <LegalLinkRow onClick={() => openLegal('terms')} label="利用規約" />
@@ -95,8 +99,9 @@ export function SettingsView({ onBack }: SettingsViewProps) {
 
       {user && (
         <Card>
-          <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px' }}>
-            👤 アカウント
+          <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon icon={UserRound} size={16} />
+            アカウント
           </h3>
           <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', margin: '0 0 12px' }}>
             ログイン中: {user.email ?? user.uid}
