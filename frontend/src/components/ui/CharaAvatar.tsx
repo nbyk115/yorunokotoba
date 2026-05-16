@@ -41,7 +41,7 @@ export function CharaAvatar({ id, size = 80, animate = false, border }: CharaAva
         borderRadius: '50%',
         objectFit: 'cover',
         border: border ?? 'none',
-        animation: animate ? 'float-chara 6s ease-in-out infinite' : undefined,
+        animation: animate ? 'float-chara 4s ease-in-out infinite' : undefined,
       }}
     />
   );
