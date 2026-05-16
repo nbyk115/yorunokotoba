@@ -208,7 +208,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
             夢占い
           </p>
 
-          {/* card-title（ICP語彙: 「夢」「読み解く」）*/}
+          {/* card-title（ICP語彙: 「夢」「よみとく」）*/}
           <h2
             style={{
               fontSize: 'var(--fs-h2)',
@@ -219,7 +219,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               margin: '0 0 8px',
             }}
           >
-            今夜の夢を読み解く
+            今夜の夢をよみとく
           </h2>
 
           {/* card-body（ICP語彙: 「シンボル」「メッセージ」）*/}
@@ -232,7 +232,7 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
               margin: '0 0 16px',
             }}
           >
-            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージを読み解くよ。
+            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージをよみとくよ。
           </p>
 
           {/* チラ見せ占い結果プレビュー（BlurReveal）*/}

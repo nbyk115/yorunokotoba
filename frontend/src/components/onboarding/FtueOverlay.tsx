@@ -22,7 +22,7 @@ const STEPS: FtueStep[] = [
   {
     icon: MessageCircleHeart,
     title: '夢を書いてみよう',
-    body: 'ゆうべ見た夢をそのまま書くだけでOK。キーワードから深層心理を読み解くよ。',
+    body: 'ゆうべ見た夢をそのまま書くだけでOK。キーワードから深層心理をよみとくよ。',
   },
   {
     icon: Sparkles,

@@ -719,7 +719,7 @@ function DeepReadingSection({
           }}
         >
           {charaName}から今夜のあなたへのメッセージが届いてるよ。
-          {moonWave && `${moonLabel}のエネルギーを読み解く特別なメッセージも。`}
+          {moonWave && `${moonLabel}のエネルギーをよみとく特別なメッセージも。`}
         </p>
         <PremiumCTA source="deep_reading" userId={currentUserId} />
       </Card>
