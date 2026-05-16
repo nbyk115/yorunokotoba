@@ -91,27 +91,42 @@
     },
     {
       "id": "SHADOW-001",
-      "severity": "warning",
+      "severity": "error",
       "category": "effects",
-      "description": "重すぎるbox-shadow禁止",
+      "description": "有彩色グロー禁止: box-shadow/boxShadow で rgba(0,0,0,...) 以外（有彩色）かつ alpha 0.15超を禁止",
       "detector": {
         "type": "regex",
-        "pattern": "box-shadow:[^;]*rgba\\([^)]*0\\.[3-9]"
+        "pattern": "(?:box-shadow:|boxShadow:)[^;\\n]*rgba\\(\\s*(?!0\\s*,\\s*0\\s*,\\s*0\\s*,)[^)]*,\\s*0\\.(?:1[6-9]|[2-9])",
+        "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
       },
-      "fix": "最大 rgba(..., 0.15)",
-      "why": "強すぎる影は安っぽく見える"
+      "fix": "有彩色グロー (ピンク系 rgba) を除去し、黒影 rgba(0,0,0,...) またはトークン変数 var(--shadow-*) に置き換える",
+      "why": "リデザイン方針: 有彩色グロー全廃。ピンク発光はブランド品質を損なう"
+    },
+    {
+      "id": "SHADOW-002",
+      "severity": "warning",
+      "category": "effects",
+      "description": "黒影の alpha 上限: rgba(0,0,0,...) で alpha 0.5超を禁止",
+      "detector": {
+        "type": "regex",
+        "pattern": "(?:box-shadow:|boxShadow:)[^;\\n]*rgba\\(\\s*0\\s*,\\s*0\\s*,\\s*0\\s*,\\s*0\\.(?:5[1-9]|[6-9])",
+        "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
+      },
+      "fix": "黒影は alpha 0.5 以下に抑える (例: rgba(0,0,0,0.45))",
+      "why": "黒影は濃く使ってよいが 0.5 超は過剰。0.5 まで許容"
     },
     {
       "id": "GRADIENT-001",
       "severity": "warning",
       "category": "colors",
-      "description": "プライマリCTA以外のグラデーション使用を禁止",
+      "description": "グラデーション直書き禁止: linear-gradient / radial-gradient のハードコードを検出",
       "detector": {
-        "type": "manual",
-        "note": "人間レビューで確認"
+        "type": "regex",
+        "pattern": "(?:linear-gradient|radial-gradient)\\s*\\(",
+        "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
       },
-      "fix": "グラデーションは --grad または --grad2 のみ、CTAのみに使用",
-      "why": "グラデーションの乱用は安っぽさを生む"
+      "fix": "グラデーションは --grad / --grad2 トークン変数を使用。直書き全廃予定 (PR3 で error 昇格)",
+      "why": "グラデーション直書きの乱用を CI で可視化。PR3 完了後に error 昇格する"
     },
     {
       "id": "DASH-001",
