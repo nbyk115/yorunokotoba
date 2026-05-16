@@ -20,50 +20,66 @@ interface HomeViewProps {
   onNavigate: (view: ViewKey) => void;
 }
 
-// 時間帯別 HeroBlock テキスト（PR5: 日本語主役、英語装飾フレーズを添える）
+// 時間帯別 HeroBlock テキスト
+// 識別性ゲート: AI 推奨の「万人向け励まし」を断り「同じ夜にいる者どうしの対等さ」へ振り切る
+// night-deep: 万人向けの「ゆっくり休んでね」を断ち、共犯感のある本音「まあ、わたしもだけど」へ
+// dawn: 「今日もがんばって！」を断ち、軽くぶっきらぼうな問いかけ「もう起きてるの」へ
+// day: 「今日も元気に過ごしてね」を断ち、少し間の抜けた本音へ
+// dusk: 「おつかれさまでした」の礼儀的ねぎらいを断ち、帰ってきた事実への反応へ
+// night: 「今夜も素敵な時間を」を断ち、静かな共犯感「わたしもまだいるよ」へ
 const HERO_COPIES: Record<TimeOfDay, { jp: string; en?: string }> = {
   'night-deep': {
-    jp: '眠れない夜は、ちょっとだけ自分と話そう',
-    en: 'deep into the night',
+    jp: 'まだ起きてるんだ。…まあ、わたしもだけど',
+    en: 'still awake, same here',
   },
   dawn: {
-    jp: 'おはよう。今日のあなた、どんな日にする？',
-    en: 'a quiet morning',
+    jp: 'もう起きてるの。今日、どうする？',
+    en: 'early again',
   },
   day: {
     jp: 'いま、自分の気持ち聞けてる？',
-    en: 'check in with yourself',
+    en: 'just checking',
   },
   dusk: {
-    jp: '今日もおつかれさま。ひといきつこう',
-    en: 'before the night deepens',
+    jp: '帰ってきたね。今夜もよく終わらせた',
+    en: 'made it back',
   },
   night: {
-    jp: '今夜は、自分のために少しだけ時間つくろう',
-    en: 'a little time for you',
+    jp: 'まだいるよ。夜、どうだった？',
+    en: 'still here with you',
   },
 };
 
-// 時間帯別 greeting-section テキスト（ICP語彙: 「おつかれ」「深夜」）
+// 時間帯別 greeting-section テキスト
+// 識別性ゲート: 礼儀的な挨拶文を断ち、時間帯への「気づき」を一言にする
 function getGreeting(tod: TimeOfDay): string {
-  if (tod === 'night-deep') return '深夜、おつかれさま';
-  if (tod === 'dawn') return 'おはよう、今日も一日';
-  if (tod === 'day') return 'こんにちは';
-  if (tod === 'dusk') return 'こんばんは';
-  return 'おやすみ前に';
+  if (tod === 'night-deep') return 'この時間にいるんだね';
+  if (tod === 'dawn') return 'もう起き出してる';
+  if (tod === 'day') return 'ちょっと立ち止まって';
+  if (tod === 'dusk') return '夜になったね';
+  return 'まだ起きてるね';
 }
 
-// 深夜専用の名前呼びかけコピー（ICP語彙: 「おつかれ」「帰ってきたね」）
+// 深夜専用の名前呼びかけコピー（2-4時に開いた人にしか届かない温度）
+// 識別性ゲート: 「おつかれさまでした」の礼儀的ねぎらいを断ち、帰ってきた事実への対等な反応へ
+// 「深夜ラジオの最終回」的な前置き文を日替わりで2本用意
 function getNightDeepSubCopy(name: string): string {
-  return `おつかれ、${name}。今夜もよく帰ってきたね`;
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const variants = [
+    `おつかれ、${name}。帰ってきたね`,
+    `${name}、この時間まで起きてた`,
+  ];
+  return variants[seed % variants.length] ?? variants[0]!;
 }
 
-// BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
+// BlurReveal 内のチラ見せ占い結果プレビュー
+// 識別性ゲート: 「きっとうまくいく」系の根拠なし励ましを断ち、「もう知ってるでしょ」的な対等な問いかけへ
 const BLUR_PREVIEW_MESSAGES = [
-  '今夜のよみとき、解放のほうを向いてる',
-  '今夜のよみとき、もう準備できてる',
-  '今夜のよみとき、いい流れが来てる',
-  '夢の奥に、今のあなたへのメッセージが眠っている',
+  '答え、もうわかってるんじゃないの',
+  '今夜のよみとき、あなたが思ってる方向で合ってる',
+  '迷ってるふりしてるだけで、決まってるよね',
+  'この時間に開いたってことは、何か感じてたんでしょ',
 ];
 
 function getDailyBlurMessage(): string {
