@@ -720,9 +720,9 @@ function DeepReadingSection({
   // Premium 時: 全文表示
   return (
     <Card style={wrapStyle}>
-      <p style={eyebrowStyle}>Deep Reading · 今夜のことば</p>
+      <p style={eyebrowStyle}>今夜のことば</p>
       <h4 style={titleStyle}>
-        {charaName}からの夜のことば
+        {charaName}からのメッセージ
       </h4>
       <p style={bodyStyle}>{message.body}</p>
 
