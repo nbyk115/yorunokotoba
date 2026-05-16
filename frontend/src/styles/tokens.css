@@ -122,30 +122,17 @@
   --ritual-duration: 3000ms;
   --ritual-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* Rarity tokens — Wave L1 確定 */
+  --rarity-n: var(--t3);
+  --rarity-r: var(--rose);
+  --rarity-sr: var(--lavender);
+  --rarity-ssr: var(--gold);
+
 }
 
-[data-theme='dark'] {
-  /* ワイン夜基調（night モードと同等） */
-  --bg1: #1C1620;
-  --rose: #EC8C9E;
-  --rose-deep: #D97088;
-  --pink: #D97088;
-  --t1: #F6ECEE;
-  --t2: rgba(246, 236, 238, 0.68);
-  --t3: rgba(246, 236, 238, 0.46);
-  --card-primary: rgba(40, 28, 34, 0.92);
-  --card-secondary: rgba(28, 20, 24, 0.60);
-  --border-primary: rgba(246, 236, 238, 0.12);
-  --border-secondary: rgba(246, 236, 238, 0.06);
-  --card: var(--card-secondary);
-  --card-solid: #281C22;
-  --border: rgba(246, 236, 238, 0.08);
-  --bg-body: var(--bg1);
-  --shadow-card-primary: inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40);
-  --shadow-card-secondary: inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28);
-}
+/* [data-theme='dark'] ブロック廃止 — 常時ダーク1テーマ + time-of-day 5段階セレクタのみを正とする (Wave L1) */
 
-/* Time of Day Modes — must come after [data-theme='dark'] so --bg1 wins */
+/* Time of Day Modes */
 
 /* night-deep: 02:00-05:00 — 最暗。ワイン寄り深黒。星空の深淵 */
 [data-time-of-day="night-deep"] {
