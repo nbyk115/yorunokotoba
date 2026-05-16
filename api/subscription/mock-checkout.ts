@@ -36,7 +36,7 @@ export default function handler(
     h1 { font-size: 18px; }
     .panel { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 20px; margin-top: 16px; }
     code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 8px; font-size: 12px; }
-    button { width: 100%; min-height: 48px; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #e8627c, #d4659a); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+    button { width: 100%; min-height: 48px; padding: 14px; border-radius: 12px; border: none; background: #e8627c; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 16px; }
     .warn { color: #f5b942; font-size: 11px; margin-top: 12px; }
   </style>
 </head>

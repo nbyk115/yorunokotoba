@@ -235,7 +235,7 @@ function Step1({ name, onChange, animClass }: Step1Props) {
                 ? 'var(--border)'
                 : 'var(--border)',
             boxShadow: focused
-              ? '0 2px 0 0 rgba(232,98,124,0.35)'
+              ? '0 2px 0 0 rgba(0,0,0,0.18)'
               : 'none',
           }}
           onFocus={() => setFocused(true)}
@@ -756,7 +756,7 @@ function EditMode({
             position: 'sticky',
             bottom: 'calc(56px + env(safe-area-inset-bottom))',
             padding: '16px 0',
-            background: 'linear-gradient(to top, var(--bg1) 80%, transparent)',
+            background: 'var(--bg1)',
           }}
         >
           <Button type="submit" fullWidth>
@@ -955,7 +955,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
             position: 'sticky',
             bottom: 'calc(56px + env(safe-area-inset-bottom))',
             padding: '16px 24px',
-            background: 'linear-gradient(to top, var(--bg1) 80%, transparent)',
+            background: 'var(--bg1)',
             marginTop: 'auto',
           }}
         >

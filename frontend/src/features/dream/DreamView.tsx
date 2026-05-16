@@ -324,20 +324,6 @@ export function DreamView({ profile }: DreamViewProps) {
               overflow: 'hidden',
             }}
           >
-            {/* テーマ色の放射光 */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '50%',
-                width: 200,
-                height: 200,
-                transform: 'translateX(-50%)',
-                background: `radial-gradient(circle, ${result.theme.color}38 0%, transparent 70%)`,
-                pointerEvents: 'none',
-              }}
-            />
             <div style={{ position: 'relative', lineHeight: 1, marginBottom: 12 }}>
               <DreamThemeIcon
                 themeKey={result.theme.key}

@@ -105,8 +105,7 @@ export function PremiumCTA({
         style={{
           marginTop: 16,
           padding: '14px 16px',
-          background:
-            'linear-gradient(135deg, rgba(232, 192, 104, 0.10), rgba(176, 138, 207, 0.10))',
+          background: 'rgba(201, 169, 97, 0.10)',
           border: '1px solid var(--border)',
           borderRadius: 14,
           textAlign: 'center',
@@ -261,7 +260,7 @@ function primaryButtonStyle(pending: boolean): React.CSSProperties {
     padding: '10px 24px',
     borderRadius: 12,
     border: 'none',
-    background: 'linear-gradient(135deg, var(--rose), var(--pink))',
+    background: 'var(--accent-rose)',
     color: '#fff',
     fontSize: 'var(--fs-caption)',
     fontWeight: 700,

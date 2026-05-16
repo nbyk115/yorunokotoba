@@ -37,7 +37,7 @@ const RANK_COLOR: Record<FortuneRank, string> = {
   末吉: 'var(--rose)',
 };
 
-/* ── ランク別パーティクル色（Particles コンポーネントがない場合は CSS 変数で代替） ── */
+/* ── ランク別テーマカラー（ConstellationReveal に使用） ── */
 const RANK_PARTICLE_COLOR: Record<FortuneRank, string> = {
   大吉: '#D4A853',
   中吉: '#B08ACF',
@@ -267,31 +267,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
             position: 'relative',
           }}
         >
-          {/* パーティクル風装飾ドット */}
-          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-            {[
-              { top: '12%', left: '8%', size: 3, opacity: 0.35 },
-              { top: '22%', left: '88%', size: 2, opacity: 0.25 },
-              { top: '55%', left: '5%', size: 2, opacity: 0.20 },
-              { top: '70%', left: '92%', size: 3, opacity: 0.30 },
-              { top: '38%', left: '96%', size: 2, opacity: 0.20 },
-              { top: '80%', left: '12%', size: 2, opacity: 0.22 },
-            ].map((dot, i) => (
-              <div
-                key={i}
-                style={{
-                  position: 'absolute',
-                  top: dot.top,
-                  left: dot.left,
-                  width: dot.size,
-                  height: dot.size,
-                  borderRadius: '50%',
-                  background: particleColor,
-                  opacity: dot.opacity,
-                }}
-              />
-            ))}
-          </div>
 
           {/* eyebrow */}
           <p
@@ -326,7 +301,6 @@ export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
               color: rankColor,
               lineHeight: 1.0,
               letterSpacing: '-0.02em',
-              textShadow: `0 4px 40px ${particleColor}72`,
               margin: '0 0 8px',
             }}
           >

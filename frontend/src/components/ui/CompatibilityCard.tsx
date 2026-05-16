@@ -41,10 +41,10 @@ function buildShareText(
   return `あなたとの相性、${mySign}は${rankLabel}だった。${surprise}。入れてみて→\n${inviteUrl} ${pairTitle} ${RANK_PREFIX[rank]} #よるのことば`;
 }
 
-const THEME_GRADIENTS: Record<CardTheme, string> = {
-  rose: 'linear-gradient(135deg, #E8627C, #D4506A)',
-  gold: 'linear-gradient(135deg, #D4A853, #B8893A)',
-  lavender: 'linear-gradient(135deg, #B08ACF, #9068B0)',
+const THEME_SOLIDS: Record<CardTheme, string> = {
+  rose: '#E8627C',
+  gold: '#C9A961',
+  lavender: '#8A87B8',
 };
 
 const RANK_THEME: Record<CompatibilityRank, CardTheme> = {
@@ -169,7 +169,7 @@ export function CompatibilityCard({
   const gradientOverlayStyle: CSSProperties = {
     position: 'absolute',
     inset: 0,
-    background: THEME_GRADIENTS[theme],
+    background: THEME_SOLIDS[theme],
     opacity: 0.30,
     pointerEvents: 'none',
   };
@@ -231,7 +231,7 @@ export function CompatibilityCard({
   const accentLineStyle: CSSProperties = {
     width: 60,
     height: 3,
-    background: THEME_GRADIENTS[theme],
+    background: THEME_SOLIDS[theme],
     borderRadius: 2,
   };
 
@@ -331,7 +331,7 @@ export function CompatibilityCard({
           aria-label="リンクをシェアする"
           style={{
             ...btnBase,
-            background: 'linear-gradient(135deg, var(--rose), var(--pink))',
+            background: 'var(--accent-rose)',
             color: '#fff',
           }}
           onClick={handleShare}
