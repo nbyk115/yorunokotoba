@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, MouseEvent } from 'react';
+import React from 'react';
 
 /**
  * Card プリミティブ — DESIGN.md 正典準拠（Phase 3）
@@ -28,6 +29,14 @@ export interface CardProps {
   style?: CSSProperties;
   className?: string;
   as?: 'div' | 'section' | 'article';
+  /** イベントハンドラー（hover 演出など） */
+  onMouseEnter?: (e: MouseEvent<HTMLElement>) => void;
+  onMouseLeave?: (e: MouseEvent<HTMLElement>) => void;
+  onMouseDown?: (e: MouseEvent<HTMLElement>) => void;
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
+  /** アクセシビリティ */
+  role?: string;
+  'aria-label'?: string;
 }
 
 export function Card({
@@ -36,6 +45,12 @@ export function Card({
   style,
   className,
   as: Tag = 'div',
+  onMouseEnter,
+  onMouseLeave,
+  onMouseDown,
+  onClick,
+  role,
+  'aria-label': ariaLabel,
 }: CardProps) {
   const base: CSSProperties =
     variant === 'primary'
@@ -73,6 +88,12 @@ export function Card({
     <Tag
       className={className}
       style={{ ...base, ...style }}
+      onMouseEnter={onMouseEnter as React.MouseEventHandler<HTMLDivElement>}
+      onMouseLeave={onMouseLeave as React.MouseEventHandler<HTMLDivElement>}
+      onMouseDown={onMouseDown as React.MouseEventHandler<HTMLDivElement>}
+      onClick={onClick as React.MouseEventHandler<HTMLDivElement>}
+      role={role}
+      aria-label={ariaLabel}
     >
       {children}
     </Tag>
