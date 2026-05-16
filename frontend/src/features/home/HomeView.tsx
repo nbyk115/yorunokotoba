@@ -60,7 +60,7 @@ function getNightDeepSubCopy(name: string): string {
 // BlurReveal 内のチラ見せ占い結果プレビュー（ICP共感語彙）
 const BLUR_PREVIEW_MESSAGES = [
   '今夜のよみとき、解放のほうを向いてる',
-  '星があなたに言いたいことがある',
+  '今夜のよみとき、もう準備できてる',
   '今夜のよみとき、いい流れが来てる',
   '夢の奥に、今のあなたへのメッセージが眠っている',
 ];
