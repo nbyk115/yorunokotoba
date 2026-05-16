@@ -50,7 +50,7 @@ interface MoonPhaseIconProps {
  *   - cx_offset: 欠け楕円中心の月中心からの横ずれ
  *     正 = 右に寄る（左側が欠ける面積が増える）
  *     負 = 左に寄る（右側が欠ける面積が増える）
- *   - side: 'left' | 'right' — 欠けている側
+ *   - side: 'left' | 'right' : 欠けている側
  *     left  = 左側が欠ける（右が光る, idx 0-3）
  *     right = 右側が欠ける（左が光る, idx 5-7）
  *
