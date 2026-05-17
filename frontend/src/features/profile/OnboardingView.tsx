@@ -1,35 +1,54 @@
 /**
- * OnboardingView  -  Wave L1 骨格実装
- * 1画面統合: Logo → 名前Input → 生年月日Input → 性別SegmentedControl → はじめるButton
- * 完了で即ホーム遷移
+ * OnboardingView  -  Wave L2 オンボーディング画面
+ *
+ * handoff §2「オンボーディング（1画面に統合）」完全準拠。
+ * インライン style 全廃（handoff §4 構造的解決方針）。
+ * スタイルは OnboardingView.module.css に集約。
+ *
+ * レイアウト:
+ *   safe-area + 24px → ロゴエリア（yorunokotoba + あなたのことを教えて）
+ *   フォーム（名前/生年月日/性別を1画面に統合）
+ *   はじめるボタン（margin-top auto で最下部）
+ *
+ * 廃止（handoff §1 + §2 指示）:
+ *   FtueOverlay / 使い方チュートリアル（完了で即ホームへ遷移）
+ *   インライン style 全て（OnboardingView.module.css に集約）
+ *
+ * App.tsx から直接 onComplete コールバックを受け取り、完了後は即 setProfile で
+ * ホーム画面へ切り替わる（遅延なし）。
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「3ステップウィザード + 月齢ステッパー演出で焦らす」を断った。
+ *   1画面に全項目を収め、最短タップで完了できる導線を選んだ。
  */
 import { useState, type FormEvent } from 'react';
+import { Flower2, Moon } from 'lucide-react';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
-import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Button } from '@/components/ui/Button';
 import { SIGNS, getSignIndex } from '@/data/signs';
 import { saveLocalProfile } from '@/lib/firestore';
 import type { UserProfile } from '@/lib/firestore';
 import { track } from '@/lib/analytics';
+import styles from './OnboardingView.module.css';
 
 interface OnboardingViewProps {
   onComplete: (profile: UserProfile) => void;
 }
 
-const GENDER_OPTIONS = [
-  { value: 'female' as const, label: '女性' },
-  { value: 'male' as const, label: '男性' },
-];
-
 export function OnboardingView({ onComplete }: OnboardingViewProps) {
   const [name, setName] = useState('');
   const [birthMonth, setBirthMonth] = useState('');
   const [birthDay, setBirthDay] = useState('');
-  const [gender, setGender] = useState<'female' | 'male'>('female');
+  const [gender, setGender] = useState<'female' | 'male' | ''>('');
 
   const m = parseInt(birthMonth, 10);
   const d = parseInt(birthDay, 10);
-  const isValid = name.trim().length > 0 && m >= 1 && m <= 12 && d >= 1 && d <= 31;
+  const isValid =
+    name.trim().length > 0 &&
+    m >= 1 && m <= 12 &&
+    d >= 1 && d <= 31 &&
+    gender !== '';
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -41,7 +60,7 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
       birthYear: '',
       birthMonth,
       birthDay,
-      gender,
+      gender: gender as 'male' | 'female',
       prefecture: '',
     };
     saveLocalProfile(profile);
@@ -50,63 +69,18 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
   }
 
   return (
-    <main
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100dvh',
-        padding: 'var(--sp-6) var(--sp-5)',
-        gap: 'var(--sp-5)',
-      }}
-    >
+    <main className={styles.root}>
       {/* ロゴエリア */}
-      <div style={{ textAlign: 'center', paddingTop: 'var(--sp-6)' }}>
-        <p
-          style={{
-            fontFamily: 'var(--font-accent)',
-            fontSize: 'var(--fs-hero-en)',
-            fontStyle: 'italic',
-            color: 'var(--t3)',
-            letterSpacing: '0.08em',
-            margin: '0 0 var(--sp-2)',
-          }}
-        >
-          yorunokotoba
-        </p>
-        <h1
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'var(--fs-section)',
-            fontWeight: 700,
-            color: 'var(--t2)',
-            letterSpacing: 'var(--ls-section)',
-            margin: 0,
-          }}
-        >
-          あなたのことを教えて
-        </h1>
+      <div className={styles.logoArea}>
+        <p className={styles.logoAccent}>yorunokotoba</p>
+        <h1 className={styles.logoTitle}>あなたのことを教えて</h1>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--sp-5)',
-          flex: 1,
-        }}
-      >
+      <form onSubmit={handleSubmit} className={styles.form}>
+
         {/* 名前 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-          <label
-            htmlFor="onb-name"
-            style={{
-              fontSize: 'var(--fs-caption)',
-              color: 'var(--t3)',
-              fontFamily: 'var(--font-heading)',
-              letterSpacing: '0.06em',
-            }}
-          >
+        <div className={styles.fieldGroup}>
+          <label htmlFor="onb-name" className={styles.fieldLabel}>
             名前（ニックネームでも）
           </label>
           <Input
@@ -117,73 +91,57 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
             placeholder="れな"
             autoComplete="nickname"
             maxLength={20}
+            autoFocus
           />
         </div>
 
         {/* 生年月日 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-          <span
-            style={{
-              fontSize: 'var(--fs-caption)',
-              color: 'var(--t3)',
-              fontFamily: 'var(--font-heading)',
-              letterSpacing: '0.06em',
-            }}
-          >
-            生年月日（星座判定に使用）
-          </span>
-          <div style={{ display: 'flex', gap: 'var(--sp-3)', alignItems: 'center' }}>
-            <Input
-              id="onb-month"
-              type="number"
-              inputMode="numeric"
-              value={birthMonth}
-              onChange={(e) => setBirthMonth(e.target.value)}
-              placeholder="月"
-              min={1}
-              max={12}
-              style={{ textAlign: 'center' }}
-              aria-label="生まれた月"
-            />
-            <span style={{ color: 'var(--t3)', flexShrink: 0, fontFamily: 'var(--font-heading)' }}>月</span>
-            <Input
-              id="onb-day"
-              type="number"
-              inputMode="numeric"
-              value={birthDay}
-              onChange={(e) => setBirthDay(e.target.value)}
-              placeholder="日"
-              min={1}
-              max={31}
-              style={{ textAlign: 'center' }}
-              aria-label="生まれた日"
-            />
-            <span style={{ color: 'var(--t3)', flexShrink: 0, fontFamily: 'var(--font-heading)' }}>日</span>
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>生年月日（星座判定に使用）</span>
+          <div className={styles.birthRow}>
+            <div className={styles.birthInputWrap}>
+              <Input
+                id="onb-month"
+                type="number"
+                inputMode="numeric"
+                value={birthMonth}
+                onChange={(e) => setBirthMonth(e.target.value)}
+                placeholder="月"
+                min={1}
+                max={12}
+                required
+                aria-label="生まれた月"
+                className={styles.birthInput}
+              />
+            </div>
+            <span className={styles.birthSeparator} aria-hidden="true">月</span>
+            <div className={styles.birthInputWrap}>
+              <Input
+                id="onb-day"
+                type="number"
+                inputMode="numeric"
+                value={birthDay}
+                onChange={(e) => setBirthDay(e.target.value)}
+                placeholder="日"
+                min={1}
+                max={31}
+                required
+                aria-label="生まれた日"
+                className={styles.birthInput}
+              />
+            </div>
+            <span className={styles.birthSeparator} aria-hidden="true">日</span>
           </div>
         </div>
 
         {/* 性別 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
-          <span
-            style={{
-              fontSize: 'var(--fs-caption)',
-              color: 'var(--t3)',
-              fontFamily: 'var(--font-heading)',
-              letterSpacing: '0.06em',
-            }}
-          >
-            性別（キャラ選定に使用）
-          </span>
-          <SegmentedControl
-            options={GENDER_OPTIONS}
-            value={gender}
-            onChange={setGender}
-            aria-label="性別を選択"
-          />
+        <div className={styles.fieldGroup}>
+          <span className={styles.fieldLabel}>性別（キャラ選定に使用）</span>
+          <GenderSelector value={gender} onChange={setGender} />
         </div>
 
         {/* はじめるボタン */}
-        <div style={{ marginTop: 'auto', paddingBottom: 'var(--sp-6)' }}>
+        <div className={styles.submitArea}>
           <Button
             type="submit"
             variant="primary"
@@ -195,5 +153,59 @@ export function OnboardingView({ onComplete }: OnboardingViewProps) {
         </div>
       </form>
     </main>
+  );
+}
+
+/* ──────────────────────────────────────────────
+   GenderSelector
+   ProfileSetup.tsx と同じ視覚パターン。
+   CSS Module のクラスは OnboardingView.module.css に集約。
+────────────────────────────────────────────── */
+interface GenderSelectorProps {
+  value: 'female' | 'male' | '';
+  onChange: (v: 'female' | 'male') => void;
+}
+
+function GenderSelector({ value, onChange }: GenderSelectorProps) {
+  const options = [
+    { value: 'female' as const, icon: Flower2, label: '女性' },
+    { value: 'male' as const, icon: Moon, label: '男性' },
+  ] as const;
+
+  return (
+    <div className={styles.genderRow} role="group" aria-label="性別を選択">
+      {options.map((opt) => {
+        const selected = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => onChange(opt.value)}
+            className={
+              selected
+                ? `${styles.genderBtn} ${styles.genderBtnSelected}`
+                : styles.genderBtn
+            }
+          >
+            <Icon
+              icon={opt.icon}
+              size={24}
+              strokeWidth={1.5}
+              color={selected ? 'var(--rose)' : 'var(--t2)'}
+            />
+            <span
+              className={
+                selected
+                  ? `${styles.genderBtnLabel} ${styles.genderBtnLabelSelected}`
+                  : styles.genderBtnLabel
+              }
+            >
+              {opt.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }

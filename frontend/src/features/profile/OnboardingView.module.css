@@ -1,0 +1,152 @@
+/**
+ * OnboardingView.module.css
+ * Wave L2 オンボーディング画面スタイル
+ *
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 全廃（handoff §4 構造的解決方針準拠）。
+ * ProfileSetup.module.css / HomeView.module.css のカード/余白パターンを踏襲。
+ * !important 使用禁止。em/en ダッシュ禁止。
+ *
+ * 情報設計（handoff §2「オンボーディング（1画面に統合）」）:
+ *   見せる: 入力3項目（名前・生年月日・性別）、完了で即ホーム
+ *   見せない: FtueOverlay の使い方説明（廃止）
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「3ステップウィザード + 月齢ステッパー演出で焦らす」を断った。
+ *   1画面に全項目を収め、最短タップで完了できる導線を選んだ。
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top, 24px) var(--sp-5) 0;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--sp-8));
+}
+
+/* ────── ロゴエリア ────── */
+.logoArea {
+  text-align: center;
+  padding-top: var(--sp-6);
+  padding-bottom: var(--sp-6);
+}
+
+.logoAccent {
+  font-family: var(--font-accent);
+  font-size: var(--fs-hero-en);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--t3);
+  letter-spacing: 0.08em;
+  margin: 0 0 var(--sp-2);
+}
+
+.logoTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-section);
+  font-weight: var(--fw-bold);
+  color: var(--t2);
+  letter-spacing: var(--ls-section);
+  margin: 0;
+}
+
+/* ────── フォーム本体 ────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  flex: 1;
+  animation: slideUp 450ms ease both;
+}
+
+/* ────── 各入力フィールドのラベルグループ ────── */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.fieldLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t3);
+  letter-spacing: 0.06em;
+  line-height: var(--lh-caption);
+}
+
+/* ────── 生年月日: 横並び入力 ────── */
+.birthRow {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.birthInputWrap {
+  flex: 1;
+}
+
+/* 月/日 数値入力の中央寄せ（Input は className を転送するため適用可）*/
+.birthInput {
+  text-align: center;
+}
+
+.birthSeparator {
+  color: var(--t3);
+  flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  line-height: 1;
+}
+
+/* ────── 性別選択: 横並びボタン ────── */
+.genderRow {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.genderBtn {
+  flex: 1;
+  min-height: 80px;
+  padding: var(--sp-5) var(--sp-4);
+  border-radius: var(--r-input);
+  border: 1.5px solid var(--border-primary);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  cursor: pointer;
+  transition: border-color var(--anim-hover), background var(--anim-hover);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.genderBtn:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+}
+
+.genderBtnSelected {
+  border-color: var(--rose);
+  background: rgba(236, 140, 158, 0.08);
+}
+
+.genderBtnLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  transition: color var(--anim-hover);
+  line-height: 1.4;
+}
+
+.genderBtnLabelSelected {
+  color: var(--rose);
+}
+
+/* ────── はじめるボタン エリア ────── */
+.submitArea {
+  margin-top: auto;
+  padding-bottom: var(--sp-6);
+}
