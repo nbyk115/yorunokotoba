@@ -1,0 +1,368 @@
+/**
+ * FortuneView.module.css
+ * Wave L2 星座占い画面スタイル
+ *
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 全廃（handoff §4 構造的解決方針準拠）。
+ * HomeView.module.css / DreamView.module.css のカード/余白パターンを踏襲。
+ * !important 使用禁止。
+ * em/en ダッシュ禁止（DESIGN.md Don't 準拠）。
+ *
+ * 情報設計（handoff §2 「星座占い」）:
+ *   見せる: ランク + キャラ + 恋愛/仕事/健康 + ホロスコープ（星座の本質）
+ *   見せない: お守り（廃止）
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: var(--sp-8);
+}
+
+/* ────── ローディングフェーズ ────── */
+.loadingRoot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  min-height: 100dvh;
+  background: var(--bg1);
+}
+
+.loadingText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  color: var(--t2);
+  margin: 0;
+  letter-spacing: 0.06em;
+  animation: loadingPulse 1.8s ease infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ────── ページ上部ラベル「今日の運勢」 ────── */
+/*
+ * BackHeader の直下に配置。
+ * DreamView の inputLabel（fs-card-label / t3 / ls-card-label）と同じパターン。
+ */
+.pageLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  text-align: center;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4) 0;
+  line-height: var(--lh-caption);
+}
+
+/* ────── ヒーローエリア（ZodiacIcon + ランク + キャラ + RarityBadge）────── */
+/*
+ * DreamView の resultHero と同じ縦積み中央配置パターン。
+ * textAlign: center は親に設定し、内部要素が継承する。
+ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-4) var(--sp-6) var(--sp-6);
+  text-align: center;
+}
+
+/* 星座名 + ユーザー名 eyebrow: Cormorant italic / t3 / 星座アイコン */
+.heroEyebrow {
+  font-family: var(--font-accent);
+  font-size: var(--fs-caption);
+  font-style: italic;
+  color: var(--t3);
+  letter-spacing: 0.1em;
+  margin: 0 0 var(--sp-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+}
+
+/*
+ * ランク英語: Cormorant italic 大型。
+ * clamp で小画面でも崩れない可変サイズ。
+ * DESIGN.md Hero EN 22-24px から 72px は Cormorant 使用許容範囲（占い結果引用句）。
+ */
+.rankEn {
+  font-family: var(--font-accent);
+  font-size: clamp(52px, 16vw, 72px);
+  font-weight: var(--fw-hero-en);
+  font-style: italic;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--sp-2);
+  /* 色は .rankGold / .rankRose のユーティリティクラスで上書き */
+}
+
+.rankGold {
+  color: var(--gold);
+}
+
+.rankRose {
+  color: var(--rose);
+}
+
+/* ランク日本語: Zen Maru 700 / section スケール 17px */
+.rankJp {
+  font-family: var(--font-heading);
+  font-size: var(--fs-section);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  letter-spacing: var(--ls-section);
+  margin: 0 0 var(--sp-4);
+}
+
+/* キャララッパー: 96px、DreamView と同サイズ */
+.charaWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+/*
+ * 浮遊アニメーション CSS クラス。
+ * CharaAvatar に floatClassName として渡す。
+ * global.css の float-chara キーフレーム参照。
+ * transform のみ（layout プロパティ不可: handoff §4 + DESIGN.md Don't）。
+ */
+.charaFloat {
+  animation: float-chara 4000ms ease-in-out infinite;
+}
+
+/* キャラ名: Zen Maru 700 / body スケール */
+.charaName {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* キャラ副タイトル: micro / t3 */
+.charaSub {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t3);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* キャラキャッチフレーズ: 14px / t2 (character-catchphrases.md 仕様)*/
+.charaCatch {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  color: var(--t2);
+  margin: var(--sp-1) 0 0;
+  line-height: 1.6;
+  text-align: center;
+  padding: 0 var(--sp-6);
+}
+
+/* ────── サマリーカード（主役カード）────── */
+/*
+ * HomeView の dreamCardWrapper と同じ構造。
+ * Card コンポーネントの外側ラッパーで左辺 2px gold line + margin を制御。
+ */
+.summaryCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* サマリーカード内ラベル */
+.cardLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  margin: 0 0 var(--sp-4);
+  line-height: var(--lh-caption);
+}
+
+/* 占い結果本文: 16px / lh 2.0 / 読ませる主役 */
+.fortuneBody {
+  font-family: var(--font-heading);
+  font-size: var(--fs-fortune-body);
+  font-weight: var(--fw-regular);
+  color: var(--t1);
+  line-height: var(--lh-fortune-body);
+  margin: 0;
+}
+
+/* 気をつけたいこと: caption / t2 */
+.riskText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  line-height: 1.6;
+  margin: var(--sp-2) 0 0;
+}
+
+/* ────── StatBar カード ────── */
+/*
+ * 恋愛/仕事/健康の 3 本 StatBar を格納するカードのラッパー。
+ * DreamView の hintCardWrap に相当する配置。
+ */
+.statCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+}
+
+/* ────── 情報カード群（今日の恋愛/仕事/健康）────── */
+/*
+ * DreamView の readingCardWrapper と同じ構造を踏襲。
+ * 左辺 gold line + overflow:hidden で角丸内に収める。
+ */
+.infoCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* ────── ホロスコープ セクション ────── */
+/*
+ * handoff §2「ホロスコープ（星座の本質）」
+ * セクション見出し + 3枚のカード構成
+ */
+.sectionHeader {
+  padding: var(--sp-5) var(--sp-4) var(--sp-3);
+  text-align: center;
+}
+
+/* セクション見出しラベル */
+.sectionLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  margin: 0 0 var(--sp-2);
+}
+
+/* セクション副ラベル: Cormorant italic / t3 */
+.sectionSubLabel {
+  font-family: var(--font-accent);
+  font-size: var(--fs-caption);
+  font-style: italic;
+  color: var(--t3);
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+/* ────── ホロスコープ カード群 ────── */
+/* personality カードは infoCardWrapper と同じ構造でスタイル共有 */
+
+/* ────── DeepReading（Premium）セクション ────── */
+/*
+ * premium.module.css 相当。wrapperは margin のみ持ち、
+ * インライン style は DeepReadingSection 内で使用する。
+ * Wave L2 では handoff §3-1 に従い内部スタイルを CSS Module 化する。
+ */
+.deepWrap {
+  margin: var(--sp-2) var(--sp-4) var(--sp-4);
+}
+
+.deepEyebrow {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: var(--fs-micro);
+  color: var(--gold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-2);
+}
+
+.deepEyebrowMoon {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: var(--fs-micro);
+  color: var(--lavender);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin: 0 0 var(--sp-2);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.deepTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  margin: 0 0 var(--sp-4);
+  letter-spacing: 0.04em;
+}
+
+.deepBody {
+  font-family: var(--font-heading);
+  font-size: var(--fs-fortune-body);
+  font-weight: var(--fw-regular);
+  color: var(--t1);
+  line-height: var(--lh-fortune-body);
+  margin: 0;
+}
+
+.deepTeaser {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  line-height: 1.8;
+  margin: 0 0 var(--sp-1);
+}
+
+.deepDivider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--sp-5) 0;
+  border: none;
+}
+
+/* ────── シェアセクション ────── */
+.shareSection {
+  margin: var(--sp-2) var(--sp-4) 0;
+  padding: var(--sp-6) 0 var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* シェアセクションのラベル */
+.shareLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  text-align: center;
+  margin: 0 0 var(--sp-2);
+}
+
+/* ────── 免責テキスト ────── */
+.disclaimer {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t3);
+  text-align: center;
+  margin: var(--sp-4) var(--sp-4) var(--sp-1);
+  line-height: 1.6;
+  opacity: 0.7;
+}

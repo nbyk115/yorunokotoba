@@ -51,6 +51,12 @@ export interface FortuneResult {
   dailyWork: string;
   dailyHealth: string;
   lifePathMessage: string;
+  /** 恋愛スコア 1-5。hash seed 由来の決定論的値。 */
+  loveScore: number;
+  /** 仕事スコア 1-5。hash seed 由来の決定論的値。 */
+  workScore: number;
+  /** 健康スコア 1-5。hash seed 由来の決定論的値。 */
+  healthScore: number;
 }
 
 // DAILY_LOVE / DAILY_WORK / DAILY_HEALTH は dailyMessages.ts に移管済み。
@@ -130,6 +136,16 @@ export function generateFortune(
   const dailyWork = selectDailyMessage(dailyRngWork, DAILY_WORK_BASE, DAILY_WORK_BY_PATH, lpn);
   const dailyHealth = selectDailyMessage(dailyRngHealth, DAILY_HEALTH_BASE, DAILY_HEALTH_BY_PATH, lpn);
 
+  // カテゴリ別スコア（1-5）。固定オフセットを使わず hash seed 由来の独立した決定論的値。
+  // dailyRng{Love,Work,Health} は selectDailyMessage 内で消費済みのため、
+  // スコア専用のシードを別オフセット（800/900/1000）で独立生成する。
+  const scoreRngLove   = makeSeededRandom(getDailySeed(signIdx * 31 + 800 + bSeed));
+  const scoreRngWork   = makeSeededRandom(getDailySeed(signIdx * 31 + 900 + bSeed));
+  const scoreRngHealth = makeSeededRandom(getDailySeed(signIdx * 31 + 1000 + bSeed));
+  const loveScore   = Math.floor(scoreRngLove()   * 5) + 1;
+  const workScore   = Math.floor(scoreRngWork()   * 5) + 1;
+  const healthScore = Math.floor(scoreRngHealth() * 5) + 1;
+
   return {
     rank,
     summary: rm.summary,
@@ -143,5 +159,8 @@ export function generateFortune(
     dailyWork,
     dailyHealth,
     lifePathMessage: lifePathMsg,
+    loveScore,
+    workScore,
+    healthScore,
   };
 }
