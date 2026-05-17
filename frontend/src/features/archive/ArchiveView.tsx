@@ -1,8 +1,25 @@
 /**
- * ArchiveView  -  Wave L1 骨格: BackHeader 追加
+ * ArchiveView  -  Wave L2 履歴画面
+ *
+ * handoff §2「履歴」情報設計に準拠:
+ *   見せる: 日付順リスト、夢の内容が主役
+ *   見せない: 過剰な装飾
+ *
+ * Wave L2 の役割（handoff §5）:
+ *   ホーム/夢占い/星座占いで確立したカード/余白パターンを履歴画面へ波及。
+ *   インライン style 全廃（handoff §4 構造的解決方針）。
+ *   スタイルは ArchiveView.module.css に集約。
+ *   lib/archive.ts のロジックは変更しない（UI のみ）。
+ *
+ * 廃止: インライン style 全て / <style> タグ注入 / onMouseDown/onMouseUp style 書き換え
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「月カレンダー主軸の手帳アプリ」を断った。
+ *   日付順リストを主軸にし、カレンダーはオプション表示に降格。
+ *   夢の内容（テキスト）が主役になるよう情報階層を設計。
  */
 import { useMemo, useState } from 'react';
-import { X, Share2 } from 'lucide-react';
+import { Share2, X } from 'lucide-react';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { BackHeader } from '@/components/ui/BackHeader';
@@ -13,6 +30,7 @@ import { getSafeDreamType } from '@/lib/contentFilter';
 import { getCharaIdBySign } from '@/data/signs';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
+import styles from './ArchiveView.module.css';
 
 interface ArchiveViewProps {
   profile?: UserProfile | null;
@@ -48,45 +66,13 @@ function ShareModal({
       role="dialog"
       aria-modal="true"
       aria-label="再びシェア"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 200,
-        background: 'rgba(10,8,16,0.88)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '24px 16px',
-        backdropFilter: 'blur(4px)',
-      }}
+      className={styles.shareModalBackdrop}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div
-        style={{
-          background: 'var(--card-secondary)',
-          borderRadius: 20,
-          padding: '24px 20px',
-          width: '100%',
-          maxWidth: 400,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 16,
-        }}
-      >
-        <p
-          style={{
-            fontSize: 'var(--fs-caption)',
-            fontWeight: 700,
-            color: 'var(--t1)',
-            letterSpacing: '0.05em',
-          }}
-        >
-          再びシェア
-        </p>
+      <div className={styles.shareModalContent}>
+        <p className={styles.shareModalTitle}>再びシェア</p>
         <ShareCard
           title={type?.name ?? '夢診断'}
           subtitle={themeLabels[entry.themeKey] ?? entry.themeKey}
@@ -95,17 +81,9 @@ function ShareModal({
           theme="rose"
         />
         <button
+          type="button"
           onClick={onClose}
-          style={{
-            marginTop: 4,
-            fontSize: 'var(--fs-caption)',
-            color: 'var(--t3)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            minHeight: 44,
-            padding: '8px 16px',
-          }}
+          className={styles.shareModalCloseButton}
         >
           閉じる
         </button>
@@ -114,8 +92,10 @@ function ShareModal({
   );
 }
 
-/** 1エントリーカード
- * 情報階層: テーマ + 日付 > 夢の内容(entry.text) > シンボル > シェア
+/**
+ * 1エントリーカード
+ * 情報階層: テーマ + 日付 > 夢の内容（entry.text）> シンボル > シェア
+ * HomeView の dreamCardWrapper 構造: 左辺 2px gold line + overflow:hidden で角丸内に収める。
  */
 function EntryCard({
   entry,
@@ -135,103 +115,40 @@ function EntryCard({
   })();
 
   return (
-    <div
-      style={{
-        padding: '14px 16px 12px',
-        background: 'var(--card-secondary)',
-        borderRadius: 14,
-        border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-card-secondary)',
-        marginBottom: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
-      }}
-    >
-      {/* 1. ヘッダー: テーマ名（主タイトル）+ 日付 */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-        }}
-      >
-        <p
-          style={{
-            fontSize: 'var(--fs-body)',
-            fontWeight: 700,
-            color: 'var(--t1)',
-            margin: 0,
-            letterSpacing: '0.02em',
-          }}
-        >
-          {type?.name ?? '夢診断'}
+    <div className={styles.entryCardWrapper}>
+      <div className={styles.entryCard}>
+        {/* 1. ヘッダー: タイプ名（主タイトル）+ 日付 */}
+        <div className={styles.entryCardHeader}>
+          <p className={styles.entryTypeName}>
+            {type?.name ?? '夢診断'}
+          </p>
+          <p className={styles.entryDateLabel}>
+            {dateLabel}
+          </p>
+        </div>
+
+        {/* 2. 夢の内容（主役: body サイズ / 5行クランプ） */}
+        <p className={styles.entryDreamText}>
+          {entry.text}
         </p>
-        <p
-          style={{
-            fontSize: 'var(--fs-micro)',
-            color: 'var(--t3)',
-            margin: 0,
-            flexShrink: 0,
-            marginLeft: 8,
-          }}
-        >
-          {dateLabel}
+
+        {/* 3. シンボル（二次情報: 小さく / lavender） */}
+        <p className={styles.entrySymbols}>
+          {entry.summary}
         </p>
-      </div>
 
-      {/* 2. 夢の内容（主役: body サイズ・5行クランプ） */}
-      <p
-        style={{
-          fontSize: 'var(--fs-body)',
-          color: 'var(--t2)',
-          lineHeight: 1.75,
-          margin: 0,
-          overflow: 'hidden',
-          display: '-webkit-box',
-          WebkitLineClamp: 5,
-          WebkitBoxOrient: 'vertical',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {entry.text}
-      </p>
-
-      {/* 3. シンボル（二次情報・小さく） */}
-      <p
-        style={{
-          fontSize: 'var(--fs-caption)',
-          color: 'var(--lavender)',
-          margin: 0,
-          letterSpacing: '0.03em',
-        }}
-      >
-        {entry.summary}
-      </p>
-
-      {/* 4. シェア（三次アクション: 下部右寄せ・控えめ） */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button
-          aria-label="再びシェア"
-          onClick={() => onShareRequest(entry)}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            fontSize: 'var(--fs-micro)',
-            color: 'var(--t3)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '6px 4px',
-            minHeight: 36,
-            borderRadius: 8,
-            letterSpacing: '0.03em',
-          }}
-        >
-          <Icon icon={Share2} size={13} strokeWidth={1.75} />
-          シェア
-        </button>
+        {/* 4. シェア（三次アクション: 下部右寄せ / 控えめ） */}
+        <div className={styles.entryShareRow}>
+          <button
+            type="button"
+            aria-label="再びシェア"
+            onClick={() => onShareRequest(entry)}
+            className={styles.entryShareButton}
+          >
+            <Icon icon={Share2} size={13} strokeWidth={1.75} />
+            シェア
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -258,9 +175,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
     const q = searchQuery.trim().toLowerCase();
     return entries
       .filter((e) => {
-        // タグフィルタ
         if (selectedThemes.size > 0 && !selectedThemes.has(e.themeKey)) return false;
-        // テキストフィルタ
         if (q.length > 0) {
           const haystack = `${e.text} ${e.summary}`.toLowerCase();
           if (!haystack.includes(q)) return false;
@@ -311,9 +226,8 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
 
   // カレンダー日付セルの生成
   const calendarCells = useMemo(() => {
-    const firstDay = new Date(viewYear, viewMonth, 1).getDay(); // 0=日
+    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
     const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    // 前月の末尾日付
     const daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
 
     const cells: Array<{
@@ -321,15 +235,12 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
       isCurrentMonth: boolean;
     }> = [];
 
-    // 前月の埋め
     for (let i = firstDay - 1; i >= 0; i--) {
       cells.push({ day: daysInPrevMonth - i, isCurrentMonth: false });
     }
-    // 当月
     for (let d = 1; d <= daysInMonth; d++) {
       cells.push({ day: d, isCurrentMonth: true });
     }
-    // 翌月の埋め（6行になるよう調整）
     const remaining = 42 - cells.length;
     for (let d = 1; d <= remaining; d++) {
       cells.push({ day: d, isCurrentMonth: false });
@@ -376,37 +287,17 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
   if (entries.length === 0) {
     const guardianId = profile?.sign ? getCharaIdBySign(profile.sign, profile.gender) : undefined;
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '70vh',
-          padding: '40px 24px',
-          textAlign: 'center',
-          gap: 24,
-        }}
-      >
+      <div className={styles.emptyRoot}>
         {guardianId && (
-          <div style={{ width: 120, height: 120, opacity: 0.92 }}>
+          <div className={styles.emptyCharaWrap}>
             <CharaAvatar id={guardianId} size={120} animate />
           </div>
         )}
         <div>
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontStyle: 'italic',
-              fontSize: 'var(--fs-hero-en)',
-              color: 'var(--t1)',
-              lineHeight: 1.6,
-              marginBottom: 8,
-            }}
-          >
+          <p className={styles.emptyTitle}>
             まだ夢の記録がないよ
           </p>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', lineHeight: 1.7 }}>
+          <p className={styles.emptyDesc}>
             最初の夢を、記録してみて
           </p>
         </div>
@@ -414,23 +305,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           <button
             type="button"
             onClick={() => onNavigate('dream')}
-            style={{
-              minHeight: 52,
-              padding: '14px 32px',
-              borderRadius: 14,
-              border: 'none',
-              background: 'var(--accent-rose)',
-              color: 'var(--color-on-cta)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 700,
-              letterSpacing: '0.04em',
-              cursor: 'pointer',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.22)',
-              transition: 'transform 200ms ease, box-shadow 200ms ease',
-            }}
-            onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.98)')}
-            onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            className={styles.emptyCtaButton}
           >
             夢をよみとく
           </button>
@@ -449,72 +324,32 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
         />
       )}
 
-      <div style={{ paddingBottom: 32 }}>
-        {/* BackHeader  -  Wave L1 */}
+      <div className={styles.root}>
+        {/* BackHeader */}
         <BackHeader onBack={() => history.back()} title="履歴" />
 
-        {/* archive-hero */}
-        <header
-          style={{
-            padding: '8px 24px 16px',
-            textAlign: 'center',
-          }}
-        >
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t3)', margin: 0 }}>
-            {entries.length}件の夢の記録
-          </p>
+        {/* ページヘッダー: 件数表示 */}
+        <header className={styles.pageHeader}>
+          <p className={styles.entryCount}>{entries.length}件の夢の記録</p>
         </header>
 
-        {/* search-section（検索バー + テーマタグ） */}
-        <div style={{ padding: '0 16px 16px' }}>
-          <div
-            style={{
-              position: 'relative',
-              marginBottom: 12,
-            }}
-          >
+        {/* 検索セクション（検索バー + テーマタグ） */}
+        <div className={styles.searchSection}>
+          <div className={styles.searchInputWrap}>
             <input
               type="search"
               aria-label="夢の記録を検索"
               placeholder="夢のことばで探す（例: 海・追われる）"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                minHeight: 44,
-                padding: '12px 40px 12px 16px',
-                background: 'var(--card-secondary)',
-                border: '1px solid var(--border)',
-                borderRadius: 14,
-                color: 'var(--t1)',
-                fontSize: 'var(--fs-body)',
-                fontFamily: 'var(--font-heading)',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
+              className={styles.searchInput}
             />
             {searchQuery && (
               <button
                 type="button"
                 aria-label="検索をクリア"
                 onClick={() => setSearchQuery('')}
-                style={{
-                  position: 'absolute',
-                  right: 12,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  border: 'none',
-                  background: 'var(--border)',
-                  color: 'var(--t2)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 0,
-                }}
+                className={styles.searchClearButton}
               >
                 <Icon icon={X} size={14} />
               </button>
@@ -522,15 +357,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
           </div>
 
           {/* テーマタグチップ */}
-          <div
-            style={{
-              display: 'flex',
-              gap: 8,
-              overflowX: 'auto',
-              paddingBottom: 4,
-              scrollbarWidth: 'none',
-            }}
-          >
+          <div className={styles.themeChips}>
             {Object.entries(themeLabels).map(([key, label]) => {
               const active = selectedThemes.has(key);
               return (
@@ -539,21 +366,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                   type="button"
                   aria-pressed={active}
                   onClick={() => toggleTheme(key)}
-                  style={{
-                    flexShrink: 0,
-                    minHeight: 36,
-                    padding: '8px 14px',
-                    borderRadius: 18,
-                    border: `1px solid ${active ? 'var(--rose)' : 'var(--border)'}`,
-                    background: active ? 'rgba(240, 128, 154, 0.14)' : 'transparent',
-                    color: active ? 'var(--rose)' : 'var(--t2)',
-                    fontSize: 'var(--fs-caption)',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-heading)',
-                    whiteSpace: 'nowrap',
-                    transition: 'all 200ms ease',
-                  }}
+                  className={`${styles.themeChip}${active ? ` ${styles.themeChipActive}` : ''}`}
                 >
                   {label}
                 </button>
@@ -563,20 +376,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               <button
                 type="button"
                 onClick={clearSearch}
-                style={{
-                  flexShrink: 0,
-                  minHeight: 36,
-                  padding: '8px 14px',
-                  borderRadius: 18,
-                  border: '1px solid var(--border)',
-                  background: 'transparent',
-                  color: 'var(--t3)',
-                  fontSize: 'var(--fs-caption)',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-heading)',
-                  whiteSpace: 'nowrap',
-                }}
+                className={styles.themeChipClear}
               >
                 すべて解除
               </button>
@@ -586,80 +386,33 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
 
         {/* 検索結果リスト or 月カレンダー */}
         {isSearching ? (
-          <div style={{ padding: '0 16px 16px' }}>
-            <p
-              style={{
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--t3)',
-                margin: '0 0 12px',
-                letterSpacing: '0.04em',
-              }}
-            >
+          <div className={styles.searchResults}>
+            <p className={styles.searchResultCount}>
               {searchResults.length}件の夢が見つかったよ
             </p>
             {searchResults.length === 0 ? (
-              <div
-                style={{
-                  textAlign: 'center',
-                  padding: '40px 16px',
-                  color: 'var(--t3)',
-                  fontSize: 'var(--fs-caption)',
-                  lineHeight: 1.8,
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: 'var(--font-accent)',
-                    fontStyle: 'italic',
-                    fontSize: 'var(--fs-h2)',
-                    color: 'var(--t2)',
-                    margin: '0 0 8px',
-                  }}
-                >
+              <div className={styles.noResultRoot}>
+                <p className={styles.noResultTitle}>
                   その夢の記録は見つからなかったよ
                 </p>
-                <p style={{ margin: 0, fontSize: 'var(--fs-caption)' }}>
+                <p className={styles.noResultDesc}>
                   別のことばや、テーマで探してみて
                 </p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className={styles.searchResultList}>
                 {searchResults.map((entry) => (
                   <button
                     key={entry.id}
                     type="button"
                     onClick={() => setShareTarget(entry)}
-                    style={{
-                      textAlign: 'left',
-                      background: 'var(--card-secondary)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 14,
-                      padding: 16,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 6,
-                      fontFamily: 'var(--font-heading)',
-                    }}
+                    className={styles.searchResultCard}
                   >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 'var(--fs-micro)',
-                          color: 'var(--rose)',
-                          fontWeight: 700,
-                          letterSpacing: '0.04em',
-                        }}
-                      >
+                    <div className={styles.searchResultMeta}>
+                      <span className={styles.searchResultTheme}>
                         {themeLabels[entry.themeKey] ?? entry.themeKey}
                       </span>
-                      <span style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)' }}>
+                      <span className={styles.searchResultDate}>
                         {new Date(entry.timestamp).toLocaleDateString('ja-JP', {
                           year: 'numeric',
                           month: 'short',
@@ -667,18 +420,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
                         })}
                       </span>
                     </div>
-                    <p
-                      style={{
-                        fontSize: 'var(--fs-caption)',
-                        color: 'var(--t1)',
-                        lineHeight: 1.7,
-                        margin: 0,
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                      }}
-                    >
+                    <p className={styles.searchResultText}>
                       {entry.text}
                     </p>
                   </button>
@@ -687,224 +429,115 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
             )}
           </div>
         ) : (
-        <>
-        {/* month-header */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 16px 16px',
-          }}
-        >
-          <button
-            aria-label="前の月"
-            onClick={handlePrevMonth}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              border: '1px solid var(--border)',
-              background: 'var(--card-secondary)',
-              color: 'var(--t1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: 'var(--fs-h3)',
-              minHeight: 44,
-              minWidth: 44,
-            }}
-          >
-            ‹
-          </button>
-
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontStyle: 'italic',
-              fontSize: 'var(--fs-h1)',
-              color: 'var(--t1)',
-              margin: 0,
-            }}
-          >
-            {MONTH_NAMES[viewMonth]} {viewYear}
-          </p>
-
-          <button
-            aria-label="次の月"
-            onClick={handleNextMonth}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              border: '1px solid var(--border)',
-              background: 'var(--card-secondary)',
-              color: 'var(--t1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              fontSize: 'var(--fs-h3)',
-              minHeight: 44,
-              minWidth: 44,
-            }}
-          >
-            ›
-          </button>
-        </div>
-
-        {/* weekday-labels */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            padding: '0 16px 8px',
-            textAlign: 'center',
-          }}
-        >
-          {WEEKDAYS.map((w) => (
-            <span
-              key={w}
-              style={{
-                fontSize: 'var(--fs-micro)',
-                fontWeight: 700,
-                color: 'var(--t3)',
-                letterSpacing: '0.06em',
-              }}
-            >
-              {w}
-            </span>
-          ))}
-        </div>
-
-        {/* calendar-grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: 4,
-            padding: '0 16px',
-          }}
-        >
-          {calendarCells.map((cell, i) => {
-            const hasEntry = cell.isCurrentMonth && entryDays.has(cell.day);
-            const isSelected = cell.isCurrentMonth && selectedDay === cell.day;
-            const isTodayCell = cell.isCurrentMonth && isToday(cell.day);
-
-            // セルのスタイルを合成
-            const cellStyle: React.CSSProperties = {
-              aspectRatio: '1',
-              borderRadius: '50%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              minHeight: 40,
-              fontSize: 'var(--fs-caption)',
-              cursor: cell.isCurrentMonth && hasEntry ? 'pointer' : 'default',
-              transition: 'background 200ms ease',
-              border: isTodayCell ? '1.5px solid var(--lavender)' : 'none',
-              background: isSelected ? 'var(--rose)' : 'transparent',
-              color: isSelected
-                ? '#fff'
-                : isTodayCell
-                  ? 'var(--lavender)'
-                  : hasEntry
-                    ? 'var(--t1)'
-                    : 'var(--t2)',
-              opacity: !cell.isCurrentMonth ? 0.4 : 1,
-              pointerEvents: !cell.isCurrentMonth ? 'none' : 'auto',
-              outline: 'none',
-            };
-
-            return (
+          <>
+            {/* 月ナビゲーション */}
+            <div className={styles.monthHeader}>
               <button
-                key={`${cell.isCurrentMonth ? 'cur' : 'other'}-${i}`}
-                onClick={() => {
-                  if (!cell.isCurrentMonth || !hasEntry) return;
-                  setSelectedDay(
-                    selectedDay === cell.day ? null : cell.day,
-                  );
-                }}
-                aria-label={
-                  cell.isCurrentMonth
-                    ? `${cell.day}日${hasEntry ? '（夢の記録あり）' : ''}`
-                    : undefined
-                }
-                aria-pressed={isSelected}
-                style={cellStyle}
-                tabIndex={cell.isCurrentMonth && hasEntry ? 0 : -1}
+                type="button"
+                aria-label="前の月"
+                onClick={handlePrevMonth}
+                className={styles.monthNavButton}
               >
-                {cell.day}
-                {/* エントリードット */}
-                {hasEntry && (
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      bottom: 4,
-                      width: 4,
-                      height: 4,
-                      borderRadius: '50%',
-                      background: isSelected ? '#fff' : 'var(--rose)',
-                    }}
-                  />
-                )}
+                ‹
               </button>
-            );
-          })}
-        </div>
-
-        {/* entry-panel: 選択日のエントリー詳細 */}
-        {selectedDay !== null && (
-          <div
-            style={{
-              margin: '16px 16px 0',
-              animation: 'slideUp 300ms ease both',
-            }}
-          >
-            {selectedEntries.length > 0 ? (
-              selectedEntries.map((e) => (
-                <EntryCard
-                  key={e.id}
-                  entry={e}
-                  onShareRequest={setShareTarget}
-                />
-              ))
-            ) : (
-              <div
-                style={{
-                  padding: '20px 16px',
-                  textAlign: 'center',
-                  fontSize: 'var(--fs-caption)',
-                  color: 'var(--t3)',
-                }}
+              <p className={styles.monthTitle}>
+                {MONTH_NAMES[viewMonth]} {viewYear}
+              </p>
+              <button
+                type="button"
+                aria-label="次の月"
+                onClick={handleNextMonth}
+                className={styles.monthNavButton}
               >
-                この日は夢の記録がないよ
+                ›
+              </button>
+            </div>
+
+            {/* 曜日ヘッダー */}
+            <div className={styles.weekdayRow}>
+              {WEEKDAYS.map((w) => (
+                <span key={w} className={styles.weekdayLabel}>{w}</span>
+              ))}
+            </div>
+
+            {/* カレンダーグリッド */}
+            <div className={styles.calendarGrid}>
+              {calendarCells.map((cell, i) => {
+                const hasEntry = cell.isCurrentMonth && entryDays.has(cell.day);
+                const isSelected = cell.isCurrentMonth && selectedDay === cell.day;
+                const isTodayCell = cell.isCurrentMonth && isToday(cell.day);
+
+                // CSS Module クラスを条件で合成
+                const cellClasses = [
+                  styles.calCell,
+                  isTodayCell && styles.calCellToday,
+                  hasEntry && styles.calCellHasEntry,
+                  isSelected && styles.calCellSelected,
+                  !cell.isCurrentMonth && styles.calCellOtherMonth,
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+
+                return (
+                  <button
+                    key={`${cell.isCurrentMonth ? 'cur' : 'other'}-${i}`}
+                    type="button"
+                    onClick={() => {
+                      if (!cell.isCurrentMonth || !hasEntry) return;
+                      setSelectedDay(
+                        selectedDay === cell.day ? null : cell.day,
+                      );
+                    }}
+                    aria-label={
+                      cell.isCurrentMonth
+                        ? `${cell.day}日${hasEntry ? '（夢の記録あり）' : ''}`
+                        : undefined
+                    }
+                    aria-pressed={isSelected}
+                    className={cellClasses}
+                    tabIndex={cell.isCurrentMonth && hasEntry ? 0 : -1}
+                  >
+                    {cell.day}
+                    {/* エントリードット */}
+                    {hasEntry && (
+                      <span
+                        aria-hidden="true"
+                        className={styles.entryDot}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 選択日 エントリーパネル */}
+            {selectedDay !== null && (
+              <div className={styles.entryPanel}>
+                {selectedEntries.length > 0 ? (
+                  selectedEntries.map((e) => (
+                    <EntryCard
+                      key={e.id}
+                      entry={e}
+                      onShareRequest={setShareTarget}
+                    />
+                  ))
+                ) : (
+                  <div className={styles.noEntryDay}>
+                    この日は夢の記録がないよ
+                  </div>
+                )}
               </div>
             )}
-          </div>
-        )}
 
-        {/* clear-button */}
-        <div style={{ margin: '16px 16px 32px' }}>
-          <Button variant="ghost" fullWidth onClick={handleClear}>
-            夢の記録を全部削除
-          </Button>
-        </div>
-        </>
+            {/* 全削除ボタン */}
+            <div className={styles.clearButtonWrap}>
+              <Button variant="ghost" fullWidth onClick={handleClear}>
+                夢の記録を全部削除
+              </Button>
+            </div>
+          </>
         )}
       </div>
-
-      {/* slideUp アニメーション */}
-      <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </>
   );
 }
