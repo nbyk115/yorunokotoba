@@ -51,15 +51,20 @@ const DISPLAY_W = Math.round(CARD_W * DISPLAY_SCALE);
 const DISPLAY_H = Math.round(CARD_H * DISPLAY_SCALE);
 
 /**
- * iOS Safari html-to-image 既知問題対策: Webフォント未ロードで初回失敗する。
- * リトライ間隔を 300ms 空けて最大 3 回試行する。
- * cacheBust: true でキャッシュ由来の空レンダリングを防ぐ。
+ * iOS Safari html-to-image 既知問題対策（handoff §4 シェアバグ構造的修正）:
+ * 1. document.fonts.ready を await してフォント完全ロードを保証してから生成。
+ *    フォント未ロードで toPng が空画像を返すバグの根本原因を排除する。
+ * 2. リトライ間隔を 300ms 空けて最大 3 回試行（描画安定のため）。
+ * 3. cacheBust: true でキャッシュ由来の空レンダリングを防ぐ。
  */
 async function toPngWithRetry(
   node: HTMLElement,
   options: Parameters<typeof toPng>[1],
   maxRetry = 3,
 ): Promise<string> {
+  // handoff §4: document.fonts.ready を待ってから画像生成
+  await document.fonts.ready;
+
   let lastErr: unknown;
   for (let i = 0; i < maxRetry; i++) {
     try {
