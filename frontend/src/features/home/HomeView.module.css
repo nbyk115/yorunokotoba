@@ -132,7 +132,7 @@
 .openLink:focus-visible {
   outline: 2px solid var(--rose);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 /* ────── テキストリンク2点 ────── */

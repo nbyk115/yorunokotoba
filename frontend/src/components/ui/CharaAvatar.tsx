@@ -60,8 +60,7 @@ export function CharaAvatar({ id, size = 80, animate = false, floatClassName, ra
     );
   }
   return (
-    <img
-      alt=""
+    <img alt=""
       src={src}
       width={size}
       height={size}
