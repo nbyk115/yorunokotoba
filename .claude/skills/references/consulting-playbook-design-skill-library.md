@@ -51,7 +51,7 @@ npx typeui.sh pull <style-name>
 
 YOU MUST: 案件着手前に creative-director が:
 1. ICP.md からスタイル候補 2-3 件抽出
-2. ux-designer が Lazyweb MCP + awesome-design-skills 候補で参照取得
+2. ux-designer が refero.design + awesome-design-skills 候補で参照取得
 3. ユーザー or クライアント承認後に `npx typeui.sh pull` 実行
 4. brand-guardian が DESIGN.md §12.5.1 5 項目機械検証
 
@@ -105,7 +105,7 @@ awesome-design-skills 追加価値: デザインドメイン特化の SKILL.md =
 - 出典: github.com/bergside/awesome-design-skills (INFERENCE)
 - 関連 skill: DESIGN.md §12 / brand-guidelines.md / HTML-First (PR #140) / video-creative-pipeline (PR #165) / output-quality-rubrics (PR #160)
 - 関連 agent: creative-director / ux-designer / brand-guardian
-- 関連: Lazyweb MCP (PR #141) / Hard Rule 13 形骸化防止
+- 関連: Hard Rule 13 形骸化防止
 
 ## 10. 反証チェック (Step 1-4 圧縮)
 
