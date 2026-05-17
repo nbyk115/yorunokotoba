@@ -1,0 +1,198 @@
+/**
+ * SettingsView.module.css
+ * Wave L2 設定画面スタイル
+ *
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 全廃（handoff §4 構造的解決方針準拠）。
+ * HomeView.module.css / DreamView.module.css のカード/余白パターンを踏襲。
+ * !important 使用禁止。em/en ダッシュ禁止。
+ *
+ * 情報設計（handoff §2 「設定」）:
+ *   見せる: アカウント / Premium 状態 / 法務（規約/プライバシー等）
+ *   見せない: ナイトモードトグル（handoff §4 廃止）
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「スイッチ/トグルが並ぶ一般的な設定画面」を断った。
+ *   法務・解約・アカウントの 3 ブロックのみをカードで提示し、最小限の機能に絞った。
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: var(--sp-8);
+}
+
+/* ────── カード群のパディングラッパー ────── */
+.cardContainer {
+  padding: 0 var(--sp-5);
+}
+
+/* ────── セクションカード: 外側ラッパー（margin + 左辺 gold line）────── */
+/*
+ * HomeView の dreamCardWrapper と同じ構造。
+ * Card コンポーネントの外側ラッパーで左辺 2px gold line + margin を制御。
+ * overflow: hidden で border-left の角丸をCard radius 内に収める。
+ */
+.cardWrapper {
+  margin-bottom: var(--sp-4);
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* ────── カード内: セクションタイトル ────── */
+.cardTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  margin: 0 0 var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  line-height: 1.4;
+}
+
+/* Premium タイトルは gold カラー */
+.cardTitleGold {
+  color: var(--gold);
+}
+
+/* ────── Premium: ローディング ────── */
+.loadingText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  margin: 0;
+  line-height: var(--lh-caption);
+}
+
+/* ────── Premium: ステータステキスト ────── */
+.statusText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t1);
+  line-height: 1.8;
+  margin: 0 0 var(--sp-1);
+}
+
+/* エラー / 注意メッセージ: rose カラー */
+.statusTextRose {
+  color: var(--rose);
+}
+
+/* 次回更新日など副情報 */
+.statusSubText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t3);
+  margin: 0 0 var(--sp-4);
+  line-height: var(--lh-micro);
+}
+
+/* past_due 解説テキスト */
+.pastDueBody {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t2);
+  line-height: 1.7;
+  margin: 0 0 var(--sp-3);
+}
+
+/* 未契約テキスト */
+.freeText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ────── アウトラインボタン（サインアウト / 解約）────── */
+/*
+ * ダークパターン回避: 解約・継続を同等の視覚的重みで表示（CancelConfirmModal 準拠）。
+ * 塗りボタンを使わず、アウトライン境界のみ。
+ */
+.outlineButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-input);
+  border: 1px solid var(--border-primary);
+  background: transparent;
+  color: var(--t1);
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: opacity var(--anim-hover);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.outlineButton:active {
+  opacity: 0.7;
+}
+
+.outlineButton:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+}
+
+.outlineButton:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* ────── 法務リンク行 ────── */
+/*
+ * 規約・プライバシーポリシー等のリンクボタン行。
+ * 上辺 border で区切り、フルwidthタップ領域を確保。
+ */
+.legalLinkRow {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-1);
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--border-secondary);
+  color: var(--t1);
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: opacity var(--anim-hover);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.legalLinkRow:active {
+  opacity: 0.7;
+}
+
+.legalLinkRow:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+}
+
+.legalLinkChevron {
+  color: var(--t3);
+  font-size: var(--fs-body);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ────── アカウント: メールアドレス表示 ────── */
+.accountEmail {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  margin: 0 0 var(--sp-3);
+  line-height: var(--lh-caption);
+  word-break: break-all;
+}

@@ -1,0 +1,124 @@
+/**
+ * PremiumView.module.css
+ * Wave L2 Premium 画面スタイル
+ *
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 全廃（handoff §4 構造的解決方針準拠）。
+ * HomeView.module.css / SettingsView.module.css のカード/余白パターンを踏襲。
+ * !important 使用禁止。em/en ダッシュ禁止。
+ *
+ * 情報設計（handoff §2「Premium」+ §3-1）:
+ *   見せる: 月¥980の価値（夢記録/ホロスコープ深層心理/キャラ今月メッセージ）、CTA1つ
+ *   見せない: 機能羅列
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「機能リストを箇条書きで羅列するSaaSライクなPricing UI」を断った。
+ *   3つの体験価値をそれぞれ1枚のカードで語り、CTAは最後の1つに絞った。
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--sp-8));
+}
+
+/* ────── ヒーローエリア ────── */
+.hero {
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  text-align: center;
+}
+
+.heroAccent {
+  font-family: var(--font-accent);
+  font-size: var(--fs-hero-en);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--sp-2);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  letter-spacing: 0.04em;
+  line-height: var(--lh-h1);
+  margin: 0 0 var(--sp-2);
+}
+
+.heroSubtitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  color: var(--t2);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ────── 価値カード群: 外側ラッパー ────── */
+.cardsContainer {
+  padding: 0 var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ────── 価値カード: 外側ラッパー（margin + 左辺 gold line）────── */
+/*
+ * HomeView の dreamCardWrapper / SettingsView の cardWrapper と同じ構造。
+ * Card コンポーネントの外側ラッパーで左辺 2px gold line を制御。
+ * overflow: hidden で border-left の角丸を Card radius 内に収める。
+ */
+.valueCardWrapper {
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  animation: slideUp 450ms ease both;
+}
+
+.valueCardWrapper:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.valueCardWrapper:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+/* ────── カード内: 価値ラベル ────── */
+.valueLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--gold);
+  margin: 0 0 var(--sp-2);
+  line-height: 1.4;
+}
+
+/* ────── カード内: 価値説明文 ────── */
+.valueBody {
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  color: var(--t2);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ────── CTA エリア ────── */
+.ctaArea {
+  padding: var(--sp-6) var(--sp-4) 0;
+}
+
+/* ────── 価格注記 ────── */
+.priceNote {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t3);
+  padding: var(--sp-4) var(--sp-6) 0;
+  line-height: 1.6;
+  margin: 0;
+}

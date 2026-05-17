@@ -1,0 +1,354 @@
+/**
+ * CompatibilityView.module.css
+ * Wave L2 相性占い画面スタイル
+ *
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 全廃（handoff §4 構造的解決方針準拠）。
+ * HomeView.module.css / FortuneView.module.css のカード/余白パターンを踏襲。
+ * !important 使用禁止。
+ * em/en ダッシュ禁止（DESIGN.md Don't 準拠）。
+ *
+ * 情報設計（handoff §2 「相性占い（無料）」）:
+ *   見せる: 星座の相性スコア + エレメント構成 + ペアのコメント
+ *   見せない: 課金壁（全て無料）
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: var(--sp-8);
+}
+
+/* ────── ページ上部ラベル ────── */
+/*
+ * BackHeader の直下。FortuneView の pageLabel と同じパターン。
+ */
+.pageLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  text-align: center;
+  margin: 0;
+  padding: var(--sp-2) var(--sp-4) 0;
+  line-height: var(--lh-caption);
+}
+
+/* ────── 星座 Picker エリア ────── */
+/*
+ * 自分 / 相手 の星座 select を横並び。
+ * 中央の「x」区切り文字を flex で整列。
+ */
+.pickerRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-4) 0;
+}
+
+.pickerGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+/* Picker ラベル: FortuneView.heroEyebrow と同じ caption / t3 */
+.pickerLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t3);
+  margin: 0;
+  letter-spacing: 0.06em;
+}
+
+/* Select ボックス */
+.select {
+  width: 100%;
+  padding: var(--sp-3);
+  border-radius: var(--r-input);
+  border: 1.5px solid var(--border);
+  background: var(--card-secondary);
+  color: var(--t1);
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-medium);
+  min-height: 44px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  /* 下矢印をテキストで表現（svg background は hex 直書きになるため未使用） */
+  background-image: none;
+  outline: none;
+  transition: border-color var(--anim-hover);
+}
+
+.select:focus {
+  border-color: var(--rose);
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+}
+
+/* Picker 中央の「×」区切り */
+.pickerSep {
+  font-family: var(--font-accent);
+  font-size: var(--fs-h2);
+  font-style: italic;
+  color: var(--t3);
+  flex-shrink: 0;
+  margin-bottom: var(--sp-2);
+  user-select: none;
+}
+
+/* ────── 相性を見るボタン ────── */
+.ctaWrapper {
+  padding: var(--sp-4) var(--sp-4) 0;
+}
+
+/* ────── 結果エリア（アニメーション付き）────── */
+/*
+ * 結果エリア全体: transform + opacity のフェードイン。
+ * layout プロパティ（width/height 等）のアニメ禁止（DESIGN.md Don't）。
+ */
+.resultSection {
+  animation: resultFadeIn var(--anim-slide) ease both;
+}
+
+@keyframes resultFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ────── ペアタイトル（ヒーローエリア）────── */
+/*
+ * 相性スコアカードの上に配置。
+ * 「おひつじ座 x うお座」形式の大型表示。
+ */
+.pairHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-5) var(--sp-6) var(--sp-4);
+  text-align: center;
+}
+
+/* ランクラベル eyebrow: Cormorant italic / gold or rose */
+.rankEyebrow {
+  font-family: var(--font-accent);
+  font-size: var(--fs-caption);
+  font-style: italic;
+  letter-spacing: 0.12em;
+  margin: 0 0 var(--sp-2);
+}
+
+.rankEyebrowBest {
+  color: var(--gold);
+}
+
+.rankEyebrowGood {
+  color: var(--lavender);
+}
+
+.rankEyebrowGrowth {
+  color: var(--rose);
+}
+
+/* ペアタイトル本体: Zen Maru / hero-jp サイズ */
+.pairTitle {
+  font-family: var(--font-heading);
+  font-size: var(--fs-hero-jp);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  line-height: 1.4;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* ────── 主役カード ラッパー ────── */
+/*
+ * HomeView.dreamCardWrapper / FortuneView.summaryCardWrapper と同じ構造。
+ * 左辺 2px gold line + overflow:hidden で角丸内に収める。
+ */
+.primaryCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* ────── カード内共通: 小ラベル ────── */
+/*
+ * FortuneView.cardLabel と完全同値。全 Card の見出しラベルに使用。
+ */
+.cardLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  margin: 0 0 var(--sp-4);
+  line-height: var(--lh-caption);
+}
+
+/* ────── StatBar カード ────── */
+.statCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+}
+
+/* StatBar を縦に並べるコンテナ */
+.statList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+/* ────── エレメント構成カード ────── */
+.elemCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+}
+
+/* エレメント行: アイコン + 星座名 + エレメント名 を横並び */
+.elemRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+/* エレメント1エントリ */
+.elemEntry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  min-width: 80px;
+}
+
+/* エレメント記号: Cormorant italic / large */
+.elemSymbol {
+  font-family: var(--font-accent);
+  font-size: var(--fs-h1);
+  font-style: italic;
+  line-height: 1;
+  margin: 0;
+}
+
+.elemFire {
+  color: var(--rose);
+}
+
+.elemEarth {
+  color: var(--gold);
+}
+
+.elemAir {
+  color: var(--lavender);
+}
+
+.elemWater {
+  color: var(--lavender);
+}
+
+/* 星座名 */
+.elemSignName {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-medium);
+  color: var(--t1);
+  margin: 0;
+  text-align: center;
+}
+
+/* エレメント名バッジ */
+.elemBadge {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-bold);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-tag);
+  letter-spacing: 0.06em;
+}
+
+.elemBadgeFire {
+  background: rgba(236, 140, 158, 0.18);
+  color: var(--rose);
+}
+
+.elemBadgeEarth {
+  background: rgba(201, 169, 97, 0.18);
+  color: var(--gold);
+}
+
+.elemBadgeAir {
+  background: rgba(138, 135, 184, 0.18);
+  color: var(--lavender);
+}
+
+.elemBadgeWater {
+  background: rgba(138, 135, 184, 0.18);
+  color: var(--lavender);
+}
+
+/* エレメント間の区切り「×」*/
+.elemSep {
+  font-family: var(--font-accent);
+  font-size: var(--fs-body);
+  font-style: italic;
+  color: var(--t3);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* エレメント相性テキスト */
+.elemCompatText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-caption);
+  color: var(--t2);
+  line-height: 1.8;
+  margin: var(--sp-4) 0 0;
+  text-align: center;
+}
+
+/* ────── ペアコメントカード ────── */
+/*
+ * FortuneView の infoCardWrapper と同じ構造。
+ * 左辺 2px gold line + overflow:hidden。
+ */
+.commentCardWrapper {
+  margin: 0 var(--sp-4) var(--sp-3);
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* ペアコメント本文 */
+.commentBody {
+  font-family: var(--font-heading);
+  font-size: var(--fs-fortune-body);
+  font-weight: var(--fw-regular);
+  color: var(--t1);
+  line-height: var(--lh-fortune-body);
+  margin: 0;
+}
+
+/* ────── 免責テキスト ────── */
+.disclaimer {
+  font-family: var(--font-heading);
+  font-size: var(--fs-micro);
+  color: var(--t3);
+  text-align: center;
+  margin: var(--sp-4) var(--sp-4) var(--sp-1);
+  line-height: 1.6;
+  opacity: 0.7;
+}

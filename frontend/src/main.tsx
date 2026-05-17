@@ -2,10 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './styles/global.css';
-import { applyInitialTheme } from './lib/theme';
 import { trackException } from './lib/analytics';
-
-applyInitialTheme();
 
 // Global error reporting (non-blocking)
 window.addEventListener('error', (e) => {

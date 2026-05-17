@@ -1,5 +1,5 @@
 /**
- * Retention streak tracker — counts consecutive daily visits.
+ * Retention streak tracker  -  counts consecutive daily visits.
  * Compatible with legacy `ynk_streak` localStorage format.
  */
 

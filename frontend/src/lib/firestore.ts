@@ -1,5 +1,5 @@
 /**
- * Firestore helpers — profile and archive persistence.
+ * Firestore helpers  -  profile and archive persistence.
  * Falls back to localStorage for anonymous users.
  */
 

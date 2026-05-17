@@ -1,5 +1,5 @@
 /**
- * DREAM_TYPES — character archetypes (18 types).
+ * DREAM_TYPES  -  character archetypes (18 types).
  * Extracted verbatim from legacy index.html to preserve existing fortune IP.
  * DO NOT edit Japanese text manually; this is the SSOT for character data.
  */
