@@ -1,11 +1,25 @@
 /**
- * DreamView  -  Wave L1 骨格実装
+ * DreamView  -  Wave L2 夢占い画面
  *
- * 入力: BackHeader → ラベル → Textarea → 占うButton
- * 結果: BackHeader → CharaAvatar+RarityBadge → テーマ名 → Card primary（よみとき本文）→ 今日のヒント小カード → シェアButton
+ * handoff §2「夢占い」情報設計に準拠:
+ *   入力: textarea + 送信ボタン。過剰な演出ヘッダーを見せない（最小限構成）
+ *   結果: テーマ + よみとき本文 + 今日のヒント + シェア。luckyNumber は表示しない。
  *
- * 廃止: RitualButton（→ Button primary）/ BlurReveal（→ 不使用）
- * 中身コピー・占いロジックは Wave L3。骨格のみ。
+ * Wave L2 の役割（handoff §5）:
+ *   ホーム画面で確立したカード/余白パターン（HomeView.module.css の構造）を踏襲。
+ *   インライン style 全廃（handoff §4 構造的解決方針）。
+ *   スタイルは DreamView.module.css に集約。
+ *
+ * シェアバグ修正（handoff §4 必須）:
+ *   document.fonts.ready を await してからシェア画像生成。
+ *   実装は ShareCard 内の toPngWithRetry で対応済み。
+ *   生成失敗時は ShareCard の feedbackMessage で明示フィードバック。
+ *
+ * 廃止: luckyNumber 表示 / インライン style / <style> タグ注入
+ *
+ * 識別性ゲート（断った平均値）:
+ *   「占い中...」の一般的ローディング文言を断った。
+ *   「よみときを始めるよ」でキャラの視点から語りかけるトーンに合わせた。
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { BackHeader } from '@/components/ui/BackHeader';
@@ -14,12 +28,14 @@ import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/Textarea';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
+import { ShareCard } from '@/components/ui/ShareCard';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { getCharaIdBySign } from '@/data/signs';
 import { saveArchiveEntry } from '@/lib/archive';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
+import styles from './DreamView.module.css';
 
 interface DreamViewProps {
   profile: UserProfile;
@@ -40,7 +56,7 @@ export function DreamView({ profile }: DreamViewProps) {
     track('dream_start', { length: text.length });
     setLoading(true);
 
-    // history.pushState で iOS スワイプバック対応
+    // history.pushState で iOS スワイプバック対応（handoff §2 + §4）
     history.pushState({ view: 'dream-result' }, '');
 
     await new Promise((r) => setTimeout(r, 2000));
@@ -77,171 +93,126 @@ export function DreamView({ profile }: DreamViewProps) {
     setShowInput(true);
   }
 
-  // 入力フェーズ
-  if (showInput && !result) {
+  // ────── ローディングフェーズ ──────
+  // 送信後・結果表示前の 2 秒間にオーバーレイを表示する。
+  // 入力フォームは loading=true の間もマウントされたままにし、
+  // 上から loadingOverlay で覆う構成（アンマウント→再マウントのチラつき防止）。
+  if (loading) {
     return (
-      <div style={{ paddingBottom: 32 }}>
-        <BackHeader onBack={() => history.back()} title="夢占い" />
-
-        {/* ラベル + 説明 */}
-        <div style={{ padding: '8px 20px 16px', textAlign: 'center' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-caption)',
-              fontWeight: 700,
-              color: 'var(--t3)',
-              letterSpacing: 'var(--ls-card-label)',
-              margin: '0 0 8px',
-            }}
-          >
-            夢占い
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-h1)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              letterSpacing: '0.04em',
-              lineHeight: 1.3,
-              margin: '0 0 8px',
-            }}
-          >
-            今夜の夢を書いて
-          </h2>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, margin: 0 }}>
-            見た夢をそのまま書いて。深層心理のヒントが出てくるよ。
-          </p>
-        </div>
-
-        {/* Textarea + 占うButton */}
-        <Card variant="primary" style={{ margin: '0 16px 16px' }}>
-          <Textarea
-            value={text}
-            onChange={(e) => setText(e.target.value.slice(0, 500))}
-            placeholder="空を飛んでいた…とか、知らない街にいた…とか"
-            disabled={loading}
-            style={{ width: '100%', boxSizing: 'border-box' }}
-            aria-label="見た夢を入力"
-          />
-          <div style={{ textAlign: 'right', fontSize: 'var(--fs-micro)', color: 'var(--t3)', marginTop: 8 }}>
-            {text.length} / 500
-          </div>
-          <div style={{ marginTop: 16 }}>
-            <Button
-              variant="primary"
-              onClick={handleConfirm}
-              disabled={!text.trim() || loading}
-              fullWidth
-            >
-              {loading ? 'よみとき中…' : '占う'}
-            </Button>
-          </div>
-        </Card>
-
-        <p style={{ textAlign: 'center', fontSize: 'var(--fs-caption)', color: 'var(--t3)', padding: '0 24px' }}>
-          書いたら、あなたへのメッセージが出てくるよ
-        </p>
-
-        <style>{`
-          textarea::placeholder { color: rgba(246,236,238,0.30); }
-        `}</style>
+      <div className={styles.loadingOverlay} aria-live="polite" aria-label="よみとき中">
+        <div className={styles.loadingSpinner} aria-hidden="true" />
+        <p className={styles.loadingText}>よみときを始めるよ</p>
       </div>
     );
   }
 
-  // 結果フェーズ
-  if (result) {
+  // ────── 入力フェーズ ──────
+  if (showInput && !result) {
     return (
-      <div ref={resultRef} style={{ paddingBottom: 40 }}>
-        <BackHeader onBack={handleReset} title="夢占い結果" />
+      <div className={styles.inputRoot}>
+        <BackHeader onBack={() => history.back()} title="夢占い" />
 
-        {/* CharaAvatar + RarityBadge */}
-        <div style={{ textAlign: 'center', padding: '24px 20px 16px' }}>
-          <CharaAvatar id={charaId} size={96} animate rarity={result.type.rarity} />
-          <div style={{ marginTop: 12 }}>
-            <RarityBadge rarity={result.type.rarity} />
-          </div>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-h1)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              letterSpacing: '0.04em',
-              margin: '12px 0 0',
-            }}
-          >
-            {result.theme.label}
-          </h2>
+        {/* 説明エリア: ラベル + 見出し + サポートテキスト */}
+        <div className={styles.inputIntro}>
+          <p className={styles.inputLabel}>夢占い</p>
+          <h2 className={styles.inputHeading}>今夜の夢を書いて</h2>
+          <p className={styles.inputDesc}>見た夢をそのまま書いて。深層心理のヒントが出てくるよ。</p>
         </div>
 
-        {/* よみとき本文カード（主役） */}
-        <Card
-          variant="primary"
-          style={{
-            margin: '0 16px 12px',
-            borderLeft: 'var(--card-accent-line)',
-          }}
-        >
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--t3)',
-              letterSpacing: 'var(--ls-card-label)',
-              margin: '0 0 16px',
-            }}
-          >
-            よみとき
-          </p>
-          <p
-            style={{
-              fontSize: 'var(--fs-fortune-body)',
-              lineHeight: 'var(--lh-fortune-body)',
-              color: 'var(--t1)',
-              margin: 0,
-            }}
-          >
-            {result.mainReading.intro}
-          </p>
-        </Card>
+        {/* 入力カード: HomeView の dreamCardWrapper と同じ左辺 gold line 構造 */}
+        <div className={styles.inputCardWrapper}>
+          <Card variant="primary" as="div" aria-label="夢の入力フォーム">
+            <Textarea
+              className="dreamTextarea"
+              value={text}
+              onChange={(e) => setText(e.target.value.slice(0, 500))}
+              placeholder="空を飛んでいた…とか、知らない街にいた…とか"
+              aria-label="見た夢を入力"
+            />
+            <p className={styles.charCount}>{text.length} / 500</p>
+            <div className={styles.inputButtonWrap}>
+              <Button
+                variant="primary"
+                onClick={handleConfirm}
+                disabled={!text.trim()}
+                fullWidth
+              >
+                占う
+              </Button>
+            </div>
+          </Card>
+        </div>
 
-        {/* 今日のヒント小カード */}
-        <Card variant="secondary" style={{ margin: '0 16px 24px' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-caption)',
-              fontWeight: 700,
-              color: 'var(--rose)',
-              margin: '0 0 8px',
-            }}
-          >
-            今日のヒント
-          </p>
-          <p style={{ fontSize: 'var(--fs-body)', lineHeight: 1.9, color: 'var(--t1)', margin: 0 }}>
-            {result.todayMessage}
-          </p>
-        </Card>
+        <p className={styles.inputHint}>書いたら、あなたへのメッセージが出てくるよ</p>
+      </div>
+    );
+  }
 
-        {/* シェアButton + リセット */}
-        <div style={{ margin: '0 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <Button
+  // ────── 結果フェーズ ──────
+  if (result) {
+    // シェアカード用のラベルを生成（星座名 + 今日の日付）
+    const signData = SIGNS[signIdx];
+    const signName = signData ? signData.k : '';
+    const today = new Date();
+    const dateLabel = `${today.getMonth() + 1}.${today.getDate()}`;
+    const signLabel = signName ? `${signName} · よるのことば` : 'よるのことば';
+
+    return (
+      <div ref={resultRef} className={styles.resultRoot}>
+        <BackHeader onBack={handleReset} title="夢占い結果" />
+
+        {/* キャラ + RarityBadge + テーマ名（情報設計 §2「テーマ」）*/}
+        <div className={styles.resultHero}>
+          <CharaAvatar id={charaId} size={96} animate rarity={result.type.rarity} />
+          <div className={styles.rarityWrap}>
+            <RarityBadge rarity={result.type.rarity} />
+          </div>
+          <h2 className={styles.themeHeading}>{result.theme.label}</h2>
+        </div>
+
+        {/* よみとき本文カード（主役）: HomeView の dreamCardWrapper 構造を踏襲 */}
+        {/* handoff §2「よみとき本文」*/}
+        <div className={styles.readingCardWrapper}>
+          <Card
             variant="primary"
-            onClick={() => track('share_dream', {})}
-            fullWidth
+            as="article"
+            aria-label="よみとき本文"
           >
-            シェアする
-          </Button>
+            <p className={styles.readingLabel}>よみとき</p>
+            <p className={styles.readingBody}>{result.mainReading.intro}</p>
+          </Card>
+        </div>
+
+        {/* 今日のヒント（handoff §2「今日のヒント」）*/}
+        <div className={styles.hintCardWrap}>
+          <Card variant="secondary" as="section" aria-label="今日のヒント">
+            <p className={styles.hintLabel}>今日のヒント</p>
+            <p className={styles.hintBody}>{result.todayMessage}</p>
+          </Card>
+        </div>
+
+        {/* シェアセクション（handoff §2「シェア」）
+            ShareCard: document.fonts.ready 待機は ShareCard 内 toPngWithRetry で対応済み。
+            失敗時フィードバックも ShareCard が担う（status='error' で明示メッセージ表示）。
+            luckyNumber は表示しない（handoff §2 明示）。 */}
+        <div className={styles.shareSection}>
+          <ShareCard
+            title={result.theme.label}
+            subtitle={result.type.name}
+            body={result.todayMessage}
+            charaId={charaId}
+            theme="rose"
+            dateLabel={dateLabel}
+            signLabel={signLabel}
+          />
+
+          {/* 別の夢をよみとくボタン */}
           <Button variant="ghost" onClick={handleReset} fullWidth>
             別の夢をよみとく
           </Button>
         </div>
 
-        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', textAlign: 'center', margin: '16px 16px 4px', lineHeight: 1.6 }}>
+        <p className={styles.disclaimer}>
           ※ 夢の解釈は登録された象徴辞典をもとに自動生成した娯楽コンテンツです。
         </p>
       </div>
