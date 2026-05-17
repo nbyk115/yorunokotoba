@@ -1,5 +1,5 @@
 /**
- * FortuneView — Wave L1 骨格実装
+ * FortuneView  -  Wave L1 骨格実装
  * BackHeader 追加 / history.pushState で iOS スワイプバック対応
  */
 import { useEffect, useRef, useState } from 'react';

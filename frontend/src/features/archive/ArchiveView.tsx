@@ -1,5 +1,5 @@
 /**
- * ArchiveView — Wave L1 骨格: BackHeader 追加
+ * ArchiveView  -  Wave L1 骨格: BackHeader 追加
  */
 import { useMemo, useState } from 'react';
 import { X, Share2 } from 'lucide-react';
@@ -420,7 +420,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
               borderRadius: 14,
               border: 'none',
               background: 'var(--accent-rose)',
-              color: '#fff',
+              color: 'var(--color-on-cta)',
               fontSize: 'var(--fs-body)',
               fontWeight: 700,
               letterSpacing: '0.04em',
@@ -450,7 +450,7 @@ export function ArchiveView({ profile, onNavigate }: ArchiveViewProps = {}) {
       )}
 
       <div style={{ paddingBottom: 32 }}>
-        {/* BackHeader — Wave L1 */}
+        {/* BackHeader  -  Wave L1 */}
         <BackHeader onBack={() => history.back()} title="履歴" />
 
         {/* archive-hero */}

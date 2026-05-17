@@ -1,5 +1,5 @@
 /**
- * PremiumView — Wave L1 骨格実装
+ * PremiumView  -  Wave L1 骨格実装
  * BackHeader → ヒーローコピー → 価値3点 → 登録Button
  */
 import { BackHeader } from '@/components/ui/BackHeader';

@@ -1,5 +1,5 @@
 /**
- * BottomTabBar — Wave L1 リビルド
+ * BottomTabBar  -  Wave L1 リビルド
  * タブ: ホーム / 夢占い / 星座占い / 履歴
  * DESIGN.md: height 56px / active --rose / inactive --t3
  */

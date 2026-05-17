@@ -1,5 +1,5 @@
 /**
- * SegmentedControl — セグメント選択 (性別・選択肢など)
+ * SegmentedControl  -  セグメント選択 (性別・選択肢など)
  * DESIGN.md: --r-input 12px container / --r-button 14px active segment
  */
 import type { ReactNode } from 'react';

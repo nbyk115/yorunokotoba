@@ -1,5 +1,5 @@
 /**
- * App.tsx — Wave L1 リビルド
+ * App.tsx  -  Wave L1 リビルド
  * - ViewKey に premium を追加
  * - FtueOverlay 廃止
  * - 結果系画面（dream-result / fortune-result）を history.pushState に乗せ iOS スワイプバック対応
@@ -185,7 +185,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
               borderRadius: 'var(--r-input)',
               border: 'none',
               background: 'var(--rose)',
-              color: '#fff',
+              color: 'var(--color-on-cta)',
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               cursor: 'pointer',

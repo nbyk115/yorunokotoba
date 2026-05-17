@@ -1,5 +1,5 @@
 /**
- * CompatibilityView — Wave L1 骨格実装
+ * CompatibilityView  -  Wave L1 骨格実装
  * 相性占い（無料機能）: Tinder 占星術 参考
  *
  * レイアウト:

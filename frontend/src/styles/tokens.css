@@ -122,6 +122,9 @@
   --ritual-duration: 3000ms;
   --ritual-easing: cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* 白テキスト: CTA ボタンラベル専用 (hex 直書き禁止対応) */
+  --color-on-cta: #ffffff;
+
   /* Rarity tokens — Wave L1 確定 */
   --rarity-n: var(--t3);
   --rarity-r: var(--rose);

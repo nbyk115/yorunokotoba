@@ -1,5 +1,5 @@
 /**
- * AppHeader — Wave L1 リビルド
+ * AppHeader  -  Wave L1 リビルド
  *
  * ナイトモードトグルを廃止。常時ダーク + time-of-day のみで配色制御。
  * 設定ページへのアクセスは SettingsView 内で完結させる。

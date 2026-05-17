@@ -197,7 +197,7 @@ export function CheckoutConsentModal({
                 pending || !ageConfirmed
                   ? 'var(--border)'
                   : 'var(--accent-rose)',
-              color: '#fff',
+              color: 'var(--color-on-cta)',
               fontSize: 'var(--fs-caption)',
               fontWeight: 700,
               cursor: pending || !ageConfirmed ? 'not-allowed' : 'pointer',

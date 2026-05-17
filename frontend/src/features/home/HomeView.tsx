@@ -1,5 +1,5 @@
 /**
- * HomeView — Wave L1 骨格実装
+ * HomeView  -  Wave L1 骨格実装
  *
  * レイアウト:
  *   safe-area + 24px → 時間帯あいさつ（左寄せ 0 20px、H2、2行まで）
@@ -26,7 +26,7 @@ interface HomeViewProps {
   onNavigate: (view: ViewKey) => void;
 }
 
-// 時間帯あいさつ — 姉貴分の本音トーン (ICP §5-1)
+// 時間帯あいさつ  -  姉貴分の本音トーン (ICP §5-1)
 // 識別性ゲート: 「万人向けポジティブ」を断った1行
 const GREETING: Record<TimeOfDay, string> = {
   'night-deep': 'まだ起きてるんだ。…まあ、わたしもだけど',

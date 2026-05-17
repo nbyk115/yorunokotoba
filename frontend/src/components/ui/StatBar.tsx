@@ -1,5 +1,5 @@
 /**
- * StatBar — 5段階バー（恋愛/仕事/健康 等）
+ * StatBar  -  5段階バー（恋愛/仕事/健康 等）
  * DESIGN.md: --r-tag 20px フィル / --rose アクティブ / --border バック
  */
 

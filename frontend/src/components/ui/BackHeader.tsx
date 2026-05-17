@@ -1,5 +1,5 @@
 /**
- * BackHeader — 戻るボタン付きページヘッダー
+ * BackHeader  -  戻るボタン付きページヘッダー
  * DESIGN.md: タップ領域 44px / --rose テキストリンク
  */
 import { ChevronLeft } from 'lucide-react';

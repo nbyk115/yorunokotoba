@@ -1,5 +1,5 @@
 /**
- * CharaAvatar — キャラクターアバター
+ * CharaAvatar  -  キャラクターアバター
  * Wave L1: float アニメーションは CSS keyframe に統一
  *   transform: translateY(0→-6px→0) / 4000ms ease-in-out infinite
  * レア度演出: rarity='SSR' のとき gold border を表示

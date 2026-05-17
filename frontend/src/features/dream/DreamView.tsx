@@ -1,5 +1,5 @@
 /**
- * DreamView — Wave L1 骨格実装
+ * DreamView  -  Wave L1 骨格実装
  *
  * 入力: BackHeader → ラベル → Textarea → 占うButton
  * 結果: BackHeader → CharaAvatar+RarityBadge → テーマ名 → Card primary（よみとき本文）→ 今日のヒント小カード → シェアButton

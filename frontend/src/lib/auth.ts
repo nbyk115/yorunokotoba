@@ -1,5 +1,5 @@
 /**
- * Authentication — Google popup + Email link (passwordless).
+ * Authentication  -  Google popup + Email link (passwordless).
  * Preserves compatibility with legacy `ynk_email_for_signin` localStorage key.
  */
 

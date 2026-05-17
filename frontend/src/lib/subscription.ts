@@ -1,5 +1,5 @@
 /**
- * Subscription state — UnivaPay scaffold (実装スタブ).
+ * Subscription state  -  UnivaPay scaffold (実装スタブ).
  *
  * このモジュールは UnivaPay 定期課金 API との連携を想定した雛形。
  * 実 API 接続前のスペック検証用。実装すべき箇所は TODO(univapay) でマーク。

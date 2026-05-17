@@ -1,5 +1,5 @@
 /**
- * Lucky item generator — color / item / number for the day.
+ * Lucky item generator  -  color / item / number for the day.
  * Deterministic per-day, per-zodiac-sign.
  * Extracted from legacy index.html generateLucky().
  */

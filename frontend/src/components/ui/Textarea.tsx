@@ -1,5 +1,5 @@
 /**
- * Textarea — 複数行テキスト入力
+ * Textarea  -  複数行テキスト入力
  * DESIGN.md: --r-input 12px / padding 14px 16px / focus: outline 2px solid var(--rose)
  */
 import type { TextareaHTMLAttributes } from 'react';

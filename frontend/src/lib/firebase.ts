@@ -2,7 +2,7 @@
  * Firebase initialization.
  *
  * CRITICAL: Config values below are imported from the production project
- * yorunokotoba-5df51. DO NOT change — it would invalidate existing user
+ * yorunokotoba-5df51. DO NOT change  -  it would invalidate existing user
  * accounts, Firestore data, and push notification tokens.
  */
 

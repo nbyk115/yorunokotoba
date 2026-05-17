@@ -140,6 +140,45 @@
       },
       "fix": "コロン(:)、カンマ(,)、ピリオド(.)、セミコロン(;)で代替",
       "why": "AI生成の典型パターンとしてバレやすい"
+    },
+    {
+      "id": "RADIUS-002",
+      "severity": "error",
+      "category": "radius",
+      "description": "Wave L1 許容外の角丸直書き禁止: 18px/14px/12px/20px/24px 以外の borderRadius 直書きを検出",
+      "detector": {
+        "type": "regex",
+        "pattern": "borderRadius:\\s*(?!(?:var\\(|'var\\(|\"var\\(|50%|'50%|\"50%))(?!18px)(?!14px)(?!12px)(?!20px)(?!24px)(?!8px)(?!10px)[0-9]+(px|em|rem|%)",
+        "files": ["*.tsx", "*.jsx", "*.ts", "*.js"]
+      },
+      "fix": "var(--r-card) 18px / var(--r-button) 14px / var(--r-input) 12px / var(--r-tag) 20px / var(--r-modal) 24px を使用",
+      "why": "Wave L1: 角丸5種以外の直書きを禁止し、トークン経由のみを正とする"
+    },
+    {
+      "id": "HEX-001",
+      "severity": "error",
+      "category": "colors",
+      "description": "コンポーネントへの hex 直書き禁止: color / background に # + 3-6桁の16進数を直接記述禁止 (ShareCard・CheckoutConsentModal 除く)",
+      "detector": {
+        "type": "regex",
+        "pattern": "(?:color:|background:)\\s*['\"]?#[0-9a-fA-F]{3,6}['\"]?",
+        "files": ["App.tsx", "Button.tsx", "PremiumCTA.tsx", "ArchiveView.tsx"]
+      },
+      "fix": "CSS カスタムプロパティ var(--*) 経由で参照する",
+      "why": "Wave L1: hex 直書きを禁止し、トークン変数を唯一の真実とする"
+    },
+    {
+      "id": "INLINE-STYLE-001",
+      "severity": "warning",
+      "category": "structure",
+      "description": "インライン style オブジェクト内での fontSize 直書き（px 数値）を警告",
+      "detector": {
+        "type": "regex",
+        "pattern": "fontSize:\\s*[0-9]+(px)",
+        "files": ["*.tsx", "*.jsx"]
+      },
+      "fix": "var(--fs-*) トークンを使用",
+      "why": "Wave L1: タイポグラフィスケールはトークン経由のみを正とする"
     }
   ]
 }

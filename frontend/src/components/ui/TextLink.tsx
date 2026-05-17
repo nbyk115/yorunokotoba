@@ -1,5 +1,5 @@
 /**
- * TextLink — テキストリンク / テキストボタン
+ * TextLink  -  テキストリンク / テキストボタン
  * DESIGN.md: --fs-caption 13px / --t3 / タップ領域 44px
  */
 import type { ReactNode } from 'react';

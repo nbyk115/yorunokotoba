@@ -1,5 +1,5 @@
 /**
- * OnboardingView — Wave L1 骨格実装
+ * OnboardingView  -  Wave L1 骨格実装
  * 1画面統合: Logo → 名前Input → 生年月日Input → 性別SegmentedControl → はじめるButton
  * 完了で即ホーム遷移
  */

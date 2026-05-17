@@ -1,5 +1,5 @@
 /**
- * RarityBadge — レア度バッジ
+ * RarityBadge  -  レア度バッジ
  * Wave L1: hex 直書き廃止 → --rarity-* トークン参照
  * DESIGN.md: --r-tag 20px (pill 形状)
  */

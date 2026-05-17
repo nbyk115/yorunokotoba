@@ -1,5 +1,5 @@
 /**
- * Time of Day logic — 5段階の時間帯モード判定
+ * Time of Day logic  -  5段階の時間帯モード判定
  *
  * 02-05 night-deep / 05-11 dawn / 11-17 day / 17-22 dusk / 22-02 night
  *
