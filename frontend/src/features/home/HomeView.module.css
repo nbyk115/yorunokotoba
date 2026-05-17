@@ -1,0 +1,158 @@
+/**
+ * HomeView.module.css
+ * Wave L2 ホーム画面スタイル
+ * DESIGN.md + tokens.css 変数のみ使用。hex 直書き禁止。
+ * インライン style 禁止（handoff §4 構造的解決方針準拠）
+ * !important 使用禁止（DESIGN.md Don't 準拠）
+ */
+
+/* ────── ルートコンテナ ────── */
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top, 24px);
+}
+
+/* ────── 時間帯あいさつ ────── */
+.greeting {
+  padding: var(--sp-6) var(--sp-5) 0;
+  text-align: left;
+}
+
+.greetingText {
+  font-family: var(--font-heading);
+  font-size: var(--fs-section);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  letter-spacing: var(--ls-section);
+  line-height: 1.4;
+  margin: 0;
+  /* 2行まで。3行目以降は省略 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ────── キャラクター浮遊エリア ────── */
+.charaWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--sp-7); /* 32px */
+}
+
+/*
+ * キャラ浮遊クラス。CharaAvatar に className として渡す。
+ * global.css の @keyframes float-chara: 0→-6px→0 / 4000ms ease-in-out infinite
+ * transform のみ（layout プロパティ不可）
+ */
+.charaFloat {
+  animation: float-chara 4000ms ease-in-out infinite;
+}
+
+/* ────── 夢占いカード ラッパー ────── */
+/*
+ * Card コンポーネントの外側に配置するラッパー。
+ * 左辺 2px gold line + margin をここで制御し、
+ * Card 内部のインライン style と干渉させない。
+ * border-radius は Card と同値（var(--r-card) = 18px）を維持する必要があるため
+ * overflow: hidden を使わず、border-left + padding-left で gold line を実現する。
+ *
+ * 実装: ラッパー div の左辺に border-left を当て、
+ *       Card はその内側に余白なし（margin 0）で収める。
+ *       ラッパーが radius を担当することで left border が角丸をはみ出さない。
+ */
+.dreamCardWrapper {
+  margin: var(--sp-6) var(--sp-4) 0; /* 上24px / 左右16px */
+  border-left: var(--card-accent-line);
+  border-radius: var(--r-card); /* 18px: Card と同値 */
+  overflow: hidden; /* border-left の角丸を担保 */
+}
+
+/* ────── カード内: 小ラベル「今夜の夢占い」 ────── */
+.cardLabel {
+  font-family: var(--font-heading);
+  font-size: var(--fs-card-label);
+  font-weight: var(--fw-bold);
+  color: var(--t3);
+  letter-spacing: var(--ls-card-label);
+  margin: 0 0 var(--sp-2);
+  line-height: var(--lh-caption);
+}
+
+/* ────── カード内: 見出しコピー ────── */
+.cardHeading {
+  font-family: var(--font-heading);
+  font-size: var(--fs-hero-jp);
+  font-weight: var(--fw-bold);
+  color: var(--t1);
+  line-height: 1.4;
+  margin: 0 0 var(--sp-5); /* 20px */
+}
+
+/* ────── カード内: Cormorant 装飾引用句（1箇所のみ許容、DESIGN.md 準拠） ────── */
+.cardQuote {
+  font-family: var(--font-accent);
+  font-size: var(--fs-hero-en);
+  font-weight: var(--fw-hero-en);
+  font-style: italic;
+  color: var(--t3);
+  line-height: 1.3;
+  margin: 0 0 var(--sp-4);
+  display: block;
+}
+
+/* ────── カード内: 「ひらく →」アフォーダンス ────── */
+/*
+ * 塗りボタンにしない。テキストリンク相当の控えめ操作要素。
+ * rose 色 / 最小タップ領域 44px を確保。
+ */
+.openLink {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: var(--sp-2) 0;
+  min-height: 44px;
+  cursor: pointer;
+  color: var(--rose);
+  font-family: var(--font-heading);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  transition: opacity var(--anim-hover);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.openLink:active {
+  opacity: 0.7;
+}
+
+.openLink:focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ────── テキストリンク2点 ────── */
+.textLinks {
+  margin-top: 28px; /* 仕様値: 28px */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--sp-1); /* 4px */
+}
+
+.separator {
+  color: var(--t3);
+  font-size: var(--fs-caption);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ────── flex-grow スペーサー ────── */
+.spacer {
+  flex: 1;
+}
