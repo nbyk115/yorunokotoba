@@ -1,4 +1,4 @@
-# First Principles Breakdown — 第一原理分解スキル
+# First Principles Breakdown: 第一原理分解スキル
 
 ## 概要
 あらゆるテーマに対して「前提を全部剥がし、物理的に証明可能な真理だけから再構築する」思考プロセス。
@@ -70,7 +70,7 @@
 | strategy-lead | 「この市場で勝てる構造は何か」を前提ゼロから分析 |
 | competitive-analyst | 「本当の競合は誰か」を顧客の乗換行動データから再定義 |
 | product-manager | 「本当に必要な機能は何か」を利用データから再構築 |
-| ai-consultant | 「AIを入れるべきか」をROI数値から判断（技術トレンドに流されない） |
+| strategy-lead + ai-engineer | 「AIを入れるべきか」をROI数値から判断（戦略 + 技術検証ペア・技術トレンドに流されない） |
 | growth-hacker | 「何がグロースのレバーか」をファネルデータから特定 |
 | kpi-analytics | 「追うべきKPIは正しいか」を事業目的から再定義 |
 | legal-compliance-checker | 「このリスクは本当にリスクか」を法令の条文から検証 |
@@ -151,16 +151,16 @@ Step 3: 真理からの再構築
 
 **グローバル版Step 5拡張（真理からの再構築）:**
 - 再構築時に`gtm-consultant`が現地市場の真理を補完
-- `global-journalist`が現地データ・事例でStep 3の検証精度を向上
+- `market-researcher`が現地データ・事例でStep 3の検証精度を向上
 - PLインパクトは為替・現地コスト込みで`kpi-analytics`が算出
 
 ### エージェント別の追加適用例
 | エージェント | グローバル文脈での第一原理の使い方 |
 |---|---|
 | gtm-consultant | 「日本で売れた＝海外でも売れる」を前提ゼロから検証 |
-| global-journalist | 「この市場は成長している」を現地データで事実確認 |
-| global-business | 「日本式オペレーションが最適」を現地の商習慣から再検証 |
-| business-translator | 「直訳で伝わる」を文化コンテクストから再定義 |
+| market-researcher | 「この市場は成長している」を現地データで事実確認 |
+| gtm-consultant (Post-Entry) | 「日本式オペレーションが最適」を現地の商習慣から再検証 |
+| content-strategist | 「直訳で伝わる」を文化コンテクストから再定義 |
 
 ---
 
@@ -176,4 +176,11 @@ Step 3: 真理からの再構築
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/first-principles-breakdown.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

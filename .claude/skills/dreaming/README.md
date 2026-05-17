@@ -1,0 +1,178 @@
+# dreaming: ConsultingOS Memory Dream Pass (Phase 1 雛形、2026-05-14)
+
+`tech-lead` + `ai-engineer` + `strategy-lead` + `brand-guardian` 4 agent 並列判定済の Memory + Dreaming 実装 (PR #168 gbrain + PR #158 5 Orchestration Patterns Memory + Dreaming gap 解決)。
+
+出典: Anthropic 公式 Dreaming 機能 (Managed Agents 経由、INFERENCE) + Mnimiy @Mnilax 2026-05-15 ローカル実装記事 (INFERENCE)。
+
+## 1. 用途
+
+ConsultingOS の CLAUDE.md / evolution-log / skill 体系を 14-30 日サイクルで「dream pass」、過去セッションから aged context / 矛盾 / 形骸化ルールを検出 → diff 提示 → user 承認後 apply。
+
+## 2. 4 agent 統合判定
+
+| agent | 判定 |
+|---|---|
+| tech-lead | 実装 Yes、175 sessions 実測、Phase 1-3 段階導入 |
+| ai-engineer | 合理的、rubric 25-30 行拡張、Opus 4.7 固定 |
+| strategy-lead | Go、関根さん +$30K/月 上乗せ可能性、Hard Rule 1 真の 100 実 ROI 側 |
+| brand-guardian | CONDITIONAL REJECT、機密リスク 4 修正要件必須 |
+
+## 3. brand-guardian 4 修正要件 (PASS 移行必須)
+
+YOU MUST: 以下 4 要件全件遵守、未満たし状態で dream.py 実行禁止:
+
+### 要件 1: dream output は diff 提示のみ、自動 apply 禁止
+
+```bash
+# 禁止 (Anthropic 公式 Mnimiy 記事の単純実装)
+OUTPUT.write_text(response.content[0].text)  # CLAUDE.md 直接書き換え
+
+# 必須 (ConsultingOS 仕様)
+git diff --no-color CLAUDE.md proposed_CLAUDE.md  # diff 提示
+# user 承認後のみ Edit / Write 実行 (Phased Preamble 4 段階強制)
+```
+
+### 要件 2: jsonl ローカルパース、機密マスク or 文書構造のみ API 送信
+
+`~/.claude/projects/*/sessions/*.jsonl` は関根さん / 水野さん案件の固有名詞 / 財務数値 / 未公開戦略を含む可能性。Anthropic API 送信時の選択肢:
+
+- 選択肢 A: ローカル前処理で機密マスク (固有名詞 → [CLIENT_A]、財務数値 → [REDACTED])
+- 選択肢 B: jsonl 自体を送信せず、CLAUDE.md / evolution-log の文書構造のみ送信
+- 選択肢 C: ローカル LLM (Ollama 等) で前処理、Anthropic 送信前に抽象化
+
+= **選択肢 B が最安全**、Phase 1 ではこの方針推奨。
+
+### 要件 3: 数値クレーム実測コマンド添付必須
+
+dream output に「73% 削除」「8.2x 修正」等の数値が含まれる場合、`grep -c` / `wc -l` 等の実測コマンド出力を反証 Step 3 に添付必須。INFERENCE 区別明記を dream rubric に埋込。
+
+### 要件 4: dream_last_run + 30 日超過トリップワイヤー
+
+evolution-log に `dream_last_run: YYYY-MM-DD` フィールド追加、30 日超過時の brand-guardian 自動 REJECT 実装。
+
+## 4. Phase 1 (本 PR、雛形のみ)
+
+本 PR は雛形 + 規律設計のみ。実コード実行 + API 呼出は Phase 2 以降:
+
+- `.claude/skills/dreaming/README.md` (本ファイル)
+- `.claude/skills/dreaming/dream.py.template` (実装雛形、ドキュメント化のみ)
+- `.claude/skills/dreaming/rubric.md.template` (ConsultingOS 専用 25-30 行 rubric)
+
+## 5. Phase 2 (実需確認後、次セッション)
+
+### 5.1 解禁条件 (全件満たし必須)
+
+1. user 環境で `ANTHROPIC_API_KEY` 設定済
+2. `dream.py.template` → `dream.py` rename (本 PR 雛形時点では .template 拡張子で実行禁止)
+3. brand-guardian 4 修正要件 (§3) 全件遵守確認: diff-only / 機密マスク / 数値実測 / 30 日トリップワイヤー
+4. sample 20 sessions 試走 (推定コスト $0.84) で output 内容 + 機密リスク + 数値妥当性確認
+5. Mnimiy ベンチマーク (§10.1) 達成度測定: 削除率 50%+ / 出力 40 行以下 / 未文書化パターン 3 件以上浮上
+6. 1-5 全件通過時のみ Phase 3 (全 100 sessions 実行) 解禁
+
+### 5.2 試走手順
+
+- `python3 dream.py` で sample 20 sessions モード実行 (gather_sessions limit=20)
+- output (`~/.claude/memory/dream_output.md`) を `git diff` で検証
+- diff 内に関根さん / 水野さん / N&Y Craft / 財務数値の漏洩がないか機械検証 (`grep -E "関根さん|水野さん|N&Y|万円|\$\d+"`)
+- ゼロ件 = mask_sensitive() PASS、検出時は mask_sensitive() 拡張で再実行
+
+## 6. Phase 3 (Phase 2 成功後)
+
+- 全 175 sessions 実行 ($7.35 想定、11 分 × 1.75 ≈ 20 分)
+- 14 日 cron 化
+- 関根さん月次顧問の運用コスト透明性レポートに統合
+- evolution-log の `dream_last_run` 自動更新
+
+## 7. 関根さん / 水野さん適用パス
+
+### 関根さん N&Y Craft OEM
+
+月次顧問契約のオプションとして $30K/月 上乗せ販売候補:
+- 月次 dream pass 実行 + diff レポート提供
+- N&Y Craft 業務規律の形骸化検出 + 改善提案
+- 関根さん承認後の規律改訂
+
+### 水野さん v4 投資テーゼ
+
+投資先評価ツールとして dream pass 提供候補:
+- 投資先企業の「declared vs actual」乖離検出
+- 経営判断の自己改善能力評価
+
+## 8. ConsultingOS 既存規律との統合
+
+- gbrain (PR #168): global / cross-project 層、本 dream pass は local 層、相補関係
+- PR #173 Prompt Cache Prewarm: dream output を次月 prewarm cache に注入
+- PR #169 LLM 推論メカニクス: §2 KV キャッシュ最大活用
+- PR #160 ルーブリック明示 skill: dream rubric が同型概念
+- Karpathy 12 ルール (PR #138): ルール 6 トークン予算と整合 ($4.20/月)
+
+## 9. ConsultingOS 専用 rubric + dream.py 実装雛形
+
+Phase 1 雛形 2 ファイル (本 PR で物理化):
+
+- `.claude/skills/dreaming/dream.py.template`: Mnimiy 80 行 Python + ConsultingOS 機密マスク + 30 日トリップワイヤー + diff-only フロー
+- `.claude/skills/dreaming/rubric.md.template`: Mnimiy 12 行 → ConsultingOS 専用 25 行 (Hard Rule 17 主語詐称 + Hard Rule 2 出典なし数値 + Hard Rule 13 形骸化 + 反証チェック Step 1-4 検出を追加)
+
+Phase 2 で API key 設定 + sample 20 sessions 試走 ($0.84) 後に `.template` 拡張子削除 + 実行解禁。
+
+## 10. Mnimiy 完全版核心 FACT (2026-05-15 記事追記)
+
+### 10.1 数値具体 (FACT、Mnimiy 提示)
+
+| 軸 | 数値 |
+|---|---|
+| 入力 transcripts | 100 sessions / 6M tokens |
+| 実行時間 | 11 分 |
+| コスト (初回) | $4.20 / (キャッシュ再実行 $0.80) |
+| 元 CLAUDE.md 削除率 | 73% |
+| 最終出力 | 38 行 |
+| rubric サイズ | 12 行 |
+| dream.py サイズ | 80 行 Python |
+
+### 10.2 4 つの未文書化パターン浮上 (Mnimiy 実例)
+
+| パターン | 内容 |
+|---|---|
+| 1. "Review" = "Approve" | レビュー要請の 73% が修正なし承認、実態は「許可」要求 |
+| 2. Stack switch 無告知 | TS / Python 切替を再宣言せず、半数の壊れた output 原因 |
+| 3. "Quick fix" 平均 12 ターン | turn 4 で 30% 未満解決率、redirect 推奨 |
+| 4. Prose 修正 = Code の 8.2x | 編集エネルギー 80% を 90% 完成済 prose に投下、20% を 60% コードに |
+
+= ConsultingOS でも同型検出可能候補: agent 起動ゼロ時の「ConsultingOS が」(主語詐称) / skill 間重複 / 4 週間更新ゼロ skill 検出。
+
+### 10.3 削除カテゴリ 3 種 (Mnimiy 分類)
+
+| カテゴリ | 内容 |
+|---|---|
+| 1. One-off correction → 永続化 | 1 回の訂正が 6 ヶ月後も全 session に適用 |
+| 2. Aged context | プロジェクト名 / アーキテクチャ変更で文脈消失 |
+| 3. Contradictory | 同 file 内に「em-dash 使う」「em-dash AI っぽい」両立 |
+
+= ConsultingOS 監査軸: Hard Rule 13 形骸化検出 + 矛盾検出を rubric に組込。
+
+### 10.4 5 失敗 (Mnimiy 5 honest negatives、ConsultingOS 採用時の警告)
+
+1. Rubric なしの dream output = 「User values efficiency」級の generic、使えない
+2. 100 sessions は少ない (Harvey は数千件)、200+ で confidence 比率逆転
+3. ファイル上書き危険 → `dream_output.md` 別出力 + diff 必須 (brand-guardian 要件 1 と整合)
+4. ローカル版に継続性なし → 14-30 日 cron + diff 追跡が必要
+5. Harvey の 6x improvement は個人 user に転移しない (1 task type x 数千 session の条件)
+
+### 10.5 7 日後効果トレードオフ (Mnimiy 追跡)
+
+- 速度向上 + token 削減 +$90/月 (持続性 INFERENCE)
+- 確信度上昇 = 「Claude が second-guess する hedge」減少、たまに confidently wrong
+- ネット効果プラスだが「自己疑念の保険」は失う、再 dream 14-30 日サイクル必須
+
+## 11. 関連参照
+
+- 出典: Anthropic 公式 Dreaming + Mnimiy ローカル実装 (INFERENCE)
+- 関連: gbrain (PR #168) / 5 Orchestration Patterns (PR #158) / Prompt Cache Prewarm (PR #173) / LLM 推論メカニクス (PR #169) / ルーブリック明示 (PR #160)
+- 関連 agent: tech-lead + ai-engineer + strategy-lead + brand-guardian (4 agent 起動判定済)
+
+## 12. 反証チェック (Step 1-4 圧縮)
+
+- Step 1: Anthropic 公式 Dreaming + Mnimiy 記事 INFERENCE / 4 agent 判定済 FACT / 175 sessions 実測 FACT (tech-lead agent 確認) / 機密リスクは brand-guardian 機械検証 FACT
+- Step 2: 既存 ConsultingOS 規律 (Hard Rule 13/15/17 + Boris #3 + gbrain PR #168) と整合検証
+- Step 3 実用反証: Phase 1 雛形のみ、実コード実行は Phase 2 以降、本 PR で API 呼出ゼロ
+- Step 4 リスク即潰し: 機密リスク (brand-guardian REJECT 軸 5) は選択肢 B (文書構造のみ送信) で構造的回避、自動 apply 禁止は diff 提示 + Phased Preamble 4 段階強制で構造的回避、形骸化リスクは dream_last_run + 30 日トリップワイヤーで構造的回避

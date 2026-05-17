@@ -1,4 +1,4 @@
-# Prompt Engineering — プロンプト設計方法論
+# Prompt Engineering: プロンプト設計方法論
 
 ## 原則
 **「プロンプトはコード。テスト可能・バージョン管理可能・再現可能であるべき。」**
@@ -376,10 +376,9 @@ RAGパイプラインの精度を改善。Agent Teamを作成:
 ---
 
 ## 適用エージェント
-- `service-dev/ai-engineer` — RAG・エージェント設計でのプロンプト実装
-- `consulting/ai-consultant` — クライアントへのAI導入時のプロンプト設計支援
-- `creative/agentic-content` — AIに選ばれるコンテンツ設計のプロンプト最適化
-- `creative/content-strategist` — LLMを使ったコンテンツ生成のプロンプト品質
+- `service-dev/ai-engineer`: RAG・エージェント設計でのプロンプト実装
+- `consulting/strategy-lead` + `service-dev/ai-engineer`: クライアントへのAI導入時のプロンプト設計支援（戦略 + 技術検証ペア）
+- `creative/content-strategist`: LLMを使ったコンテンツ生成・AIO/GEO設計のプロンプト品質
 
 
 
@@ -390,4 +389,11 @@ RAGパイプラインの精度を改善。Agent Teamを作成:
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/prompt-engineering.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

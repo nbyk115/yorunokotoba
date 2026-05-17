@@ -1,4 +1,4 @@
-# Code Quality Gates — PR前自動品質チェック
+# Code Quality Gates: PR前自動品質チェック
 
 ## 概要
 PRを出す前に通すべき品質ゲートの定義。
@@ -243,10 +243,10 @@ PR #[番号]のレビュー。Agent Teamを作成:
 ---
 
 ## 適用エージェント
-- `service-dev/tech-lead` — 品質基準の策定・レビュー方針
-- `service-dev/fullstack-dev` — ゲート通過の実行・修正
-- `service-dev/infra-devops` — CI/CD パイプラインへの組み込み
-- `creative/frontend-dev` — フロントエンド固有の品質チェック
+- `service-dev/tech-lead`: 品質基準の策定・レビュー方針
+- `service-dev/fullstack-dev`: ゲート通過の実行・修正
+- `service-dev/infra-devops`: CI/CD パイプラインへの組み込み
+- `creative/frontend-dev`: フロントエンド固有の品質チェック
 
 
 
@@ -257,7 +257,14 @@ PR #[番号]のレビュー。Agent Teamを作成:
 
 | Ver | 日付 | 変更内容 | 根拠 | 効果 |
 |---|---|---|---|---|
-| 1.0.0 | 2026-03-25 | 初版 | — | ベースライン |
+| 1.0.0 | 2026-03-25 | 初版 |: | ベースライン |
 | 1.1.0 | 2026-04-12 | Gate 0（Surgical Change Gate）追加 | Karpathy観察 + andrej-karpathy-skills 原則3「外科的手術的な変更」 | 依頼範囲外の変更・"ついで"改善を防止 |
 | 1.2.0 | 2026-04-12 | Gate 0 に Chesterton's Fence ルール追加 | addyosmani/agent-skills "code-simplification" | 理由不明コードの安易な削除を防止 |
 | 1.3.0 | 2026-04-12 | Gate 0 に inline animation 禁止 / Transform タグセレクタ禁止 / Nuclear override scope 限定ルール追加 | よるのことば shake/scroll 事件 2026-04-12 | React × CSS animation 相互作用 + transform 副作用の永続記録 |
+
+
+## 出典・依拠先
+
+- FACT: 本ファイルは @nbyk115/consulting-os の ConsultingOS 規律ファイルとして 2026-05-05 PR #65 で体系的明示物理化により定義された（ファイルパス: .claude/skills/code-quality-gates.md）
+- INFERENCE: 業界標準ベストプラクティス（佐藤裕介流の構造で売る原則、Boris Cherny 流の 9 規律 ruthlessly edit、該当部門の業界フレームワーク）から派生し実装
+- SPECULATION: 4 週間ごとの再評価カレンダー（evolution-log.md 再評価カレンダーセクション）で形骸化検出、Boris #3 削除セット対象、規律違反発生時は統合 / 分離 / 削除で整理予定

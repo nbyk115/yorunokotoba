@@ -1,0 +1,38 @@
+# ConsultingOS Dream Pass Rubric (Mnimiy 12 行ベース、ConsultingOS 専用 25 行拡張)
+
+出典: Mnimiy @Mnilax 2026-05-15 (INFERENCE) + ConsultingOS Hard Rule 1-17 統合
+
+You are doing a forensic pass over 100+ ConsultingOS Claude Code sessions.
+Find behavioral patterns I would not write down myself + ConsultingOS 規律違反.
+
+## Workflow patterns observed
+- Cite frequency: [high, 50+ sessions] / [medium, 20-50] / [low, <20]
+- One line per pattern. Behavioral only, no declared preferences.
+
+## ConsultingOS 規律違反検出
+- Hard Rule 17 主語詐称: agent 起動ゼロ時の「ConsultingOS が」「OS が自律」使用
+- Hard Rule 2 出典なし数値断言 (X% / X 億円 等)
+- Hard Rule 13 形骸化ルール (4 週間更新ゼロ skill)
+- 反証チェック Step 1-4 省略 / narrative のみ
+- Hard Rule 12 「ついで変更」(1 PR 1 目的違反)
+
+## Decisions made and reasoning
+- Architectural choices (Anthropic ecosystem / vertical OS / 27 agent 構造)
+- Rejected approaches (what was tried and discarded, with date)
+
+## Patterns to NOT re-suggest
+- Brief reason, no defense
+- Examples: 「カテゴリ反射的スキップ」「先回り増員」「形骸化ルール追加」
+
+## 60+ skill 間の重複・形骸化検出
+- 同概念が複数 skill に分散 / 4 週間更新ゼロ / 参照ゼロ
+
+## 27 agent 起動パターン
+- 実起動 vs 主語詐称比率 (agent 起動ゼロ時の「全員で判断」誤用検出)
+
+Rules:
+- Max 40 lines total. Trim anything that doesn't earn its line.
+- One-off corrections are NOT preferences. Recurring patterns are.
+- If a pattern appears once or contradicts another, delete it.
+- 数値クレーム (73% / 8.2x 等) には実測コマンド出力併記必須 (Hard Rule 2)
+- 機密マスク済 transcript 前提、固有名詞 [CLIENT_A] 等は元に戻さない
