@@ -39,7 +39,7 @@ description: 出力タイプ別 100 点満点ルーブリック。brand-guardian
 | 数値・出典の visualization | 10 | チャート / 数値の出典 + INFERENCE/FACT ラベル可視化 |
 
 80 点未満時:
-- 情報密度不足 → DESIGN.md §12 + refero.design で参照取得
+- 情報密度不足 → Lazyweb For Humans / Canva MCP / refero.design / WebSearch で参照取得 (DESIGN.md §12.3)
 - ブランド規律違反 → brand-guardian 5 項目検証コマンド実行
 
 ### 3. コード (skill / agent / hook / フロントエンド等)

@@ -239,6 +239,8 @@ ConsultingOS 推奨使い分け:
 | visual / OEM ベースキット制作 | ターミナル | hook + 検証コマンド連動 |
 | iPhone / iPad 限定環境（user 現状）| Web claude.ai | デスクトップ未保有時のフォールバック |
 
+副次効果: デスクトップ環境では `claude plugin` CLI 直接アクセス可能 = ローカルプラグイン型ツールの検証が容易化（ただし使い捨てコンテナ環境では非永続、DESIGN.md §12.3 Lazyweb 不採用の経緯参照）。
+
 ## 7. 関連参照
 
 - 出典: x.com/claudeai (Agent View Research Preview、2026-05、INFERENCE)

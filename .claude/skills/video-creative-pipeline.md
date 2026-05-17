@@ -30,7 +30,7 @@ YOU MUST: 動画制作着手前に必ず以下を定義:
 
 ### Phase 2: 参照ライブラリ query (ux-designer)
 
-DESIGN.md §12 で動画リファレンス 3-5 件取得:
+DESIGN.md §12 + Lazyweb For Humans (lazyweb.com 手動閲覧) / Canva MCP / WebSearch で動画リファレンス 3-5 件取得:
 - 競合動画 (同業界 TikTok / SNS)
 - 参照すべきトーン / 構成 / 演出パターン
 - アンチパターン (既存動画 50 万再生されてないものの理由)
@@ -113,7 +113,7 @@ YOU MUST: ツール選定根拠を 1-2 行で明示 (例: 「TikTok 10 本量産
 - Notion 企画書読み込み: ブリーフ自動生成
 - Figma デザイン参照: 動画スタイル決定
 
-YOU MUST: ConsultingOS 既存 MCP (Figma / GitHub) と Higgsfield 30+ ツール統合の重複を CLAUDE.md §4 (MCP 最大 5-6) と整合確認、追加 MCP は実需確認後 (Boris #3)。
+YOU MUST: ConsultingOS 既存 MCP (Figma / GitHub / Canva) と Higgsfield 30+ ツール統合の重複を CLAUDE.md §4 (MCP 最大 5-6) と整合確認、追加 MCP は実需確認後 (Boris #3)。
 
 ## 関根さん N&Y Craft Phase 2-3 適用パス
 

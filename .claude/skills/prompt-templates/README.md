@@ -15,7 +15,7 @@
 | 戦略・分析 | `01-strategy.md` | 5 |
 | マーケティング | `02-marketing.md` | 5 |
 | 提案書・セールス | `03-sales.md` | 5 |
-| クリエイティブ | `04-creative.md` | 5 |
+| クリエイティブ | `04-creative.md` | 8 |
 | エンジニアリング | `05-engineering.md` | 5 |
 | プロダクト・グロース | `06-product-growth.md` | 5 |
 | 株式取引 | `12-finance-trading.md` | 7 |

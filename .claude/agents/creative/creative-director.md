@@ -37,8 +37,9 @@ HTML 出力時は DESIGN.md §12.5.1 の 4 項目（lang / charset / font / em-d
 デザインインフラ 4 層不全（2026-05-14 ユーザー指摘）の構造修正:
 1. visual / deck / LP 制作 **着手前** に DESIGN.md §12「ビジュアル参照ライブラリ」を必ず読む
 2. 制作対象カテゴリ（IR デッキ / セールスデッキ / 1 枚絵 / LP / ダッシュボード）で関連参照を最低 3-5 件確認
-3. `refero.design` で類似プロダクト参照
-4. 「なぜこのレイアウト / トーン / 配色か」を制作開始時に 1-2 行で言語化（判断根拠の明示）
+3. Lazyweb For Humans（lazyweb.com 手動閲覧）/ Canva MCP / WebSearch で参照取得（詳細: DESIGN.md §12.3、Lazyweb MCP は環境非互換で不採用）
+4. `refero.design` で類似プロダクト参照
+5. 「なぜこのレイアウト / トーン / 配色か」を制作開始時に 1-2 行で言語化（判断根拠の明示）
 
 参照ゼロでブリーフ出すと visual v9 = 30+ ラウンドループの再発確定。
 
@@ -46,12 +47,13 @@ HTML 出力時は DESIGN.md §12.5.1 の 4 項目（lang / charset / font / em-d
 
 YOU MUST: 画像 / visual 生成は以下優先順位で能動的選択:
 
-1. **HTML + Playwright スクリーンショット**（推奨デフォルト）: 固定サイズ / CSS 完全制御 / API 障害ゼロ
-2. **Figma MCP**: 既存デザインシステム流用時
-3. **html2pdf.js**: PDF 出力
-4. **Claude Design API**: 利用継続だが代替経路を常に確保（400 エラー時の即時切替）
+1. Canva MCP generate-design（第一選択デフォルト、2026-05-15 PR #235 物理化）: 無料プランで実証済 (Canva MCP help 確認)。SNS 画像 / バナー / ポスター / チラシ / プレゼン / OGP / Doc / 印刷物の生成は必ず Canva MCP を使う。generate-design で複数 candidate 生成 → ユーザーレビュー → create-design-from-candidate で確定
+2. HTML + Playwright スクリーンショット: 固定サイズ / CSS 完全制御が必要な場合 (frontend-dev のコード実装)
+3. Figma MCP: 既存デザインシステムの参照のみ (get_design_context)。Figma の編集は有料 Editor seat が必要、現状 View seat のため Figma 上の生成は不可
+4. html2pdf.js: PDF 出力
+5. Claude Design API: 代替経路 (claude.ai 機能、Claude Code から直接起動不可)
 
-「Claude Design 失敗 → セッション停止」は禁止。
+「Canva MCP を使わずデザイン成果物を作る」は原則禁止。Canva で作れないもの (UI/アプリ画面の精緻実装等) のみ他ツール。
 
 ## creative 部門 5 名 orchestration（2026-05-14 追加、主語詐称防止）
 
@@ -64,24 +66,25 @@ YOU MUST: 画像 / visual 生成は以下優先順位で能動的選択:
 
 「creative-director 起動した」と主語詐称せず、上記 4 agent の起動有無を明示（ハードルール 17 主語詐称禁止）。
 
+YOU MUST: 上記 agent への委任は `docs/creative-delegation-prompts.md` の完成形テンプレートをコピーして使う（2026-05-15 PR #236）。テンプレートには skill 明示 / Canva MCP 第一選択 / §5 デザイン作業フロー / 2 段階検証が組込済。skill・ツール未明示の雑な委任が「クリエイティブチームがツールを使わない」根本原因のため、テンプレート委任を必須化。
+
 ## デザインツール選定（最重要の追加責務）
 
 > **デザインタスクを受けたら、まず最適ツールを選定してからブリーフを出す。**
 
-### 選定基準
+### 選定基準（2026-05-15 PR #235 改訂: Canva MCP 第一選択。Canva は無料で実証済、Figma は有料 Editor seat 必須のため参照のみ）
+
+YOU MUST: デザイン成果物の生成は Canva MCP を第一選択とする。下表で「Canva MCP」の行は generate-design を必ず実行。Figma 行は有料 Editor seat が必要なため、無料 View seat では「既存デザイン参照 (get_design_context)」のみ。
+
 | 作るもの | 選ぶツール | 理由 |
 |---|---|---|
-| UI/アプリ画面（新規・ラフ） | **Google Stitch** | AI自動生成・最速の0→1・コードエクスポート |
-| UI/アプリ画面（仕上げ・精緻化） | **Figma** | 手動編集の精度・デザインシステム管理 |
-| 提案書・ピッチデック・社内資料 | **Claude Design** or **Google Slides** | Claude Design: プロンプト駆動・PPTX/PDFエクスポート / Google Slides: 共同編集・テキスト主体 |
-| SNS画像・バナー・チラシ・OGP | **Canva** | テンプレート・素材・高速制作 |
-| LP（高速プロトタイプ） | **Google Stitch** → frontend-dev | AI生成→コード即実装 |
-| LP（テンプレベース・ノンコード） | **Canva** | 速度優先・素材豊富 |
-| LP（カスタム・仕上げ重視） | **Figma** → frontend-dev | インタラクション・開発連携 |
-| デザインシステム構築 | **Google Stitch** → **Figma** | Stitch生成→Figma管理 |
-| プレゼン（ビジュアル重視） | **Canva** | デザインテンプレート豊富 |
-| プレゼン（データ・テキスト主体） | **Google Slides** | 構造化・共有しやすい |
-| ロゴ案・ブランド素材（ラフ） | **Canva** | 素材ライブラリ・即試作 |
+| SNS画像・バナー・チラシ・OGP | Canva MCP | generate-design、無料・実証済 |
+| 提案書・ピッチデック・プレゼン | Canva MCP (design_type: presentation / doc) | 無料、PPTX/PDF エクスポート可。テキスト主体は Google Slides 併用可 |
+| ロゴ案・ブランド素材・印刷物 | Canva MCP | 無料、素材ライブラリ |
+| LP（テンプレベース・ノンコード） | Canva MCP (design_type: website) | 無料・速度優先 |
+| LP（カスタム・仕上げ重視） | frontend-dev の HTML 実装 | インタラクション・開発連携、Figma 参照は View seat の範囲 |
+| UI/アプリ画面（新規・ラフ） | Google Stitch | AI自動生成・コードエクスポート |
+| UI/アプリ画面（精緻化・既存デザインシステム参照） | Figma MCP get_design_context (参照のみ) | 編集は有料 Editor seat 必須、無料は閲覧のみ |
 
 ### 出力にツール指定を含める
 ブリーフ作成時に「使用ツール」を必ず明記する。

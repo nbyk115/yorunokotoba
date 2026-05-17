@@ -11,7 +11,7 @@
 | 1 業務課題の特定 | 解くべき問題の明確化 | strategy-lead + ICP.md + document-creation-6-steps (PR #166) ① 論点設定 |
 | 2 設計 | エージェント設計・職務定義 | creative-director / tech-lead + 27 agent description |
 | 3 成功指標の定義 | KPI / 受け入れ基準明示 | kpi-analytics + /goal 受け入れ基準 (PR #176) |
-| 4 社内データとの接続 | データソース統合 | MCP 連携 (Figma + GitHub) + Anthropic 垂直 OS 4 層 (PR #133) |
+| 4 社内データとの接続 | データソース統合 | MCP 連携 (Figma + GitHub + Canva) + Anthropic 垂直 OS 4 層 (PR #133) |
 | 5 開発・テスト | 実装 + 検証 | tech-lead + fullstack-dev + 反証チェック Step 1-4 |
 | 6 公開 | 本番展開 | brand-guardian + ハードルール 17 (主語詐称禁止 + Phased Preamble) |
 | 7 運用改善 | 継続管理・改善 | evolution-log 4 週間再評価 + gbrain (PR #168) + Dreaming (PR #175) |
