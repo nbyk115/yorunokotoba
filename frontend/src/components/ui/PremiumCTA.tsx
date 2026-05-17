@@ -261,7 +261,7 @@ function primaryButtonStyle(pending: boolean): React.CSSProperties {
     borderRadius: 12,
     border: 'none',
     background: 'var(--accent-rose)',
-    color: 'var(--color-on-cta)',
+    color: '#fff',
     fontSize: 'var(--fs-caption)',
     fontWeight: 700,
     cursor: pending ? 'wait' : 'pointer',
