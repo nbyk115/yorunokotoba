@@ -377,7 +377,7 @@ export function ShareCard({
   /* ────── ボタン共通 ────── */
   const btnBase: CSSProperties = {
     padding: '12px 24px',
-    borderRadius: 12,
+    borderRadius: 'var(--r-button)',
     fontSize: 'var(--fs-body)',
     fontWeight: 700,
     fontFamily: 'var(--font-heading)',
@@ -397,7 +397,7 @@ export function ShareCard({
           height: DISPLAY_H,
           margin: '0 auto',
           overflow: 'hidden',
-          borderRadius: 12,
+          borderRadius: 'var(--r-input)',
           // プレビュー外枠: 深夜感を出す黒系シャドウ（DESIGN.md: 黒系 rgba のみ）
           boxShadow: '0 8px 40px rgba(0,0,0,0.50)',
           position: 'relative',
@@ -484,7 +484,7 @@ export function ShareCard({
           style={{
             ...btnBase,
             background: 'var(--accent-rose)',
-            color: '#fff',
+            color: 'var(--t1)',
           }}
           onClick={handleShare}
         >
