@@ -64,31 +64,23 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
           {profile.sign}の生まれ持った性格、強み、伸びしろ、人生のテーマ。星座からほんとうの自分を深く知れるよ。
         </p>
-        <Button variant="secondary" onClick={() => onNavigate('fortune')} fullWidth>
-          自分を知るリーディングを見る
+        <Button onClick={() => onNavigate('fortune')} fullWidth>
+          ほんとうの自分を星から知る
         </Button>
-      </Card>
 
-      {/* Type lineup carousel: entry point to the self-understanding reading */}
-      <div
-        className="slide-up-3"
-        role="button"
-        tabIndex={0}
-        onClick={() => onNavigate('fortune')}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onNavigate('fortune');
-          }
-        }}
-        style={{ cursor: 'pointer' }}
-      >
-        <Card>
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+        {/* Type lineup carousel: same destination as the CTA above */}
+        <div
+          style={{
+            marginTop: 'var(--sp-5)',
+            paddingTop: 'var(--sp-5)',
+            borderTop: '1px solid var(--border)',
+          }}
+        >
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
             あなたはどのタイプ？
-          </h2>
+          </h3>
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
-            あなたがどのタイプか、星座から診断できるよ。タップして自分のタイプを見てみて。
+            12星座それぞれにキャラがいるよ。あなたがどのタイプか見てみて。
           </p>
           <div
             className="no-scrollbar"
@@ -103,10 +95,20 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
             {typeLineup.map(({ sign, chara }) => (
               <div
                 key={sign}
+                role="button"
+                tabIndex={0}
+                onClick={() => onNavigate('fortune')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onNavigate('fortune');
+                  }
+                }}
                 style={{
                   flexShrink: 0,
                   width: 84,
                   textAlign: 'center',
+                  cursor: 'pointer',
                 }}
               >
                 <CharaAvatar id={chara.id} size={72} />
@@ -128,11 +130,11 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
               </div>
             ))}
           </div>
-        </Card>
-      </div>
+        </div>
+      </Card>
 
       <Card
-        className="slide-up-4"
+        className="slide-up-3"
         style={{
           background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
           border: '1px solid var(--border)',
