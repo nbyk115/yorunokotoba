@@ -145,14 +145,48 @@ B2B 提案デッキは以下 2 層構造で運用:
 
 41. クライアント納品物が「読まれる確率」を最大化する出力フォーマット（HTML 配信層）に設計されているか、Markdown 単一依存に閉じていないか
 
-## 9. 関連参照
+## 9. Claude Code on the web 実行環境の制約と対処（2026-05-18、Publicis サムネイル制作の学習）
+
+ConsultingOS の実行基盤は Claude Code on the web の使い捨てコンテナ。画像・レンダリングで再発したハマりどころと対処。
+
+### 9.1 添付ファイルはコンテナに届かない
+
+YOU MUST: ユーザーがチャットに添付したファイル（画像 / PDF / スクショ / データ等すべて）は Claude Code コンテナにファイルとして存在しない。Claude は内容を視認できるがファイル操作はできない。
+
+- NEVER: 添付ファイルが /mnt・/tmp・home 等に存在すると仮定する（実測で不在）
+- NEVER: 生成画像 URL をコンテナからダウンロードできると仮定する（許可リスト外ドメインは 403、例: Canva の design.canva.ai）
+- YOU MUST: ファイルの受け渡しは git 経由が唯一機能する経路。git CLI が無くても GitHub web UI のドラッグ&ドロップで可（`github.com/{owner}/{repo}/upload/{branch}/{dir}` を開く → ドロップ → Commit → ConsultingOS が git pull で取得）
+
+### 9.2 Chromium レンダリングの白帯バグ
+
+症状: `chromium --headless --screenshot --window-size=1280,670` で出力下部の約 15% が透明（白帯）。
+原因: body の実レンダリング高が指定値より低く（実測 565px 前後）、overflow:hidden が絶対配置の子要素を下端でクリップする。
+対処:
+
+1. 背景・スクリム・テキスト層は全て position:absolute + 明示 width/height で組む。inset:0 や body 背景は使わない（containing block 高に依存し同様に欠ける）
+2. レンダリングは目的高より高い window で行う（目的 670 に対し `--window-size=1280,1000`）
+3. 出力を PIL で目的寸法にクロップ（例: `im.crop((0,0,2560,1340))`）
+
+検証: PIL で出力下端行のピクセル alpha を実測し、alpha=0 でないことを確認。
+
+### 9.3 日本語フォント
+
+- `fc-list :lang=ja | grep -i "noto sans cjk jp"` で未導入なら `apt-get install -y fonts-noto-cjk`
+- font-family は `"Noto Sans CJK JP"` を明示（無印 Noto Sans CJK は中国字形フォールバックの恐れ、ハードルール 10）
+- レンダリング画像は必ず目視で字形検証
+
+### 9.4 2 倍解像度の出力
+
+`--force-device-scale-factor=2` + 目的より広い window + PIL クロップで 2 倍解像度を出力（例: note.com 推奨 1280x670 の 2 倍 = 2560x1340、表示比は同一）。
+
+## 10. 関連参照
 
 - 出典: Thariq @trq212「Using Claude Code: The Unreasonable Effectiveness of HTML」(INFERENCE)
 - 関連 skill: DESIGN.md §12.5（HTML + Playwright 推奨デフォルト、PR #139）/ `boris-cherny-9-rules.md` / `karpathy-12-rules.md`
 - 関連 agent: creative-director / sales-deck-designer / frontend-dev / brand-guardian / tech-lead
 - 関連: visual v9（採用済実例）/ hotice deck（採用済実例）
 
-## 10. 反証チェック（Step 1-4 圧縮）
+## 11. 反証チェック（Step 1-4 圧縮）
 
 - Step 1: Thariq 発言 / X 1,100 万 View は INFERENCE（一次出典 URL 提示あり、本セッション未取得）/ 「読まれる確率格段に高い」は実証 INFERENCE（受注率実証なし）
 - Step 2: 既存 36 軸体系 + DESIGN.md §12.5 + ハードルール 10 / 13 / 16 と整合検証済、4 agent 並列評価（creative-director / sales-deck-designer / tech-lead / brand-guardian）で構造的妥当性確認

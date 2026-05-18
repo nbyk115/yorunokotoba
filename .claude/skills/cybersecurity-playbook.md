@@ -472,6 +472,10 @@ npm install --auditlevel=high
 
 詳細: [`.claude/skills/references/cybersecurity-playbook-claude-defense.md`](references/cybersecurity-playbook-claude-defense.md)
 
+脆弱性パッチ管理（「パッチの波」対応、KEV / EPSS / SSVC、Anthropic + NCSC 推奨）は本体 500 行制限のため分離（2026-05-17 統合）。
+
+詳細: [`.claude/skills/references/cybersecurity-playbook-patch-management.md`](references/cybersecurity-playbook-patch-management.md)
+
 
 ## 出典・依拠先
 
