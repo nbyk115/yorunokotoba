@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { RarityBadge } from '@/components/ui/RarityBadge';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry } from '@/lib/archive';
@@ -12,6 +10,12 @@ import type { UserProfile } from '@/lib/firestore';
 interface DreamViewProps {
   profile: UserProfile;
 }
+
+const TONE_LABEL: Record<DreamResult['tone'], string> = {
+  positive: '前向きな夢',
+  negative: 'こころのサイン',
+  neutral: '深層からのメッセージ',
+};
 
 export function DreamView({ profile }: DreamViewProps) {
   const [text, setText] = useState('');
@@ -28,14 +32,14 @@ export function DreamView({ profile }: DreamViewProps) {
     const r = analyzeDream(text, signIdx);
     setResult(r);
     setLoading(false);
-    track('dream_complete', { typeId: r.type.id, theme: r.theme.key });
+    track('dream_complete', { typeId: r.archive.typeId, theme: r.theme.key });
     saveArchiveEntry({
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
       text: text.slice(0, 200),
       timestamp: Date.now(),
-      typeId: r.type.id,
-      themeKey: r.theme.key,
-      summary: r.symbols.slice(0, 2).map((s) => s.word).join('・'),
+      typeId: r.archive.typeId,
+      themeKey: r.archive.themeKey,
+      summary: r.archive.summary,
     });
   }
 
@@ -87,7 +91,7 @@ export function DreamView({ profile }: DreamViewProps) {
 
       {result && (
         <>
-          {/* Hero character card — matches legacy layout */}
+          {/* Hero: theme + keyword headline (no character) */}
           <div
             className="slide-up"
             style={{
@@ -97,163 +101,57 @@ export function DreamView({ profile }: DreamViewProps) {
               color: '#fff',
               padding: 'var(--sp-6) var(--sp-5) var(--sp-5)',
               textAlign: 'center',
-              position: 'relative',
               boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
             }}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: 14,
-                right: 14,
-                display: 'flex',
-                gap: 6,
-                alignItems: 'center',
-              }}
-            >
-              <RarityBadge rarity={result.type.rarity} />
-              <span style={{ fontSize: 10, opacity: 0.8 }}>{result.type.pct}</span>
-            </div>
-
             <p style={{ fontSize: 12, fontWeight: 700, opacity: 0.85, letterSpacing: 1 }}>
               {result.theme.icon} {result.theme.label}
             </p>
-
-            <div style={{ margin: '16px auto 12px' }}>
-              <CharaAvatar
-                id={result.type.id}
-                size={120}
-                animate
-                border="3px solid rgba(255,255,255,0.35)"
-              />
-            </div>
-
-            <h3 style={{ fontSize: 22, fontWeight: 700, letterSpacing: 1 }}>{result.type.name}</h3>
-            <p style={{ fontSize: 12, opacity: 0.92, marginTop: 6 }}>{result.type.sub}</p>
-
-            <p style={{ fontSize: 13, lineHeight: 1.9, marginTop: 'var(--sp-4)', textAlign: 'left', opacity: 0.96 }}>
-              {result.type.desc}
+            <div style={{ fontSize: 44, margin: '14px 0 8px' }}>{result.reading.emoji}</div>
+            <h3 style={{ fontSize: 21, fontWeight: 700, letterSpacing: 1 }}>
+              {result.reading.headline}
+            </h3>
+            <p style={{ fontSize: 12, opacity: 0.92, marginTop: 8 }}>
+              「{result.keyword}」の夢 ・ {TONE_LABEL[result.tone]}
             </p>
           </div>
 
+          {/* 夢が伝えていること: detailed reading */}
           <Card className="slide-up-1">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
               夢が伝えていること
             </h4>
-            <p style={{ fontSize: 14, lineHeight: 1.9, color: 'var(--t1)' }}>{result.mainReading.intro}</p>
-            <p
-              style={{
-                fontSize: 13,
-                lineHeight: 1.9,
-                color: 'var(--t2)',
-                marginTop: 'var(--sp-4)',
-                whiteSpace: 'pre-line',
-              }}
-            >
-              {result.mainReading.deep}
+            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)' }}>
+              {result.reading.body}
             </p>
+
+            {result.reading.advice && (
+              <div
+                style={{
+                  marginTop: 'var(--sp-4)',
+                  padding: '14px 16px',
+                  background: 'var(--bg1)',
+                  borderRadius: 'var(--r-input)',
+                  borderLeft: '3px solid var(--rose)',
+                }}
+              >
+                <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--rose)', marginBottom: 6 }}>
+                  💡 対策とアドバイス
+                </p>
+                <p style={{ fontSize: 13, lineHeight: 1.9, color: 'var(--t2)' }}>
+                  {result.reading.advice}
+                </p>
+              </div>
+            )}
           </Card>
 
-          {result.symbols.length > 0 && (
-            <Card className="slide-up-2">
-              <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 12 }}>
-                シンボル
-              </h4>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {result.symbols.map((s) => (
-                  <div
-                    key={s.word}
-                    style={{
-                      padding: '12px 14px',
-                      background: 'var(--bg1)',
-                      borderRadius: 'var(--r-input)',
-                      borderLeft: '3px solid var(--rose)',
-                    }}
-                  >
-                    <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--rose)' }}>
-                      {s.word} — {s.meaning}
-                    </p>
-                    <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4, lineHeight: 1.7 }}>
-                      {s.detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
-
-          <Card className="slide-up-3">
+          {/* 今日のメッセージ: prose, not a bullet list */}
+          <Card className="slide-up-2">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
               今日のメッセージ
             </h4>
-            <p style={{ fontSize: 14, lineHeight: 1.9, color: 'var(--t1)' }}>{result.todayMessage}</p>
-
-            <div style={{ marginTop: 'var(--sp-4)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                今日やるといいこと
-              </p>
-              <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
-                {result.actions.should.map((a, i) => (
-                  <li key={i}>{a}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={{ marginTop: 'var(--sp-4)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                気をつけること
-              </p>
-              <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
-                {result.actions.aware.map((a, i) => (
-                  <li key={i}>{a}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={{ marginTop: 'var(--sp-4)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', marginBottom: 6 }}>
-                今日避けたいこと
-              </p>
-              <ul style={{ paddingLeft: 20, fontSize: 13, color: 'var(--t1)', lineHeight: 1.8 }}>
-                {result.actions.avoid.map((a, i) => (
-                  <li key={i}>{a}</li>
-                ))}
-              </ul>
-            </div>
-          </Card>
-
-          <Card className="slide-up-4">
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
-              🎁 ラッキー3点
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-                <strong style={{ color: result.lucky.color.hex }}>🎨 {result.lucky.color.v}</strong>
-                <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.color.reason}</span>
-              </p>
-              <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-                <strong>
-                  {result.lucky.item.e} {result.lucky.item.v}
-                </strong>
-                <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.item.reason}</span>
-              </p>
-              <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-                <strong>🔢 ナンバー {result.lucky.num.v}</strong>
-                <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
-              </p>
-            </div>
-          </Card>
-
-          <Card className="slide-up-5">
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
-              💕 相性の良いタイプ
-            </h4>
-            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>
-              <strong>{result.type.bestMatch}</strong>
-              <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.type.bestWhy}</span>
-            </p>
-            <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
-              <strong>恋愛傾向:</strong> {result.type.love}
+            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)' }}>
+              {result.todayMessage}
             </p>
           </Card>
 
