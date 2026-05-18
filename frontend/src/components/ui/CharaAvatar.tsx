@@ -30,8 +30,9 @@ export function CharaAvatar({ id, size = 80, animate = false, border }: CharaAva
     );
   }
   return (
-    <img alt=""
+    <img
       src={src}
+      alt=""
       width={size}
       height={size}
       loading="lazy"
@@ -41,7 +42,7 @@ export function CharaAvatar({ id, size = 80, animate = false, border }: CharaAva
         borderRadius: '50%',
         objectFit: 'cover',
         border: border ?? 'none',
-        animation: animate ? 'float-chara 4s ease-in-out infinite' : undefined,
+        animation: animate ? 'breathe 2.4s ease-in-out infinite' : undefined,
       }}
     />
   );

@@ -1,18 +1,8 @@
 /**
  * Type-safe wrapper around Google Analytics 4 gtag().
- * EventName union で typo を compile-time に弾く.
- *
- * 旧 paywall 系（soft_paywall_tap, deep_paywall_tap, letter_paywall_tap,
- * banner_premium_tap, premium_cta_tap, sticky_cta_tap, teaser_cta_tap,
- * retention_teaser_tap）は実装統合により dead. 2026-05-14 削除.
- * 現在は compat_paywall_tap 1系統に集約.
- *
- * 2026-05-15 追加: purchase / subscription_active（GA4 e-commerce + コホート起点）.
- * PaywallSource Enum で paywall_view source の typo を防止.
+ * All 28 event names from legacy index.html are declared as a union so
+ * typos fail at compile time.
  */
-
-/** Paywall を発火させた画面の識別子. typo 防止のため Enum 化. */
-export type PaywallSource = 'deep_reading' | 'aura_result' | 'home_chip' | 'archive_teaser';
 
 type EventName =
   | 'dream_start'
@@ -23,26 +13,25 @@ type EventName =
   | 'ftue_complete'
   | 'profile_complete'
   | 'paywall_view'
+  | 'soft_paywall_tap'
+  | 'deep_paywall_tap'
   | 'compat_paywall_tap'
+  | 'letter_paywall_tap'
+  | 'banner_premium_tap'
+  | 'premium_cta_tap'
+  | 'sticky_cta_tap'
+  | 'teaser_cta_tap'
   | 'checkout_open'
-  | 'purchase'
-  | 'subscription_active'
   | 'subscription_cancel'
   | 'image_save'
   | 'share_result'
   | 'share_dream'
   | 'friend_invite_tap'
   | 'push_prompt_dream_result'
+  | 'retention_teaser_tap'
   | 'streak_update'
   | 'streak_milestone'
   | 'night_mode_toggle'
-  | 'compatibility_start'
-  | 'compatibility_complete'
-  | 'compatibility_share'
-  | 'compatibility_link_open'
-  | 'auth_email_link_complete'
-  | 'compat_paywall_auth_prompt'
-  | 'compat_paywall_email_submit'
   | 'exception';
 
 declare global {

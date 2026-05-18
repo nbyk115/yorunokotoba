@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { Moon, MessageCircleHeart, Sparkles } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui/Button';
 import { track } from '@/lib/analytics';
 
@@ -10,24 +7,24 @@ const KEY = 'ynk_ftue_done';
 interface FtueStep {
   title: string;
   body: string;
-  icon: LucideIcon;
+  emoji: string;
 }
 
 const STEPS: FtueStep[] = [
   {
-    icon: Moon,
+    emoji: '🌙',
     title: 'よるのことばへようこそ',
     body: '夢と星座から、今日のあなたへのメッセージを届けるよ。短い時間で心を整えて。',
   },
   {
-    icon: MessageCircleHeart,
+    emoji: '💭',
     title: '夢を書いてみよう',
-    body: 'ゆうべ見た夢をそのまま書くだけでOK。キーワードから深層心理をよみとくよ。',
+    body: 'ゆうべ見た夢をそのまま書くだけでOK。キーワードから深層心理を読み解くよ。',
   },
   {
-    icon: Sparkles,
-    title: '毎日の運勢',
-    body: '星座に応じた恋愛・仕事・健康のヒントと、今日のお守りが毎日更新されるよ。',
+    emoji: '✨',
+    title: '毎日の運勢も',
+    body: '星座に応じた恋愛・仕事・健康のヒントと、ラッキーアイテムが毎日更新されるよ。',
   },
 ];
 
@@ -84,26 +81,13 @@ export function FtueOverlay({ onComplete }: FtueOverlayProps) {
           boxShadow: '0 12px 48px rgba(0,0,0,0.25)',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 64,
-            height: 64,
-            borderRadius: '50%',
-            background: 'rgba(232,98,124,0.10)',
-            margin: '0 auto 16px',
-            color: 'var(--rose)',
-          }}
-          aria-hidden="true"
-        >
-          <Icon icon={current.icon} size={32} color="var(--rose)" strokeWidth={1.5} />
+        <div style={{ fontSize: 54, marginBottom: 16 }} aria-hidden="true">
+          {current.emoji}
         </div>
         <h2
           id="ftue-title"
           style={{
-            fontSize: 'var(--fs-h1)',
+            fontSize: 20,
             fontWeight: 700,
             color: 'var(--rose)',
             marginBottom: 12,
@@ -111,7 +95,7 @@ export function FtueOverlay({ onComplete }: FtueOverlayProps) {
         >
           {current.title}
         </h2>
-        <p style={{ fontSize: 'var(--fs-body)', color: 'var(--t2)', lineHeight: 1.8 }}>{current.body}</p>
+        <p style={{ fontSize: 14, color: 'var(--t2)', lineHeight: 1.8 }}>{current.body}</p>
 
         <div
           style={{

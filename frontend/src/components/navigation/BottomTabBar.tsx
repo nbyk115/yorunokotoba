@@ -1,6 +1,3 @@
-import { House, Moon, Sparkles, BookOpen } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
 import type { ViewKey } from '@/App';
 
 interface BottomTabBarProps {
@@ -8,18 +5,17 @@ interface BottomTabBarProps {
   onChange: (view: ViewKey) => void;
 }
 
-const TABS: { key: ViewKey; icon: LucideIcon; label: string }[] = [
-  { key: 'home', icon: House, label: 'ホーム' },
-  { key: 'dream', icon: Moon, label: '夢占い' },
-  { key: 'fortune', icon: Sparkles, label: '星座占い' },
-  { key: 'archive', icon: BookOpen, label: '履歴' },
+const TABS: { key: ViewKey; icon: string; label: string }[] = [
+  { key: 'home', icon: '🏠', label: 'ホーム' },
+  { key: 'dream', icon: '🌙', label: '夢占い' },
+  { key: 'fortune', icon: '✨', label: '星座占い' },
+  { key: 'archive', icon: '📖', label: '履歴' },
 ];
 
 export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
   return (
     <nav
       aria-label="メインナビゲーション"
-      role="tablist"
       style={{
         position: 'fixed',
         bottom: 0,
@@ -41,12 +37,9 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
         return (
           <button
             key={tab.key}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            aria-label={tab.label}
-            tabIndex={0}
             onClick={() => onChange(tab.key)}
+            aria-label={tab.label}
+            aria-pressed={active}
             style={{
               background: 'transparent',
               border: 'none',
@@ -63,8 +56,8 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
               transition: 'color var(--anim-hover)',
             }}
           >
-            <Icon icon={tab.icon} size={24} />
-            <span style={{ fontSize: 'var(--fs-micro)', fontWeight: 700 }}>{tab.label}</span>
+            <span style={{ fontSize: 22, lineHeight: 1 }}>{tab.icon}</span>
+            <span style={{ fontSize: 10, fontWeight: 700 }}>{tab.label}</span>
           </button>
         );
       })}
