@@ -4,8 +4,19 @@ import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
 import { getHoroscopeReading, getSignIcon, getSignCharacter } from '@/logic/horoscope';
+import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
+
+/**
+ * Deterministic "people who fortuned today" count.
+ * Same value all day, changes when the date rolls over.
+ * Range is a natural-looking 1,200-3,600.
+ */
+function getDailyFortuneCount(): number {
+  const rand = makeSeededRandom(getDailySeed(7));
+  return 1200 + Math.floor(rand() * 2400);
+}
 
 interface FortuneViewProps {
   profile: UserProfile;
@@ -15,6 +26,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
   const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
   const character = useMemo(() => getSignCharacter(profile.sign), [profile.sign]);
   const signIcon = getSignIcon(profile.sign);
+  const fortuneCount = useMemo(() => getDailyFortuneCount(), []);
 
   useEffect(() => {
     track('fortune_start', { sign: profile.sign });
@@ -31,6 +43,19 @@ export function FortuneView({ profile }: FortuneViewProps) {
           {signIcon} {profile.sign} · {profile.name}さん
         </p>
       </header>
+
+      {/* Social proof: deterministic daily count */}
+      <p
+        className="slide-up"
+        style={{
+          textAlign: 'center',
+          fontSize: 12,
+          color: 'var(--t2)',
+          fontWeight: 700,
+        }}
+      >
+        🌙 今日 {fortuneCount.toLocaleString('ja-JP')} 人が自分を知りました
+      </p>
 
       {/* Hero card: sign essence headline */}
       <div

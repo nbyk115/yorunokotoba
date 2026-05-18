@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { InstallPrompt } from '@/components/InstallPrompt';
+import { DreamShare } from '@/features/dream/DreamShare';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry } from '@/lib/archive';
@@ -15,6 +17,7 @@ export function DreamView({ profile }: DreamViewProps) {
   const [text, setText] = useState('');
   const [result, setResult] = useState<DreamResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const signIdx = SIGNS.findIndex((s) => s.k === profile.sign);
 
@@ -27,19 +30,25 @@ export function DreamView({ profile }: DreamViewProps) {
     setResult(r);
     setLoading(false);
     track('dream_complete', { typeId: r.archive.typeId, theme: r.theme.key });
+  }
+
+  function handleSaveLog() {
+    if (saved || !result) return;
     saveArchiveEntry({
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
       text: text.slice(0, 200),
       timestamp: Date.now(),
-      typeId: r.archive.typeId,
-      themeKey: r.archive.themeKey,
-      summary: r.archive.summary,
+      typeId: result.archive.typeId,
+      themeKey: result.archive.themeKey,
+      summary: result.archive.summary,
     });
+    setSaved(true);
   }
 
   function handleReset() {
     setText('');
     setResult(null);
+    setSaved(false);
   }
 
   return (
@@ -125,6 +134,30 @@ export function DreamView({ profile }: DreamViewProps) {
               {result.todayMessage}
             </p>
           </Card>
+
+          {/* Save to archive: only persists when the user taps. */}
+          <Card className="slide-up-2">
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 8 }}>
+              📖 ログに残す
+            </h4>
+            <p
+              style={{
+                fontSize: 12,
+                lineHeight: 1.9,
+                color: 'var(--t2)',
+                marginBottom: 'var(--sp-4)',
+              }}
+            >
+              この夢の記録を残しておくと、あとから読み返せるよ。
+            </p>
+            <Button fullWidth onClick={handleSaveLog} disabled={saved}>
+              {saved ? '✓ ログに保存したよ' : 'ログに残す'}
+            </Button>
+          </Card>
+
+          <DreamShare result={result} />
+
+          <InstallPrompt />
 
           <Button variant="secondary" onClick={handleReset} fullWidth>
             もう一度占う
