@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
 import { getDreamTypeById } from '@/data/dreamTypes';
+import { track } from '@/lib/analytics';
 
 const themeLabels: Record<string, string> = {
   anx: '不安・解放',
@@ -37,6 +38,9 @@ export function ArchiveView() {
           これまでの夢診断の記録（{entries.length}件）
         </p>
       </header>
+
+      {/* Premium: monthly trend analysis (locked placeholder) */}
+      <MonthlyTrendPremiumCard />
 
       {entries.length === 0 ? (
         <Card>
@@ -109,5 +113,77 @@ export function ArchiveView() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * Monthly trend analysis is a premium feature.
+ * This branch has no payment system, so this renders a locked
+ * teaser placeholder that previews what premium unlocks.
+ */
+function MonthlyTrendPremiumCard() {
+  const teasers = [
+    '🌙 今月いちばん多く見た夢のテーマ',
+    '📈 先月とくらべた心の動きの変化',
+    '🔁 くり返し現れるパターンとそのメッセージ',
+  ];
+  return (
+    <Card
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
+        border: '1px solid var(--border)',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <span style={{ fontSize: 18 }}>🔒</span>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>月ごとの傾向分析</h3>
+      </div>
+      <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+        ためた夢の記録から、月ごとの心の傾向やくり返すパターンを読み解くプレミアム機能。あなただけの深いリーディングが見られるよ。
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-4)' }}>
+        {teasers.map((t) => (
+          <div
+            key={t}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 12px',
+              borderRadius: 'var(--r-button)',
+              background: 'var(--card-solid)',
+              border: '1px dashed var(--border)',
+            }}
+          >
+            <p
+              style={{
+                flex: 1,
+                fontSize: 12,
+                color: 'var(--t3)',
+                filter: 'blur(0.4px)',
+                lineHeight: 1.6,
+              }}
+            >
+              {t}
+            </p>
+            <span style={{ fontSize: 12 }}>🔒</span>
+          </div>
+        ))}
+      </div>
+
+      <Button
+        variant="secondary"
+        fullWidth
+        onClick={() => track('teaser_cta_tap', { feature: 'monthly_trend' })}
+      >
+        ✨ プレミアムで解放する
+      </Button>
+      <p style={{ fontSize: 10, color: 'var(--t3)', textAlign: 'center', marginTop: 8 }}>
+        プレミアムは近日提供予定です
+      </p>
+    </Card>
   );
 }

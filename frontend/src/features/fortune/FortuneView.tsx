@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { RarityBadge } from '@/components/ui/RarityBadge';
-import { generateFortune, type FortuneResult } from '@/logic/fortune';
-import { SIGNS } from '@/data/signs';
+import { getHoroscopeReading, getSignIcon } from '@/logic/horoscope';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 
@@ -12,165 +9,98 @@ interface FortuneViewProps {
   profile: UserProfile;
 }
 
-const rankColors: Record<string, string> = {
-  大吉: '#D4A853',
-  中吉: '#B08ACF',
-  小吉: '#E8627C',
-  吉: '#5BA87C',
-  末吉: '#5A9AC0',
-};
-
 export function FortuneView({ profile }: FortuneViewProps) {
-  const [result, setResult] = useState<FortuneResult | null>(null);
+  const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
+  const signIcon = getSignIcon(profile.sign);
 
   useEffect(() => {
     track('fortune_start', { sign: profile.sign });
-    const r = generateFortune(
-      profile.name,
-      profile.sign,
-      profile.gender === 'male' ? 'male' : 'female',
-      parseInt(profile.birthDay, 10) || undefined,
-      parseInt(profile.birthMonth, 10) || undefined,
-    );
-    setResult(r);
-    track('fortune_complete', { sign: profile.sign, rank: r.rank });
-  }, [profile]);
-
-  const signIcon = SIGNS.find((s) => s.k === profile.sign)?.icon ?? '✨';
-
-  if (!result) {
-    return (
-      <div style={{ padding: 'var(--sp-6)', textAlign: 'center' }}>
-        <p style={{ color: 'var(--t2)' }}>占いを準備中…</p>
-      </div>
-    );
-  }
+    track('fortune_complete', { sign: profile.sign });
+  }, [profile.sign]);
 
   return (
     <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
       <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>✨ 今日の占い</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>
+          ✨ ホロスコープで自分を知る
+        </h2>
         <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
-          {signIcon} {profile.sign} · {profile.name}
+          {signIcon} {profile.sign} · {profile.name}さん
         </p>
       </header>
 
-      {/* Hero rank card with character */}
+      {/* Hero card: sign essence headline */}
       <div
         className="slide-up"
         style={{
           borderRadius: 'var(--r-card)',
           overflow: 'hidden',
-          background: `linear-gradient(135deg, ${rankColors[result.rank]}, ${rankColors[result.rank]}AA)`,
+          background: 'linear-gradient(135deg, var(--rose), var(--lavender))',
           color: '#fff',
           padding: 'var(--sp-6) var(--sp-5)',
           textAlign: 'center',
-          position: 'relative',
           boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
         }}
       >
-        <div
-          style={{
-            position: 'absolute',
-            top: 14,
-            right: 14,
-          }}
-        >
-          <RarityBadge rarity={result.type.rarity} />
-        </div>
-
-        <p style={{ fontSize: 11, fontWeight: 700, opacity: 0.85, letterSpacing: 2 }}>今日の運勢</p>
+        <p style={{ fontSize: 11, fontWeight: 700, opacity: 0.85, letterSpacing: 2 }}>
+          あなたの星座
+        </p>
         <h3
           style={{
-            fontSize: 48,
+            fontSize: 32,
             fontWeight: 700,
-            letterSpacing: 2,
-            marginTop: 4,
+            letterSpacing: 1,
+            marginTop: 6,
             textShadow: '0 2px 12px rgba(0,0,0,0.25)',
           }}
         >
-          {result.rank}
+          {signIcon} {profile.sign}
         </h3>
-
-        <div style={{ margin: '12px auto 8px' }}>
-          <CharaAvatar
-            id={result.type.id}
-            size={100}
-            animate
-            border="3px solid rgba(255,255,255,0.35)"
-          />
-        </div>
-
-        <p style={{ fontSize: 14, fontWeight: 700, marginTop: 8 }}>{result.type.name}</p>
-        <p style={{ fontSize: 11, opacity: 0.88, marginTop: 2 }}>{result.type.sub}</p>
-
-        <p style={{ fontSize: 13, marginTop: 'var(--sp-4)', lineHeight: 1.9, textAlign: 'left', opacity: 0.96 }}>
-          {result.summary}
+        <p style={{ fontSize: 14, fontWeight: 700, marginTop: 10, lineHeight: 1.7 }}>
+          {reading.headline}
         </p>
-
-        <div style={{ display: 'flex', gap: 12, marginTop: 'var(--sp-4)', flexWrap: 'wrap' }}>
-          <div style={{ flex: '1 1 140px', textAlign: 'left' }}>
-            <p style={{ fontSize: 10, opacity: 0.75, fontWeight: 700 }}>🕐 ラッキータイム</p>
-            <p style={{ fontSize: 12, marginTop: 2, lineHeight: 1.6 }}>{result.time}</p>
-          </div>
-          <div style={{ flex: '1 1 140px', textAlign: 'left' }}>
-            <p style={{ fontSize: 10, opacity: 0.75, fontWeight: 700 }}>⚠️ 注意すること</p>
-            <p style={{ fontSize: 12, marginTop: 2, lineHeight: 1.6 }}>{result.risk}</p>
-          </div>
-        </div>
+        <p style={{ fontSize: 11, opacity: 0.88, marginTop: 6 }}>{reading.element}</p>
       </div>
 
       <Card className="slide-up-1">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
-          今日のあなた
+          🌙 あなたの本質
         </h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{result.personality.trait}</p>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.essence}</p>
       </Card>
 
       <Card className="slide-up-2">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>💕 恋愛運</h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{result.personality.love}</p>
-        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
-          {result.dailyLove}
-        </p>
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
+          ⭐ 生まれ持った強み
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
       </Card>
 
       <Card className="slide-up-3">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>⚡ 仕事運</h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{result.personality.work}</p>
-        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
-          {result.dailyWork}
-        </p>
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: '#5BA87C', marginBottom: 10 }}>
+          🌱 伸びしろと成長のヒント
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
       </Card>
 
       <Card className="slide-up-4">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: '#5BA87C', marginBottom: 10 }}>🌿 健康運</h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{result.personality.health}</p>
-        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginTop: 10 }}>
-          {result.dailyHealth}
-        </p>
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
+          💕 人との関わり方
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.relationship}</p>
       </Card>
 
       <Card className="slide-up-5">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
-          🎁 ラッキー3点
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
+          🧭 あなたの人生のテーマ
         </h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-            <strong style={{ color: result.lucky.color.hex }}>🎨 {result.lucky.color.v}</strong>
-            <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.color.reason}</span>
-          </p>
-          <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-            <strong>
-              {result.lucky.item.e} {result.lucky.item.v}
-            </strong>
-            <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.item.reason}</span>
-          </p>
-          <p style={{ fontSize: 13, color: 'var(--t1)' }}>
-            <strong>🔢 ナンバー {result.lucky.num.v}</strong>
-            <span style={{ color: 'var(--t2)', marginLeft: 8 }}>{result.lucky.num.reason}</span>
-          </p>
-        </div>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
+      </Card>
+
+      <Card className="slide-up-5">
+        <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.8 }}>
+          このリーディングは生年月日から導いた太陽星座をもとにしています。出生時刻や出生地は使っていないため、ホロスコープ全体ではなく、太陽星座から見たあなたの基本的な性質をお伝えするものです。
+        </p>
       </Card>
 
       <Button
@@ -181,11 +111,11 @@ export function FortuneView({ profile }: FortuneViewProps) {
             navigator
               .share({
                 title: 'よるのことば',
-                text: `${profile.sign}の今日の運勢: ${result.rank}`,
+                text: `${profile.sign}の自分を知るリーディング: ${reading.headline}`,
                 url: window.location.href,
               })
               .catch(() => undefined);
-            track('share_result', { method: 'webshare', type: result.type.id });
+            track('share_result', { method: 'webshare', type: profile.sign });
           }
         }}
       >

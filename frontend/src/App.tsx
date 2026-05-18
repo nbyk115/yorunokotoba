@@ -1,4 +1,4 @@
-import { useEffect, useState, Component, type ReactNode } from 'react';
+import { useState, Component, type ReactNode } from 'react';
 import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
@@ -9,8 +9,7 @@ import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
 import { Particles } from '@/components/fx/Particles';
-import { tickStreak, type StreakState } from '@/logic/streak';
-import { trackException, track } from '@/lib/analytics';
+import { trackException } from '@/lib/analytics';
 
 export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive';
 
@@ -18,18 +17,6 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
-  const [streak, setStreak] = useState<StreakState>(() => ({ count: 0, lastDay: '' }));
-
-  useEffect(() => {
-    if (profile) {
-      const s = tickStreak();
-      setStreak(s);
-      track('streak_update', { count: s.count });
-      if (s.count === 3 || s.count === 7 || s.count === 14 || s.count === 30) {
-        track('streak_milestone', { count: s.count });
-      }
-    }
-  }, [profile]);
 
   function handleProfileComplete(p: UserProfile) {
     setProfile(p);
@@ -50,7 +37,7 @@ export default function App() {
       <div style={{ position: 'relative', zIndex: 1 }}>
         <AppHeader />
         <ErrorBoundary>
-          {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
+          {view === 'home' && <HomeView profile={profile} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} />}
           {view === 'fortune' && <FortuneView profile={profile} />}
           {view === 'archive' && <ArchiveView />}

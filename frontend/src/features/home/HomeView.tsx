@@ -5,11 +5,9 @@ import { DREAM_TYPES } from '@/data/dreamTypes';
 import { makeSeededRandom, getDailySeed } from '@/logic/hash';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
-import type { StreakState } from '@/logic/streak';
 
 interface HomeViewProps {
   profile: UserProfile;
-  streak: StreakState;
   onNavigate: (view: ViewKey) => void;
 }
 
@@ -24,7 +22,7 @@ function pickDailyCharacters(count: number): typeof DREAM_TYPES {
   return arr.slice(0, count) as unknown as typeof DREAM_TYPES;
 }
 
-export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
+export function HomeView({ profile, onNavigate }: HomeViewProps) {
   const greeting = getGreeting();
   const todaysChars = pickDailyCharacters(6);
 
@@ -49,63 +47,32 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
         <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 4 }}>{profile.sign}</p>
       </header>
 
-      {/* Streak card */}
-      {streak.count > 0 && (
-        <div
-          className="slide-up-1"
-          style={{
-            background: 'linear-gradient(135deg, #D4A853, #B8902E)',
-            color: '#fff',
-            borderRadius: 'var(--r-card)',
-            padding: 'var(--sp-5)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--sp-4)',
-            boxShadow: '0 4px 20px rgba(212, 168, 83, 0.25)',
-          }}
-        >
-          <div style={{ fontSize: 36 }}>🔥</div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, opacity: 0.85, fontWeight: 700, letterSpacing: 1 }}>
-              連続ログイン
-            </p>
-            <p style={{ fontSize: 28, fontWeight: 700, lineHeight: 1.1, marginTop: 2 }}>
-              {streak.count}
-              <span style={{ fontSize: 13, fontWeight: 500, marginLeft: 4 }}>日目</span>
-            </p>
-          </div>
-          <p style={{ fontSize: 11, opacity: 0.9, textAlign: 'right', maxWidth: 120, lineHeight: 1.5 }}>
-            {streak.count >= 7 ? '習慣化できてる' : '続けるほど運気がまわる'}
-          </p>
-        </div>
-      )}
-
-      <Card className="slide-up-2">
+      <Card className="slide-up-1">
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
           🌙 今夜の夢を読み解く
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          見た夢をそのまま書いて。シンボルから今のあなたへのメッセージを読み解くよ。
+          見た夢をそのまま書いて。今のあなたへのメッセージを読み解くよ。
         </p>
         <Button onClick={() => onNavigate('dream')} fullWidth>
           夢占いを始める
         </Button>
       </Card>
 
-      <Card className="slide-up-3">
+      <Card className="slide-up-2">
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          ✨ 今日の運勢
+          ✨ ホロスコープで自分を知る
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          {profile.sign}の今日のラッキーアイテム、注意点、行動指針が分かるよ。
+          {profile.sign}の生まれ持った性格、強み、伸びしろ、人生のテーマ。星座からほんとうの自分を深く知れるよ。
         </p>
         <Button variant="secondary" onClick={() => onNavigate('fortune')} fullWidth>
-          星座占いを見る
+          自分を知るリーディングを見る
         </Button>
       </Card>
 
       {/* Character carousel */}
-      <Card className="slide-up-4">
+      <Card className="slide-up-3">
         <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 12 }}>
           今日出会えるかもしれないキャラ
         </h2>
@@ -149,12 +116,12 @@ export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
         </div>
       </Card>
 
-      <Card className="slide-up-5">
+      <Card className="slide-up-4">
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
           📖 履歴を振り返る
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          過去に見た夢のパターンから、自分の傾向が見えてくる。
+          過去に見た夢の記録をいつでも読み返せるよ。月ごとの傾向分析はプレミアム機能。
         </p>
         <Button variant="ghost" onClick={() => onNavigate('archive')} fullWidth>
           履歴を見る
