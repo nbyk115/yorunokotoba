@@ -99,6 +99,8 @@ function InputScreen({
   setPartnerSign,
   onConfirm,
 }: InputProps) {
+  const partnerChara = partnerSign ? getSignCharacter(partnerSign) : null;
+
   return (
     <div
       className="slide-up"
@@ -112,11 +114,34 @@ function InputScreen({
       </header>
 
       <Card className="slide-up-1" style={{ textAlign: 'center' }}>
-        <CharaAvatar id={myCharaId} size={84} animate />
-        <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginTop: 8 }}>
-          あなた: {profile.sign}
-        </p>
-        <p style={{ fontSize: 11, color: 'var(--t3)', marginTop: 2 }}>{myCharaName}</p>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: partnerChara ? 24 : 0,
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <CharaAvatar id={myCharaId} size={84} animate />
+            <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>
+              あなた: {profile.sign}
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--t3)' }}>{myCharaName}</p>
+          </div>
+          {partnerChara && (
+            <>
+              <span style={{ fontSize: 20, color: 'var(--t3)' }}>×</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <CharaAvatar id={partnerChara.id} size={84} animate />
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>
+                  相手: {partnerSign}
+                </p>
+                <p style={{ fontSize: 11, color: 'var(--t3)' }}>{partnerChara.name}</p>
+              </div>
+            </>
+          )}
+        </div>
       </Card>
 
       <Card className="slide-up-2">

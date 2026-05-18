@@ -189,7 +189,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
       </Card>
 
       <Card className="slide-up-4">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: '#5BA87C', marginBottom: 10 }}>
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
           🌱 伸びしろと成長のヒント
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>

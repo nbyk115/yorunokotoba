@@ -113,11 +113,14 @@ export function CompatibilityReceiverView({ fromCharaId, onExit }: Compatibility
         </Card>
 
         <Card className="slide-up-2" style={{ textAlign: 'center' }}>
+          <p style={{ fontSize: 13, color: 'var(--t1)', fontWeight: 700, marginBottom: 6 }}>
+            夢占いや星座占いも無料で試せるよ
+          </p>
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-            あなたの夢占いや星座占いもやってみる？
+            あなたのキャラがわかる自分診断もできるよ。
           </p>
           <Button onClick={onExit} fullWidth>
-            よるのことばを始める
+            無料で試してみる
           </Button>
         </Card>
       </div>
