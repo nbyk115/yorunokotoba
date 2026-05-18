@@ -1,8 +1,8 @@
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { DREAM_TYPES } from '@/data/dreamTypes';
-import { makeSeededRandom, getDailySeed } from '@/logic/hash';
+import { SIGNS } from '@/data/signs';
+import { getSignCharacter } from '@/logic/horoscope';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
 
@@ -11,20 +11,18 @@ interface HomeViewProps {
   onNavigate: (view: ViewKey) => void;
 }
 
-function pickDailyCharacters(count: number): typeof DREAM_TYPES {
-  const rng = makeSeededRandom(getDailySeed(42));
-  const arr = [...DREAM_TYPES];
-  // Fisher-Yates shuffle using seeded RNG
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [arr[i], arr[j]] = [arr[j]!, arr[i]!];
-  }
-  return arr.slice(0, count) as unknown as typeof DREAM_TYPES;
+/**
+ * The 12 sign-type characters shown in the "あなたはどのタイプ？" lineup.
+ * One character per zodiac sign, deterministic (same as the
+ * self-understanding reading outcome).
+ */
+function getTypeLineup() {
+  return SIGNS.map((s) => ({ sign: s.k, chara: getSignCharacter(s.k) }));
 }
 
 export function HomeView({ profile, onNavigate }: HomeViewProps) {
   const greeting = getGreeting();
-  const todaysChars = pickDailyCharacters(6);
+  const typeLineup = getTypeLineup();
 
   return (
     <div
@@ -71,50 +69,67 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         </Button>
       </Card>
 
-      {/* Character carousel */}
-      <Card className="slide-up-3">
-        <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 12 }}>
-          今日出会えるかもしれないキャラ
-        </h2>
-        <div
-          className="no-scrollbar"
-          style={{
-            display: 'flex',
-            gap: 14,
-            overflowX: 'auto',
-            paddingBottom: 6,
-            WebkitOverflowScrolling: 'touch',
-          }}
-        >
-          {todaysChars.map((c) => (
-            <div
-              key={c.id}
-              style={{
-                flexShrink: 0,
-                width: 84,
-                textAlign: 'center',
-              }}
-            >
-              <CharaAvatar id={c.id} size={72} />
-              <p
+      {/* Type lineup carousel: entry point to the self-understanding reading */}
+      <div
+        className="slide-up-3"
+        role="button"
+        tabIndex={0}
+        onClick={() => onNavigate('fortune')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onNavigate('fortune');
+          }
+        }}
+        style={{ cursor: 'pointer' }}
+      >
+        <Card>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+            あなたはどのタイプ？
+          </h2>
+          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
+            あなたがどのタイプか、星座から診断できるよ。タップして自分のタイプを見てみて。
+          </p>
+          <div
+            className="no-scrollbar"
+            style={{
+              display: 'flex',
+              gap: 14,
+              overflowX: 'auto',
+              paddingBottom: 6,
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
+            {typeLineup.map(({ sign, chara }) => (
+              <div
+                key={sign}
                 style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: 'var(--t1)',
-                  marginTop: 6,
-                  lineHeight: 1.4,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  width: 84,
+                  textAlign: 'center',
                 }}
               >
-                {c.name}
-              </p>
-              <p style={{ fontSize: 9, color: 'var(--t3)', marginTop: 2 }}>{c.rarity}</p>
-            </div>
-          ))}
-        </div>
-      </Card>
+                <CharaAvatar id={chara.id} size={72} />
+                <p
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: 'var(--t1)',
+                    marginTop: 6,
+                    lineHeight: 1.4,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {chara.name}
+                </p>
+                <p style={{ fontSize: 9, color: 'var(--t3)', marginTop: 2 }}>{sign}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
 
       <Card className="slide-up-4">
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>

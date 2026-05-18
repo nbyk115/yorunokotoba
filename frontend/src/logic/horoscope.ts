@@ -13,6 +13,7 @@
  */
 
 import { SIGNS } from '@/data/signs';
+import { DREAM_TYPES, type DreamType } from '@/data/dreamTypes';
 
 export interface HoroscopeReading {
   /** One-line essence headline. */
@@ -215,4 +216,37 @@ export function getHoroscopeReading(sign: string): HoroscopeReading {
 /** Resolve the display icon for a zodiac sign. */
 export function getSignIcon(sign: string): string {
   return SIGNS.find((s) => s.k === sign)?.icon ?? '✨';
+}
+
+/**
+ * Deterministic 12-sign to character mapping (1 sign = 1 character).
+ * The character represents "your type" as the outcome of the
+ * sun-sign self-understanding reading. Each pairing loosely matches
+ * the sign's element / nature with the character's theme.
+ * DREAM_TYPES is reused as the character data source (character
+ * archetypes are conceptually independent from the dream feature).
+ */
+const SIGN_CHARACTER: Record<string, string> = {
+  おひつじ座: 'honoo_phoenix', // 火・始動: 情熱と挑戦の不死鳥
+  おうし座: 'komorebi_shika', // 地・安定: 穏やかでマイペースなシカ
+  ふたご座: 'mori_risu', // 風・好奇心: 情報通のリス
+  かに座: 'hoshi_kuma', // 水・守り: 包容力あふれるクマ
+  しし座: 'taiyou_lion', // 火・輝き: 太陽のような存在感のライオン
+  おとめ座: 'shizuku_penguin', // 地・誠実: 堅実で計画的なペンギン
+  てんびん座: 'sakura_usagi', // 風・調和: 社交的で軽やかなうさぎ
+  さそり座: 'mayonaka_neko', // 水・洞察: 深く本質を見抜くネコ
+  いて座: 'akatsuki_washi', // 火・探求: 自由を愛する冒険者のワシ
+  やぎ座: 'yozora_fukurou', // 地・達成: 思慮深く着実なフクロウ
+  みずがめ座: 'nijiiro_dragon', // 風・革新: 独創的なドラゴン
+  うお座: 'ame_iruka', // 水・慈愛: 共感に満ちたイルカ
+};
+
+/**
+ * Resolve the "your type" character for a given zodiac sign.
+ * Deterministic: the same sign always returns the same character.
+ * Falls back to the default sign's character for unknown keys.
+ */
+export function getSignCharacter(sign: string): DreamType {
+  const id = SIGN_CHARACTER[sign] ?? SIGN_CHARACTER[DEFAULT_SIGN]!;
+  return DREAM_TYPES.find((t) => t.id === id) ?? DREAM_TYPES[0]!;
 }

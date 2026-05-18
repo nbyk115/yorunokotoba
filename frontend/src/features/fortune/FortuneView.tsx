@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { getHoroscopeReading, getSignIcon } from '@/logic/horoscope';
+import { CharaAvatar } from '@/components/ui/CharaAvatar';
+import { RarityBadge } from '@/components/ui/RarityBadge';
+import { getHoroscopeReading, getSignIcon, getSignCharacter } from '@/logic/horoscope';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 
@@ -11,6 +13,7 @@ interface FortuneViewProps {
 
 export function FortuneView({ profile }: FortuneViewProps) {
   const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
+  const character = useMemo(() => getSignCharacter(profile.sign), [profile.sign]);
   const signIcon = getSignIcon(profile.sign);
 
   useEffect(() => {
@@ -62,28 +65,81 @@ export function FortuneView({ profile }: FortuneViewProps) {
         <p style={{ fontSize: 11, opacity: 0.88, marginTop: 6 }}>{reading.element}</p>
       </div>
 
+      {/* Your type: the character that represents this person */}
       <Card className="slide-up-1">
+        <p
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: 'var(--lavender)',
+            letterSpacing: 1.5,
+            textAlign: 'center',
+          }}
+        >
+          あなたのタイプ
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+            marginTop: 12,
+          }}
+        >
+          <CharaAvatar id={character.id} size={108} animate border="3px solid var(--lavender)" />
+          <h3
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: 'var(--rose)',
+              marginTop: 4,
+              textAlign: 'center',
+            }}
+          >
+            {character.name}
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <RarityBadge rarity={character.rarity} />
+            <span style={{ fontSize: 12, color: 'var(--t2)', fontWeight: 700 }}>
+              {character.sub}
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: 13,
+              color: 'var(--t1)',
+              lineHeight: 1.9,
+              marginTop: 6,
+            }}
+          >
+            {character.desc}
+          </p>
+        </div>
+      </Card>
+
+      <Card className="slide-up-2">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
           🌙 あなたの本質
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.essence}</p>
       </Card>
 
-      <Card className="slide-up-2">
+      <Card className="slide-up-3">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
           ⭐ 生まれ持った強み
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
       </Card>
 
-      <Card className="slide-up-3">
+      <Card className="slide-up-4">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: '#5BA87C', marginBottom: 10 }}>
           🌱 伸びしろと成長のヒント
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
       </Card>
 
-      <Card className="slide-up-4">
+      <Card className="slide-up-5">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
           💕 人との関わり方
         </h4>
