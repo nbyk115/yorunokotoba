@@ -52,7 +52,7 @@ export function DreamView({ profile }: DreamViewProps) {
     <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
       <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)', letterSpacing: 1 }}>
-          🌙 夢占い
+          夢占い
         </h2>
         <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
           見た夢をそのまま書いてみて。深層心理のヒントが出てくるよ。
@@ -91,33 +91,11 @@ export function DreamView({ profile }: DreamViewProps) {
 
       {result && (
         <>
-          {/* Hero: theme + keyword headline (no character) */}
-          <div
-            className="slide-up"
-            style={{
-              borderRadius: 'var(--r-card)',
-              overflow: 'hidden',
-              background: result.theme.grad,
-              color: '#fff',
-              padding: 'var(--sp-6) var(--sp-5) var(--sp-5)',
-              textAlign: 'center',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-            }}
-          >
-            <p style={{ fontSize: 12, fontWeight: 700, opacity: 0.85, letterSpacing: 1 }}>
-              {result.theme.icon} {result.theme.label}
-            </p>
-            <div style={{ fontSize: 44, margin: '14px 0 8px' }}>{result.reading.emoji}</div>
-            <h3 style={{ fontSize: 21, fontWeight: 700, letterSpacing: 1 }}>
-              {result.reading.headline}
-            </h3>
-            <p style={{ fontSize: 12, opacity: 0.92, marginTop: 8 }}>
+          {/* 夢が伝えていること: detailed reading */}
+          <Card className="slide-up">
+            <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 8 }}>
               「{result.keyword}」の夢 ・ {TONE_LABEL[result.tone]}
             </p>
-          </div>
-
-          {/* 夢が伝えていること: detailed reading */}
-          <Card className="slide-up-1">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
               夢が伝えていること
             </h4>
@@ -146,7 +124,7 @@ export function DreamView({ profile }: DreamViewProps) {
           </Card>
 
           {/* 今日のメッセージ: prose, not a bullet list */}
-          <Card className="slide-up-2">
+          <Card className="slide-up-1">
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
               今日のメッセージ
             </h4>

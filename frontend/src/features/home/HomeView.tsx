@@ -131,15 +131,22 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         </Card>
       </div>
 
-      <Card className="slide-up-4">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          📖 履歴を振り返る
-        </h2>
+      <Card
+        className="slide-up-4"
+        style={{
+          background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
+          border: '1px solid var(--border)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <span style={{ fontSize: 18 }}>🔒</span>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>月ごとの夢の傾向分析</h2>
+        </div>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          過去に見た夢の記録をいつでも読み返せるよ。月ごとの傾向分析はプレミアム機能。
+          ためた夢の記録から、月ごとの心の傾向やくり返すパターンを読み解くプレミアム機能。あなただけの深いリーディングが見られるよ。
         </p>
-        <Button variant="ghost" onClick={() => onNavigate('archive')} fullWidth>
-          履歴を見る
+        <Button variant="secondary" onClick={() => onNavigate('archive')} fullWidth>
+          ✨ プレミアムを見る
         </Button>
       </Card>
     </div>
