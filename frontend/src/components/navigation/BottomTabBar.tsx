@@ -9,7 +9,8 @@ const TABS: { key: ViewKey; icon: string; label: string }[] = [
   { key: 'home', icon: '🏠', label: 'ホーム' },
   { key: 'dream', icon: '🌙', label: '夢占い' },
   { key: 'fortune', icon: '✨', label: '自分を知る' },
-  { key: 'archive', icon: '📖', label: '履歴' },
+  { key: 'compatibility', icon: '💞', label: '相性診断' },
+  { key: 'archive', icon: '📅', label: 'カレンダー' },
 ];
 
 export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
@@ -44,7 +45,7 @@ export function BottomTabBar({ current, onChange }: BottomTabBarProps) {
               background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              padding: '8px 12px',
+              padding: '8px 6px',
               minHeight: 44,
               minWidth: 44,
               display: 'flex',

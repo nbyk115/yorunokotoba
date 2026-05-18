@@ -5,21 +5,66 @@ import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { ArchiveView } from '@/features/archive/ArchiveView';
+import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
+import { CompatibilityReceiverView } from '@/features/compatibility/CompatibilityReceiverView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
 import { Particles } from '@/components/fx/Particles';
 import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'compatibility';
+
+/**
+ * 相性診断の共有リンク（?compat=<charaId>）から開かれた場合、
+ * 送信者のキャラIDを返す。通常起動時は null。
+ */
+function readCompatLink(): string | null {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('compat');
+    return id && id.trim() ? id.trim() : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
+  // 相性診断の共有リンクから開かれたか（送信者キャラID）
+  const [compatLink, setCompatLink] = useState<string | null>(() => readCompatLink());
 
   function handleProfileComplete(p: UserProfile) {
     setProfile(p);
+  }
+
+  function exitCompatLink() {
+    setCompatLink(null);
+    setView('home');
+    try {
+      // URL から ?compat= を取り除き、通常画面に戻す
+      window.history.replaceState(null, '', window.location.pathname);
+    } catch {
+      /* history API 非対応環境 */
+    }
+  }
+
+  // 相性診断の共有リンクで開かれた場合は、プロフィール有無に関わらず
+  // 受信側画面を最優先で表示する（無料機能・登録不要）。
+  if (compatLink) {
+    return (
+      <div className="app-root" style={{ position: 'relative' }}>
+        <Particles count={14} seed={17} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <AppHeader />
+          <ErrorBoundary>
+            <CompatibilityReceiverView fromCharaId={compatLink} onExit={exitCompatLink} />
+          </ErrorBoundary>
+        </div>
+      </div>
+    );
   }
 
   if (!profile) {
@@ -41,6 +86,9 @@ export default function App() {
           {view === 'dream' && <DreamView profile={profile} />}
           {view === 'fortune' && <FortuneView profile={profile} />}
           {view === 'archive' && <ArchiveView />}
+          {view === 'compatibility' && (
+            <CompatibilityView profile={profile} onNavigate={setView} />
+          )}
         </ErrorBoundary>
       </div>
       <BottomTabBar current={view} onChange={setView} />

@@ -32,6 +32,10 @@ type EventName =
   | 'streak_update'
   | 'streak_milestone'
   | 'night_mode_toggle'
+  | 'compatibility_start'
+  | 'compatibility_complete'
+  | 'compatibility_share'
+  | 'compatibility_link_open'
   | 'exception';
 
 declare global {

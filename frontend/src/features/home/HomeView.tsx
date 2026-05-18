@@ -152,6 +152,18 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         </div>
       </Card>
 
+      <Card className="slide-up-3">
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
+          💞 あの人との相性診断
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          気になるあの人と、ふたりの相性を星座でよみとくよ。結果はリンクで相手にも送れる。無料で何度でも試せるよ。
+        </p>
+        <Button onClick={() => onNavigate('compatibility')} fullWidth>
+          相性を診断する
+        </Button>
+      </Card>
+
       <Card
         className="slide-up-3"
         style={{
