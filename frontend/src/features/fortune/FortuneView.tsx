@@ -6,6 +6,7 @@ import { RarityBadge } from '@/components/ui/RarityBadge';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
+import { InstallPrompt } from '@/components/InstallPrompt';
 import type { UserProfile } from '@/lib/firestore';
 
 /**
@@ -232,6 +233,8 @@ export function FortuneView({ profile }: FortuneViewProps) {
       >
         シェア
       </Button>
+
+      <InstallPrompt />
     </div>
   );
 }
