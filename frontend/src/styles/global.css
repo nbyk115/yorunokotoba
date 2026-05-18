@@ -98,10 +98,10 @@ a {
   100% { background-position: 200% 0; }
 }
 
-/* キャラ浮遊アニメ。Wave L1 設計書準拠: 0 → -6px → 0 / 4000ms ease-in-out infinite */
+/* キャラ浮遊アニメ。transform のみ使用（レイアウトプロパティ不使用） */
 @keyframes float-chara {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-12px); }
 }
 
 /* Animation utility classes (legacy compatible) */
@@ -138,11 +138,11 @@ a {
   opacity: 0;
 }
 
-/* App root container — Wave L1 設計書: max-width 430px / min-height 100dvh */
+/* App root container */
 .app-root {
-  max-width: 430px;
+  max-width: var(--app-max-width);
   margin: 0 auto;
-  min-height: 100dvh;
+  min-height: 100vh;
   position: relative;
 }
 
