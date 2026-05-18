@@ -87,7 +87,13 @@ export function FortuneView({ profile }: FortuneViewProps) {
             marginTop: 12,
           }}
         >
-          <CharaAvatar id={character.id} size={108} animate border="3px solid var(--lavender)" />
+          <CharaAvatar
+            id={character.id}
+            size={108}
+            animate
+            sparkle={character.rarity === 'SSR'}
+            border="3px solid var(--lavender)"
+          />
           <h3
             style={{
               fontSize: 20,

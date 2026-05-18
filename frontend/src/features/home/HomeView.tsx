@@ -130,7 +130,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
                   cursor: 'pointer',
                 }}
               >
-                <CharaAvatar id={chara.id} size={72} />
+                <CharaAvatar id={chara.id} size={72} animate sparkle={chara.rarity === 'SSR'} />
                 <p
                   style={{
                     fontSize: 10,
