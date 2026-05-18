@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { SIGNS } from '@/data/signs';
-import { getSignCharacter } from '@/logic/horoscope';
+import { getSignCharacter, getProfileCharacter } from '@/logic/horoscope';
 import {
   calculateCompatibility,
   getRankPrefix,
@@ -31,7 +31,7 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
   const [partnerSign, setPartnerSign] = useState('');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
 
-  const myChara = getSignCharacter(profile.sign);
+  const myChara = getProfileCharacter(profile);
 
   function handleConfirm() {
     if (!partnerSign) return;
@@ -70,6 +70,7 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
     <InputScreen
       profile={profile}
       myCharaId={myChara.id}
+      myCharaName={myChara.name}
       partnerSign={partnerSign}
       setPartnerSign={setPartnerSign}
       onConfirm={handleConfirm}
@@ -84,12 +85,20 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
 interface InputProps {
   profile: UserProfile;
   myCharaId: string;
+  myCharaName: string;
   partnerSign: string;
   setPartnerSign: (s: string) => void;
   onConfirm: () => void;
 }
 
-function InputScreen({ profile, myCharaId, partnerSign, setPartnerSign, onConfirm }: InputProps) {
+function InputScreen({
+  profile,
+  myCharaId,
+  myCharaName,
+  partnerSign,
+  setPartnerSign,
+  onConfirm,
+}: InputProps) {
   return (
     <div
       className="slide-up"
@@ -107,9 +116,7 @@ function InputScreen({ profile, myCharaId, partnerSign, setPartnerSign, onConfir
         <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginTop: 8 }}>
           あなた: {profile.sign}
         </p>
-        <p style={{ fontSize: 11, color: 'var(--t3)', marginTop: 2 }}>
-          {getSignCharacter(profile.sign).name}
-        </p>
+        <p style={{ fontSize: 11, color: 'var(--t3)', marginTop: 2 }}>{myCharaName}</p>
       </Card>
 
       <Card className="slide-up-2">

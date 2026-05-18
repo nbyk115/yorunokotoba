@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
-import { getHoroscopeReading, getSignIcon, getSignCharacter } from '@/logic/horoscope';
+import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
@@ -18,13 +18,24 @@ function getDailyFortuneCount(): number {
   return 1200 + Math.floor(rand() * 2400);
 }
 
+/** Rarity flavor line shown with the character result. */
+const RARITY_NOTE: Record<'N' | 'R' | 'SR' | 'SSR', string> = {
+  SSR: '✨ 最高レアのタイプ。めったに出会えないよ',
+  SR: '🌟 レアなタイプ。なかなか出会えないよ',
+  R: '💫 ちょっとめずらしいタイプ',
+  N: '🍀 親しみやすい定番タイプ',
+};
+
 interface FortuneViewProps {
   profile: UserProfile;
 }
 
 export function FortuneView({ profile }: FortuneViewProps) {
   const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
-  const character = useMemo(() => getSignCharacter(profile.sign), [profile.sign]);
+  const character = useMemo(
+    () => getProfileCharacter(profile),
+    [profile.birthYear, profile.birthMonth, profile.birthDay, profile.gender, profile.prefecture],
+  );
   const signIcon = getSignIcon(profile.sign);
   const fortuneCount = useMemo(() => getDailyFortuneCount(), []);
 
@@ -136,6 +147,19 @@ export function FortuneView({ profile }: FortuneViewProps) {
               {character.sub}
             </span>
           </div>
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              marginTop: 2,
+              color:
+                character.rarity === 'SSR' || character.rarity === 'SR'
+                  ? 'var(--rose)'
+                  : 'var(--t3)',
+            }}
+          >
+            {RARITY_NOTE[character.rarity]}・このタイプは全体の{character.pct}
+          </p>
           <p
             style={{
               fontSize: 13,

@@ -14,6 +14,8 @@
 
 import { SIGNS } from '@/data/signs';
 import { DREAM_TYPES, type DreamType } from '@/data/dreamTypes';
+import { simpleHash, makeSeededRandom } from '@/logic/hash';
+import type { UserProfile } from '@/lib/firestore';
 
 export interface HoroscopeReading {
   /** One-line essence headline. */
@@ -249,4 +251,23 @@ const SIGN_CHARACTER: Record<string, string> = {
 export function getSignCharacter(sign: string): DreamType {
   const id = SIGN_CHARACTER[sign] ?? SIGN_CHARACTER[DEFAULT_SIGN]!;
   return DREAM_TYPES.find((t) => t.id === id) ?? DREAM_TYPES[0]!;
+}
+
+/**
+ * Resolve the "your type" character from the full birth profile.
+ * Uses birth date + gender + prefecture as a deterministic seed, then
+ * draws one of all 24 character archetypes weighted by rarity. The same
+ * profile always yields the same character; rarer types (SR / SSR) are
+ * genuinely uncommon, so landing on one feels special.
+ */
+export function getProfileCharacter(profile: UserProfile): DreamType {
+  const seed = `${profile.birthYear}/${profile.birthMonth}/${profile.birthDay}/${profile.gender}/${profile.prefecture}`;
+  const rng = makeSeededRandom(simpleHash(seed) + 1);
+  const total = DREAM_TYPES.reduce((sum, t) => sum + t.weight, 0);
+  let roll = rng() * total;
+  for (const t of DREAM_TYPES) {
+    roll -= t.weight;
+    if (roll < 0) return t;
+  }
+  return DREAM_TYPES[DREAM_TYPES.length - 1]!;
 }

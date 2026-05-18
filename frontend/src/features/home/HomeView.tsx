@@ -1,8 +1,7 @@
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { SIGNS } from '@/data/signs';
-import { getSignCharacter } from '@/logic/horoscope';
+import { DREAM_TYPES } from '@/data/dreamTypes';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
 
@@ -30,18 +29,8 @@ const PREMIUM_FEATURES = [
   },
 ] as const;
 
-/**
- * The 12 sign-type characters shown in the "あなたはどのタイプ？" lineup.
- * One character per zodiac sign, deterministic (same as the
- * self-understanding reading outcome).
- */
-function getTypeLineup() {
-  return SIGNS.map((s) => ({ sign: s.k, chara: getSignCharacter(s.k) }));
-}
-
 export function HomeView({ profile, onNavigate }: HomeViewProps) {
   const greeting = getGreeting();
-  const typeLineup = getTypeLineup();
 
   return (
     <div
@@ -99,7 +88,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
             あなたはどのタイプ？
           </h3>
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
-            12星座それぞれにキャラがいるよ。あなたがどのタイプか見てみて。
+            ぜんぶで24タイプ。あなたがどのキャラか、診断してみてね。
           </p>
           <div
             className="no-scrollbar"
@@ -111,9 +100,9 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
               WebkitOverflowScrolling: 'touch',
             }}
           >
-            {typeLineup.map(({ sign, chara }) => (
+            {DREAM_TYPES.map((chara) => (
               <div
-                key={sign}
+                key={chara.id}
                 role="button"
                 tabIndex={0}
                 onClick={() => onNavigate('fortune')}
@@ -145,7 +134,6 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
                 >
                   {chara.name}
                 </p>
-                <p style={{ fontSize: 9, color: 'var(--t3)', marginTop: 2 }}>{sign}</p>
               </div>
             ))}
           </div>
