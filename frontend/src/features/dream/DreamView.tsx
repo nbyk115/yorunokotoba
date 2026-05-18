@@ -48,9 +48,11 @@ export function DreamView({ profile }: DreamViewProps) {
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)', letterSpacing: 1 }}>
           夢占い
         </h2>
-        <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
-          見た夢をそのまま書いてみて。その夢が何を意味しているか、しっかり読み解くよ。
-        </p>
+        {!result && (
+          <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
+            見た夢をそのまま書いてみて。その夢が伝えているメッセージを読み解くよ。
+          </p>
+        )}
       </header>
 
       {!result && (
@@ -90,7 +92,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
               夢が伝えていること
             </h4>
-            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)' }}>
+            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)', whiteSpace: 'pre-line' }}>
               {result.reading.body}
             </p>
 
@@ -119,7 +121,7 @@ export function DreamView({ profile }: DreamViewProps) {
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
               今日のメッセージ
             </h4>
-            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)' }}>
+            <p style={{ fontSize: 14, lineHeight: 2, color: 'var(--t1)', whiteSpace: 'pre-line' }}>
               {result.todayMessage}
             </p>
           </Card>

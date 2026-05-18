@@ -193,19 +193,95 @@ function readingFor(entry: DreamMeaning, tone: DreamTone): string {
   return entry.neutral;
 }
 
-/** Build the prose "今日のメッセージ" from the entry, theme and tone. */
+/**
+ * Insert a paragraph break near the middle sentence boundary so a multi-
+ * sentence reading renders as two readable paragraphs instead of one wall of
+ * text. Rendered with white-space: pre-line so `\n\n` shows as a blank line.
+ * Single-sentence readings are returned unchanged.
+ */
+function paragraphize(text: string): string {
+  // Split keeping each sentence's trailing ender.
+  const raw: string[] = [];
+  let cur = '';
+  for (const ch of text) {
+    cur += ch;
+    if (ch === '。' || ch === '！' || ch === '？') {
+      raw.push(cur);
+      cur = '';
+    }
+  }
+  if (cur) raw.push(cur);
+  // A decorative emoji can sit at the start of the next chunk (it was placed
+  // right after the previous sentence's ender). Pull any such leading emoji +
+  // following space back onto the previous sentence so a paragraph break never
+  // orphans an emoji at the start of a line.
+  const parts: string[] = [];
+  for (const chunk of raw) {
+    const lead = chunk.match(/^(\p{Extended_Pictographic}+️?\s*)/u);
+    if (lead && parts.length > 0) {
+      // Keep the emoji + its space with the previous sentence.
+      parts[parts.length - 1] += lead[1];
+      const rest = chunk.slice(lead[1].length);
+      if (rest.length > 0) parts.push(rest);
+    } else {
+      parts.push(chunk);
+    }
+  }
+  // A trailing chunk that is only an emoji (no sentence text) also belongs to
+  // the previous sentence.
+  if (parts.length > 1) {
+    const last = parts[parts.length - 1];
+    if (last && /^[\s\p{Extended_Pictographic}️]+$/u.test(last)) {
+      parts[parts.length - 2] += last;
+      parts.pop();
+    }
+  }
+  const cleaned = parts.filter((p) => p.trim().length > 0);
+  if (cleaned.length < 2) return cleaned.join('').trim();
+  // Break after the sentence that sits just past the midpoint, so the first
+  // paragraph carries the core reading and the second carries the nuance.
+  const breakAfter = Math.ceil(cleaned.length / 2);
+  const head = cleaned.slice(0, breakAfter).join('').trim();
+  const tail = cleaned.slice(breakAfter).join('').trim();
+  return tail ? `${head}\n\n${tail}` : head;
+}
+
+/**
+ * Build the prose "今日のメッセージ".
+ *
+ * Rendered with white-space: pre-line, so `\n\n` becomes a visible paragraph
+ * break. The message is shaped as three short paragraphs:
+ *   1. what the dream means for the dreamer right now (framing)
+ *   2. the concrete advice (entry.advice as-is)
+ *   3. a closing line of encouragement
+ * The framing / closing paragraphs deliberately avoid the word "今日" because
+ * almost every entry.advice already opens with it: keeping it out here stops
+ * the "今日は…。今日は…" wall-of-text repetition the prose used to have.
+ */
 function buildTodayMessage(
   entry: DreamMeaning,
   theme: DreamTheme,
   tone: DreamTone,
 ): string {
   if (tone === 'positive') {
-    return `今日のあなたには、はっきりと追い風が吹いている。🍃 「${entry.key}」の夢が示す前向きな流れを信じて、心が動いたことに素直に乗ってみて。👟 ${entry.advice} 小さく動き出したぶんだけ、その追い風はもっと強くなる。💫 今日感じた良い予感は、ちゃんと現実につながっているよ。🌷`;
+    return [
+      `「${entry.key}」の夢は、あなたに追い風が吹いているサイン。🍃 心が動いたことに、素直に乗っていい流れが来ているよ。`,
+      `${entry.advice}`,
+      `小さく動き出したぶんだけ、その追い風はもっと強くなる。💫 感じている良い予感は、ちゃんと現実につながっているからね。🌷`,
+    ].join('\n\n');
   }
   if (tone === 'negative') {
-    return `「${entry.key}」の夢が教えてくれているのは、今のあなたに少し手当てが必要だということ。🌿 でも大丈夫、対策ははっきりしている。✍️ ${entry.advice} 全部を一度にやろうとしなくていい。今日できる一番小さいことを1つ選んで、それだけやってみて。🤍 それだけで、明日の心の重さは確実に変わる。`;
+    return [
+      `「${entry.key}」の夢が教えてくれているのは、あなたの心に少し手当てが必要だということ。🌿 でも大丈夫、やることははっきりしているよ。✍️`,
+      `${entry.advice}`,
+      `全部を一度に片づけようとしなくていい。🤍 一番小さいことを1つやるだけで、明日の心の重さは確実に変わるよ。🌅`,
+    ].join('\n\n');
   }
-  return `「${entry.key}」の夢は、${theme.label}があなたのテーマになっているサイン。🔮 今日は、自分の内側の感覚を少し丁寧に扱ってあげる日にして。🕯️ ${entry.advice} あなたが感じていることに名前をつけてあげれば、迷いははっきりした輪郭に変わる。💭 進む方向は、もうあなたの中にあるよ。🌟`;
+  return [
+    `「${entry.key}」の夢は、${theme.label}があなたのテーマになっているサイン。🔮 自分の内側の感覚を、少し丁寧に扱ってあげるタイミングだよ。🕯️`,
+    `${entry.advice}`,
+    `感じていることに名前をつけてあげれば、迷いははっきりした輪郭に変わる。💭 進む方向は、もうあなたの中にあるからね。🌟`,
+  ].join('\n\n');
 }
 
 /**
@@ -248,7 +324,7 @@ function fallbackResult(
   const reading: DreamReading = {
     headline: '夢からの個別メッセージ',
     emoji: tone === 'negative' ? '🌙' : tone === 'positive' ? '✨' : '🔮',
-    body,
+    body: paragraphize(body),
     advice,
   };
 
@@ -257,7 +333,7 @@ function fallbackResult(
     tone,
     keyword: fragment,
     reading,
-    todayMessage,
+    todayMessage: paragraphize(todayMessage),
     archive: {
       typeId: 'dream_generic',
       themeKey: theme.key,
@@ -277,7 +353,7 @@ export function analyzeDream(text: string, _signIdx = 0): DreamResult {
   }
 
   const theme = THEMES[entry.category];
-  const body = readingFor(entry, tone);
+  const body = paragraphize(readingFor(entry, tone));
   const reading: DreamReading = {
     headline: entry.meaning,
     emoji: entry.emoji,
