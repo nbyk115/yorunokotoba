@@ -11,12 +11,6 @@ interface DreamViewProps {
   profile: UserProfile;
 }
 
-const TONE_LABEL: Record<DreamResult['tone'], string> = {
-  positive: '前向きな夢',
-  negative: 'こころのサイン',
-  neutral: '深層からのメッセージ',
-};
-
 export function DreamView({ profile }: DreamViewProps) {
   const [text, setText] = useState('');
   const [result, setResult] = useState<DreamResult | null>(null);
@@ -55,7 +49,7 @@ export function DreamView({ profile }: DreamViewProps) {
           夢占い
         </h2>
         <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
-          見た夢をそのまま書いてみて。深層心理のヒントが出てくるよ。
+          見た夢をそのまま書いてみて。その夢が何を意味しているか、しっかり読み解くよ。
         </p>
       </header>
 
@@ -93,9 +87,6 @@ export function DreamView({ profile }: DreamViewProps) {
         <>
           {/* 夢が伝えていること: detailed reading */}
           <Card className="slide-up">
-            <p style={{ fontSize: 12, color: 'var(--t3)', marginBottom: 8 }}>
-              「{result.keyword}」の夢 ・ {TONE_LABEL[result.tone]}
-            </p>
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
               夢が伝えていること
             </h4>
