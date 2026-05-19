@@ -101,7 +101,7 @@ a {
 /* Gentle vertical hovering for characters */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
+  50% { transform: translateY(-14px); }
 }
 
 /* Sparkle dots that twinkle in/out around SSR characters */

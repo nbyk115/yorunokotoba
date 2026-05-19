@@ -3,11 +3,12 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
+import { PremiumCard } from '@/components/PremiumCard';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
-import { InstallPrompt } from '@/components/InstallPrompt';
 import type { UserProfile } from '@/lib/firestore';
+import type { ViewKey } from '@/App';
 
 /**
  * Deterministic "people who fortuned today" count.
@@ -29,9 +30,10 @@ const RARITY_NOTE: Record<'N' | 'R' | 'SR' | 'SSR', string> = {
 
 interface FortuneViewProps {
   profile: UserProfile;
+  onNavigate: (view: ViewKey) => void;
 }
 
-export function FortuneView({ profile }: FortuneViewProps) {
+export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
   const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
   const character = useMemo(
     () => getProfileCharacter(profile),
@@ -234,7 +236,7 @@ export function FortuneView({ profile }: FortuneViewProps) {
         シェア
       </Button>
 
-      <InstallPrompt />
+      <PremiumCard onNavigate={onNavigate} />
     </div>
   );
 }

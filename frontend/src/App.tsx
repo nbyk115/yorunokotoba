@@ -4,7 +4,6 @@ import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
-import { ArchiveView } from '@/features/archive/ArchiveView';
 import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
 import { CompatibilityReceiverView } from '@/features/compatibility/CompatibilityReceiverView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
@@ -13,7 +12,7 @@ import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay
 import { Particles } from '@/components/fx/Particles';
 import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'compatibility';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility';
 
 /**
  * 相性診断の共有リンク（?compat=<charaId>）から開かれた場合、
@@ -83,9 +82,8 @@ export default function App() {
         <AppHeader />
         <ErrorBoundary>
           {view === 'home' && <HomeView profile={profile} onNavigate={setView} />}
-          {view === 'dream' && <DreamView profile={profile} />}
-          {view === 'fortune' && <FortuneView profile={profile} />}
-          {view === 'archive' && <ArchiveView />}
+          {view === 'dream' && <DreamView profile={profile} onNavigate={setView} />}
+          {view === 'fortune' && <FortuneView profile={profile} onNavigate={setView} />}
           {view === 'compatibility' && (
             <CompatibilityView profile={profile} onNavigate={setView} />
           )}
