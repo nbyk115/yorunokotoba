@@ -6,13 +6,14 @@ import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
 import { CompatibilityReceiverView } from '@/features/compatibility/CompatibilityReceiverView';
+import { SettingsView } from '@/features/settings/SettingsView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
 import { Particles } from '@/components/fx/Particles';
 import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility' | 'settings';
 
 /**
  * 相性診断の共有リンク（?compat=<charaId>）から開かれた場合、
@@ -79,7 +80,7 @@ export default function App() {
     <div className="app-root" style={{ paddingBottom: 88, position: 'relative' }}>
       <Particles count={14} seed={17} />
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <AppHeader />
+        <AppHeader onSettingsClick={() => setView('settings')} />
         <ErrorBoundary>
           {view === 'home' && <HomeView profile={profile} onNavigate={setView} />}
           {view === 'dream' && <DreamView profile={profile} onNavigate={setView} />}
@@ -87,9 +88,16 @@ export default function App() {
           {view === 'compatibility' && (
             <CompatibilityView profile={profile} onNavigate={setView} />
           )}
+          {view === 'settings' && (
+            <SettingsView
+              profile={profile}
+              onProfileUpdate={(p) => { setProfile(p); setView('home'); }}
+              onLogout={() => { setProfile(null); setView('home'); }}
+            />
+          )}
         </ErrorBoundary>
       </div>
-      <BottomTabBar current={view} onChange={setView} />
+      {view !== 'settings' && <BottomTabBar current={view} onChange={setView} />}
       {showFtue && <FtueOverlay onComplete={() => setShowFtue(false)} />}
     </div>
   );
