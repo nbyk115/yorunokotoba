@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { InstallPrompt } from '@/components/InstallPrompt';
-import { DreamShare } from '@/features/dream/DreamShare';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry } from '@/lib/archive';
@@ -154,8 +153,6 @@ export function DreamView({ profile }: DreamViewProps) {
               {saved ? '✓ ログに保存したよ' : 'ログに残す'}
             </Button>
           </Card>
-
-          <DreamShare result={result} />
 
           <InstallPrompt />
 
