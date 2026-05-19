@@ -208,6 +208,10 @@ a {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* Keep the gentle character float: tiny decorative motion, brand-core */
+  .chara-float {
+    animation: float 3.6s ease-in-out infinite !important;
+  }
 }
 
 /* Hover lift for cards/buttons */
