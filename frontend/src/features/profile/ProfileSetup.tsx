@@ -6,6 +6,16 @@ import type { UserProfile } from '@/lib/firestore';
 import { saveLocalProfile } from '@/lib/firestore';
 import { track } from '@/lib/analytics';
 
+const PREFECTURES = [
+  '北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県',
+  '茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県',
+  '新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県',
+  '静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県',
+  '奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県',
+  '徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県',
+  '熊本県','大分県','宮崎県','鹿児島県','沖縄県',
+] as const;
+
 interface ProfileSetupProps {
   initial?: UserProfile | null;
   onComplete: (profile: UserProfile) => void;
@@ -17,12 +27,13 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
   const [birthMonth, setBirthMonth] = useState(initial?.birthMonth ?? '');
   const [birthDay, setBirthDay] = useState(initial?.birthDay ?? '');
   const [gender, setGender] = useState<'male' | 'female' | ''>(initial?.gender ?? '');
+  const [prefecture, setPrefecture] = useState(initial?.prefecture ?? '');
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const m = parseInt(birthMonth, 10);
     const d = parseInt(birthDay, 10);
-    if (!name || !m || !d || !gender) return;
+    if (!name || !m || !d || !gender || !prefecture) return;
     const signIdx = getSignIndex(m, d);
     const sign = SIGNS[signIdx]?.k ?? 'おひつじ座';
     const profile: UserProfile = {
@@ -32,7 +43,7 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
       birthMonth,
       birthDay,
       gender,
-      prefecture: initial?.prefecture ?? '',
+      prefecture,
     };
     saveLocalProfile(profile);
     track('profile_complete', { sign, gender });
@@ -140,6 +151,30 @@ export function ProfileSetup({ initial, onComplete }: ProfileSetupProps) {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', display: 'block', marginBottom: 6 }}>
+              出生地（都道府県）
+            </span>
+            <select
+              value={prefecture}
+              onChange={(e) => setPrefecture(e.target.value)}
+              required
+              aria-label="出生地の都道府県"
+              style={{
+                ...inputStyle,
+                cursor: 'pointer',
+                minHeight: 48,
+              }}
+            >
+              <option value="">選んでね</option>
+              {PREFECTURES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
           </div>
 
           <Button type="submit" fullWidth style={{ marginTop: 'var(--sp-4)' }}>
