@@ -80,7 +80,8 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
               display: 'flex',
               gap: 14,
               overflowX: 'auto',
-              paddingBottom: 6,
+              paddingTop: 16,
+              paddingBottom: 16,
               WebkitOverflowScrolling: 'touch',
             }}
           >
