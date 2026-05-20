@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { SIGNS } from '@/data/signs';
-import { getSignCharacter, getProfileCharacter } from '@/logic/horoscope';
+import { SIGNS, getSignIndex } from '@/data/signs';
+import { PREFECTURES } from '@/data/prefectures';
+import { getProfileCharacter } from '@/logic/horoscope';
 import {
   calculateCompatibility,
   getRankPrefix,
@@ -23,26 +24,24 @@ type Stage = 'input' | 'result';
 
 /**
  * 相性診断（送信側）。
- * 自分のキャラと相手のキャラの相性を診断し、結果を表示する。
- * 無料機能（プレミアムゲートなし）。
+ * 自分のフルプロフィールから決まるキャラと、相手の生年月日・性別・出生地から
+ * 決まるキャラの相性を診断する。無料機能。
  */
 export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProps) {
   const [stage, setStage] = useState<Stage>('input');
-  const [partnerSign, setPartnerSign] = useState('');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
 
   const myChara = getProfileCharacter(profile);
 
-  function handleConfirm() {
-    if (!partnerSign) return;
-    const partnerChara = getSignCharacter(partnerSign);
+  function handleSubmit(partner: UserProfile) {
+    const partnerChara = getProfileCharacter(partner);
     const r = calculateCompatibility(myChara.id, partnerChara.id);
     setResult(r);
     setStage('result');
-    track('compatibility_start', { my_sign: profile.sign, partner_sign: partnerSign });
+    track('compatibility_start', { my_sign: profile.sign, partner_sign: partner.sign });
     track('compatibility_complete', {
       my_sign: profile.sign,
-      partner_sign: partnerSign,
+      partner_sign: partner.sign,
       rank: r.rank,
       my_chara: myChara.id,
       partner_chara: partnerChara.id,
@@ -52,7 +51,6 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
   function handleReset() {
     setStage('input');
     setResult(null);
-    setPartnerSign('');
   }
 
   if (stage === 'result' && result) {
@@ -71,9 +69,7 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
       profile={profile}
       myCharaId={myChara.id}
       myCharaName={myChara.name}
-      partnerSign={partnerSign}
-      setPartnerSign={setPartnerSign}
-      onConfirm={handleConfirm}
+      onSubmit={handleSubmit}
     />
   );
 }
@@ -86,20 +82,49 @@ interface InputProps {
   profile: UserProfile;
   myCharaId: string;
   myCharaName: string;
-  partnerSign: string;
-  setPartnerSign: (s: string) => void;
-  onConfirm: () => void;
+  onSubmit: (partner: UserProfile) => void;
 }
 
-function InputScreen({
-  profile,
-  myCharaId,
-  myCharaName,
-  partnerSign,
-  setPartnerSign,
-  onConfirm,
-}: InputProps) {
-  const partnerChara = partnerSign ? getSignCharacter(partnerSign) : null;
+const inputStyle = {
+  width: '100%',
+  padding: '12px 14px',
+  borderRadius: 'var(--r-input)',
+  border: '1px solid var(--border)',
+  background: 'var(--bg1)',
+  fontSize: 15,
+  color: 'var(--t1)',
+  fontFamily: 'var(--font-heading)',
+} as const;
+
+function InputScreen({ profile, myCharaId, myCharaName, onSubmit }: InputProps) {
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+  const [day, setDay] = useState('');
+  const [gender, setGender] = useState<'male' | 'female' | ''>('');
+  const [prefecture, setPrefecture] = useState('');
+
+  const m = parseInt(month, 10);
+  const d = parseInt(day, 10);
+  const ready = !!(year && m && d && gender && prefecture);
+
+  const partnerSign = ready ? SIGNS[getSignIndex(m, d)]?.k ?? null : null;
+  const partnerProfile: UserProfile | null =
+    ready && partnerSign
+      ? {
+          name: '相手',
+          sign: partnerSign,
+          birthYear: year,
+          birthMonth: month,
+          birthDay: day,
+          gender,
+          prefecture,
+        }
+      : null;
+  const partnerChara = partnerProfile ? getProfileCharacter(partnerProfile) : null;
+
+  function handleConfirm() {
+    if (partnerProfile) onSubmit(partnerProfile);
+  }
 
   return (
     <div
@@ -109,7 +134,7 @@ function InputScreen({
       <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>💞 相性診断</h2>
         <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
-          星座でふたりの相性をよみとくよ
+          ふたりの誕生日・性別・出生地で深く相性をよみとくよ
         </p>
       </header>
 
@@ -129,7 +154,7 @@ function InputScreen({
             </p>
             <p style={{ fontSize: 11, color: 'var(--t3)' }}>{myCharaName}</p>
           </div>
-          {partnerChara && (
+          {partnerChara && partnerSign && (
             <>
               <span style={{ fontSize: 20, color: 'var(--t3)' }}>×</span>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
@@ -146,38 +171,102 @@ function InputScreen({
 
       <Card className="slide-up-2">
         <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
-          気になるあの人の星座
+          気になるあの人のこと
         </h3>
         <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          相手の星座を選んで、ふたりの相性を見てみよう。
+          生年月日・性別・出生地を入れて、ふたりの相性を深くよみとこう。
         </p>
-        <select
-          value={partnerSign}
-          onChange={(e) => setPartnerSign(e.target.value)}
-          aria-label="相手の星座を選ぶ"
-          style={{
-            width: '100%',
-            minHeight: 48,
-            padding: '12px 14px',
-            borderRadius: 'var(--r-input)',
-            background: 'var(--card-solid)',
-            border: '1px solid var(--border)',
-            color: 'var(--t1)',
-            fontSize: 15,
-            fontFamily: 'var(--font-heading)',
-            cursor: 'pointer',
-            marginBottom: 'var(--sp-4)',
-          }}
-        >
-          <option value="">星座を選んで</option>
-          {SIGNS.map((s) => (
-            <option key={s.k} value={s.k}>
-              {s.icon} {s.k}
-            </option>
-          ))}
-        </select>
 
-        <Button onClick={onConfirm} disabled={!partnerSign} fullWidth>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', display: 'block', marginBottom: 6 }}>
+              生年月日
+            </span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                type="number"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                placeholder="年"
+                style={inputStyle}
+                min={1900}
+                max={new Date().getFullYear()}
+              />
+              <input
+                type="number"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+                placeholder="月"
+                style={inputStyle}
+                min={1}
+                max={12}
+              />
+              <input
+                type="number"
+                value={day}
+                onChange={(e) => setDay(e.target.value)}
+                placeholder="日"
+                style={inputStyle}
+                min={1}
+                max={31}
+              />
+            </div>
+          </div>
+
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', display: 'block', marginBottom: 6 }}>
+              性別
+            </span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {(['female', 'male'] as const).map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setGender(g)}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: 'var(--r-input)',
+                    border: `1px solid ${gender === g ? 'var(--rose)' : 'var(--border)'}`,
+                    background: gender === g ? 'var(--rose)' : 'var(--card-solid)',
+                    color: gender === g ? '#fff' : 'var(--t1)',
+                    fontWeight: 700,
+                    fontFamily: 'var(--font-heading)',
+                    cursor: 'pointer',
+                    minHeight: 44,
+                  }}
+                >
+                  {g === 'female' ? '女性' : '男性'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--t2)', display: 'block', marginBottom: 6 }}>
+              出生地（都道府県）
+            </span>
+            <select
+              value={prefecture}
+              onChange={(e) => setPrefecture(e.target.value)}
+              aria-label="相手の出生地"
+              style={{
+                ...inputStyle,
+                cursor: 'pointer',
+                minHeight: 48,
+              }}
+            >
+              <option value="">選んでね</option>
+              {PREFECTURES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <Button onClick={handleConfirm} disabled={!ready} fullWidth style={{ marginTop: 'var(--sp-4)' }}>
           相性を見てみる
         </Button>
       </Card>
