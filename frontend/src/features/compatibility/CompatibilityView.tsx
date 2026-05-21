@@ -5,12 +5,8 @@ import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { SIGNS, getSignIndex } from '@/data/signs';
 import { PREFECTURES } from '@/data/prefectures';
 import { getProfileCharacter } from '@/logic/horoscope';
-import {
-  calculateCompatibility,
-  getRankPrefix,
-  getRankColor,
-  type CompatibilityResult,
-} from './compatibilityLogic';
+import { calculateCompatibility, type CompatibilityResult } from './compatibilityLogic';
+import { CompatibilityResultScreen } from './CompatibilityResultScreen';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
@@ -55,9 +51,9 @@ export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProp
 
   if (stage === 'result' && result) {
     return (
-      <ResultScreen
+      <CompatibilityResultScreen
         result={result}
-        myCharaId={myChara.id}
+        shareCharaId={myChara.id}
         onReset={handleReset}
         onNavigate={onNavigate}
       />
@@ -274,124 +270,3 @@ function InputScreen({ profile, myCharaId, myCharaName, onSubmit }: InputProps) 
   );
 }
 
-// ─────────────────────────────────────────────
-// 結果ページ
-// ─────────────────────────────────────────────
-
-interface ResultProps {
-  result: CompatibilityResult;
-  myCharaId: string;
-  onReset: () => void;
-  onNavigate: (view: ViewKey) => void;
-}
-
-function ResultScreen({ result, myCharaId, onReset, onNavigate }: ResultProps) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleShare() {
-    const url = `${window.location.origin}${window.location.pathname}?compat=${encodeURIComponent(
-      myCharaId,
-    )}`;
-    const text = `わたしとあなたの相性、見てみて💞 ${url}`;
-    track('compatibility_share', { my_chara: myCharaId, rank: result.rank });
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: 'よるのことば 相性診断', text, url });
-        return;
-      }
-    } catch {
-      /* share キャンセルや非対応はコピーにフォールバック */
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard 非対応環境 */
-    }
-  }
-
-  return (
-    <div
-      className="slide-up"
-      style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
-    >
-      <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>💞 相性診断</h2>
-        <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>無料の相性占い</p>
-      </header>
-
-      <Card className="slide-up-1" style={{ textAlign: 'center' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 8,
-            marginBottom: 'var(--sp-4)',
-          }}
-        >
-          {result.charaA && <CharaAvatar id={result.charaA.id} size={72} animate />}
-          <span style={{ fontSize: 20, color: 'var(--t3)' }}>×</span>
-          {result.charaB && <CharaAvatar id={result.charaB.id} size={72} animate />}
-        </div>
-
-        <p
-          style={{
-            fontSize: 40,
-            fontWeight: 300,
-            lineHeight: 1,
-            color: getRankColor(result.rank),
-          }}
-        >
-          {getRankPrefix(result.rank)}
-        </p>
-        <p
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: 'var(--t1)',
-            marginTop: 6,
-            letterSpacing: 1,
-          }}
-        >
-          {result.rankLabel}
-        </p>
-        <p style={{ fontSize: 13, color: 'var(--t2)', marginTop: 8 }}>{result.pairTitle}</p>
-
-        <p
-          style={{
-            fontSize: 13,
-            color: 'var(--t1)',
-            lineHeight: 1.9,
-            marginTop: 'var(--sp-4)',
-            padding: '0 4px',
-          }}
-        >
-          {result.pairText}
-        </p>
-      </Card>
-
-      <Card className="slide-up-2">
-        <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--t1)', marginBottom: 6 }}>
-          🔗 相手にも見てもらう
-        </h3>
-        <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          リンクを送ると、相手は自分の星座を選ぶだけでこの相性結果を見られるよ。
-        </p>
-        <Button variant="secondary" onClick={handleShare} fullWidth>
-          {copied ? '✓ リンクをコピーしたよ' : '相性診断のリンクを送る'}
-        </Button>
-      </Card>
-
-      <div style={{ display: 'flex', gap: 8 }}>
-        <Button variant="secondary" onClick={onReset} style={{ flex: 1 }}>
-          別の人と試す
-        </Button>
-        <Button variant="secondary" onClick={() => onNavigate('fortune')} style={{ flex: 1 }}>
-          自分のキャラを知る
-        </Button>
-      </div>
-    </div>
-  );
-}

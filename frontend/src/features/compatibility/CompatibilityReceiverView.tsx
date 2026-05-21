@@ -5,12 +5,8 @@ import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { SIGNS } from '@/data/signs';
 import { getSignCharacter } from '@/logic/horoscope';
 import { getDreamTypeById } from '@/data/dreamTypes';
-import {
-  calculateCompatibility,
-  getRankPrefix,
-  getRankColor,
-  type CompatibilityResult,
-} from './compatibilityLogic';
+import { calculateCompatibility, type CompatibilityResult } from './compatibilityLogic';
+import { CompatibilityResultScreen } from './CompatibilityResultScreen';
 import { track } from '@/lib/analytics';
 
 interface CompatibilityReceiverViewProps {
@@ -52,78 +48,10 @@ export function CompatibilityReceiverView({ fromCharaId, onExit }: Compatibility
 
   if (result) {
     return (
-      <div
-        className="slide-up"
-        style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
-      >
-        <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>💞 相性診断</h2>
-          <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>無料の相性占い</p>
-        </header>
-
-        <Card className="slide-up-1" style={{ textAlign: 'center' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: 8,
-              marginBottom: 'var(--sp-4)',
-            }}
-          >
-            {result.charaA && <CharaAvatar id={result.charaA.id} size={72} animate />}
-            <span style={{ fontSize: 20, color: 'var(--t3)' }}>×</span>
-            {result.charaB && <CharaAvatar id={result.charaB.id} size={72} animate />}
-          </div>
-
-          <p
-            style={{
-              fontSize: 40,
-              fontWeight: 300,
-              lineHeight: 1,
-              color: getRankColor(result.rank),
-            }}
-          >
-            {getRankPrefix(result.rank)}
-          </p>
-          <p
-            style={{
-              fontSize: 18,
-              fontWeight: 700,
-              color: 'var(--t1)',
-              marginTop: 6,
-              letterSpacing: 1,
-            }}
-          >
-            {result.rankLabel}
-          </p>
-          <p style={{ fontSize: 13, color: 'var(--t2)', marginTop: 8 }}>{result.pairTitle}</p>
-
-          <p
-            style={{
-              fontSize: 13,
-              color: 'var(--t1)',
-              lineHeight: 1.9,
-              marginTop: 'var(--sp-4)',
-              padding: '0 4px',
-            }}
-          >
-            {result.pairText}
-          </p>
-        </Card>
-
-        <Card className="slide-up-2" style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 13, color: 'var(--t1)', fontWeight: 700, marginBottom: 6 }}>
-            夢占いや星座占いも無料で試せるよ
-          </p>
-          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-            あなたのキャラがわかる自分診断もできるよ。
-          </p>
-          <Button onClick={onExit} fullWidth>
-            無料で試してみる
-          </Button>
-        </Card>
-      </div>
+      <CompatibilityResultScreen
+        result={result}
+        onExit={onExit}
+      />
     );
   }
 

@@ -139,3 +139,106 @@ export function getRankColor(rank: CompatibilityRank): string {
   if (rank === 'good') return 'var(--lavender)';
   return 'var(--rose)';
 }
+
+// ─────────────────────────────────────────────
+// スコア算出
+// ─────────────────────────────────────────────
+
+/**
+ * 文字列から 0〜N-1 の決定的な整数インデックスを返すシンプルハッシュ。
+ */
+function simpleHash(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
+/**
+ * ランクとペアIDから相性スコア(整数%)を決定的に算出する。
+ * - best:   80〜95
+ * - good:   60〜79
+ * - growth: 40〜59
+ */
+export function getCompatibilityScore(
+  rank: CompatibilityRank,
+  charaAId: string,
+  charaBId: string,
+): number {
+  const key = charaAId < charaBId ? charaAId + charaBId : charaBId + charaAId;
+  const h = simpleHash(key);
+  if (rank === 'best') return 80 + (h % 16);
+  if (rank === 'good') return 60 + (h % 20);
+  return 40 + (h % 20);
+}
+
+// ─────────────────────────────────────────────
+// 深まるヒント
+// ─────────────────────────────────────────────
+
+const HINT_BEST = [
+  'ふたりだけの時間を大切に。特別なことをしなくても、隣にいるだけで十分幸せを感じられる関係だよ。',
+  '素直に気持ちを伝え合うことで、この縁はさらに深まる。遠慮は無用、思ったことをそのまま言葉にしてみて。',
+  'お互いの好きなものを共有してみよう。趣味が違っても、相手の世界に踏み込むことが絆を育てるよ。',
+];
+
+const HINT_GOOD = [
+  'まずはひとつ、相手が喜ぶことを意識してみよう。小さな気遣いの積み重ねが信頼をつくるよ。',
+  '違いを受け入れる練習から始めよう。相手の「当たり前」を否定せず、まず理解しようとする姿勢が大切。',
+  '定期的に「最近どう?」って連絡してみて。忙しくても気にかけている気持ちが伝わると、距離がぐっと縮まるよ。',
+];
+
+const HINT_GROWTH = [
+  '価値観の違いをぶつけ合うより、まず「なるほど」と受け取ることから始めてみて。そこから対話が生まれるよ。',
+  '一緒に何か新しいことに挑戦してみよう。同じ体験を重ねることが、ふたりの共通言語をつくるよ。',
+  '相手の苦手なことをそっとフォローしてあげて。それだけでこの関係は大きく変わるよ。',
+];
+
+/**
+ * ランクとペアIDから「関係性が深まるヒント」を決定的に返す。
+ */
+export function getCompatibilityHint(
+  rank: CompatibilityRank,
+  charaAId: string,
+  charaBId: string,
+): string {
+  const key = charaAId < charaBId ? charaAId + charaBId : charaBId + charaAId;
+  const h = simpleHash(key + 'hint');
+  const pool = rank === 'best' ? HINT_BEST : rank === 'good' ? HINT_GOOD : HINT_GROWTH;
+  return pool[h % pool.length];
+}
+
+// ─────────────────────────────────────────────
+// 気をつけたいこと
+// ─────────────────────────────────────────────
+
+const CAUTION_BEST = [
+  'この相性の良さに甘えすぎず、お互いへの感謝を忘れないでね。当たり前にしないことが長続きの秘訣だよ。',
+  '居心地が良すぎて変化を恐れてしまうことがあるかも。ふたりで成長し続ける意識を持っておこう。',
+];
+
+const CAUTION_GOOD = [
+  '少しすれ違いを感じたら、早めに話し合うのが大事。小さな違和感を放置すると大きくなりがちだよ。',
+  '相手に期待しすぎると、ちょっとしたことで傷つきやすくなるよ。相手も完璧じゃないことを忘れずに。',
+];
+
+const CAUTION_GROWTH = [
+  '感情的になりそうなときは一呼吸おいて。言葉の選び方で関係はガラッと変わるよ。',
+  '最初から100%わかり合おうとしないで。時間をかけて理解を重ねることが、この関係の鍵だよ。',
+];
+
+/**
+ * ランクとペアIDから「気をつけたいこと」を決定的に返す。
+ */
+export function getCompatibilityCaution(
+  rank: CompatibilityRank,
+  charaAId: string,
+  charaBId: string,
+): string {
+  const key = charaAId < charaBId ? charaAId + charaBId : charaBId + charaAId;
+  const h = simpleHash(key + 'caution');
+  const pool =
+    rank === 'best' ? CAUTION_BEST : rank === 'good' ? CAUTION_GOOD : CAUTION_GROWTH;
+  return pool[h % pool.length];
+}
