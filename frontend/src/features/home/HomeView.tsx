@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
+import { RarityBadge } from '@/components/ui/RarityBadge';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { PremiumCard } from '@/components/PremiumCard';
 import { DREAM_TYPES } from '@/data/dreamTypes';
@@ -120,6 +121,9 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
                 >
                   {chara.name}
                 </p>
+                <div style={{ marginTop: 4 }}>
+                  <RarityBadge rarity={chara.rarity} />
+                </div>
               </div>
             ))}
           </div>
