@@ -92,7 +92,15 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)', letterSpacing: 1 }}>
           🌙 深夜の問いかけ
         </h2>
-        <p style={{ fontSize: 11, color: 'var(--lavender)', marginTop: 4 }}>
+        <p
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: 'var(--gold)',
+            marginTop: 4,
+            letterSpacing: 0.2,
+          }}
+        >
           プレミアム機能（プレビュー公開中）
         </p>
         {!entry && (
@@ -143,7 +151,9 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
             <Card
               className="slide-up"
               style={{
-                background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
+                background: 'linear-gradient(135deg, rgba(212, 168, 83, 0.06), rgba(176, 138, 207, 0.08))',
+                border: '1px solid rgba(212, 168, 83, 0.40)',
+                boxShadow: 'inset 0 1px 0 rgba(212, 168, 83, 0.25), 0 2px 16px rgba(0,0,0,0.08)',
               }}
             >
               <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8 }}>
@@ -162,8 +172,14 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
             </p>
           </Card>
 
-          {/* 姉貴分からの応答 */}
-          <Card className="slide-up-2">
+          {/* 姉貴分からの応答: gold 縁でプレミアム感 */}
+          <Card
+            className="slide-up-2"
+            style={{
+              border: '1px solid rgba(212, 168, 83, 0.40)',
+              boxShadow: 'inset 0 1px 0 rgba(212, 168, 83, 0.25), 0 2px 16px rgba(0,0,0,0.08)',
+            }}
+          >
             <p style={{ fontSize: 15, lineHeight: 2, color: 'var(--t1)', marginBottom: 'var(--sp-4)' }}>
               {entry.response.opener}
             </p>
@@ -186,8 +202,14 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
             </div>
           </Card>
 
-          {/* 今夜できる、いちばん小さなひとつ */}
-          <Card className="slide-up-3">
+          {/* 今夜できる、いちばん小さなひとつ: gold 縁 */}
+          <Card
+            className="slide-up-3"
+            style={{
+              border: '1px solid rgba(212, 168, 83, 0.40)',
+              boxShadow: 'inset 0 1px 0 rgba(212, 168, 83, 0.25), 0 2px 16px rgba(0,0,0,0.08)',
+            }}
+          >
             <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
               今夜のひとつ
             </h4>

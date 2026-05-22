@@ -6,40 +6,68 @@ interface PremiumCardProps {
   onNavigate: (view: ViewKey) => void;
 }
 
+/**
+ * 3 機能を「夜のあなた専用ライン」として 1 つの価値に束ねるプレミアム訴求カード。
+ * 毎日/毎月手に入るものを明示し、散在していた機能の文脈をまとめる。
+ * HomeView / DreamView / FortuneView / MidnightView の結果末尾で共用する。
+ */
+
 const PREMIUM_FEATURES = [
+  {
+    icon: '🌙',
+    title: '深夜の問いかけ',
+    cadence: '毎日',
+    desc: '今夜のモヤモヤに言葉が返ってくる。1日1問、夜専用の対話。',
+    view: 'midnight' as ViewKey,
+  },
   {
     icon: '📈',
     title: '月ごとの夢の傾向分析',
-    desc: 'ためた夢の記録から、月ごとの心の傾向やくり返すパターンを読み解くよ。',
+    cadence: '毎月',
+    desc: '夢の記録が積み重なると、今月の心のテーマとくり返しが見えてくる。',
+    view: 'dream' as ViewKey,
   },
   {
     icon: '🔭',
     title: 'ホロスコープの深い分析',
-    desc: '無料の太陽星座リーディングより踏み込んだ、もっと詳しい自己分析が見られるよ。',
+    cadence: '日替わり',
+    desc: '太陽星座の深い4層と「今日のハイライト」が、毎日一言変わって届く。',
+    view: 'fortune' as ViewKey,
   },
 ] as const;
 
-/**
- * プレミアム訴求カード。
- * HomeView / DreamView / FortuneView の結果末尾で共用する。
- * onNavigate('dream') を渡すと夢占い画面（カレンダー含む）に遷移する。
- */
 export function PremiumCard({ onNavigate }: PremiumCardProps) {
   return (
     <Card
       style={{
-        background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
-        border: '1px solid var(--border)',
+        background: 'linear-gradient(135deg, rgba(212, 168, 83, 0.06), rgba(176, 138, 207, 0.08))',
+        border: '1px solid rgba(212, 168, 83, 0.40)',
+        boxShadow:
+          'inset 0 1px 0 rgba(212, 168, 83, 0.25), 0 2px 16px rgba(0,0,0,0.08)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 18 }}>🔒</span>
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>プレミアムで、もっと深く</h2>
+      {/* ヘッダー */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+        <span style={{ fontSize: 18 }}>✨</span>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
+          夜のあなた専用ライン
+        </h2>
       </div>
-      <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-        無料の占いより一歩踏み込んだ、あなただけの深いリーディング。プレミアムでこんなことができるよ。
+      <p style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700, marginBottom: 12, letterSpacing: 0.2 }}>
+        プレミアム(プレビュー公開中)
+      </p>
+      <p
+        style={{
+          fontSize: 13,
+          color: 'var(--t2)',
+          lineHeight: 1.8,
+          marginBottom: 'var(--sp-4)',
+        }}
+      >
+        毎日・毎月・日替わりで届く、あなただけの深いリーディング3本セット。
       </p>
 
+      {/* 3 機能: 毎日/毎月/日替わりの価値を明示 */}
       <div
         style={{
           display: 'flex',
@@ -48,7 +76,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        {PREMIUM_FEATURES.map((f) => (
+        {PREMIUM_FEATURES.map((f, i) => (
           <div
             key={f.title}
             style={{
@@ -56,14 +84,42 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
               gap: 10,
               padding: '10px 12px',
               borderRadius: 'var(--r-button)',
-              background: 'var(--card-solid)',
-              border: '1px solid var(--border)',
+              background: i === 0 ? 'rgba(212, 168, 83, 0.07)' : 'var(--card-solid)',
+              border:
+                i === 0
+                  ? '1px solid rgba(212, 168, 83, 0.30)'
+                  : '1px solid var(--border)',
             }}
           >
             <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
-            <div>
-              <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>{f.title}</p>
-              <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7, marginTop: 2 }}>
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  marginBottom: 2,
+                }}
+              >
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>
+                  {f.title}
+                </p>
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: 'var(--gold)',
+                    background: 'rgba(212, 168, 83, 0.12)',
+                    border: '1px solid rgba(212, 168, 83, 0.30)',
+                    borderRadius: 'var(--r-tag)',
+                    padding: '1px 6px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {f.cadence}
+                </span>
+              </div>
+              <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7 }}>
                 {f.desc}
               </p>
             </div>
@@ -72,7 +128,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
       </div>
 
       <Button variant="secondary" onClick={() => onNavigate('dream')} fullWidth>
-        ✨ プレミアムを見る
+        ✨ プレミアムをのぞいてみる
       </Button>
     </Card>
   );

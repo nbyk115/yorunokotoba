@@ -60,7 +60,19 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
           <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
             🌙 深夜の問いかけ
           </h2>
-          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--lavender)' }}>プレミアム</span>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 700,
+              color: 'var(--gold)',
+              background: 'rgba(212, 168, 83, 0.12)',
+              border: '1px solid rgba(212, 168, 83, 0.30)',
+              borderRadius: 'var(--r-tag)',
+              padding: '1px 6px',
+            }}
+          >
+            プレミアム
+          </span>
         </div>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
           今夜のモヤモヤを、ひとつだけ書いてみて。1日1問、その夜のあなたに言葉を返すよ。
