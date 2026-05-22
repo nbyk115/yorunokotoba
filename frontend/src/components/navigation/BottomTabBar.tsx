@@ -8,7 +8,7 @@ interface BottomTabBarProps {
 const TABS: { key: ViewKey; icon: string; label: string }[] = [
   { key: 'home', icon: '🏠', label: 'ホーム' },
   { key: 'dream', icon: '🌙', label: '夢占い' },
-  { key: 'fortune', icon: '✨', label: '自分を知る' },
+  { key: 'fortune', icon: '🔮', label: 'ホロスコープ' },
 ];
 
 export function BottomTabBar({ current, onChange }: BottomTabBarProps) {

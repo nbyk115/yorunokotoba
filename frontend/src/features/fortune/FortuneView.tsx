@@ -51,9 +51,12 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
     <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
       <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>
-          ✨ ホロスコープで自分を知る
+          🔮 ホロスコープ診断
         </h2>
-        <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
+        <p style={{ fontSize: 13, color: 'var(--t2)', marginTop: 6, lineHeight: 1.8 }}>
+          生年月日から導いた太陽星座をもとに、あなたの本質・強み・人生のテーマを読み解きます。
+        </p>
+        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 4 }}>
           {signIcon} {profile.sign} · {profile.name}さん
         </p>
       </header>
@@ -68,7 +71,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           fontWeight: 700,
         }}
       >
-        🌙 今日 {fortuneCount.toLocaleString('ja-JP')} 人が自分を知りました
+        🌙 今日 {fortuneCount.toLocaleString('ja-JP')} 人がホロスコープ診断しました
       </p>
 
       {/* Hero card: sign essence headline */}
@@ -209,6 +212,19 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           🧭 あなたの人生のテーマ
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
+      </Card>
+
+      {/* Compatibility entry: same pattern as HomeView compatibility section */}
+      <Card className="slide-up-5">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+          💞 あの人との相性診断
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          気になるあの人と、ふたりの相性を星座でよみとくよ。結果はリンクで相手にも送れる。無料で何度でも試せるよ。
+        </p>
+        <Button variant="secondary" fullWidth onClick={() => onNavigate('compatibility')}>
+          相性を診断する
+        </Button>
       </Card>
 
       <Card className="slide-up-5">
