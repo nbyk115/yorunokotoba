@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PremiumCard } from '@/components/PremiumCard';
-import { PremiumFeatureCard } from '@/components/PremiumFeatureCard';
+import { DreamTrendCard } from '@/components/DreamTrendCard';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry, loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
@@ -54,12 +54,6 @@ const navBtnStyle: React.CSSProperties = {
   justifyContent: 'center',
   fontFamily: 'var(--font-heading)',
 };
-
-const MONTHLY_TREND_TEASERS = [
-  { label: '🌙 今月いちばん多く見た夢のテーマ' },
-  { label: '📈 先月とくらべた心の動きの変化' },
-  { label: '🔁 くり返し現れるパターンとそのメッセージ' },
-];
 
 interface DreamViewProps {
   profile: UserProfile;
@@ -452,16 +446,9 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
           </div>
         )}
 
-        {/* プレミアム傾向分析ロックカード */}
+        {/* 月ごとの夢の傾向分析（機能①・プレビュー公開中） */}
         <div style={{ marginTop: 'var(--sp-4)' }}>
-          <PremiumFeatureCard
-            icon="📈"
-            title="月ごとの夢の傾向分析"
-            desc="カレンダーにためた夢の記録から、月ごとの心のテーマやくり返すパターンを読み解くプレミアム機能。記録がたまるほど、あなただけの深いリーディングが見られるよ。"
-            teasers={MONTHLY_TREND_TEASERS}
-            supplement={`いまの記録: ${entries.length}件${entries.length > 0 ? '。ためるほど分析が深くなるよ' : '。まず夢占いをしてみてね'}`}
-            onCtaTap={() => track('teaser_cta_tap', { feature: 'monthly_trend' })}
-          />
+          <DreamTrendCard entries={entries} />
         </div>
 
         {entries.length === 0 ? (

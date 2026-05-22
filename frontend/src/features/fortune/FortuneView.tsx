@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
-import { PremiumFeatureCard } from '@/components/PremiumFeatureCard';
+import { DeepHoroscopeCard } from '@/components/DeepHoroscopeCard';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
@@ -255,17 +255,8 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         シェア
       </Button>
 
-      <PremiumFeatureCard
-        icon="🔭"
-        title="ホロスコープの深い分析"
-        desc="無料の太陽星座リーディングより踏み込んだ、もっと詳しい自己分析。月星座・上昇星座・ハウスの配置まで読み解いて、あなたの内面・対外的な印象・人生の方向性を多角的に示すよ。"
-        teasers={[
-          { label: '🌕 月星座から読む、感情と本音のクセ' },
-          { label: '⬆️ 上昇星座から読む、他者から見たあなたの印象' },
-          { label: '🏠 ハウス配置で読む、今の人生テーマと転換期' },
-        ]}
-        onCtaTap={() => track('teaser_cta_tap', { feature: 'deep_horoscope' })}
-      />
+      {/* ホロスコープの深い分析（機能②・プレビュー公開中） */}
+      <DeepHoroscopeCard profile={profile} />
     </div>
   );
 }
