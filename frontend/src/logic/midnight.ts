@@ -148,6 +148,20 @@ export function detectTimeBand(now: Date = new Date()): TimeBand {
 }
 
 /**
+ * JST の今日を YYYY-MM-DD で返す (本体プール選択の日付シード)。
+ * midnightStore.todayKeyJst と同一仕様だが、循環依存を避けてローカルに持つ。
+ * 1 日 1 問の保存は midnightStore 側が同日再生成を抑止するため、ここで日付を
+ * シードに混ぜても「同日同入力は同結果」は保たれる (翌日に開くと別結果になる)。
+ */
+function dayKeyJst(now: Date): string {
+  const d = new Date(now.getTime() + 9 * 3_600_000);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
  * 時間帯ごとの opener プール（各 4 種以上）。
  * 「平均値（断るべき）」ではなく「同じ夜にいる者どうしの対等さ」(ICP.md)。
  * 深夜は共犯感まで振り切り、朝昼は少し外す。
@@ -329,20 +343,29 @@ function variantsFor(tone: MidnightTone): readonly BodyVariant[] {
 }
 
 /**
- * トーン内のバリエーションを、本人の入力から決定的に選ぶ。
- * カテゴリに合うものを優先し、その中で simpleHash により1つ確定する。
- * カテゴリ一致が無ければトーン全体から選ぶ（必ず何か返る）。
- * 同じ入力 -> 同じ index -> 同じ応答。違う入力 -> 別 hash -> 別応答。
+ * トーン内のバリエーションを、本人の入力 + その日の日付から決定的に選ぶ。
+ *
+ * 旧実装はカテゴリ一致プールだけから選んでいたため、同カテゴリ・同トーンの
+ * 悩みでは実効 1-2 本に収束し反復が早かった。対策として:
+ *   1. カテゴリ一致プール (matched) を重み付きで前に置きつつ、トーン全体プール
+ *      (pool) も候補に混ぜる。これで一致を優先しながら表現の幅を確保する。
+ *   2. 日付キー (dayKey) をシードに混ぜ、同じ入力でも開く日でズレるようにする。
+ *      決定性は維持: 同日・同入力は同じ dayKey -> 同じ index -> 同じ応答。
+ *
+ * matched が空ならトーン全体プールから選ぶ (必ず何か返る)。
  */
 function pickBody(
   text: string,
   tone: MidnightTone,
   category: MidnightCategory,
+  dayKey: string,
 ): BodyVariant {
   const pool = variantsFor(tone);
   const matched = pool.filter((v) => v.category === category);
-  const choices = matched.length > 0 ? matched : pool;
-  const idx = simpleHash(text) % choices.length;
+  // 一致プールを先頭に (優先)、続けてトーン全体プールを連結した混合候補列。
+  // 一致分が実質的に二重に含まれるため、カテゴリ一致が出やすい重み付けになる。
+  const choices = matched.length > 0 ? [...matched, ...pool] : pool;
+  const idx = simpleHash(`${text}|${dayKey}`) % choices.length;
   return choices[idx] as BodyVariant;
 }
 
@@ -402,9 +425,10 @@ export function answerMidnight(
   const tone = detectTone(input);
   const category = detectCategory(input);
   const timeBand = detectTimeBand(now);
+  const dayKey = dayKeyJst(now);
 
   const opener = pickOpener(input, timeBand);
-  const variant = pickBody(input, tone, category);
+  const variant = pickBody(input, tone, category, dayKey);
   const fragment = makeFragment(input);
   const fill = (s: string) => s.split('{f}').join(fragment);
 

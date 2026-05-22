@@ -49,6 +49,33 @@ export interface ThemeCount {
   count: number;
 }
 
+/**
+ * 感情の傾き (emotion trend)。ArchiveEntry には感情/トーン列が無いため、
+ * themeKey から感情極性を近似して当月分を集計する (¥0・決定的)。
+ *  - free / work -> 前向き (forward): 自由・飛翔 / 成長・課題は外向きの動き
+ *  - anx        -> 手当て (tending): 不安・解放は休息や回復のサイン
+ *  - love / mystery -> 凪 (calm):  恋愛・感情 / 深層・謎は静かに見つめる温度
+ * 占いの断定・不安をあおる表現は使わない。割合は当月の記録数を母数にする。
+ */
+export type EmotionPolarity = 'forward' | 'tending' | 'calm';
+
+export interface EmotionTrend {
+  /** 前向き寄り (free/work) の件数。 */
+  forward: number;
+  /** 手当て寄り (anx) の件数。 */
+  tending: number;
+  /** 凪寄り (love/mystery) の件数。 */
+  calm: number;
+  /** 当月の記録総数 (= forward + tending + calm)。割合の母数。 */
+  total: number;
+  /** 前向き比率 (0-100 の整数 %)。total が 0 なら 0。 */
+  forwardRatio: number;
+  /** いちばん多い感情傾向。 */
+  dominant: EmotionPolarity;
+  /** 集計から組み立てた、感情の傾きを伝える一言。あおらない。 */
+  note: string;
+}
+
 /** 分析がまだ成立していないとき (当月 3 件未満)。 */
 export interface DreamTrendPending {
   ready: false;
@@ -70,6 +97,8 @@ export interface DreamTrendReport {
   monthCount: number;
   /** 頻出テーマ Top3 (多い順)。 */
   topThemes: ThemeCount[];
+  /** 今月の感情の傾き (前向き比率など)。themeKey 由来で近似。 */
+  emotionTrend: EmotionTrend;
   /** 先月とくらべた傾向の変化を一言で。先月 0 件なら導入の語りに切り替える。 */
   changeNote: string;
   /** くり返し現れるパターン (3 回以上のテーマ)。無ければ null。 */
@@ -231,6 +260,61 @@ function buildClosing(seed: string, curTop: ThemeKey | null): string {
   return pickN(`${seed}|closing|${key}`, CLOSING_BY_THEME[key]);
 }
 
+/* ---- 感情の傾き: themeKey 由来で近似集計 ---- */
+
+/** themeKey -> 感情極性。dream.ts のトーン設計と整合させた近似。 */
+const THEME_POLARITY: Record<ThemeKey, EmotionPolarity> = {
+  free: 'forward',
+  work: 'forward',
+  anx: 'tending',
+  love: 'calm',
+  mystery: 'calm',
+};
+
+const EMOTION_NOTE: Record<EmotionPolarity, readonly string[]> = {
+  forward: [
+    '今月の夢は、前を向くエネルギーが {ratio}% と多めだったよ。🪽 心が次の景色を見たがってるサインだね。',
+    '前向きな手ざわりの夢が {ratio}% を占めた今月。🌈 動き出す力が、ちゃんとあなたの中にそろってる。',
+    '今月は心が外へ向かう夢が {ratio}%。⚡ その勢いを、小さな一歩に乗せていける時期だよ。',
+  ],
+  tending: [
+    '今月の夢は、心の手当てを求める色あいが目立ったよ。🌿 がんばってきた自分を、まずねぎらってあげて。',
+    '休息を求めるサインの夢が多めの今月。🛁 立ち止まることも、ちゃんと前に進む一部だからね。',
+    '今月はいたわりのテーマが前に出ていたよ。🤍 ためこんだものを、少しずつおろしていける月にしよう。',
+  ],
+  calm: [
+    '今月の夢は、静かに自分を見つめる凪の色あいだったよ。🕯️ 急がず、感じていることを大事にしていい時期。',
+    '心が穏やかに整っている夢が多めの今月。🍃 新しいことを受け取るのに、ちょうどいい温度だね。',
+    '今月は内側にそっと耳をすませる夢が中心だったよ。🤍 言葉にならない感覚も、大切なヒントになる。',
+  ],
+};
+
+/** 当月 entries から感情の傾きを集計する。決定的・あおらない。 */
+function buildEmotionTrend(seed: string, entries: readonly ArchiveEntry[]): EmotionTrend {
+  let forward = 0;
+  let tending = 0;
+  let calm = 0;
+  for (const e of entries) {
+    const polarity = THEME_POLARITY[normalizeTheme(e.themeKey)];
+    if (polarity === 'forward') forward++;
+    else if (polarity === 'tending') tending++;
+    else calm++;
+  }
+  const total = forward + tending + calm;
+  const forwardRatio = total > 0 ? Math.round((forward / total) * 100) : 0;
+
+  // いちばん多い極性。同数は forward > tending > calm の優先で安定させる。
+  let dominant: EmotionPolarity = 'calm';
+  if (forward >= tending && forward >= calm) dominant = 'forward';
+  else if (tending >= forward && tending >= calm) dominant = 'tending';
+
+  const note = pickN(`${seed}|emotion|${dominant}`, EMOTION_NOTE[dominant])
+    .split('{ratio}')
+    .join(String(forwardRatio));
+
+  return { forward, tending, calm, total, forwardRatio, dominant, note };
+}
+
 /**
  * 夢ログ全件から、当月 (now の年月) の傾向分析を組み立てる。
  * 完全に決定的: 同じ entries + 同じ now の年月 -> 同じ出力。
@@ -272,6 +356,7 @@ export function analyzeDreamTrends(
     month,
     monthCount: thisMonth.length,
     topThemes,
+    emotionTrend: buildEmotionTrend(seed, thisMonth),
     changeNote: buildChangeNote(seed, curTop, prevTop),
     repeatNote: buildRepeatNote(seed, themes),
     closing: buildClosing(seed, curTop),

@@ -21,6 +21,7 @@
  */
 
 import { SIGNS } from '@/data/signs';
+import { simpleHash } from './hash';
 import type { UserProfile } from '@/lib/firestore';
 
 export interface DeepLayer {
@@ -30,6 +31,23 @@ export interface DeepLayer {
   label: string;
   /** 本文 (姉貴分トーンの数文)。 */
   body: string;
+}
+
+/**
+ * 「今日のハイライト」: 4 層 (裏の本音 / 恋愛 / 才能 / 転機) のうち、その日に
+ * 意識するとよい 1 層と、その層に添える一言。star sign は固定でも、
+ * simpleHash(sign + 当日 JST 日付キー) で層と一言を日替わりに選ぶことで、
+ * 「静的 -> 準動的」を実現する (実行時コスト 0、決定的)。
+ */
+export interface TodayHighlight {
+  /** どの層を今日のハイライトにしたか (hidden/love/talent/turning)。 */
+  layer: 'hidden' | 'love' | 'talent' | 'turning';
+  /** 表示ラベル (裏の本音 / 恋愛の深層 / 才能の活かし方 / 今の転機のヒント)。 */
+  label: string;
+  /** その層のアイコン (layers と同じ絵文字)。 */
+  icon: string;
+  /** その日その層に添える短い一言。あおらない・断定しない。 */
+  note: string;
 }
 
 export interface MoonApprox {
@@ -44,6 +62,11 @@ export interface MoonApprox {
 export interface DeepHoroscope {
   /** 太陽星座 (UserProfile.sign のまま)。 */
   sunSign: string;
+  /**
+   * 今日のハイライト: その日に最上部へ出す 1 層 + 一言。同じ星座でも開く日が
+   * 変わると層と一言が変わる (準動的)。カードは最上部にこれを描画する想定。
+   */
+  todayHighlight: TodayHighlight;
   /** 深掘り 4 層: 裏の本音 / 恋愛の深層 / 仕事の才能 / 今の転機。 */
   layers: DeepLayer[];
   /** 月星座の近似 (目安 + 出生時刻が必要の注記)。 */
@@ -189,6 +212,55 @@ const SIGN_DEEP: Record<string, SignDeep> = {
 
 const DEFAULT_SIGN = 'おひつじ座';
 
+/* ---- 今日のハイライト: 層と一言を日替わりで決定的に選ぶ ---- */
+
+/** 4 層のキー・ラベル・アイコン (layers と同じ並び・同じ絵文字)。 */
+const HIGHLIGHT_LAYERS: readonly { layer: TodayHighlight['layer']; label: string; icon: string }[] = [
+  { layer: 'hidden', label: '裏の本音', icon: '🫥' },
+  { layer: 'love', label: '恋愛の深層', icon: '💗' },
+  { layer: 'talent', label: '才能の活かし方', icon: '🛠️' },
+  { layer: 'turning', label: '今の転機のヒント', icon: '🧭' },
+];
+
+/**
+ * 層ごとの「今日の一言」プール (各 6 種以上)。星座を問わず使える汎用の温度で、
+ * 占いの断定・不安をあおる表現は使わない (姉貴分トーン)。simpleHash で日替わり。
+ */
+const HIGHLIGHT_NOTES: Record<TodayHighlight['layer'], readonly string[]> = {
+  hidden: [
+    '今日は、本音をひとつだけ自分に正直に認めてあげると、心が軽くなりそう。🫧',
+    'がんばり屋のあなたほど、今日は「やらない」を選ぶ勇気が効いてくる日。🌙',
+    'うまく言葉にできない気持ちも、今日はメモに一行残すだけで輪郭が見えてくるよ。📝',
+    '今日は外向きの自分を少し休めて、内側の声に耳をすませる時間を持ってみて。🕯️',
+    '人に見せていない一面こそ、今日のあなたの本当の強さが宿っている場所だよ。🤍',
+    '今日は、誰かの期待より自分の心地よさを先に置いてあげていい一日。🍵',
+  ],
+  love: [
+    '今日は、相手の出方を待つより、自分の素直な気持ちを少し外に出すと流れが動くよ。💌',
+    '大切な人へのありがとうを、今日ひとつ言葉にしてみると関係があたたかくなる。🌸',
+    '今日は深読みをお休みして、目の前の安心をそのまま受け取っていい日。🤍',
+    '心が誰かに向いているなら、その気持ちは今日のあなたの魅力そのものだよ。💗',
+    '今日は「してほしいこと」より「自分はどうしたいか」を先に決めると迷いが減る。🌷',
+    '受け取ることも愛のうち。今日は誰かのやさしさを、素直に受け取ってみて。🫶',
+  ],
+  talent: [
+    '今日は、得意なことに集中して、苦手は遠慮なく人に渡すと力が倍になる。🚀',
+    'あなたの強みが活きるのは今日みたいな一日。最初の一歩を切る役回りを引き受けてみて。⚡',
+    '今日は完璧を狙わず、80点で前に出すほうが評価につながりやすいよ。🎯',
+    '人知れず積み重ねてきたことが、今日ふっと形になりはじめるかもしれない。🌱',
+    '今日は、誰かを支える動きの中にこそ、あなたらしい才能が光る。🫂',
+    '気になっていた一手を、今日ひとつだけ試してみて。動いたぶんだけ景色が変わる。👟',
+  ],
+  turning: [
+    '今日は、速さより方向。どこへ向かいたいかを一行だけ言葉にしてみて。🧭',
+    '小さな変化をひとつ受け入れると、今日から流れがやさしく動き出すよ。🍃',
+    '今日は、道のりを歩いている自分そのものをねぎらってあげる日。🏔️',
+    '迷う夜こそ、あなたの軸に静かに戻ればいい。今日はその軸を確かめる一日。🕯️',
+    '今日は、広げてきたものをひとつに絞ると、眠っていた力が表に出てくる。✨',
+    '完璧な準備を待たず、不完全なまま小さく動き出していい日。🪽',
+  ],
+};
+
 /* ---- 月星座の近似 (出生時刻なし方針の妥協案) ---- */
 
 /**
@@ -249,10 +321,48 @@ function buildMoon(profile: UserProfile): MoonApprox {
 }
 
 /**
- * 太陽星座の深い分析を組み立てる。完全に決定的: 同じ profile -> 同じ出力。
- * 出生時刻が必須な上昇星座・ハウスは出さない。月星座は近似 + 注記に留める。
+ * JST の今日を YYYY-MM-DD で返す (ハイライトの日付シード)。
+ * midnightStore.todayKeyJst と同一仕様だが、循環依存を避けてローカルに持つ。
  */
-export function getDeepHoroscope(profile: UserProfile): DeepHoroscope {
+function dayKeyJst(now: Date): string {
+  const d = new Date(now.getTime() + 9 * 3_600_000);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/**
+ * 今日のハイライトを組み立てる。sign + 当日 JST 日付キーを simpleHash に通し、
+ * 4 層から 1 層と、その層の一言を決定的に選ぶ。
+ * 同じ星座・同じ日 -> 同じハイライト。日が変われば層・一言が変わる (準動的)。
+ * layer と note で別シードを使い、片方だけが動く偏りを避ける。
+ */
+function buildTodayHighlight(sign: string, now: Date): TodayHighlight {
+  const dayKey = dayKeyJst(now);
+  const layerIdx = simpleHash(`${sign}|${dayKey}|layer`) % HIGHLIGHT_LAYERS.length;
+  const picked = HIGHLIGHT_LAYERS[layerIdx]!;
+  const notes = HIGHLIGHT_NOTES[picked.layer];
+  const noteIdx = simpleHash(`${sign}|${dayKey}|note`) % notes.length;
+  return {
+    layer: picked.layer,
+    label: picked.label,
+    icon: picked.icon,
+    note: notes[noteIdx]!,
+  };
+}
+
+/**
+ * 太陽星座の深い分析を組み立てる。4 層の固定文は決定的 (同じ sign -> 同じ層本文)。
+ * todayHighlight だけが sign + 当日 JST 日付で日替わりに変わる (静的 -> 準動的)。
+ * 出生時刻が必須な上昇星座・ハウスは出さない。月星座は近似 + 注記に留める。
+ *
+ * @param now 当日判定の基準時刻。既定は現在時刻 (テスト時に固定可能)。
+ */
+export function getDeepHoroscope(
+  profile: UserProfile,
+  now: Date = new Date(),
+): DeepHoroscope {
   const sunSign = profile.sign;
   const deep = SIGN_DEEP[sunSign] ?? SIGN_DEEP[DEFAULT_SIGN]!;
 
@@ -265,6 +375,7 @@ export function getDeepHoroscope(profile: UserProfile): DeepHoroscope {
 
   return {
     sunSign,
+    todayHighlight: buildTodayHighlight(sunSign, now),
     layers,
     moon: buildMoon(profile),
     futureHint:
