@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PremiumCard } from '@/components/PremiumCard';
@@ -9,6 +9,7 @@ import { getDreamTypeById } from '@/data/dreamTypes';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
+import { pushAppState } from '@/App';
 
 // ---- カレンダー用ユーティリティ（ArchiveView から移植） ----
 
@@ -142,9 +143,11 @@ function MonthlyTrendPremiumCard({ logCount }: { logCount: number }) {
 interface DreamViewProps {
   profile: UserProfile;
   onNavigate: (view: ViewKey) => void;
+  /** result ステージへの戻りコールバックを App に登録する（null = 解除） */
+  onRegisterHistoryBack?: (cb: (() => void) | null) => void;
 }
 
-export function DreamView({ profile, onNavigate }: DreamViewProps) {
+export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamViewProps) {
   const [text, setText] = useState('');
   const [result, setResult] = useState<DreamResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -191,6 +194,18 @@ export function DreamView({ profile, onNavigate }: DreamViewProps) {
 
   const todayKey = dayKey(Date.now());
   const selectedEntries = selectedDay ? (entriesByDay.get(selectedDay) ?? []) : [];
+
+  // result ステージに入ったら pushState + 戻りコールバックを登録
+  useEffect(() => {
+    if (result) {
+      pushAppState('dream', 'result');
+      onRegisterHistoryBack?.(() => handleReset());
+    } else {
+      onRegisterHistoryBack?.(null);
+    }
+    // handleReset は関数参照が安定しているので依存に含めない（再登録不要）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   async function handleAnalyze() {
     if (!text.trim()) return;

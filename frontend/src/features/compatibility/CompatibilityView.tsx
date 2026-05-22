@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
@@ -10,10 +10,13 @@ import { CompatibilityResultScreen } from './CompatibilityResultScreen';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
+import { pushAppState } from '@/App';
 
 interface CompatibilityViewProps {
   profile: UserProfile;
   onNavigate: (view: ViewKey) => void;
+  /** result ステージへの戻りコールバックを App に登録する（null = 解除） */
+  onRegisterHistoryBack?: (cb: (() => void) | null) => void;
 }
 
 type Stage = 'input' | 'result';
@@ -23,11 +26,22 @@ type Stage = 'input' | 'result';
  * 自分のフルプロフィールから決まるキャラと、相手の生年月日・性別・出生地から
  * 決まるキャラの相性を診断する。無料機能。
  */
-export function CompatibilityView({ profile, onNavigate }: CompatibilityViewProps) {
+export function CompatibilityView({ profile, onNavigate, onRegisterHistoryBack }: CompatibilityViewProps) {
   const [stage, setStage] = useState<Stage>('input');
   const [result, setResult] = useState<CompatibilityResult | null>(null);
 
   const myChara = getProfileCharacter(profile);
+
+  // result ステージに入ったら pushState + 戻りコールバックを登録
+  useEffect(() => {
+    if (stage === 'result') {
+      pushAppState('compatibility', 'result');
+      onRegisterHistoryBack?.(() => handleReset());
+    } else {
+      onRegisterHistoryBack?.(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
   function handleSubmit(partner: UserProfile) {
     const partnerChara = getProfileCharacter(partner);

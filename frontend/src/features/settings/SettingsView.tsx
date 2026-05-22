@@ -1,20 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { clearLocalProfile } from '@/lib/firestore';
 import { signOut } from '@/lib/auth';
 import type { UserProfile } from '@/lib/firestore';
+import { pushAppState } from '@/App';
 
 interface SettingsViewProps {
   profile: UserProfile;
   onProfileUpdate: (profile: UserProfile) => void;
   onLogout: () => void;
+  /** edit ステージへの戻りコールバックを App に登録する（null = 解除） */
+  onRegisterHistoryBack?: (cb: (() => void) | null) => void;
 }
 
-export function SettingsView({ profile, onProfileUpdate, onLogout }: SettingsViewProps) {
+export function SettingsView({ profile, onProfileUpdate, onLogout, onRegisterHistoryBack }: SettingsViewProps) {
   const [editingProfile, setEditingProfile] = useState(false);
   const [confirmingLogout, setConfirmingLogout] = useState(false);
+
+  // editingProfile に入ったら pushState + 戻りコールバックを登録
+  useEffect(() => {
+    if (editingProfile) {
+      pushAppState('settings', 'edit');
+      onRegisterHistoryBack?.(() => setEditingProfile(false));
+    } else {
+      onRegisterHistoryBack?.(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingProfile]);
 
   function handleProfileComplete(p: UserProfile) {
     onProfileUpdate(p);

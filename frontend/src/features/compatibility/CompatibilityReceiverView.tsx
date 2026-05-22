@@ -10,6 +10,7 @@ import { calculateCompatibility, type CompatibilityResult } from './compatibilit
 import { CompatibilityResultScreen } from './CompatibilityResultScreen';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
+import { pushAppState } from '@/App';
 
 interface CompatibilityReceiverViewProps {
   /** URL から取得した送信者のキャラID */
@@ -48,6 +49,26 @@ export function CompatibilityReceiverView({ fromCharaId, onExit }: Compatibility
   useEffect(() => {
     track('compatibility_link_open', { from_chara: fromCharaId });
   }, [fromCharaId]);
+
+  // result ステージに入ったら履歴を積み、popstate で入力画面に戻す
+  useEffect(() => {
+    if (!result) return;
+    pushAppState('compatibility', 'result');
+
+    function handlePop(e: PopStateEvent) {
+      const state = e.state as { _ynk?: boolean; subStage?: string } | null;
+      // result ステージからの戻り: 入力画面に戻す
+      if (state?._ynk && !state.subStage) {
+        setResult(null);
+      } else if (!state?._ynk) {
+        // アプリ外の履歴: onExit で通常画面に
+        onExit();
+      }
+    }
+
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, [result, onExit]);
 
   const m = parseInt(month, 10);
   const d = parseInt(day, 10);

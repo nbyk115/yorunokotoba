@@ -109,7 +109,10 @@ export function CompatibilityResultScreen({
   }
 
   const rankEmoji =
-    result.rank === 'best' ? '✨' : result.rank === 'good' ? '🌙' : '🌱';
+    result.rank === 'best' ? '💖' : result.rank === 'good' ? '💫' : '🌱';
+
+  const scoreDecoration =
+    result.rank === 'best' ? '✨✨' : result.rank === 'good' ? '🌟' : '💪';
 
   return (
     <div
@@ -188,7 +191,7 @@ export function CompatibilityResultScreen({
             marginBottom: 4,
           }}
         >
-          {rankEmoji} {result.rankLabel}
+          {rankEmoji} {result.rankLabel} {scoreDecoration}
         </p>
         <p style={{ fontSize: 14, color: 'var(--t1)', fontWeight: 700, marginTop: 4 }}>
           {result.pairTitle}
@@ -281,7 +284,7 @@ export function CompatibilityResultScreen({
             letterSpacing: 0.5,
           }}
         >
-          🌙 気をつけたいこと
+          ⚡ 気をつけたいこと
         </h3>
         <p style={{ fontSize: 14, color: 'var(--t1)', lineHeight: 1.9 }}>
           {caution}
