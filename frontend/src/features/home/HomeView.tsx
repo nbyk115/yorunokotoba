@@ -50,6 +50,26 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         </Button>
       </Card>
 
+      <Card
+        className="slide-up-1"
+        style={{
+          background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
+            🌙 深夜の問いかけ
+          </h2>
+          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--lavender)' }}>プレミアム</span>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          今夜のモヤモヤを、ひとつだけ書いてみて。1日1問、その夜のあなたに言葉を返すよ。
+        </p>
+        <Button onClick={() => onNavigate('midnight')} fullWidth>
+          今夜のモヤモヤを聞いてもらう
+        </Button>
+      </Card>
+
       <Card className="slide-up-2">
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
           ✨ ホロスコープで自分を知る

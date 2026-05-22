@@ -3,6 +3,7 @@ import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
+import { MidnightView } from '@/features/midnight/MidnightView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
 import { CompatibilityReceiverView } from '@/features/compatibility/CompatibilityReceiverView';
@@ -13,7 +14,7 @@ import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay
 import { Particles } from '@/components/fx/Particles';
 import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility' | 'settings';
+export type ViewKey = 'home' | 'dream' | 'midnight' | 'fortune' | 'compatibility' | 'settings';
 
 /**
  * History state の型。
@@ -168,6 +169,13 @@ export default function App() {
           {view === 'home' && <HomeView profile={profile} onNavigate={navigateTo} />}
           {view === 'dream' && (
             <DreamView
+              profile={profile}
+              onNavigate={navigateTo}
+              onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
+            />
+          )}
+          {view === 'midnight' && (
+            <MidnightView
               profile={profile}
               onNavigate={navigateTo}
               onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
