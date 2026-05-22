@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PremiumCard } from '@/components/PremiumCard';
+import { PremiumFeatureCard } from '@/components/PremiumFeatureCard';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry, loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
@@ -54,91 +55,11 @@ const navBtnStyle: React.CSSProperties = {
   fontFamily: 'var(--font-heading)',
 };
 
-function MonthlyTrendPremiumCard({ logCount }: { logCount: number }) {
-  const teasers = [
-    '🌙 今月いちばん多く見た夢のテーマ',
-    '📈 先月とくらべた心の動きの変化',
-    '🔁 くり返し現れるパターンとそのメッセージ',
-  ];
-  return (
-    <Card
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
-        border: '1px solid var(--border)',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-        <span style={{ fontSize: 18 }}>🔒</span>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>夢ログの傾向分析</h3>
-      </div>
-      <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-        カレンダーにためた夢の記録から、月ごとの心のテーマやくり返すパターンを読み解くプレミアム機能。記録がたまるほど、あなただけの深いリーディングが見られるよ。
-      </p>
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: '8px 12px',
-          borderRadius: 'var(--r-button)',
-          background: 'var(--card-solid)',
-          border: '1px solid var(--border)',
-          marginBottom: 'var(--sp-4)',
-        }}
-      >
-        <span style={{ fontSize: 14 }}>📒</span>
-        <p style={{ flex: 1, fontSize: 11, color: 'var(--t2)', lineHeight: 1.6 }}>
-          いまの記録: {logCount}件
-          {logCount > 0 ? '。ためるほど分析が深くなるよ' : '。まず夢占いをしてみてね'}
-        </p>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-4)' }}>
-        {teasers.map((t) => (
-          <div
-            key={t}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '10px 12px',
-              borderRadius: 'var(--r-button)',
-              background: 'var(--card-solid)',
-              border: '1px dashed var(--border)',
-            }}
-          >
-            <p
-              style={{
-                flex: 1,
-                fontSize: 12,
-                color: 'var(--t3)',
-                filter: 'blur(0.4px)',
-                lineHeight: 1.6,
-              }}
-            >
-              {t}
-            </p>
-            <span style={{ fontSize: 12 }}>🔒</span>
-          </div>
-        ))}
-      </div>
-
-      <Button
-        variant="secondary"
-        fullWidth
-        onClick={() => track('teaser_cta_tap', { feature: 'monthly_trend' })}
-      >
-        ✨ プレミアムで解放する
-      </Button>
-      <p style={{ fontSize: 10, color: 'var(--t3)', textAlign: 'center', marginTop: 8 }}>
-        プレミアムは近日提供予定です
-      </p>
-    </Card>
-  );
-}
+const MONTHLY_TREND_TEASERS = [
+  { label: '🌙 今月いちばん多く見た夢のテーマ' },
+  { label: '📈 先月とくらべた心の動きの変化' },
+  { label: '🔁 くり返し現れるパターンとそのメッセージ' },
+];
 
 interface DreamViewProps {
   profile: UserProfile;
@@ -533,7 +454,14 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
 
         {/* プレミアム傾向分析ロックカード */}
         <div style={{ marginTop: 'var(--sp-4)' }}>
-          <MonthlyTrendPremiumCard logCount={entries.length} />
+          <PremiumFeatureCard
+            icon="📈"
+            title="月ごとの夢の傾向分析"
+            desc="カレンダーにためた夢の記録から、月ごとの心のテーマやくり返すパターンを読み解くプレミアム機能。記録がたまるほど、あなただけの深いリーディングが見られるよ。"
+            teasers={MONTHLY_TREND_TEASERS}
+            supplement={`いまの記録: ${entries.length}件${entries.length > 0 ? '。ためるほど分析が深くなるよ' : '。まず夢占いをしてみてね'}`}
+            onCtaTap={() => track('teaser_cta_tap', { feature: 'monthly_trend' })}
+          />
         </div>
 
         {entries.length === 0 ? (
