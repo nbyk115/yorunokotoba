@@ -38,9 +38,8 @@ export function CharaAvatar({
       🌙
     </div>
   ) : (
-    <img
+    <img alt=""
       src={src}
-      alt=""
       width={size}
       height={size}
       loading="lazy"
