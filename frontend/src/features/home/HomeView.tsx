@@ -149,8 +149,12 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
         </div>
       </Card>
 
+      <div className="slide-up-3">
+        <PremiumCard onNavigate={onNavigate} />
+      </div>
+
       <Card
-        className="slide-up-3"
+        className="slide-up-4"
         style={{
           background: 'linear-gradient(135deg, rgba(176, 138, 207, 0.10), rgba(232, 98, 124, 0.08))',
         }}
@@ -180,10 +184,6 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
           今夜のモヤモヤを聞いてもらう
         </Button>
       </Card>
-
-      <div className="slide-up-4">
-        <PremiumCard onNavigate={onNavigate} />
-      </div>
 
       <InstallPrompt />
     </div>
