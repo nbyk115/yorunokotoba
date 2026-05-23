@@ -127,7 +127,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
         ))}
       </div>
 
-      <Button variant="secondary" onClick={() => onNavigate('dream')} fullWidth>
+      <Button variant="primary" onClick={() => onNavigate('dream')} fullWidth>
         ✨ プレミアムをのぞいてみる
       </Button>
     </Card>

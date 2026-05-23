@@ -426,15 +426,12 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
                           {themeLabels[e.themeKey] ?? e.themeKey}
                         </p>
                       </div>
-                      <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 6, lineHeight: 1.7 }}>
-                        シンボル: {e.summary}
-                      </p>
                       <p
                         style={{
-                          fontSize: 11,
-                          color: 'var(--t3)',
-                          marginTop: 4,
-                          lineHeight: 1.7,
+                          fontSize: 13,
+                          color: 'var(--t2)',
+                          marginTop: 6,
+                          lineHeight: 1.8,
                         }}
                       >
                         {e.text}

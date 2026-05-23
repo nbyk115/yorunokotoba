@@ -202,9 +202,9 @@ export function CompatibilityResultScreen({
       <Card className="slide-up-2" as="section">
         <h3
           style={{
-            fontSize: 13,
+            fontSize: 14,
             fontWeight: 700,
-            color: 'var(--t2)',
+            color: 'var(--rose)',
             marginBottom: 8,
             letterSpacing: 0.5,
           }}
