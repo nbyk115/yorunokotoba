@@ -28,14 +28,14 @@ if [ -z "$CMD" ]; then
   exit 0
 fi
 
-# 機微パス 22 種 (substring match、誤検知よりも見落とし回避優先)
-SENSITIVE_PATHS='\.env|credentials|secrets|\.pem|\.key|_token|api_key|\.npmrc|\.pypirc|\.dockercfg|kubeconfig|\.ssh/|\.aws/credentials|id_rsa|id_dsa|id_ed25519|id_ecdsa|\.gnupg/|\.netrc|\.git-credentials'
+# 機微パス 33 種 (元 22 + 追加 11: env-local / secret-singular / cert: gpg/asc/p12/pfx/jks / wallet.dat / auth.json / service-account / gcloud / client_secret)
+SENSITIVE_PATHS='\.env|\.env\.|credentials|secrets?|\.pem|\.key|_token|api_key|\.npmrc|\.pypirc|\.dockercfg|kubeconfig|\.ssh/|\.aws/credentials|id_rsa|id_dsa|id_ed25519|id_ecdsa|\.gnupg/|\.netrc|\.git-credentials|\.crypt|\.gpg|\.asc|\.p12|\.pfx|\.jks|wallet\.dat|auth\.json|service-account|gcloud/|client_secret'
 
 # 読出系 22 種 (word boundary、env 単体は .env 誤マッチ防止のため除外)
 READ_CMDS='\bcat\b|\bhead\b|\btail\b|\bless\b|\bmore\b|\bawk\b|\bsed\b|\bgrep\b|\begrep\b|\bfgrep\b|\bwc\b|\btac\b|\bstrings\b|\bxxd\b|\bod\b|\bjq\b|\byq\b|\bcut\b|\btr\b|\bsort\b|\buniq\b|\btee\b|\bprintenv\b'
 
-# 安全 sentinel (case-insensitive、検出時は通過)
-SAFE_SENTINELS='mask|redact|truncate|sha256sum|md5sum|wc -l|wc -c|head -c 0|/dev/null 2>&1|> /dev/null|>/dev/null|--quiet|-q\b|2>/dev/null'
+# 安全 sentinel 23 種 (元 13 + 追加 10: sha1/sha512/b2/head-n-0 / 2>/dev/null / --silent / -s / sort -u / uniq -c / --count)
+SAFE_SENTINELS='mask|redact|truncate|sha1sum|sha256sum|sha512sum|md5sum|b2sum|wc -l|wc -c|head -c 0|head -n 0|/dev/null 2>&1|> /dev/null|>/dev/null|2>/dev/null|--quiet|--silent|-q\b|-s\b|sort -u|uniq -c|--count'
 
 if echo "$CMD" | grep -qE "$SENSITIVE_PATHS" \
   && echo "$CMD" | grep -qE "$READ_CMDS" \
