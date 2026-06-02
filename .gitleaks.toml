@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "secret hook 自身の擬似 token 記述・regex 定義を gitleaks スキャン対象から除外"
+paths = [
+  '''\.claude/hooks/secret-output-redact\.sh$''',
+  '''\.claude/hooks/test-secret-output-redact\.sh$''',
+  '''\.claude/hooks/secret-mask-check\.sh$''',
+  '''\.claude/hooks/test-secret-mask-check\.sh$''',
+]
