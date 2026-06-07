@@ -22,7 +22,7 @@ const PREMIUM_FEATURES = [
     title: '今夜のモヤモヤを聞いてもらう',
     cadence: '夜ごと',
     category: '夜の対話',
-    desc: '今夜のモヤモヤに言葉が返ってくる。1日1問、夜専用の対話。',
+    desc: 'こんな時間に、よく帰ってきたね。話、聞くよ。',
     view: 'midnight' as ViewKey,
   },
   {
