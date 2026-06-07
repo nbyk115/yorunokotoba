@@ -218,7 +218,7 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
             </p>
           </Card>
 
-          <PremiumCard onNavigate={onNavigate} />
+          <PremiumCard onNavigate={onNavigate} features={['dream', 'fortune']} />
 
           <Button variant="secondary" onClick={() => onNavigate('home')} fullWidth>
             ホームに戻る
