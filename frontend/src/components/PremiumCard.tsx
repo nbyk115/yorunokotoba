@@ -56,9 +56,24 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           今夜の自分を、星に聞く
         </h2>
       </div>
-      <p style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700, marginBottom: 12, letterSpacing: 0.2 }}>
-        プレミアム(プレビュー公開中)
-      </p>
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 12 }}>
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '3px 10px',
+            borderRadius: 20,
+            background: 'linear-gradient(135deg, rgba(201, 169, 97, 0.18), rgba(201, 169, 97, 0.08))',
+            border: '1px solid rgba(201, 169, 97, 0.55)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20)',
+          }}
+        >
+          <span style={{ fontSize: 10, color: 'var(--gold)' }}>★</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', letterSpacing: 0.5 }}>プレミアム</span>
+          <span style={{ fontSize: 10, fontWeight: 400, color: 'var(--gold)', opacity: 0.7, letterSpacing: 0.3 }}>プレビュー公開中</span>
+        </span>
+      </div>
       <p
         style={{
           fontSize: 13,
@@ -87,11 +102,9 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
               gap: 10,
               padding: '10px 12px',
               borderRadius: 'var(--r-button)',
-              background: i === 0 ? 'rgba(212, 168, 83, 0.07)' : 'var(--card-solid)',
-              border:
-                i === 0
-                  ? '1px solid rgba(212, 168, 83, 0.30)'
-                  : '1px solid var(--border)',
+              background: i === 0 ? 'rgba(201, 169, 97, 0.07)' : 'var(--card-secondary)',
+              border: '1px solid var(--border)',
+              boxShadow: i === 0 ? 'inset 0 1px 0 rgba(255,255,255,0.18)' : 'none',
             }}
           >
             <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
