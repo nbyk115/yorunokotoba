@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { PremiumCard } from '@/components/PremiumCard';
-import { DreamTrendCard } from '@/components/DreamTrendCard';
 import { analyzeDream, type DreamResult } from '@/logic/dream';
 import { SIGNS } from '@/data/signs';
 import { saveArchiveEntry, loadArchive, clearArchive, type ArchiveEntry } from '@/lib/archive';
@@ -257,7 +256,7 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
             </Button>
           </Card>
 
-          <PremiumCard onNavigate={onNavigate} />
+          <PremiumCard onNavigate={onNavigate} features={['midnight', 'dream']} />
 
           <Button variant="secondary" onClick={handleReset} fullWidth>
             もう一度占う
@@ -442,11 +441,6 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
             </div>
           </div>
         )}
-
-        {/* 月ごとの夢の傾向分析（機能①・プレミアム） */}
-        <div style={{ marginTop: 'var(--sp-4)' }}>
-          <DreamTrendCard entries={entries} />
-        </div>
 
         {entries.length === 0 ? (
           <Card style={{ marginTop: 'var(--sp-4)' }}>

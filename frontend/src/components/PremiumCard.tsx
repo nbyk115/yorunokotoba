@@ -118,8 +118,6 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
               }
             }}
             style={{
-              display: 'flex',
-              gap: 10,
               padding: '10px 12px',
               borderRadius: 'var(--r-button)',
               background: 'var(--card-secondary)',
@@ -128,13 +126,14 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
               cursor: 'pointer',
             }}
           >
-            <span style={{ fontSize: 16, flexShrink: 0, alignSelf: 'flex-start', marginTop: 2, lineHeight: 1 }}>{f.icon}</span>
             <div style={{ flex: 1 }}>
-              <div style={{ marginBottom: 2 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{ fontSize: 16, flexShrink: 0, lineHeight: 1 }}>{f.icon}</span>
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', margin: 0 }}>
                   {f.title}
                 </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
                   <span
                     style={{
                       fontSize: 9,
@@ -165,7 +164,6 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
                   >
                     {f.category}
                   </span>
-                </div>
               </div>
               <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7 }}>
                 {f.desc}
