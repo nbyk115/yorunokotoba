@@ -443,7 +443,7 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
           </div>
         )}
 
-        {/* 月ごとの夢の傾向分析（機能①・プレビュー公開中） */}
+        {/* 月ごとの夢の傾向分析（機能①・プレミアム） */}
         <div style={{ marginTop: 'var(--sp-4)' }}>
           <DreamTrendCard entries={entries} />
         </div>

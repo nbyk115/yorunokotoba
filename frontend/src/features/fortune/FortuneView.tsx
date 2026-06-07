@@ -255,7 +255,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         シェア
       </Button>
 
-      {/* ホロスコープの深い分析（機能②・プレビュー公開中） */}
+      {/* ホロスコープの深い分析（機能②・プレミアム） */}
       <DeepHoroscopeCard profile={profile} />
     </div>
   );

@@ -5,11 +5,11 @@
  */
 
 interface PremiumBadgeProps {
-  /** 表示テキスト。省略時は「プレミアム機能(プレビュー公開中)」 */
+  /** 表示テキスト。省略時は「プレミアム機能」 */
   label?: string;
 }
 
-export function PremiumBadge({ label = 'プレミアム機能(プレビュー公開中)' }: PremiumBadgeProps) {
+export function PremiumBadge({ label = 'プレミアム機能' }: PremiumBadgeProps) {
   return (
     <span
       style={{

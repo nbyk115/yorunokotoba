@@ -101,7 +101,7 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
             letterSpacing: 0.2,
           }}
         >
-          プレミアム機能（プレビュー公開中）
+          プレミアム機能
         </p>
         {!entry && (
           <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 6, lineHeight: 1.8 }}>

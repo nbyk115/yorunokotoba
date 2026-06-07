@@ -56,22 +56,21 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           今夜の自分を、星に聞く
         </h2>
       </div>
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
         <span
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 4,
-            padding: '3px 10px',
+            gap: 6,
+            padding: '6px 16px',
             borderRadius: 20,
             background: 'linear-gradient(135deg, rgba(201, 169, 97, 0.18), rgba(201, 169, 97, 0.08))',
             border: '1px solid rgba(201, 169, 97, 0.55)',
             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20)',
           }}
         >
-          <span style={{ fontSize: 10, color: 'var(--gold)' }}>★</span>
-          <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--gold)', letterSpacing: 0.5 }}>プレミアム</span>
-          <span style={{ fontSize: 10, fontWeight: 400, color: 'var(--gold)', opacity: 0.7, letterSpacing: 0.3 }}>プレビュー公開中</span>
+          <span style={{ fontSize: 13, color: 'var(--gold)' }}>★</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold)', letterSpacing: 0.5 }}>プレミアム機能</span>
         </span>
       </div>
       <p
@@ -94,7 +93,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        {PREMIUM_FEATURES.map((f, i) => (
+        {PREMIUM_FEATURES.map((f) => (
           <div
             key={f.title}
             role="button"
@@ -111,9 +110,9 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
               gap: 10,
               padding: '10px 12px',
               borderRadius: 'var(--r-button)',
-              background: i === 0 ? 'rgba(201, 169, 97, 0.07)' : 'var(--card-secondary)',
+              background: 'var(--card-secondary)',
               border: '1px solid var(--border)',
-              boxShadow: i === 0 ? 'inset 0 1px 0 rgba(255,255,255,0.18)' : 'none',
+              boxShadow: 'none',
               cursor: 'pointer',
             }}
           >
