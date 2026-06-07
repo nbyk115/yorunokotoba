@@ -166,33 +166,36 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
       </header>
 
       {!result && (
-        <Card className="slide-up">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="例: 蛇が出てきて、追いかけられてた。逃げ切れなくて..."
-            rows={6}
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: 'var(--sp-4)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--r-input)',
-              background: 'var(--bg1)',
-              color: 'var(--t1)',
-              fontFamily: 'var(--font-heading)',
-              fontSize: 14,
-              lineHeight: 1.8,
-              resize: 'vertical',
-              minHeight: 120,
-            }}
-          />
-          <div style={{ marginTop: 'var(--sp-4)' }}>
-            <Button onClick={handleAnalyze} fullWidth disabled={!text.trim() || loading}>
-              {loading ? '読み取ってるよ…' : '夢を読み解く'}
-            </Button>
-          </div>
-        </Card>
+        <>
+          <Card className="slide-up">
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="例: 蛇が出てきて、追いかけられてた。逃げ切れなくて..."
+              rows={6}
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: 'var(--sp-4)',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--r-input)',
+                background: 'var(--bg1)',
+                color: 'var(--t1)',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 14,
+                lineHeight: 1.8,
+                resize: 'vertical',
+                minHeight: 120,
+              }}
+            />
+            <div style={{ marginTop: 'var(--sp-4)' }}>
+              <Button onClick={handleAnalyze} fullWidth disabled={!text.trim() || loading}>
+                {loading ? '読み取ってるよ…' : '夢を読み解く'}
+              </Button>
+            </div>
+          </Card>
+          <PremiumCard onNavigate={onNavigate} features={['midnight', 'dream']} />
+        </>
       )}
 
       {result && (
