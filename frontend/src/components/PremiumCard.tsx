@@ -71,8 +71,8 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
             gap: 6,
             padding: '6px 16px',
             borderRadius: 20,
-            background: 'linear-gradient(135deg, rgba(201, 169, 97, 0.18), rgba(201, 169, 97, 0.08))',
-            border: '1px solid rgba(201, 169, 97, 0.55)',
+            background: 'linear-gradient(135deg, rgba(212, 168, 83, 0.18), rgba(212, 168, 83, 0.08))',
+            border: '1px solid rgba(212, 168, 83, 0.55)',
             boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20)',
           }}
         >
@@ -120,7 +120,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
             style={{
               padding: '10px 12px',
               borderRadius: 'var(--r-button)',
-              background: 'var(--card-secondary)',
+              background: 'var(--card)',
               border: '1px solid var(--border)',
               boxShadow: 'none',
               cursor: 'pointer',
