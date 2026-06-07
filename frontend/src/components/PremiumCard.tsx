@@ -38,14 +38,16 @@ const PREMIUM_FEATURES = [
     title: 'ホロスコープの深い分析',
     cadence: '日替わり',
     category: 'ホロスコープ',
-    desc: '太陽星座の深い4層と「今日のハイライト」が、毎日一言変わって届く。',
+    desc: '太陽星座の深い4層(裏の本音 / 恋愛深層 / 才能活用 / 転機ヒント)と今日のハイライト',
     view: 'fortune' as ViewKey,
   },
 ] as const;
 
 export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
   const displayFeatures = features
-    ? PREMIUM_FEATURES.filter((f) => features.includes(f.view as FeatureKey))
+    ? (features.map((v) => PREMIUM_FEATURES.find((f) => f.view === v)).filter(
+        (f): f is (typeof PREMIUM_FEATURES)[number] => f !== undefined
+      ))
     : PREMIUM_FEATURES;
   return (
     <Card

@@ -255,8 +255,8 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         シェア
       </Button>
 
-      {/* 夜の対話・夢占いへの導線（fortune が主機能なので fortune は除外） */}
-      <PremiumCard onNavigate={onNavigate} features={['midnight', 'dream']} />
+      {/* ホロスコープの深い分析を主訴求(1枚目)、月ごとの夢の傾向分析を補助(2枚目) */}
+      <PremiumCard onNavigate={onNavigate} features={['fortune', 'dream']} />
     </div>
   );
 }
