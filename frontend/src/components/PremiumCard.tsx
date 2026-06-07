@@ -2,8 +2,12 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import type { ViewKey } from '@/App';
 
+type FeatureKey = 'midnight' | 'dream' | 'fortune';
+
 interface PremiumCardProps {
   onNavigate: (view: ViewKey) => void;
+  /** 表示する機能 key を絞り込む。省略時は全 3 件表示。 */
+  features?: readonly FeatureKey[];
 }
 
 /**
@@ -39,7 +43,10 @@ const PREMIUM_FEATURES = [
   },
 ] as const;
 
-export function PremiumCard({ onNavigate }: PremiumCardProps) {
+export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
+  const displayFeatures = features
+    ? PREMIUM_FEATURES.filter((f) => features.includes(f.view as FeatureKey))
+    : PREMIUM_FEATURES;
   return (
     <Card
       style={{
@@ -98,7 +105,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        {PREMIUM_FEATURES.map((f) => (
+        {displayFeatures.map((f) => (
           <div
             key={f.title}
             role="button"
@@ -121,7 +128,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
               cursor: 'pointer',
             }}
           >
-            <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
+            <span style={{ fontSize: 16, flexShrink: 0, alignSelf: 'flex-start', marginTop: 2, lineHeight: 1 }}>{f.icon}</span>
             <div style={{ flex: 1 }}>
               <div style={{ marginBottom: 2 }}>
                 <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
