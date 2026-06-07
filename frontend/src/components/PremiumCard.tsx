@@ -17,6 +17,7 @@ const PREMIUM_FEATURES = [
     icon: '🌙',
     title: '今夜のモヤモヤを聞いてもらう',
     cadence: '毎日',
+    category: '夜の対話',
     desc: '今夜のモヤモヤに言葉が返ってくる。1日1問、夜専用の対話。',
     view: 'midnight' as ViewKey,
   },
@@ -24,6 +25,7 @@ const PREMIUM_FEATURES = [
     icon: '📈',
     title: '月ごとの夢の傾向分析',
     cadence: '毎月',
+    category: '夢占い',
     desc: '夢の記録が積み重なると、今月の心のテーマとくり返しが見えてくる。',
     view: 'dream' as ViewKey,
   },
@@ -31,6 +33,7 @@ const PREMIUM_FEATURES = [
     icon: '🔭',
     title: 'ホロスコープの深い分析',
     cadence: '日替わり',
+    category: 'ホロスコープ',
     desc: '太陽星座の深い4層と「今日のハイライト」が、毎日一言変わって届く。',
     view: 'fortune' as ViewKey,
   },
@@ -94,24 +97,41 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
             <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
             <div style={{ flex: 1 }}>
               <div style={{ marginBottom: 2 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginBottom: 2 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
                   {f.title}
                 </p>
-                <span
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    color: 'var(--gold)',
-                    background: 'rgba(212, 168, 83, 0.12)',
-                    border: '1px solid rgba(212, 168, 83, 0.30)',
-                    borderRadius: 'var(--r-tag)',
-                    padding: '1px 6px',
-                    whiteSpace: 'nowrap',
-                    display: 'inline-block',
-                  }}
-                >
-                  {f.cadence}
-                </span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: 'var(--gold)',
+                      background: 'rgba(212, 168, 83, 0.12)',
+                      border: '1px solid rgba(212, 168, 83, 0.30)',
+                      borderRadius: 'var(--r-tag)',
+                      padding: '1px 6px',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-block',
+                    }}
+                  >
+                    {f.cadence}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      color: 'var(--lavender)',
+                      background: 'rgba(176, 138, 207, 0.12)',
+                      border: '1px solid rgba(176, 138, 207, 0.30)',
+                      borderRadius: 'var(--r-tag)',
+                      padding: '1px 6px',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-block',
+                    }}
+                  >
+                    {f.category}
+                  </span>
+                </div>
               </div>
               <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7 }}>
                 {f.desc}
