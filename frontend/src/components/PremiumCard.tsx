@@ -7,7 +7,7 @@ interface PremiumCardProps {
 }
 
 /**
- * 3 機能を「夜の自分だけに届く占い」として 1 つの価値に束ねるプレミアム訴求カード。
+ * 3 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
  * 毎日/毎月手に入るものを明示し、散在していた機能の文脈をまとめる。
  * HomeView / DreamView / FortuneView / MidnightView の結果末尾で共用する。
  */
@@ -50,7 +50,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
         <span style={{ fontSize: 18 }}>✨</span>
         <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
-          夜の自分だけに届く占い
+          今夜の自分を、星に聞く
         </h2>
       </div>
       <p style={{ fontSize: 12, color: 'var(--gold)', fontWeight: 700, marginBottom: 12, letterSpacing: 0.2 }}>
