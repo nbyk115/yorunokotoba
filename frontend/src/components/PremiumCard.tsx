@@ -105,7 +105,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        {displayFeatures.map((f) => (
+        {displayFeatures.map((f, i) => (
           <div
             key={f.title}
             role="button"
@@ -122,7 +122,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
               borderRadius: 'var(--r-button)',
               background: 'var(--card)',
               border: '1px solid var(--border)',
-              boxShadow: 'none',
+              boxShadow: i === 0 ? 'var(--card-highlight-shadow)' : 'none',
               cursor: 'pointer',
             }}
           >
@@ -136,7 +136,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
                   <span
                     style={{
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: 700,
                       color: 'var(--gold)',
                       background: 'rgba(212, 168, 83, 0.12)',
@@ -151,7 +151,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
                   </span>
                   <span
                     style={{
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: 700,
                       color: 'var(--lavender)',
                       background: 'rgba(176, 138, 207, 0.12)',
