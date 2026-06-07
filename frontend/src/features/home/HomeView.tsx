@@ -161,7 +161,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
           <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
-            🌙 深夜の問いかけ
+            🌙 今夜のモヤモヤを聞いてもらう
           </h2>
           <span
             style={{

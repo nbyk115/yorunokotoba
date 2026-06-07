@@ -90,7 +90,7 @@ export function MidnightView({ profile, onNavigate, onRegisterHistoryBack }: Mid
     <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
       <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
         <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)', letterSpacing: 1 }}>
-          🌙 深夜の問いかけ
+          🌙 今夜のモヤモヤを聞いてもらう
         </h2>
         <p
           style={{
