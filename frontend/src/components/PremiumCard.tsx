@@ -97,6 +97,15 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
         {PREMIUM_FEATURES.map((f, i) => (
           <div
             key={f.title}
+            role="button"
+            tabIndex={0}
+            onClick={() => onNavigate(f.view)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate(f.view);
+              }
+            }}
             style={{
               display: 'flex',
               gap: 10,
@@ -105,6 +114,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
               background: i === 0 ? 'rgba(201, 169, 97, 0.07)' : 'var(--card-secondary)',
               border: '1px solid var(--border)',
               boxShadow: i === 0 ? 'inset 0 1px 0 rgba(255,255,255,0.18)' : 'none',
+              cursor: 'pointer',
             }}
           >
             <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
