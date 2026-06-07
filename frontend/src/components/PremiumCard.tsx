@@ -8,7 +8,7 @@ interface PremiumCardProps {
 
 /**
  * 3 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
- * 毎日/毎月手に入るものを明示し、散在していた機能の文脈をまとめる。
+ * 夜ごと/月ごと/日替わりの cadence を明示し、散在していた機能の文脈をまとめる。
  * HomeView / DreamView / FortuneView / MidnightView の結果末尾で共用する。
  */
 
@@ -16,7 +16,7 @@ const PREMIUM_FEATURES = [
   {
     icon: '🌙',
     title: '今夜のモヤモヤを聞いてもらう',
-    cadence: '毎日',
+    cadence: '夜ごと',
     category: '夜の対話',
     desc: '今夜のモヤモヤに言葉が返ってくる。1日1問、夜専用の対話。',
     view: 'midnight' as ViewKey,
@@ -24,7 +24,7 @@ const PREMIUM_FEATURES = [
   {
     icon: '📈',
     title: '月ごとの夢の傾向分析',
-    cadence: '毎月',
+    cadence: '月ごと',
     category: '夢占い',
     desc: '夢の記録が積み重なると、今月の心のテーマとくり返しが見えてくる。',
     view: 'dream' as ViewKey,
@@ -73,18 +73,23 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold)', letterSpacing: 0.5 }}>プレミアム機能</span>
         </span>
       </div>
-      <p
+      <div
         style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
           fontSize: 13,
           color: 'var(--t2)',
           lineHeight: 1.8,
           marginBottom: 'var(--sp-4)',
+          textAlign: 'center',
         }}
       >
-        毎日・毎月・日替わりで届く、あなただけの{PREMIUM_FEATURES.length}つの星の言葉が届くよ。
-      </p>
+        <span>夜ごと・月ごと・日替わりに、</span>
+        <span>あなただけの星の言葉が届くよ。</span>
+      </div>
 
-      {/* 3 機能: 毎日/毎月/日替わりの価値を明示 */}
+      {/* 3 機能: 夜ごと/月ごと/日替わりの cadence を明示 */}
       <div
         style={{
           display: 'flex',
