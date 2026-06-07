@@ -81,7 +81,7 @@ export function DeepHoroscopeCard({ profile }: DeepHoroscopeCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        無料の占いより一段踏み込んだ、{deep.sunSign}のあなたの深い層を読み解くよ。
+        {deep.sunSign}のあなただけに、もう一層深く届けるよ。✨
       </p>
 
       {/* 深掘り 4 層: 50ms ずつずらしてスライドイン */}
