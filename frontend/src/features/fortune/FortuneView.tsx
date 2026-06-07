@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
-import { DeepHoroscopeCard } from '@/components/DeepHoroscopeCard';
+import { PremiumCard } from '@/components/PremiumCard';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
@@ -255,8 +255,8 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         シェア
       </Button>
 
-      {/* ホロスコープの深い分析（機能②・プレミアム） */}
-      <DeepHoroscopeCard profile={profile} />
+      {/* 夜の対話・夢占いへの導線（fortune が主機能なので fortune は除外） */}
+      <PremiumCard onNavigate={onNavigate} features={['midnight', 'dream']} />
     </div>
   );
 }
