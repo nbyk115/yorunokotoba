@@ -229,7 +229,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
 
       <Card className="slide-up-5">
         <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
-          このリーディングは生年月日から導いた太陽星座をもとにしています。出生時刻や出生地は使っていないため、ホロスコープ全体ではなく、太陽星座から見たあなたの基本的な性質をお伝えするものです。
+          この占いは生年月日から導いた太陽星座をもとにしています。出生時刻や出生地は使っていないため、ホロスコープ全体ではなく、太陽星座から見たあなたの基本的な性質をお伝えするものです。
         </p>
         <Button variant="secondary" fullWidth onClick={() => onNavigate('settings')}>
           生年月日・プロフィールを編集する
@@ -244,7 +244,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
             navigator
               .share({
                 title: 'よるのことば',
-                text: `${profile.sign}の自分を知るリーディング: ${reading.headline}`,
+                text: `${profile.sign}の自分を知る占い: ${reading.headline}`,
                 url: window.location.href,
               })
               .catch(() => undefined);

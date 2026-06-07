@@ -64,7 +64,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           marginBottom: 'var(--sp-4)',
         }}
       >
-        毎日・毎月・日替わりで届く、あなただけの深いリーディング3本セット。
+        毎日・毎月・日替わりで届く、あなただけの{PREMIUM_FEATURES.length}つの星の言葉が届くよ。
       </p>
 
       {/* 3 機能: 毎日/毎月/日替わりの価値を明示 */}
@@ -93,15 +93,8 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
           >
             <span style={{ fontSize: 16, flexShrink: 0 }}>{f.icon}</span>
             <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  marginBottom: 2,
-                }}
-              >
-                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)' }}>
+              <div style={{ marginBottom: 2 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', marginBottom: 2 }}>
                   {f.title}
                 </p>
                 <span
@@ -114,6 +107,7 @@ export function PremiumCard({ onNavigate }: PremiumCardProps) {
                     borderRadius: 'var(--r-tag)',
                     padding: '1px 6px',
                     whiteSpace: 'nowrap',
+                    display: 'inline-block',
                   }}
                 >
                   {f.cadence}
