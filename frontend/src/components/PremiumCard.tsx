@@ -38,7 +38,7 @@ const PREMIUM_FEATURES = [
     title: 'ホロスコープの深い分析',
     cadence: '日替わり',
     category: 'ホロスコープ',
-    desc: '太陽星座の深い4層(裏の本音 / 恋愛深層 / 才能活用 / 転機ヒント)と今日のハイライト',
+    desc: '太陽星座の深い4層(裏の本音 / 恋愛深層 / 才能活用 / 転機ヒント)を、毎日違う角度から読み解くよ。',
     view: 'fortune' as ViewKey,
   },
 ] as const;
