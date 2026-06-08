@@ -322,7 +322,7 @@ function buildMoon(profile: UserProfile): MoonApprox {
 
 /**
  * JST の今日を YYYY-MM-DD で返す (ハイライトの日付シード)。
- * midnightStore.todayKeyJst と同一仕様だが、循環依存を避けてローカルに持つ。
+ * ローカルに持ち、循環依存を避ける。
  */
 function dayKeyJst(now: Date): string {
   const d = new Date(now.getTime() + 9 * 3_600_000);

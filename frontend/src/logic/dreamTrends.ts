@@ -6,7 +6,7 @@
  * 先月との変化 / くり返しパターン / 姉貴分トーンの一言を、すべてルールベースで
  * 決定的に組み立てて返す。LLM / 外部 API は一切使わない。
  *
- * 設計は dream.ts / midnight.ts を踏襲:
+ * 設計は dream.ts を踏襲:
  * - 文言バリエーションは simpleHash(seed) で決定的に選ぶ (同じ集計結果 ->
  *   同じ一言 / 違う集計結果 -> 高確率で違う一言)。
  * - テーマは ArchiveEntry.themeKey (anx/love/free/work/mystery) を集計軸にする。

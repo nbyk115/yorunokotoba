@@ -2,29 +2,21 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import type { ViewKey } from '@/App';
 
-type FeatureKey = 'midnight' | 'dream' | 'fortune';
+type FeatureKey = 'dream' | 'fortune';
 
 interface PremiumCardProps {
   onNavigate: (view: ViewKey) => void;
-  /** 表示する機能 key を絞り込む。省略時は全 3 件表示。 */
+  /** 表示する機能 key を絞り込む。省略時は全 2 件表示。 */
   features?: readonly FeatureKey[];
 }
 
 /**
- * 3 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
- * 夜ごと/月ごと/日替わりの cadence を明示し、散在していた機能の文脈をまとめる。
- * HomeView / DreamView / FortuneView / MidnightView の結果末尾で共用する。
+ * 2 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
+ * 月ごと/日替わりの cadence を明示し、散在していた機能の文脈をまとめる。
+ * HomeView / DreamView / FortuneView の結果末尾で共用する。
  */
 
 const PREMIUM_FEATURES = [
-  {
-    icon: '🌙',
-    title: '今夜のモヤモヤを聞いてもらう',
-    cadence: '夜ごと',
-    category: '夜の対話',
-    desc: 'こんな時間に、よく帰ってきたね。話、聞くよ。',
-    view: 'midnight' as ViewKey,
-  },
   {
     icon: '📈',
     title: '月ごとの夢の傾向分析',
