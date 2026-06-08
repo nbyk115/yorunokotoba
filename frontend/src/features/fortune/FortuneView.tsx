@@ -107,7 +107,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
       </div>
 
       {/* Your type: the character that represents this person */}
-      <Card className="slide-up-1">
+      <Card className="slide-up-1" style={{ marginTop: 'var(--sp-4)' }}>
         <p
           style={{
             fontSize: 11,
