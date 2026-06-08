@@ -1,779 +1,328 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
-import { ShareCard } from '@/components/ui/ShareCard';
-import { generateFortune, type FortuneRank, type FortuneResult } from '@/logic/fortune';
-import { SIGNS } from '@/data/signs';
-import { ZodiacIcon } from '@/components/ui/ZodiacIcon';
-import { getGuardianMessage } from '@/data/guardianMessages';
-import { getMoonSignWave } from '@/data/moonSignWaves';
-import { getMoonPhaseCategory, getMoonPhaseIndex, getMoonPhaseLabel } from '@/lib/moonPhase';
-import { MoonPhaseIcon } from '@/components/ui/MoonPhaseIcon';
+import { RarityBadge } from '@/components/ui/RarityBadge';
+import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
+import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
-import { useSubscription } from '@/lib/subscription';
-import { PremiumCTA } from '@/components/ui/PremiumCTA';
+import type { ViewKey } from '@/App';
+
+/**
+ * Deterministic "people who fortuned today" count.
+ * Same value all day, changes when the date rolls over.
+ * Range is a natural-looking 1,200-3,600.
+ */
+function getDailyFortuneCount(): number {
+  const rand = makeSeededRandom(getDailySeed(7));
+  return 1200 + Math.floor(rand() * 2400);
+}
+
+/** Rarity flavor line shown with the character result. */
+const RARITY_NOTE: Record<'N' | 'R' | 'SR' | 'SSR', string> = {
+  SSR: '✨ 最高レアのタイプ。めったに出会えないよ',
+  SR: '🌟 レアなタイプ。なかなか出会えないよ',
+  R: '💫 ちょっとめずらしいタイプ',
+  N: '🍀 親しみやすい定番タイプ',
+};
 
 interface FortuneViewProps {
   profile: UserProfile;
-  currentUserId: string | null;
+  onNavigate: (view: ViewKey) => void;
 }
 
-/* ── ランク英語変換 ── */
-const RANK_TO_EN: Record<FortuneRank, string> = {
-  大吉: 'Great Fortune',
-  中吉: 'Fortune',
-  小吉: 'Good Luck',
-  吉: 'Lucky',
-  末吉: 'Hope',
-};
-
-/* ── ランク別テーマカラー: 金か淡いローズのみ（信号機廃止）── */
-const RANK_COLOR: Record<FortuneRank, string> = {
-  大吉: 'var(--gold)',
-  中吉: 'var(--gold)',
-  小吉: 'var(--rose)',
-  吉: 'var(--rose)',
-  末吉: 'var(--rose)',
-};
-
-/* ── ランク別 ShareCard テーマ ── */
-type CardTheme = 'rose' | 'gold' | 'lavender';
-const RANK_SHARE_THEME: Record<FortuneRank, CardTheme> = {
-  大吉: 'gold',
-  中吉: 'lavender',
-  小吉: 'rose',
-  吉: 'rose',
-  末吉: 'rose',
-};
-
-/* ────────────────────────────────────────────── */
-/*  三日月オーバーレイ（ConstellationReveal 代替）  */
-/*  creative-director 評価「幾何学的に不正確」      */
-/*  シンプルな三日月1つ + 金の細線（1.5px）で再設計  */
-/* ────────────────────────────────────────────── */
-function ConstellationReveal({ color }: { color: string }) {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!visible) return null;
-
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 50,
-        background: 'rgba(10, 8, 16, 0.88)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        pointerEvents: 'none',
-        transition: 'opacity 0.6s ease',
-        opacity: visible ? 1 : 0,
-      }}
-    >
-      {/* 三日月 SVG - 金の細線 1.5px */}
-      <svg
-        viewBox="0 0 100 100"
-        width="160"
-        height="160"
-        style={{ overflow: 'visible' }}
-      >
-        {/*
-          三日月: 大円から小円を差し引いたクリップマスクで実装。
-          大円 cx=50,cy=50,r=36 / 小円 cx=62,cy=44,r=30 の差分が三日月形。
-          stroke-dasharray アニメーションで描画演出を付ける。
-        */}
-        <defs>
-          <clipPath id="crescent-clip">
-            {/* 大円の内側だけ残す */}
-            <circle cx="50" cy="50" r="36" />
-          </clipPath>
-        </defs>
-        {/* 大円（fill なし、大円の縁だけ描く）*/}
-        <MoonCrescentPath color={color} />
-      </svg>
-
-      <p
-        style={{
-          position: 'absolute',
-          bottom: '30%',
-          color: 'rgba(240, 232, 236, 0.65)',
-          fontSize: 'var(--fs-caption)',
-          fontFamily: 'var(--font-accent)',
-          fontStyle: 'italic',
-          letterSpacing: '0.12em',
-        }}
-      >
-        星を読んでいる…
-      </p>
-    </div>
+export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
+  const reading = useMemo(() => getHoroscopeReading(profile.sign), [profile.sign]);
+  const character = useMemo(
+    () => getProfileCharacter(profile),
+    [profile.birthYear, profile.birthMonth, profile.birthDay, profile.gender, profile.prefecture],
   );
-}
-
-/* 三日月パス（stroke-dasharray でアニメ） */
-function MoonCrescentPath({ color }: { color: string }) {
-  const pathRef = useRef<SVGPathElement>(null);
-
-  useEffect(() => {
-    const el = pathRef.current;
-    if (!el) return;
-    // 三日月パスの長さを取得してdasharray設定
-    const length = el.getTotalLength();
-    el.style.strokeDasharray = String(length);
-    el.style.strokeDashoffset = String(length);
-    const raf = requestAnimationFrame(() => {
-      el.style.transition = 'stroke-dashoffset 2.0s cubic-bezier(0.4, 0, 0.2, 1)';
-      el.style.strokeDashoffset = '0';
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  /*
-    三日月パス: SVG path の arc コマンドで描く。
-    大円: 中心(50,50) r=36 を描いてから、
-    小円(中心60,44 r=28) を反対方向で差し引く形の path。
-    簡易的に: 三日月の外縁を arc で直接描く。
-  */
-  return (
-    <path
-      ref={pathRef}
-      d="
-        M 50 14
-        A 36 36 0 1 1 14 50
-        A 36 36 0 0 1 50 14
-        Z
-        M 62 20
-        A 30 30 0 0 0 20 58
-        A 30 30 0 0 0 62 20
-        Z
-      "
-      fill={color}
-      fillOpacity="0.18"
-      stroke={color}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      opacity="0.85"
-      clipRule="evenodd"
-      fillRule="evenodd"
-    />
-  );
-}
-
-
-/* ────────────────────────────────────────────── */
-/*  FortuneCard - PR4 リデザイン                  */
-/*  見出し色分け（信号機状態）を全廃。               */
-/*  全部 --text-low の小ラベルに統一し、             */
-/*  左辺に金（--accent）の極細縦線 2px で各カードを区別 */
-/* ────────────────────────────────────────────── */
-interface FortuneCardProps {
-  label: string;
-  children: React.ReactNode;
-  className?: string;
-}
-
-function FortuneCard({ label, children, className }: FortuneCardProps) {
-  return (
-    <Card
-      variant="secondary"
-      className={className}
-      style={{
-        margin: '0 16px 12px',
-        /* 左辺に金の極細縦線 2px - カード区別のアクセント */
-        borderLeft: 'var(--card-accent-line)',
-        /* ソリッド縁のみ（backdrop-filter は secondary から継承）*/
-      }}
-    >
-      {/* ラベル: Zen Maru 700 14px / --text-low / ls 0.14em (Co-Star 方式) */}
-      <p
-        style={{
-          fontFamily: 'var(--font-heading)',
-          fontSize: 'var(--fs-card-label)',
-          fontWeight: 700,
-          color: 'var(--text-low)',
-          letterSpacing: 'var(--ls-card-label)',
-          margin: '0 0 10px',
-        }}
-      >
-        {label}
-      </p>
-      {children}
-    </Card>
-  );
-}
-
-/* ────────────────────────────────────────────── */
-/*  メインコンポーネント                          */
-/* ────────────────────────────────────────────── */
-export function FortuneView({ profile, currentUserId }: FortuneViewProps) {
-  const [result, setResult] = useState<FortuneResult | null>(null);
-  const [showConstellation, setShowConstellation] = useState(true);
+  const signIcon = getSignIcon(profile.sign);
+  const fortuneCount = useMemo(() => getDailyFortuneCount(), []);
 
   useEffect(() => {
     track('fortune_start', { sign: profile.sign });
-    const r = generateFortune(
-      profile.name,
-      profile.sign,
-      profile.gender === 'male' ? 'male' : 'female',
-      parseInt(profile.birthDay, 10) || undefined,
-      parseInt(profile.birthMonth, 10) || undefined,
-    );
-    setResult(r);
-    track('fortune_complete', { sign: profile.sign, rank: r.rank });
-
-    // 1.2秒後に星座アニメを消す（ConstellationReveal 内部 timer と同期）
-    const t = setTimeout(() => setShowConstellation(false), 1200);
-    return () => clearTimeout(t);
-  }, [profile]);
-
-  const signIndex = SIGNS.findIndex((s) => s.k === profile.sign);
-
-  /* ── ローディング ── */
-  if (!result) {
-    return (
-      <div style={{ padding: 'var(--sp-6)', textAlign: 'center' }}>
-        <p style={{ color: 'var(--t2)' }}>占いを準備中…</p>
-      </div>
-    );
-  }
-
-  const rankEn = RANK_TO_EN[result.rank];
-  const rankColor = RANK_COLOR[result.rank];
-  const shareTheme = RANK_SHARE_THEME[result.rank];
+    track('fortune_complete', { sign: profile.sign });
+  }, [profile.sign]);
 
   return (
-    <>
-      {/* ── 三日月オーバーレイ（1.2秒） ── */}
-      {showConstellation && <ConstellationReveal color={rankColor === 'var(--gold)' ? '#C9A961' : '#E27A8E'} />}
+    <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+      <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--rose)' }}>
+          🔮 ホロスコープ診断
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', marginTop: 6, lineHeight: 1.8 }}>
+          生年月日から導いた太陽星座をもとに、あなたの本質・強み・人生のテーマを読み解きます。
+        </p>
+        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 4 }}>
+          {signIcon} {profile.sign} · {profile.name}さん
+        </p>
+      </header>
 
-      <div
+      {/* Social proof: deterministic daily count */}
+      <p
+        className="slide-up"
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          background: 'var(--bg1)',
-          minHeight: '100vh',
+          textAlign: 'center',
+          fontSize: 12,
+          color: 'var(--t2)',
+          fontWeight: 700,
         }}
       >
-        {/* ════════════════════════════════ */}
-        {/*  今日の運勢セクション見出し       */}
-        {/* ════════════════════════════════ */}
-        <div
+        🌙 今日 {fortuneCount.toLocaleString('ja-JP')} 人がホロスコープ診断しました
+      </p>
+
+      {/* Hero card: sign essence headline */}
+      <div
+        className="slide-up"
+        style={{
+          borderRadius: 'var(--r-card)',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, var(--rose), var(--lavender))',
+          color: '#fff',
+          padding: 'var(--sp-6) var(--sp-5)',
+          textAlign: 'center',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+        }}
+      >
+        <p style={{ fontSize: 11, fontWeight: 700, opacity: 0.85, letterSpacing: 2 }}>
+          あなたの星座
+        </p>
+        <h3
           style={{
-            padding: '28px 16px 0',
-            textAlign: 'center',
+            fontSize: 32,
+            fontWeight: 700,
+            letterSpacing: 1,
+            marginTop: 6,
+            textShadow: '0 2px 12px rgba(0,0,0,0.25)',
           }}
         >
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--text-low)',
-              letterSpacing: 'var(--ls-card-label)',
-              margin: 0,
-            }}
-          >
-            今日の運勢
-          </p>
-        </div>
-
-        {/* ════════════════════════════════ */}
-        {/*  fortune-hero                    */}
-        {/* ════════════════════════════════ */}
-        <div
-          style={{
-            padding: '16px 24px 24px',
-            textAlign: 'center',
-            background: 'var(--bg1)',
-            position: 'relative',
-          }}
-        >
-          {/* eyebrow - Cormorant italic / t3 / 星座アイコン */}
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontSize: 'var(--fs-caption)',
-              fontStyle: 'italic',
-              color: 'var(--t3)',
-              letterSpacing: '0.1em',
-              margin: '0 0 8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-            }}
-          >
-            {signIndex >= 0 && (
-              <ZodiacIcon signIndex={signIndex} size={14} color="var(--t3)" />
-            )}
-            {profile.sign} · {profile.name}
-          </p>
-
-          {/*
-            rank-en: Cormorant italic 72px - PR4 指定「維持」
-            色: --accent（金）または --rose。textShadow は PR3 で削除済。
-          */}
-          <h2
-            className="slide-up"
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontSize: 'clamp(60px, 18vw, 72px)',
-              fontWeight: 300,
-              fontStyle: 'italic',
-              color: rankColor,
-              lineHeight: 1.0,
-              letterSpacing: '-0.02em',
-              margin: '0 0 8px',
-            }}
-          >
-            {rankEn}
-          </h2>
-
-          {/* rank-jp - Zen Maru 700 / section スケール 17px */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-section)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              letterSpacing: 'var(--ls-section)',
-              margin: '0 0 16px',
-            }}
-          >
-            {result.rank}
-          </p>
-
-          {/* chara-wrapper - PR4: 80px（FortuneView のアバターも小さく）*/}
-          <div style={{ margin: '0 auto', width: 80, height: 80 }}>
-            <CharaAvatar id={result.type.id} size={80} animate />
-          </div>
-
-          {/* chara-name - Zen Maru 700 / body スケール */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              marginTop: 10,
-            }}
-          >
-            {result.type.name}
-          </p>
-
-          {/* chara-sub - micro / t3 */}
-          <p
-            style={{
-              fontSize: 'var(--fs-micro)',
-              color: 'var(--t3)',
-              marginTop: 4,
-              letterSpacing: '0.04em',
-            }}
-          >
-            {result.type.sub}
-          </p>
-
-          {/*
-            summary - PR4「占い結果本文は読ませる主役」
-            Zen Maru 400 / 16px / line-height 2.0
-          */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              marginTop: 16,
-              textAlign: 'left',
-              padding: '0 4px',
-            }}
-          >
-            {result.summary}
-          </p>
-
-          {/* 気をつけたいこと: risk をインライン 1行 / fs-caption / --t2 */}
-          {result.risk && (
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-caption)',
-                color: 'var(--t2)',
-                lineHeight: 1.6,
-                marginTop: 10,
-                textAlign: 'left',
-                padding: '0 4px',
-              }}
-            >
-              今日、気をつけたいこと: {result.risk}
-            </p>
-          )}
-        </div>
-
-        {/* カード: 今日の恋愛 */}
-        <FortuneCard label="今日の恋愛" className="slide-up-1">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.dailyLove}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 今日の仕事 */}
-        <FortuneCard label="今日の仕事" className="slide-up-1">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.dailyWork}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 今日の健康 */}
-        <FortuneCard label="今日の健康" className="slide-up-2">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.dailyHealth}
-          </p>
-        </FortuneCard>
-
-        {/* ════════════════════════════════ */}
-        {/*  ホロスコープセクション           */}
-        {/*  星座の本質・性格（恒常情報）      */}
-        {/* ════════════════════════════════ */}
-        <div
-          style={{
-            margin: '20px 16px 0',
-            padding: '0 0 4px',
-          }}
-        >
-          {/* セクション見出し */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--text-low)',
-              letterSpacing: 'var(--ls-card-label)',
-              textAlign: 'center',
-              margin: '0 0 12px',
-            }}
-          >
-            ホロスコープ
-          </p>
-          <p
-            style={{
-              fontFamily: 'var(--font-accent)',
-              fontSize: 'var(--fs-caption)',
-              fontStyle: 'italic',
-              color: 'var(--t3)',
-              textAlign: 'center',
-              letterSpacing: '0.08em',
-              margin: '0 0 16px',
-            }}
-          >
-            {profile.sign}のあなた
-          </p>
-        </div>
-
-        {/* カード: 今夜の性質 */}
-        <FortuneCard label="今夜のあなたの性質" className="slide-up-2">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.personality.trait}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 星座の恋愛傾向 */}
-        <FortuneCard label="恋愛の傾向" className="slide-up-2">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.personality.love}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 星座の仕事傾向 */}
-        <FortuneCard label="仕事の傾向" className="slide-up-2">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.personality.work}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 星座の健康傾向 */}
-        <FortuneCard label="体と心の傾向" className="slide-up-2">
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-fortune-body)',
-              fontWeight: 400,
-              color: 'var(--t1)',
-              lineHeight: 'var(--lh-fortune-body)',
-              margin: 0,
-            }}
-          >
-            {result.personality.health}
-          </p>
-        </FortuneCard>
-
-        {/* カード: 誕生数の核（lifePathMessage） */}
-        {result.lifePathMessage && (
-          <FortuneCard label="あなたの核" className="slide-up-2">
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: 'var(--fs-fortune-body)',
-                fontWeight: 400,
-                color: 'var(--t1)',
-                lineHeight: 'var(--lh-fortune-body)',
-                margin: 0,
-              }}
-            >
-              {result.lifePathMessage}
-            </p>
-          </FortuneCard>
-        )}
-
-        {/* ════════════════════════════════ */}
-        {/*  深層セクション（Premium限定）   */}
-        {/* ════════════════════════════════ */}
-        <DeepReadingSection
-          charaId={result.type.id}
-          charaName={result.type.name}
-          sign={profile.sign}
-          currentUserId={currentUserId}
-          birthday={
-            profile.birthYear && profile.birthMonth && profile.birthDay
-              ? `${profile.birthYear}-${profile.birthMonth.padStart(2, '0')}-${profile.birthDay.padStart(2, '0')}`
-              : null
-          }
-        />
-
-        {/* ════════════════════════════════ */}
-        {/*  share-section（ShareCard）      */}
-        {/* ════════════════════════════════ */}
-        <div
-          style={{
-            margin: '8px 16px 0',
-            padding: '24px 0 32px',
-          }}
-        >
-          {/* セクションラベル */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--text-low)',
-              letterSpacing: 'var(--ls-card-label)',
-              textAlign: 'center',
-              marginBottom: 16,
-            }}
-          >
-            シェアして残そう
-          </p>
-
-          <ShareCard
-            title={rankEn}
-            subtitle={result.type.sub}
-            body={result.summary.slice(0, 30) + (result.summary.length > 30 ? '…' : '')}
-            charaId={result.type.id}
-            theme={shareTheme}
-            signLabel={`${profile.sign} · ${profile.name}`}
-          />
-
-          {/* AI 免責（全コンテンツを読み終えた最後に配置・景表法対応） */}
-          <p
-            style={{
-              fontSize: 'var(--fs-micro)',
-              color: 'var(--t3)',
-              textAlign: 'center',
-              margin: '20px 0 0',
-              lineHeight: 1.6,
-              opacity: 0.7,
-            }}
-          >
-            ※ AI が生成する娯楽の占いだよ
-          </p>
-        </div>
+          {signIcon} {profile.sign}
+        </h3>
+        <p style={{ fontSize: 14, fontWeight: 700, marginTop: 10, lineHeight: 1.7 }}>
+          {reading.headline}
+        </p>
+        <p style={{ fontSize: 11, opacity: 0.88, marginTop: 6 }}>{reading.element}</p>
       </div>
-    </>
-  );
-}
 
-// ─────────────────────────────────────────────
-// DeepReadingSection（Premium限定の深層メッセージ）
-// ─────────────────────────────────────────────
-
-interface DeepReadingSectionProps {
-  charaId: string;
-  charaName: string;
-  sign: string;
-  currentUserId: string | null;
-  birthday: string | null;
-}
-
-function DeepReadingSection({
-  charaId,
-  charaName,
-  sign,
-  currentUserId,
-  birthday,
-}: DeepReadingSectionProps) {
-  const { isPremium } = useSubscription(currentUserId);
-  const message = getGuardianMessage(charaId, birthday);
-  const moonPhaseCategory = getMoonPhaseCategory();
-  const moonPhaseIdx = getMoonPhaseIndex();
-  const moonLabel = getMoonPhaseLabel();
-  const moonWave = getMoonSignWave(sign, moonPhaseCategory, birthday);
-
-  if (!message) return null;
-
-  const wrapStyle: React.CSSProperties = {
-    margin: '8px 16px 16px',
-    position: 'relative',
-  };
-
-  const eyebrowStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-accent)',
-    fontStyle: 'italic',
-    fontSize: 'var(--fs-micro)',
-    color: 'var(--gold)',
-    letterSpacing: '0.18em',
-    textTransform: 'uppercase',
-    margin: '0 0 10px',
-  };
-
-  const titleStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-heading)',
-    fontSize: 'var(--fs-body)',
-    fontWeight: 700,
-    color: 'var(--t1)',
-    margin: '0 0 14px',
-    letterSpacing: '0.04em',
-  };
-
-  const bodyStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-heading)',
-    fontSize: 'var(--fs-fortune-body)',
-    fontWeight: 400,
-    color: 'var(--t1)',
-    lineHeight: 'var(--lh-fortune-body)' as string,
-    margin: 0,
-  };
-
-  const dividerStyle: React.CSSProperties = {
-    height: 1,
-    background: 'var(--border)',
-    margin: '20px 0',
-  };
-
-  // 非 Premium 時: 本文を一切描画せず（SR が読める blur 削除）、訴求 + CTA のみ.
-  if (!isPremium) {
-    return (
-      <Card variant="secondary" style={wrapStyle}>
-        <p style={eyebrowStyle}>今夜のことば</p>
-        <h4 style={titleStyle}>
-          {charaName}からのメッセージ
-        </h4>
+      {/* Your type: the character that represents this person */}
+      <Card className="slide-up-1" style={{ marginTop: 'var(--sp-4)' }}>
         <p
           style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: 'var(--fs-caption)',
-            color: 'var(--t2)',
-            lineHeight: 1.8,
-            margin: '0 0 4px',
+            fontSize: 11,
+            fontWeight: 700,
+            color: 'var(--lavender)',
+            letterSpacing: 1.5,
+            textAlign: 'center',
           }}
         >
-          {charaName}から今夜のあなたへのメッセージが届いてるよ。
-          {moonWave && `${moonLabel}のエネルギーをよみとく特別なメッセージも。`}
+          あなたのタイプ
         </p>
-        <PremiumCTA source="deep_reading" userId={currentUserId} />
-      </Card>
-    );
-  }
-
-  // Premium 時: 全文表示
-  return (
-    <Card variant="secondary" style={wrapStyle}>
-      <p style={eyebrowStyle}>今夜のことば</p>
-      <h4 style={titleStyle}>
-        {charaName}からのメッセージ
-      </h4>
-      <p style={bodyStyle}>{message.body}</p>
-
-      {moonWave && (
-        <>
-          <div style={dividerStyle} aria-hidden="true" />
-          <p
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+            marginTop: 12,
+          }}
+        >
+          <CharaAvatar
+            id={character.id}
+            size={108}
+            animate
+            sparkle={character.rarity === 'SSR'}
+            border="3px solid var(--lavender)"
+          />
+          <h3
             style={{
-              ...eyebrowStyle,
-              color: 'var(--lavender)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
+              fontSize: 20,
+              fontWeight: 700,
+              color: 'var(--rose)',
+              marginTop: 4,
+              textAlign: 'center',
             }}
           >
-            <MoonPhaseIcon phaseIndex={moonPhaseIdx} size={12} color="var(--lavender)" />
-            {' '}Moon x Sign · {moonLabel}のエネルギー
+            {character.name}
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <RarityBadge rarity={character.rarity} />
+            <span style={{ fontSize: 12, color: 'var(--t2)', fontWeight: 700 }}>
+              {character.sub}
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              marginTop: 2,
+              color:
+                character.rarity === 'SSR' || character.rarity === 'SR'
+                  ? 'var(--rose)'
+                  : 'var(--t3)',
+            }}
+          >
+            {RARITY_NOTE[character.rarity]}・このタイプは全体の{character.pct}
           </p>
-          <h4 style={titleStyle}>{moonWave.title}</h4>
-          <p style={bodyStyle}>{moonWave.body}</p>
-        </>
-      )}
-    </Card>
+          <p
+            style={{
+              fontSize: 13,
+              color: 'var(--t1)',
+              lineHeight: 1.9,
+              marginTop: 6,
+            }}
+          >
+            {character.desc}
+          </p>
+        </div>
+      </Card>
+
+      <Card className="slide-up-2">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
+          🌙 あなたの本質
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.essence}</p>
+      </Card>
+
+      {/* 相性診断導線 (無料) */}
+      <Card className="slide-up-3">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+          💞 あの人との相性診断
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          気になるあの人と、ふたりの相性を星座でよみとくよ。結果はリンクで相手にも送れる。無料で何度でも試せるよ。
+        </p>
+        <Button variant="secondary" fullWidth onClick={() => onNavigate('compatibility')}>
+          相性を診断する
+        </Button>
+      </Card>
+
+      {/* プレミアム深掘り cap カード: 4 セクションを blur preview で表示 */}
+      <Card
+        className="slide-up-4"
+        style={{
+          background: 'linear-gradient(135deg, rgba(212,168,83,0.06), rgba(176,138,207,0.08))',
+          border: '1px solid rgba(212,168,83,0.40)',
+          boxShadow: 'inset 0 1px 0 rgba(212,168,83,0.25), 0 2px 16px rgba(0,0,0,0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* カードヘッダー */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <span style={{ fontSize: 18 }}>✨</span>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>
+            4つの深掘り分析
+          </h3>
+          <span
+            style={{
+              marginLeft: 'auto',
+              fontSize: 10,
+              fontWeight: 700,
+              color: 'var(--gold)',
+              background: 'rgba(212,168,83,0.12)',
+              border: '1px solid rgba(212,168,83,0.30)',
+              borderRadius: 'var(--r-tag)',
+              padding: '2px 8px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            プレミアム
+          </span>
+        </div>
+
+        {/* blur preview: 4 セクション */}
+        <div
+          style={{
+            filter: 'blur(4px)',
+            opacity: 0.5,
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+          aria-hidden="true"
+        >
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 8 }}>
+              ⭐ 生まれ持った強み
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 8 }}>
+              🌱 伸びしろと成長のヒント
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 8 }}>
+              💕 人との関わり方
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.relationship}</p>
+          </div>
+
+          <div style={{ marginBottom: 8 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 8 }}>
+              🧭 あなたの人生のテーマ
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
+          </div>
+        </div>
+
+        {/* CTA オーバーレイ */}
+        <div
+          style={{
+            marginTop: 16,
+            textAlign: 'center',
+          }}
+        >
+          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 12 }}>
+            答えは自分でわかってる、って夜もあるよね。<br />そんな夜、4つの深掘りが背中を押してくれる。
+          </p>
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={() => onNavigate('settings')}
+            style={{
+              background: 'linear-gradient(135deg, var(--gold), #b8892e)',
+              boxShadow: '0 4px 20px rgba(212,168,83,0.35)',
+            }}
+          >
+            ✨ 4つの深掘りを読む → プレミアム
+          </Button>
+        </div>
+      </Card>
+
+      <Card className="slide-up-5">
+        <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          この占いは生年月日から導いた太陽星座をもとにしています。出生時刻や出生地は使っていないため、ホロスコープ全体ではなく、太陽星座から見たあなたの基本的な性質をお伝えするものです。
+        </p>
+        <Button variant="secondary" fullWidth onClick={() => onNavigate('settings')}>
+          生年月日・プロフィールを編集する
+        </Button>
+      </Card>
+
+      <Button
+        variant="secondary"
+        fullWidth
+        onClick={() => {
+          if (navigator.share) {
+            navigator
+              .share({
+                title: 'よるのことば',
+                text: `${profile.sign}の自分を知る占い: ${reading.headline}`,
+                url: window.location.href,
+              })
+              .catch(() => undefined);
+            track('share_result', { method: 'webshare', type: profile.sign });
+          }
+        }}
+      >
+        シェア
+      </Button>
+
+    </div>
   );
 }

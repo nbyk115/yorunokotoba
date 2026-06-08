@@ -1,423 +1,168 @@
-import type { CSSProperties } from 'react';
-import { Sparkles, Stars, BookOpen } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
-import { Icon } from '@/components/ui/Icon';
-import { HeroBlock } from '@/components/ui/HeroBlock';
-import { RitualButton } from '@/components/ui/RitualButton';
-import { BlurReveal } from '@/components/ui/BlurReveal';
-import { MoonPhaseIcon } from '@/components/ui/MoonPhaseIcon';
-import { useTimeOfDay } from '@/components/providers/TimeOfDayProvider';
-import type { TimeOfDay } from '@/lib/timeOfDay';
+import { Button } from '@/components/ui/Button';
+import { CharaAvatar } from '@/components/ui/CharaAvatar';
+import { RarityBadge } from '@/components/ui/RarityBadge';
+import { InstallPrompt } from '@/components/InstallPrompt';
+import { PremiumCard } from '@/components/PremiumCard';
+import { DREAM_TYPES } from '@/data/dreamTypes';
 import type { UserProfile } from '@/lib/firestore';
 import type { ViewKey } from '@/App';
-import type { StreakState } from '@/logic/streak';
-import { getCharaIdBySign } from '@/data/signs';
-import { getMoonPhaseIndex } from '@/lib/moonPhase';
 
 interface HomeViewProps {
   profile: UserProfile;
-  streak: StreakState;
   onNavigate: (view: ViewKey) => void;
 }
 
-// 時間帯別 HeroBlock テキスト
-// 識別性ゲート: AI 推奨の「万人向け励まし」を断り「同じ夜にいる者どうしの対等さ」へ振り切る
-// night-deep: 万人向けの「ゆっくり休んでね」を断ち、共犯感のある本音「まあ、わたしもだけど」へ
-// dawn: 「今日もがんばって！」を断ち、軽くぶっきらぼうな問いかけ「もう起きてるの」へ
-// day: 「今日も元気に過ごしてね」を断ち、少し間の抜けた本音へ
-// dusk: 「おつかれさまでした」の礼儀的ねぎらいを断ち、帰ってきた事実への反応へ
-// night: 「今夜も素敵な時間を」を断ち、静かな共犯感「わたしもまだいるよ」へ
-const HERO_COPIES: Record<TimeOfDay, { jp: string; en?: string }> = {
-  'night-deep': {
-    jp: 'まだ起きてるんだ。…まあ、わたしもだけど',
-    en: 'still awake, same here',
-  },
-  dawn: {
-    jp: 'もう起きてるの。今日、どうする？',
-    en: 'early again',
-  },
-  day: {
-    jp: 'いま、自分の気持ち聞けてる？',
-    en: 'just checking',
-  },
-  dusk: {
-    jp: '帰ってきたね。今夜もよく終わらせた',
-    en: 'made it back',
-  },
-  night: {
-    jp: 'まだいるよ。夜、どうだった？',
-    en: 'still here with you',
-  },
-};
 
-// 時間帯別 greeting-section テキスト
-// 識別性ゲート: 礼儀的な挨拶文を断ち、時間帯への「気づき」を一言にする
-function getGreeting(tod: TimeOfDay): string {
-  if (tod === 'night-deep') return 'この時間にいるんだね';
-  if (tod === 'dawn') return 'もう起き出してる';
-  if (tod === 'day') return 'ちょっと立ち止まって';
-  if (tod === 'dusk') return '夜になったね';
-  return 'まだ起きてるね';
-}
-
-// 深夜専用の名前呼びかけコピー（2-4時に開いた人にしか届かない温度）
-// 識別性ゲート: 「おつかれさまでした」の礼儀的ねぎらいを断ち、帰ってきた事実への対等な反応へ
-// 「深夜ラジオの最終回」的な前置き文を日替わりで2本用意
-function getNightDeepSubCopy(name: string): string {
-  const today = new Date();
-  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-  const variants = [
-    `おつかれ、${name}。帰ってきたね`,
-    `${name}、この時間まで起きてた`,
-  ];
-  return variants[seed % variants.length] ?? variants[0]!;
-}
-
-// BlurReveal 内のチラ見せ占い結果プレビュー
-// 識別性ゲート: 「きっとうまくいく」系の根拠なし励ましを断ち、「もう知ってるでしょ」的な対等な問いかけへ
-const BLUR_PREVIEW_MESSAGES = [
-  '答え、もうわかってるんじゃないの',
-  '今夜のよみとき、あなたが思ってる方向で合ってる',
-  '迷ってるふりしてるだけで、決まってるよね',
-  'この時間に開いたってことは、何か感じてたんでしょ',
-];
-
-function getDailyBlurMessage(): string {
-  const today = new Date();
-  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
-  return BLUR_PREVIEW_MESSAGES[seed % BLUR_PREVIEW_MESSAGES.length] ?? BLUR_PREVIEW_MESSAGES[0]!;
-}
-
-export function HomeView({ profile, streak, onNavigate }: HomeViewProps) {
-  const tod = useTimeOfDay();
-  const heroCopy = HERO_COPIES[tod];
-  const greeting = getGreeting(tod);
-  const moonPhaseIndex = getMoonPhaseIndex();
-  const blurMessage = getDailyBlurMessage();
-  const charaId = getCharaIdBySign(profile.sign, profile.gender);
-  const isNightDeep = tod === 'night-deep';
-
-  const mainStyle: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100dvh',
-  };
+export function HomeView({ profile, onNavigate }: HomeViewProps) {
+  const greeting = getGreeting();
 
   return (
-    <div style={mainStyle}>
-      {/* ヒーロー 100dvh */}
-      <HeroBlock
-        japanese={heroCopy.jp}
-        english={heroCopy.en}
-        subtitle={isNightDeep ? getNightDeepSubCopy(profile.name) : undefined}
-        align="center"
-        size="hero"
-        charaId={charaId}
-      />
-
-      {/* スクロール領域 */}
-      <main style={{ flex: 1 }}>
-        {/* greeting-section */}
-        <section
+    <div
+      className="slide-up"
+      style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}
+    >
+      <header style={{ textAlign: 'center', marginBottom: 'var(--sp-3)' }}>
+        <p style={{ fontSize: 12, color: 'var(--t2)' }}>{greeting}</p>
+        <h2
           style={{
-            marginTop: 0,
-            padding: '32px 24px 0',
-            textAlign: 'center',
+            fontSize: 22,
+            fontWeight: 700,
+            color: 'var(--rose)',
+            letterSpacing: 1,
+            marginTop: 4,
           }}
         >
-          {/* greeting label - Zen Maru 400 caption / t3 */}
-          <p
-            style={{
-              fontSize: 'var(--fs-caption)',
-              fontWeight: 400,
-              color: 'var(--t3)',
-              letterSpacing: 'var(--ls-section)',
-              lineHeight: 1.5,
-              margin: 0,
-            }}
-          >
-            {greeting}
-          </p>
-          {/* ユーザー名 - Zen Maru 700 28px（PR4 ページ見出しスケール） */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-page-h1)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              letterSpacing: '0.02em',
-              marginTop: 4,
-              lineHeight: 1.3,
-            }}
-          >
-            {profile.name}さん
-          </p>
-          <p
-            style={{
-              fontSize: 'var(--fs-caption)',
-              fontWeight: 400,
-              color: 'var(--t3)',
-              marginTop: 4,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-            }}
-          >
-            {/* 月相 + 星座 + 連続日数（極小表示）*/}
-            <MoonPhaseIcon phaseIndex={moonPhaseIndex} size={14} />{' '}
-            {profile.sign}
-            {streak.count > 0 && (
-              <span
-                style={{
-                  fontSize: 'var(--fs-micro)',
-                  color: 'var(--t3)',
-                  marginLeft: 6,
-                  opacity: 0.7,
-                }}
-                aria-label={`連続${streak.count}日`}
-              >
-                · {streak.count}日目
-              </span>
-            )}
-          </p>
-        </section>
+          {profile.name}さん
+        </h2>
+        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 4 }}>{profile.sign}</p>
+      </header>
 
-        {/*
-          dream-card（画面の主役カード = variant primary）
-          PR4: 上辺に金（--accent）の極細線、濃い黒影、backdrop-filter blur
-          creative-playbook「1画面に主役1枚の原則」
-        */}
-        <Card
-          variant="primary"
-          as="article"
-          className="slide-up"
+      <Card className="slide-up-1">
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
+          🌙 今夜の夢を読み解く
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          見た夢をそのまま書いて。今のあなたへのメッセージを読み解くよ。
+        </p>
+        <Button onClick={() => onNavigate('dream')} fullWidth>
+          夢占いを始める
+        </Button>
+      </Card>
+
+      <Card className="slide-up-2">
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
+          ✨ ホロスコープで自分を知る
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
+          {profile.sign}の生まれ持った性格、強み、伸びしろ、人生のテーマ。星座からほんとうの自分を深く知れるよ。
+        </p>
+        <Button onClick={() => onNavigate('fortune')} fullWidth>
+          ほんとうの自分を星から知る
+        </Button>
+
+        {/* Type lineup carousel: same destination as the CTA above */}
+        <div
           style={{
-            margin: '20px 16px 0',
-            padding: '24px',
-            borderTop: 'none',
-            animation: 'slideUp 450ms ease both',
-            transition: 'transform 200ms ease, box-shadow 200ms ease',
-            /* 上辺に金の極細線（inset で実現）*/
-            boxShadow: 'inset 0 2px 0 var(--accent), 0 8px 28px rgba(0,0,0,0.32)',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-          }}
-          onMouseDown={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+            marginTop: 'var(--sp-5)',
+            paddingTop: 'var(--sp-5)',
+            borderTop: '1px solid var(--border)',
           }}
         >
-          {/* eyebrow - Zen Maru 700 / card-label スケール / t3 色 */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--text-low)',
-              letterSpacing: 'var(--ls-card-label)',
-              marginBottom: 8,
-              margin: '0 0 8px',
-            }}
-          >
-            夢占い
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+            あなたはどのタイプ？
+          </h3>
+          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
+            ぜんぶで24タイプ。あなたがどのキャラか、診断してみてね。
           </p>
-
-          {/* card-title - Zen Maru 700 / section スケール */}
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-section)',
-              fontWeight: 700,
-              color: 'var(--t1)',
-              lineHeight: 1.4,
-              letterSpacing: '0.04em',
-              margin: '0 0 8px',
-            }}
-          >
-            今夜の夢をよみとく
-          </h2>
-
-          {/* card-body - Zen Maru 400 15px / line-height 1.8 */}
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 400,
-              color: 'var(--t2)',
-              lineHeight: 1.8,
-              margin: '0 0 16px',
-            }}
-          >
-            見た夢をそのまま書いて。シンボルから今のあなたへのメッセージをよみとくよ。
-          </p>
-
-          {/* チラ見せ占い結果プレビュー（BlurReveal）*/}
-          <BlurReveal
-            initialBlur={4}
-            revealOnTap
-            style={{
-              padding: '12px 14px',
-              background: 'rgba(201, 169, 97, 0.06)',
-              borderRadius: 10,
-              marginBottom: 20,
-              fontSize: 'var(--fs-caption)',
-              color: 'var(--t2)',
-              lineHeight: 1.6,
-              letterSpacing: '0.02em',
-              fontStyle: 'italic',
-              fontFamily: 'var(--font-accent)',
-            }}
-          >
-            {blurMessage}
-          </BlurReveal>
-
-          {/* 主要CTAボタン（ICP共感語彙: 「扉をひらく」）*/}
-          <RitualButton
-            verb="今夜の夢をよみとく"
-            onConfirm={() => onNavigate('dream')}
-            fullWidth
-          />
-        </Card>
-
-        {/*
-          PR4: 下部の他画面誘導
-          creative-playbook「箱で区切らず余白で区切る」
-          枠線（box）を消してテキストリンク化。8pxグリッド余白で区切る。
-        */}
-        <nav
-          aria-label="他のページへ"
-          style={{
-            margin: '32px 16px 0',
-            paddingBottom: 32,
-          }}
-        >
-          {/* セクション見出し - Zen Maru 700 / card-label / t3 */}
-          <p
-            style={{
-              fontSize: 'var(--fs-card-label)',
-              fontWeight: 700,
-              color: 'var(--text-low)',
-              letterSpacing: 'var(--ls-card-label)',
-              marginBottom: 16,
-              textAlign: 'center',
-            }}
-          >
-            ほかにも
-          </p>
-
-          {/* テキストリンク3件 - 箱なし・余白区切り */}
           <div
+            className="no-scrollbar"
             style={{
               display: 'flex',
-              flexDirection: 'column',
-              gap: 0,
+              gap: 14,
+              overflowX: 'auto',
+              overflowY: 'visible',
+              paddingTop: 24,
+              paddingBottom: 24,
+              WebkitOverflowScrolling: 'touch',
             }}
           >
-            {/* fortune link */}
-            <NavTextLink
-              icon={<Icon icon={Sparkles} size={16} color="var(--accent)" />}
-              label="星座占い"
-              action="みる"
-              actionColor="var(--accent)"
-              onClick={() => onNavigate('fortune')}
-            />
-            {/* divider */}
-            <div aria-hidden="true" style={{ height: 1, background: 'var(--border)', margin: '0 0' }} />
-            {/* aura link */}
-            <NavTextLink
-              icon={<Icon icon={Stars} size={16} color="var(--t3)" />}
-              label="相性診断"
-              action="みる"
-              actionColor="var(--t2)"
-              onClick={() => onNavigate('aura')}
-            />
-            {/* divider */}
-            <div aria-hidden="true" style={{ height: 1, background: 'var(--border)', margin: '0 0' }} />
-            {/* archive link */}
-            <NavTextLink
-              icon={<Icon icon={BookOpen} size={16} color="var(--t3)" />}
-              label="これまでの記録"
-              action="見る"
-              actionColor="var(--t2)"
-              onClick={() => onNavigate('archive')}
-            />
+            {DREAM_TYPES.map((chara) => (
+              <div
+                key={chara.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => onNavigate('fortune')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onNavigate('fortune');
+                  }
+                }}
+                style={{
+                  flexShrink: 0,
+                  width: 84,
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <CharaAvatar id={chara.id} size={72} animate sparkle={chara.rarity === 'SSR'} />
+                <p
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: 'var(--t1)',
+                    marginTop: 6,
+                    lineHeight: 1.4,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {chara.name}
+                </p>
+                <div style={{ marginTop: 4 }}>
+                  <RarityBadge rarity={chara.rarity} />
+                </div>
+              </div>
+            ))}
           </div>
-        </nav>
-      </main>
+        </div>
+
+        {/* Compatibility entry: also a horoscope-based reading, kept in this card */}
+        <div
+          style={{
+            marginTop: 'var(--sp-5)',
+            paddingTop: 'var(--sp-5)',
+            borderTop: '1px solid var(--border)',
+          }}
+        >
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+            💞 あの人との相性診断
+          </h3>
+          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
+            気になるあの人と、ふたりの相性を星座でよみとくよ。結果はリンクで相手にも送れる。無料で何度でも試せるよ。
+          </p>
+          <Button variant="secondary" onClick={() => onNavigate('compatibility')} fullWidth>
+            相性を診断する
+          </Button>
+        </div>
+      </Card>
+
+      <div className="slide-up-3">
+        <PremiumCard onNavigate={onNavigate} />
+      </div>
+
+      <InstallPrompt />
     </div>
   );
 }
 
-// PR4: テキストリンクコンポーネント - 枠なし・余白区切り (creative-playbook「箱で区切らず余白で区切る」)
-interface NavTextLinkProps {
-  icon: React.ReactNode;
-  label: string;
-  action: string;
-  actionColor: string;
-  onClick: () => void;
-}
-
-function NavTextLink({ icon, label, action, actionColor, onClick }: NavTextLinkProps) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        width: '100%',
-        padding: '16px 4px',
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        textAlign: 'left',
-        transition: 'opacity 150ms ease',
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.opacity = '0.72';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.opacity = '1';
-      }}
-      onFocus={(e) => {
-        (e.currentTarget as HTMLElement).style.outline = '2px solid var(--rose)';
-        (e.currentTarget as HTMLElement).style.outlineOffset = '2px';
-      }}
-      onBlur={(e) => {
-        (e.currentTarget as HTMLElement).style.outline = 'none';
-      }}
-    >
-      {/* icon */}
-      <span aria-hidden="true" style={{ flexShrink: 0, lineHeight: 0 }}>
-        {icon}
-      </span>
-      {/* label */}
-      <span
-        style={{
-          flex: 1,
-          fontSize: 'var(--fs-body)',
-          fontWeight: 400,
-          color: 'var(--t2)',
-          letterSpacing: '0.02em',
-        }}
-      >
-        {label}
-      </span>
-      {/* action - 小さく右寄せ */}
-      <span
-        style={{
-          fontSize: 'var(--fs-caption)',
-          fontWeight: 400,
-          color: actionColor,
-          letterSpacing: '0.04em',
-        }}
-      >
-        {action}
-      </span>
-    </button>
-  );
+function getGreeting(): string {
+  const h = new Date().getHours();
+  if (h < 5) return '深夜、おつかれさま';
+  if (h < 11) return 'おはよう';
+  if (h < 17) return 'こんにちは';
+  if (h < 22) return 'こんばんは';
+  return 'おやすみ前に';
 }

@@ -1,0 +1,273 @@
+/**
+ * Horoscope self-understanding readings.
+ * Sun-sign based deep self-knowledge content (not a daily fortune).
+ *
+ * Source material: established Western astrology personality profiles
+ * cross-referenced from zodiacsign.com, today.com, labyrinthos.co,
+ * almanac.com and yourtango.com (12 signs, strengths / challenges /
+ * relationship tendencies / life theme).
+ *
+ * This reading uses only the sun sign derived from the onboarding
+ * birthday. Birth time and birth place are not collected, so this is
+ * a sun-sign reading and does not claim to be a full natal horoscope.
+ */
+
+import { SIGNS } from '@/data/signs';
+import { DREAM_TYPES, type DreamType } from '@/data/dreamTypes';
+import { simpleHash, makeSeededRandom } from '@/logic/hash';
+import type { UserProfile } from '@/lib/firestore';
+
+export interface HoroscopeReading {
+  /** One-line essence headline. */
+  headline: string;
+  /** Element + ruling-planet flavour text. */
+  element: string;
+  /** Core nature: who this person fundamentally is. */
+  essence: string;
+  /** Strengths, framed positively. */
+  strengths: string;
+  /** Weaknesses / growth points, framed as growth hints. */
+  growth: string;
+  /** Relationship / interpersonal tendency. */
+  relationship: string;
+  /** The life theme this sign keeps returning to. */
+  lifeTheme: string;
+}
+
+const READINGS: Record<string, HoroscopeReading> = {
+  おひつじ座: {
+    headline: 'ゼロをイチにする、はじまりの星',
+    element: '火のエレメント / 火星に守られた星座',
+    essence:
+      'あなたの本質は「自分から動き出す力」🔥。誰かの号令を待たず、思い立った瞬間にもう一歩目を踏み出している。新しい場所、新しい挑戦、誰もやっていないこと✨。そこにワクワクを感じるのがあなたの生まれ持った気質です。',
+    strengths:
+      '勇気・行動力・素直さ💪。怖くても飛び込める強さがあり、その姿は周りに「自分も動いていいんだ」という勇気を分けています。裏表がなく、感じたことをまっすぐ表現できるのも大きな魅力😊。',
+    growth:
+      '勢いがある分、走り出してから「どこへ向かうんだっけ」と迷うことがあります🧭。短気になったり、結果が出る前に飽きてしまう瞬間も。一歩目の速さはそのままに、ときどき立ち止まって地図を見る習慣をつけると、力がもっと遠くまで届きます🎯。',
+    relationship:
+      '人との距離を一気に縮めるのが得意🤝。ただし相手にも同じスピードを求めると、置いていかれた気持ちにさせてしまうことも。相手のペースを待つ余白を持てると、関係がぐっと深くなります💗。',
+    lifeTheme:
+      '「自分らしく、最初の一歩を踏み出し続ける」こと👣。誰かと比べる必要はありません。あなたのライバルは、いつも昨日の自分です🌅。',
+  },
+  おうし座: {
+    headline: 'ゆっくり、確かに積み上げる星',
+    element: '地のエレメント / 金星に守られた星座',
+    essence:
+      'あなたの本質は「心地よさを大切にし、地に足をつけて生きる力」🌿。急がず、流されず、自分が「これは本物だ」と感じたものだけを手元に残していく。五感が豊かで、美しいものや美味しいもの、安心できる空間に深い喜びを感じます🍰。',
+    strengths:
+      '安定感・粘り強さ・誠実さ🪨。一度決めたことを最後までやり遂げる力があり、周りから「この人なら任せられる」と信頼されます。心地よさを見極めるセンスも、あなたならではの財産です💎。',
+    growth:
+      '安定を愛するぶん、変化を「脅威」と感じやすい一面があります。頑固さが出て、新しい提案を受け入れにくくなることも。すべてを変える必要はありません。いつもの暮らしに、ひとつだけ新しい風を入れてみる🍃。それだけで世界が広がります🌏。',
+    relationship:
+      'ゆっくり時間をかけて信頼を育てるタイプ🕰️。一度心を許した相手はとことん大切にします。ただ、居心地のよさを求めすぎて刺激のある出会いを避けてしまうことも。たまには小さな冒険を一緒に🌱。',
+    lifeTheme:
+      '「自分にとって本当に価値あるものを見極め、育てる」こと🌷。手放す勇気と守り抜く強さ、その両方があなたの人生を豊かにします💛。',
+  },
+  ふたご座: {
+    headline: '世界を言葉でつなぐ、好奇心の星',
+    element: '風のエレメント / 水星に守られた星座',
+    essence:
+      'あなたの本質は「知りたい、伝えたいという尽きない好奇心」🔍。頭の回転が速く、いくつもの興味を同時に抱えながら、軽やかに世界を行き来する🦋。新しい情報、新しい人、新しい話題。そのすべてがあなたのエネルギー源です💬。',
+    strengths:
+      '知性・適応力・コミュニケーション力🧠。場の空気を読み、相手に合わせて言葉を選べる柔軟さは天性のもの。学びが速く、どんな環境にもすっと馴染める身軽さも、あなたの強い武器です📚。',
+    growth:
+      '興味が多いぶん、ひとつに絞れず「どれも中途半端」に感じてしまう瞬間があります。気持ちが揺れて決めきれないことも。器用だからこそ、いまは一点に集中する🎯。それだけで眠っていた力が一気に開花します🌸。',
+    relationship:
+      '会話が弾む相手に強く惹かれます🗨️。ただ「話が合う」と「相性がいい」は別物。言葉の上手さよりも、その奥にある誠実さを見つめると、長く続く関係に出会えます💗。',
+    lifeTheme:
+      '「散らばった興味を、自分だけの一本の線につなぐ」こと🧵。あなたの集めた知識と出会いは、いつか思いがけない形で実を結びます🌟。',
+  },
+  かに座: {
+    headline: '人を包み、守る、やさしさの星',
+    element: '水のエレメント / 月に守られた星座',
+    essence:
+      'あなたの本質は「大切な人を守り、安心できる居場所をつくる力」🏡。感受性が豊かで、相手の気持ちを自分のことのように受け取れる。家族や仲間との心のつながりに、何よりの幸せを感じる人です👨‍👩‍👧。',
+    strengths:
+      '共感力・包容力・記憶力🫂。相手の小さな変化に気づき、そっと寄り添える優しさは、まわりにとって大きな安心です。一度結んだ縁を長く大切にできる誠実さも、あなたの宝物🎁。',
+    growth:
+      '人を思いやるあまり、自分の感情を後回しにしてしまいがち。相手の機嫌で自分の気分まで揺れてしまうことも🌊。優しさはそのままに、まず自分の心を満たしてあげる。それが、もっと長くやさしくいられるコツです🍵。',
+    relationship:
+      '相手を深く守ろうとしますが、それが強くなりすぎると相手の自立を妨げてしまうことも🤲。「守る」と「信じて任せる」のバランスを意識すると、お互いに心地よい関係になります💞。',
+    lifeTheme:
+      '「他人を大切にするのと同じだけ、自分も大切にする」こと💕。あなたのやさしさは、あなた自身が満たされているときに一番輝きます🌷。',
+  },
+  しし座: {
+    headline: '生まれながらに輝く、太陽の星',
+    element: '火のエレメント / 太陽に守られた星座',
+    essence:
+      'あなたの本質は「自分らしく堂々と輝き、まわりを照らす力」☀️。表現することが好きで、人の中心にいると自然と元気になる。誇り高く、まっすぐで、関わる人を明るくする太陽のような存在です😊。',
+    strengths:
+      '創造力・寛大さ・リーダーシップ👑。情熱的で温かく、人を惹きつける華があります🌹。困っている人に手を差し伸べる気前のよさも、あなたが愛される理由のひとつです。',
+    growth:
+      '認められたい気持ちが強いぶん、評価が得られないと自信を失いやすい一面が。プライドが邪魔して素直になれないことも。あなたの価値は、誰かの拍手がなくても変わりません👏。自分で自分を認める強さを育てていきましょう💪。',
+    relationship:
+      '「私を見て」という気持ちが前に出すぎると、相手が疲れてしまうことも。ときには相手を主役にして輝かせる側に回ってみて🎭。その余裕こそが、あなたをさらに魅力的にします✨。',
+    lifeTheme:
+      '「他人の評価ではなく、自分の誇りで生きる」こと🦁。あなたが心から楽しんでいるとき、その光は何よりも人を惹きつけます🌟。',
+  },
+  おとめ座: {
+    headline: '細やかに整え、支える、誠実の星',
+    element: '地のエレメント / 水星に守られた星座',
+    essence:
+      'あなたの本質は「物事を丁寧に見つめ、よりよく整える力」🔎。細部に気づき、人の役に立つことに静かな喜びを感じる。理想を現実に近づけるために、地道な努力を惜しまない誠実な人です🌾。',
+    strengths:
+      '分析力・実務能力・献身性📋。問題の本質を見抜き、現実的な解決策に落とし込める頭の良さがあります🧠。人知れず誰かを支える優しさも、あなたの大きな美点です。',
+    growth:
+      '完璧を求めるあまり、自分にも他人にも厳しくなりすぎることがあります。「まだ足りない」と自分を追い詰めてしまう瞬間も。完璧でない自分を許すこと🌿。80点で前に進む練習が、あなたを軽やかにします🍃。',
+    relationship:
+      '相手の欠点が気になりすぎて、理想のチェックリストで人を測ってしまうことも✅。条件よりも「一緒にいて安心できるか」という感覚を信じると、ありのままで愛される関係に出会えます💗。',
+    lifeTheme:
+      '「不完全さも含めて、自分と他人を受け入れる」こと🤍。あなたの誠実さは、自分を責めるためではなく、世界をやさしくするために使えます🌷。',
+  },
+  てんびん座: {
+    headline: '調和とバランスをつくる、美の星',
+    element: '風のエレメント / 金星に守られた星座',
+    essence:
+      'あなたの本質は「人と人の間に調和を生み出す力」⚖️。公平さを大切にし、対立よりも理解を選ぶ🕊️。美しいもの、心地よい関係、洗練された空気に敏感な、バランス感覚の達人です。',
+    strengths:
+      '協調性・公平さ・社交性🤝。対立する意見の間に立ち、両者をつなぐ橋になれる稀有な才能があります🌉。場を和ませる優雅さと、人を惹きつける品のよさも、あなたの魅力です🌹。',
+    growth:
+      'みんなのバランスを取ろうとするあまり、自分の本音を後回しにしてしまいがち。「どっちも大事」は優しさですが、ときに自分を見失う言葉にもなります。自分の「好き」「嫌」をはっきり持つこと💬。それが本当の調和の土台です🌷。',
+    relationship:
+      '相手に合わせすぎて「いい人止まり」になってしまうことも。好かれようとするより、自分の意見を伝えたほうが、対等で深い関係に育ちます💞。意見のぶつかりは、相性を確かめるチャンスです✨。',
+    lifeTheme:
+      '「他人との調和と、自分との調和を両立させる」こと🌸。自分を大切にすることは、わがままではなく、健やかな関係の出発点です💛。',
+  },
+  さそり座: {
+    headline: '深く潜り、本質を見抜く、再生の星',
+    element: '水のエレメント / 冥王星に守られた星座',
+    essence:
+      'あなたの本質は「物事の奥深くまで潜り、本質をつかむ力」🌊。表面的なつながりでは満足できず、人や物事の核心に触れたいと願う。一度信じたものには、とことん情熱を注げる人です🔥。',
+    strengths:
+      '洞察力・集中力・誠実さ👁️。人が見落とす本音やリスクを直感的に見抜く力があります。困っている人に深く寄り添える情の厚さも、あなたが本物の信頼を集める理由です🤝。',
+    growth:
+      '感情を内に溜め込みやすく、ひとりで抱えすぎてしまう傾向が。猜疑心が強くなり、人を試してしまうことも。すべてを見せなくて大丈夫🍃。信頼できる一人に心を開くことから、重荷は軽くなっていきます🕯️。',
+    relationship:
+      '愛情が深いぶん、それが「重い」と感じられることも。相手を試し続けるより、自分から信じる覚悟を持つと、関係が本物に変わります💞。深さは、あなたの欠点ではなく才能です💎。',
+    lifeTheme:
+      '「壊れることを恐れず、何度でも生まれ変わる」こと🦋。危機や痛みは終わりではなく、あなたをより強くする再生の入り口です🌅。',
+  },
+  いて座: {
+    headline: '遠くを目指す、自由と探求の星',
+    element: '火のエレメント / 木星に守られた星座',
+    essence:
+      'あなたの本質は「まだ見ぬ世界へ向かう、尽きない探求心」🏹。型にはまることを嫌い、いつも「もっと面白いことがあるはず」と前を見ている。自由でおおらか、希望を語ることが得意な人です🌍。',
+    strengths:
+      '楽観性・行動力・正直さ☀️。失敗を恐れず挑戦できる明るさがあり、その姿勢は周りに元気を与えます。心に思ったことをまっすぐ伝える率直さも、あなたの愛される個性です😊。',
+    growth:
+      '好奇心が強いぶん、始めることは得意でも「やり切る」前に次へ向かいたくなることが。飽きっぽさや、ときの率直すぎる言葉が課題になることも。ひとつのことを最後まで完走する経験が、あなたの自由をさらに本物にします🏁。',
+    relationship:
+      '束縛を嫌い、自由でいたい気持ちが強いタイプ🕊️。ただ自由すぎると相手を不安にさせることも。ときどき安心感を言葉や行動で伝えると、自由と信頼が両立します💞。',
+    lifeTheme:
+      '「広げた翼で、ちゃんと着地する」こと🦅。たくさんの挑戦と冒険は、やり遂げて初めてあなたの財産になります🎒。',
+  },
+  やぎ座: {
+    headline: '一歩ずつ頂きへ向かう、達成の星',
+    element: '地のエレメント / 土星に守られた星座',
+    essence:
+      'あなたの本質は「目標に向かって着実に積み上げる力」⛰️。地に足をつけ、現実を見すえながら、長い時間をかけて確かな成果を築いていく。責任感が強く、信頼を何より大切にする人です🤝。',
+    strengths:
+      '忍耐力・責任感・現実感覚🧱。一度決めた道をコツコツ歩み続ける粘り強さがあります。困難な状況でも投げ出さず、周りを支える誠実さも、あなたが頼られる理由です💪。',
+    growth:
+      '頑張り屋なぶん、「報われていない」と感じて自分を責めやすい一面が。真面目さが行きすぎて、休むことに罪悪感を覚えることも。種はもう撒いてあります🌱。成果が出るまでのタイムラグを信じて、自分をいたわってあげてください🍵。',
+    relationship:
+      '仕事や目標を優先するあまり、大切な人との時間を後回しにしてしまいがち⏳。「しっかりしてるね」と言われて嬉しい反面、たまには弱さを見せて甘えることも、信頼を深める強さです💞。',
+    lifeTheme:
+      '「成果だけでなく、その過程の自分も認める」こと🏔️。山頂を目指す道のりそのものが、すでにあなたの価値です✨。',
+  },
+  みずがめ座: {
+    headline: '常識を超えて未来を描く、革新の星',
+    element: '風のエレメント / 天王星に守られた星座',
+    essence:
+      'あなたの本質は「みんなと同じではいられない、独自の視点」💡。流行や常識をそのまま受け入れず、「本当にそうかな」と問い直す🔭。自由を愛し、より良い未来を思い描く、生まれながらの革新者です🚀。',
+    strengths:
+      '独創性・先見性・公平さ⚡。誰も思いつかない発想で物事を新しくする力があります。偏見にとらわれず、人を肩書きでなく中身で見られるフェアさも、あなたの大切な美点です⚖️。',
+    growth:
+      '人と違うことが自然なぶん、無理に合わせようとすると心も体も疲れてしまいます。感情の表現が苦手で、距離を取りすぎてしまうことも。周りに合わせる必要はありません🌿。ただ、あなたの考えを「伝わる言葉」にする工夫は、味方を増やします💬。',
+    relationship:
+      '知的なつながりを大切にするタイプ🧠。友達以上恋人未満の関係が多くなりがちなことも。理屈を超えて「ただ好き」という感情を認めてあげると、関係に温度が生まれます💞。',
+    lifeTheme:
+      '「自分の独自性を、孤立ではなくつながりに変える」こと🌐。あなたの新しい視点は、伝え方ひとつで世界を動かす力になります🌟。',
+  },
+  うお座: {
+    headline: '境界を超えて感じとる、慈愛の星',
+    element: '水のエレメント / 海王星に守られた星座',
+    essence:
+      'あなたの本質は「目に見えないものを感じとる、繊細な感受性」🐚。人の痛みにそっと寄り添い、世界を優しいまなざしで包む🌊。想像力が豊かで、夢や芸術と深くつながれる人です🎨。',
+    strengths:
+      '共感力・想像力・優しさ💗。相手の気持ちを言葉にならない部分まで受け取れる感受性があります。見返りを求めずに人を思いやれる無償の愛も、あなたが愛される理由です🕊️。',
+    growth:
+      '感受性が豊かなぶん、現実と空想の境目が曖昧になったり、つらい現実から逃げたくなることも☁️。人に流されやすい一面も。地に足をつける時間を持つこと🌿。あなたの優しさは、自分を犠牲にしなくても十分に届きます。',
+    relationship:
+      '「この人を助けてあげたい」という気持ちから恋が始まりがち。ただ、支える側と支えられる側に偏ると疲れてしまいます。お互いが自立して支え合う、対等な関係を意識してみて💞。',
+    lifeTheme:
+      '「やさしさと、現実を生きる強さを両立させる」こと🌈。地に足をつけたあなたの慈愛は、誰かの人生を本当に救う力になります✨。',
+  },
+};
+
+const DEFAULT_SIGN = 'おひつじ座';
+
+/**
+ * Get the self-understanding reading for a given zodiac sign.
+ * Falls back to the first sign if an unknown key is passed.
+ */
+export function getHoroscopeReading(sign: string): HoroscopeReading {
+  return READINGS[sign] ?? READINGS[DEFAULT_SIGN]!;
+}
+
+/** Resolve the display icon for a zodiac sign. */
+export function getSignIcon(sign: string): string {
+  return SIGNS.find((s) => s.k === sign)?.icon ?? '✨';
+}
+
+/**
+ * Deterministic 12-sign to character mapping (1 sign = 1 character).
+ * The character represents "your type" as the outcome of the
+ * sun-sign self-understanding reading. Each pairing loosely matches
+ * the sign's element / nature with the character's theme.
+ * DREAM_TYPES is reused as the character data source (character
+ * archetypes are conceptually independent from the dream feature).
+ */
+const SIGN_CHARACTER: Record<string, string> = {
+  おひつじ座: 'honoo_phoenix', // 火・始動: 情熱と挑戦の不死鳥
+  おうし座: 'komorebi_shika', // 地・安定: 穏やかでマイペースなシカ
+  ふたご座: 'mori_risu', // 風・好奇心: 情報通のリス
+  かに座: 'hoshi_kuma', // 水・守り: 包容力あふれるクマ
+  しし座: 'taiyou_lion', // 火・輝き: 太陽のような存在感のライオン
+  おとめ座: 'shizuku_penguin', // 地・誠実: 堅実で計画的なペンギン
+  てんびん座: 'sakura_usagi', // 風・調和: 社交的で軽やかなうさぎ
+  さそり座: 'mayonaka_neko', // 水・洞察: 深く本質を見抜くネコ
+  いて座: 'akatsuki_washi', // 火・探求: 自由を愛する冒険者のワシ
+  やぎ座: 'yozora_fukurou', // 地・達成: 思慮深く着実なフクロウ
+  みずがめ座: 'nijiiro_dragon', // 風・革新: 独創的なドラゴン
+  うお座: 'ame_iruka', // 水・慈愛: 共感に満ちたイルカ
+};
+
+/**
+ * Resolve the "your type" character for a given zodiac sign.
+ * Deterministic: the same sign always returns the same character.
+ * Falls back to the default sign's character for unknown keys.
+ */
+export function getSignCharacter(sign: string): DreamType {
+  const id = SIGN_CHARACTER[sign] ?? SIGN_CHARACTER[DEFAULT_SIGN]!;
+  return DREAM_TYPES.find((t) => t.id === id) ?? DREAM_TYPES[0]!;
+}
+
+/**
+ * Resolve the "your type" character from the full birth profile.
+ * Uses birth date + gender + prefecture as a deterministic seed, then
+ * draws one of all 24 character archetypes weighted by rarity. The same
+ * profile always yields the same character; rarer types (SR / SSR) are
+ * genuinely uncommon, so landing on one feels special.
+ */
+export function getProfileCharacter(profile: UserProfile): DreamType {
+  const seed = `${profile.birthYear}/${profile.birthMonth}/${profile.birthDay}/${profile.gender}/${profile.prefecture}`;
+  const rng = makeSeededRandom(simpleHash(seed) + 1);
+  const total = DREAM_TYPES.reduce((sum, t) => sum + t.weight, 0);
+  let roll = rng() * total;
+  for (const t of DREAM_TYPES) {
+    roll -= t.weight;
+    if (roll < 0) return t;
+  }
+  return DREAM_TYPES[DREAM_TYPES.length - 1]!;
+}

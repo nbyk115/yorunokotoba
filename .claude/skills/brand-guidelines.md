@@ -66,12 +66,14 @@ ConsultingOS のブランド規律は Nike 創業者 Phil Knight が記した 10
 - python-pptx: `table.left = (slide_width - table_width) / 2` で中央配置
 - HTML/PDF: `<table style="margin: 0 auto;">` または `text-align: center;`
 
-#### ④ ページ収まり（PPT/PDF 必須）
-- PPT/PDF 出力時、テキスト・表・画像が**ページシート内に必ず収まる**
-- はみ出し検知: スライド/ページサイズに対しコンテンツの bounding box が超過していないか機械検証
-- 検証コマンド例:
-  - PDF: `pdfinfo output.pdf` でページサイズ確認 → コンテンツとの差分を視覚確認
-  - PPTX: `python-pptx` でテキストフレームの `auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE` 適用
+#### ④ ページ収まり（HTML/PPT/PDF 必須）
+- HTML/PPT/PDF 出力時、テキスト・表・画像が**ページ・コンテナ枠内に必ず収まる**
+- はみ出し検知は実レイアウト測定で機械検証する。**目視確認は禁止**（input-mapping.html「見切れなし」目視虚偽の再発防止・2026-05-22 物理化）
+- 検証コマンド（実測必須、出力を反証 Step 3 に添付）:
+  - HTML: `python3 scripts/check-overflow.py check <file>.html`（WeasyPrint 実レンダで overflow:hidden クリップ・ページ枠超過を実測、見切れ時 exit 2）。自動調整は `python3 scripts/check-overflow.py fit <file>.html -o <out>.html`（font-size 縮小で枠内化、収まらなければ exit 2 でページ分割要求）
+  - PDF: `pdfinfo output.pdf` でページ寸法取得 → `pdftoppm -png` でラスタライズし最下/右端帯の非白ピクセルで断ち切れ判定
+  - PPTX: `python-pptx` で各 shape の bbox がスライド枠（`prs.slide_width/height`）を超過しないか測定、`auto_size = MSO_AUTO_SIZE.TEXT_TO_FIT_SHAPE` 併用
+- flex/grid 多用デッキで Chrome 実レンダとのピクセル一致が要る場合は生成環境側で Playwright 検証も併用（`scripts/check-overflow.py` の WeasyPrint 測定は block/absolute レイアウトに実測精度）
 - 収まらない場合の対応: フォントサイズ縮小 → 文章圧縮 → ページ分割（順序厳守）
 
 #### ⑤ 佐藤裕介 W チェック（出力直前必須）

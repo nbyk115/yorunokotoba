@@ -1,113 +1,149 @@
-import { useEffect, useState, useMemo, Component, type ReactNode } from 'react';
+import { useState, useEffect, useRef, Component, type ReactNode } from 'react';
 import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
 import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
-import { ArchiveView } from '@/features/archive/ArchiveView';
-import { AuraView } from '@/features/aura/AuraView';
-import { AuraReceiverView } from '@/features/aura/AuraReceiverView';
+import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
+import { CompatibilityReceiverView } from '@/features/compatibility/CompatibilityReceiverView';
 import { SettingsView } from '@/features/settings/SettingsView';
 import { BottomTabBar } from '@/components/navigation/BottomTabBar';
 import { AppHeader } from '@/components/navigation/AppHeader';
 import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay';
-import { TimeOfDayProvider } from '@/components/providers/TimeOfDayProvider';
-import { tickStreak, type StreakState } from '@/logic/streak';
-import { trackException, track } from '@/lib/analytics';
-import { handleEmailLinkSignInOnLoad, useCurrentUser } from '@/lib/auth';
+import { Particles } from '@/components/fx/Particles';
+import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'archive' | 'aura' | 'settings';
+export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility' | 'settings';
 
-/** URL から `?from=charaId` を読み取る。受信者ページ（リンク経由）の判定に使う。 */
-function getFromCharaIdFromUrl(): string | null {
-  if (typeof window === 'undefined') return null;
-  const params = new URLSearchParams(window.location.search);
-  return params.get('from');
+/**
+ * History state の型。
+ * view: アプリ内のタブ/画面
+ * subStage: View 内部のサブステージ（'result'/'edit' 等）。未指定は root ステージ
+ */
+export interface AppHistoryState {
+  _ynk: true;
+  view: ViewKey;
+  subStage?: string;
+}
+
+/**
+ * アプリ管理の pushState ヘルパー。
+ * try/catch で history API 非対応環境を吸収する。
+ */
+export function pushAppState(view: ViewKey, subStage?: string): void {
+  try {
+    const state: AppHistoryState = { _ynk: true, view, ...(subStage ? { subStage } : {}) };
+    window.history.pushState(state, '');
+  } catch {
+    /* history API 非対応環境は無視 */
+  }
+}
+
+/**
+ * 相性診断の共有リンク（?compat=<charaId>）から開かれた場合、
+ * 送信者のキャラIDを返す。通常起動時は null。
+ */
+function readCompatLink(): string | null {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('compat');
+    return id && id.trim() ? id.trim() : null;
+  } catch {
+    return null;
+  }
 }
 
 export default function App() {
-  return (
-    <TimeOfDayProvider>
-      <AppInner />
-    </TimeOfDayProvider>
-  );
-}
-
-function AppInner() {
-  const fromCharaId = useMemo(() => getFromCharaIdFromUrl(), []);
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
   const [view, setView] = useState<ViewKey>('home');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
-  const [streak, setStreak] = useState<StreakState>(() => ({ count: 0, lastDay: '' }));
-  const { userId } = useCurrentUser();
+  // 相性診断の共有リンクから開かれたか（送信者キャラID）
+  const [compatLink, setCompatLink] = useState<string | null>(() => readCompatLink());
 
-  useEffect(() => {
-    handleEmailLinkSignInOnLoad()
-      .then((user) => {
-        if (user) {
-          track('auth_email_link_complete', { uid: user.uid });
-          const url = new URL(window.location.href);
-          url.searchParams.delete('emailSignIn');
-          url.searchParams.delete('apiKey');
-          url.searchParams.delete('mode');
-          url.searchParams.delete('oobCode');
-          url.searchParams.delete('continueUrl');
-          url.searchParams.delete('lang');
-          window.history.replaceState({}, '', url.toString());
-        }
-      })
-      .catch((err) => trackException(`auth_email_link_error: ${String(err)}`, false));
-  }, []);
+  // 各 View から登録される「サブステージを1段戻す」コールバック（null = 登録なし）
+  const subStageBackRef = useRef<(() => void) | null>(null);
 
-  // 課金成功後リダイレクト検出: ?premium=1 → GA4 purchase 発火 + URL クリーン
-  // UnivaPay success_url = ${origin}/?premium=1 で設定（api/subscription/checkout.ts）
+  // popstate（ブラウザ戻る / iOS エッジスワイプ）ハンドラ
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const premium = params.get('premium');
-    if (premium === '1') {
-      // GA4 e-commerce 標準スキーマ
-      track('purchase', {
-        transaction_id: `txn_${Date.now()}`,
-        value: 980,
-        currency: 'JPY',
-        items: [
-          {
-            item_id: 'premium_monthly',
-            item_name: 'よるのことば Premium 月額',
-            price: 980,
-            quantity: 1,
-          },
-        ],
-      });
-      const url = new URL(window.location.href);
-      url.searchParams.delete('premium');
-      window.history.replaceState({}, '', url.toString());
-    }
-  }, []);
+    function handlePopState(e: PopStateEvent) {
+      const state = e.state as AppHistoryState | null;
 
-  useEffect(() => {
-    if (profile) {
-      const s = tickStreak();
-      setStreak(s);
-      track('streak_update', { count: s.count });
-      if (s.count === 3 || s.count === 7 || s.count === 14 || s.count === 30) {
-        track('streak_milestone', { count: s.count });
+      // アプリ外の履歴（state が _ynk を持たない）はそのまま離脱
+      if (!state || !state._ynk) return;
+
+      // サブステージがある場合 → View 内部の「1段戻る」コールバックを呼ぶ
+      if (state.subStage && subStageBackRef.current) {
+        subStageBackRef.current();
+        return;
+      }
+
+      // タブ遷移の戻り: state の view に戻す
+      // compat-receiver モードの場合は無視（exitCompatLink が担う）
+      if (state.view && !compatLink) {
+        setView(state.view);
       }
     }
-  }, [profile]);
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [compatLink]);
+
+  // 初期ロード時のベースエントリを replaceState で設定（戻るの起点）
+  useEffect(() => {
+    try {
+      const currentState = window.history.state as AppHistoryState | null;
+      if (!currentState || !currentState._ynk) {
+        window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '');
+      }
+    } catch {
+      /* history API 非対応環境 */
+    }
+  }, []);
+
+  /**
+   * タブ切り替え: setView + pushState。
+   * ホームへの遷移はスタックを積まない（ホームが常にベース）。
+   */
+  function navigateTo(nextView: ViewKey) {
+    // サブステージ戻りコールバックをリセット（タブ切り替えでサブステージは破棄）
+    subStageBackRef.current = null;
+    setView(nextView);
+    if (nextView !== 'home') {
+      pushAppState(nextView);
+    } else {
+      try {
+        window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '');
+      } catch {
+        /* history API 非対応環境 */
+      }
+    }
+  }
 
   function handleProfileComplete(p: UserProfile) {
     setProfile(p);
   }
 
-  // リンク経由の受信者ページ: ?from= があり、未登録ユーザーなら専用UIを出す
-  if (fromCharaId && !profile) {
+  function exitCompatLink() {
+    setCompatLink(null);
+    setView('home');
+    try {
+      // URL から ?compat= を取り除き、通常画面に戻す
+      window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '', window.location.pathname);
+    } catch {
+      /* history API 非対応環境 */
+    }
+  }
+
+  // 相性診断の共有リンクで開かれた場合は、プロフィール有無に関わらず
+  // 受信側画面を最優先で表示する（無料機能・登録不要）。
+  if (compatLink) {
     return (
-      <div className="app-root" style={{ paddingBottom: 0, position: 'relative' }}>
+      <div className="app-root" style={{ position: 'relative' }}>
+        <Particles count={14} seed={17} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <AppHeader />
           <ErrorBoundary>
-            <AuraReceiverView fromCharaId={fromCharaId} />
+            <CompatibilityReceiverView fromCharaId={compatLink} onExit={exitCompatLink} />
           </ErrorBoundary>
         </div>
       </div>
@@ -125,18 +161,37 @@ function AppInner() {
 
   return (
     <div className="app-root" style={{ paddingBottom: 88, position: 'relative' }}>
+      <Particles count={14} seed={17} />
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <AppHeader onSettingsClick={() => setView('settings')} />
+        <AppHeader onSettingsClick={() => navigateTo('settings')} />
         <ErrorBoundary>
-          {view === 'home' && <HomeView profile={profile} streak={streak} onNavigate={setView} />}
-          {view === 'dream' && <DreamView profile={profile} />}
-          {view === 'fortune' && <FortuneView profile={profile} currentUserId={userId} />}
-          {view === 'archive' && <ArchiveView profile={profile} onNavigate={setView} />}
-          {view === 'aura' && <AuraView profile={profile} onNavigate={setView} />}
-          {view === 'settings' && <SettingsView onBack={() => setView('home')} />}
+          {view === 'home' && <HomeView profile={profile} onNavigate={navigateTo} />}
+          {view === 'dream' && (
+            <DreamView
+              profile={profile}
+              onNavigate={navigateTo}
+              onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
+            />
+          )}
+          {view === 'fortune' && <FortuneView profile={profile} onNavigate={navigateTo} />}
+          {view === 'compatibility' && (
+            <CompatibilityView
+              profile={profile}
+              onNavigate={navigateTo}
+              onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
+            />
+          )}
+          {view === 'settings' && (
+            <SettingsView
+              profile={profile}
+              onProfileUpdate={(p) => { setProfile(p); navigateTo('home'); }}
+              onLogout={() => { setProfile(null); navigateTo('home'); }}
+              onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
+            />
+          )}
         </ErrorBoundary>
       </div>
-      {view !== 'settings' && <BottomTabBar current={view} onChange={setView} />}
+      {view !== 'settings' && <BottomTabBar current={view} onChange={navigateTo} />}
       {showFtue && <FtueOverlay onComplete={() => setShowFtue(false)} />}
     </div>
   );
@@ -168,18 +223,23 @@ class ErrorBoundary extends Component<{ children: ReactNode }, EBState> {
             margin: 20,
           }}
         >
-          <p style={{ color: 'var(--rose)', fontWeight: 700, fontSize: 'var(--fs-body)' }}>
+          <p style={{ color: 'var(--rose)', fontWeight: 700, fontSize: 14 }}>
             ごめんね、表示でうまくいかなかったみたい
           </p>
-          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', marginTop: 6, lineHeight: 1.6 }}>
-            再読み込みすると直ることが多いよ。
-          </p>
+          <pre
+            style={{
+              fontSize: 10,
+              color: 'var(--t3)',
+              marginTop: 8,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {this.state.err.message}
+          </pre>
           <button
-            type="button"
             onClick={() => location.reload()}
             style={{
               marginTop: 12,
-              minHeight: 44,
               padding: '10px 20px',
               borderRadius: 8,
               border: 'none',

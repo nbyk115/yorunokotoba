@@ -3,7 +3,6 @@
  * Preserves compatibility with legacy `ynk_email_for_signin` localStorage key.
  */
 
-import { useEffect, useState } from 'react';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -84,34 +83,4 @@ export function subscribeToAuthState(
 
 export async function signOut(): Promise<void> {
   await fbSignOut(getAuthInstance());
-}
-
-/** 現在ログイン中のユーザーの ID Token を取得（API 認証用）. 未ログイン時は null. */
-export async function getCurrentIdToken(): Promise<string | null> {
-  const user = getAuthInstance().currentUser;
-  if (!user) return null;
-  return user.getIdToken();
-}
-
-/**
- * 現在ログイン中の Firebase Auth ユーザーを購読する React フック。
- * 未ログイン時は user=null / userId=null を返す（既存の guest 体験を維持）。
- */
-export function useCurrentUser(): {
-  user: User | null;
-  userId: string | null;
-  loading: boolean;
-} {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const unsub = subscribeToAuthState((u) => {
-      setUser(u);
-      setLoading(false);
-    });
-    return unsub;
-  }, []);
-
-  return { user, userId: user?.uid ?? null, loading };
 }

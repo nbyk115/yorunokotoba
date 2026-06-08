@@ -1,14 +1,3 @@
-import { useEffect, useState } from 'react';
-import { Settings, Sun, Moon } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
-import {
-  getNightMode,
-  setNightMode,
-  isDarkActive,
-  type NightMode,
-} from '@/lib/theme';
-import { track } from '@/lib/analytics';
-
 interface AppHeaderProps {
   title?: string;
   subtitle?: string;
@@ -16,21 +5,6 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ title = '🌙 よるのことば', subtitle, onSettingsClick }: AppHeaderProps) {
-  const [mode, setMode] = useState<NightMode>(() => getNightMode());
-  const [dark, setDark] = useState(() => isDarkActive());
-
-  useEffect(() => {
-    setDark(isDarkActive());
-  }, [mode]);
-
-  function cycle() {
-    const next: NightMode = dark ? 'off' : 'on';
-    setNightMode(next);
-    setMode(next);
-    setDark(isDarkActive());
-    track('night_mode_toggle', { to: next });
-  }
-
   return (
     <header
       style={{
@@ -41,57 +15,32 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
     >
       {onSettingsClick && (
         <button
-          type="button"
           onClick={onSettingsClick}
-          aria-label="設定を開く"
+          aria-label="設定"
           style={{
             position: 'absolute',
+            right: 'var(--sp-5)',
             top: 'var(--sp-5)',
-            left: 'var(--sp-4)',
-            background: 'transparent',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--r-tag)',
-            padding: '6px 12px',
+            background: 'none',
+            border: 'none',
             cursor: 'pointer',
-            color: 'var(--t1)',
-            minHeight: 44,
+            fontSize: 20,
+            color: 'var(--t2)',
+            padding: 4,
             minWidth: 44,
+            minHeight: 44,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'background var(--anim-hover)',
+            borderRadius: 8,
           }}
         >
-          <Icon icon={Settings} size={20} />
+          ⚙
         </button>
       )}
-      <button
-        type="button"
-        onClick={cycle}
-        aria-label={dark ? 'ライトモードに切替' : 'ダークモードに切替'}
-        style={{
-          position: 'absolute',
-          top: 'var(--sp-5)',
-          right: 'var(--sp-4)',
-          background: 'transparent',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--r-tag)',
-          padding: '6px 12px',
-          cursor: 'pointer',
-          color: 'var(--t1)',
-          minHeight: 44,
-          minWidth: 44,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background var(--anim-hover)',
-        }}
-      >
-        <Icon icon={dark ? Sun : Moon} size={20} />
-      </button>
       <h1
         style={{
-          fontSize: 'var(--fs-h1)',
+          fontSize: 22,
           fontWeight: 700,
           color: 'var(--rose)',
           letterSpacing: 2,
@@ -101,7 +50,7 @@ export function AppHeader({ title = '🌙 よるのことば', subtitle, onSetti
         {title}
       </h1>
       {subtitle && (
-        <p style={{ color: 'var(--t2)', fontSize: 'var(--fs-caption)', marginTop: 4 }}>{subtitle}</p>
+        <p style={{ color: 'var(--t2)', fontSize: 12, marginTop: 4 }}>{subtitle}</p>
       )}
     </header>
   );

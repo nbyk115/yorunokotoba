@@ -1,247 +1,170 @@
 # DESIGN.md : よるのことば
 
+> 方針: ピンクポップ。日本の夜職/20-40 代女性向け。あたたかく親しみやすい「丸み + ピンク + 絵文字」のトーンで、占いを開いた瞬間にテンションが上がる体験を作る。インクブルー単色のクールな旧路線は廃し、明るいピンク基調 + 淡いグロー + 絵文字多めで「自分に語りかけてくれる」感触を最優先する。
+>
+> SSOT: トークンの実値は `frontend/src/styles/tokens.css`（出典 `design/contracts/tokens.json`）。本書はそれと一致させる。変更時は tokens.json → validate.ts → tokens.css → 本書の順で更新する。
+
 ## Colors
 
-PR5 リデザイン: インクブルー単色 → くすみピンク基調（日本20-40代女性向け再設計）。彩度45-58%の「くすみピンク」で上質化。旧 #E8627C（彩度76%、安っぽい）を廃し、黄み寄せのローズへ。夜モード背景はインクブルーを廃止しワイン/バーガンディ軸で統一。
+ブランドピンクは `--rose: #E8627C`（明るく親しみのあるローズ）。これがピンクポップの主役色で、CTA・アクティブ・リンク・アクセントに使う。ゴールド `--gold` はプレミアムの 1 点アクセント。背景はライトが基本（明るいピンク温白）、夜時間帯（22:00-05:00）に自動でダークへ切り替わる。
 
-### Light Theme (day mode)
+### Light Theme（既定）
 | Token | Value | Usage |
 |---|---|---|
-| `--bg1` | `#FBF4F2` | Background primary (ピンク混じり温白) |
-| `--rose` | `#E0758C` | CTA and active states only (くすみローズ。彩度ダウン + 黄み寄せ) |
-| `--rose-deep` | `#C75E76` | Rose hover variant |
-| `--pink` | `#C75E76` | Rose hover variant (--rose-deep の alias) |
-| `--blush` | `#F3D9DC` | 淡ピンク。カード地ニュアンス用 |
-| `--lavender` | `#8A87B8` | Particle accent (装飾用途のみ) |
-| `--gold` | `#C9A961` | Unique premium accent (シャンパンゴールド) |
-| `--accent` | `#C9A961` | Primary accent - gold. All modes. |
-| `--accent-rose` | `#E0758C` | CTA and active state accent |
-| `--card` | `var(--card-secondary)` | Card background (migration alias for card-secondary) |
-| `--card-primary` | `rgba(255,255,255,0.96)` | Primary card background (main content card, 1 per screen) |
-| `--card-secondary` | `rgba(255,255,255,0.62)` | Secondary card background (sub cards, list items) |
-| `--border-primary` | `rgba(58,42,48,0.10)` | Primary card border |
-| `--border-secondary` | `rgba(58,42,48,0.05)` | Secondary card border |
-| `--card-solid` | `#fff` | Card background solid |
-| `--border` | `rgba(58,42,48,0.08)` | Border |
-| `--t1` | `#3A2A30` | Text primary (ピンク寄り濃茶、純黒不使用) |
-| `--t2` | `rgba(58,42,48,0.70)` | Text secondary |
-| `--t3` | `rgba(58,42,48,0.52)` | Text tertiary |
-| `--t4` | `rgba(58,42,48,0.36)` | Text quaternary |
-| `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
-| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 20px rgba(224,117,140,0.14)` | Primary card shadow (淡ローズの弱いグロー) |
-| `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.45), 0 2px 10px rgba(0,0,0,0.08)` | Secondary card shadow |
+| `--bg1` | `#FFF5F0` | 背景（ピンク混じり温白） |
+| `--bg-body` | `var(--bg1)` | body 背景 |
+| `--rose` | `#E8627C` | ブランドピンク。CTA / アクティブ / リンク / アクセント |
+| `--pink` | `#D4506A` | ローズの濃い変種（グラデ終点・hover） |
+| `--blush` | `#F2A0B0` | 淡ピンク。装飾・ニュアンス用 |
+| `--lavender` | `#B08ACF` | パーティクル・補助アクセント |
+| `--gold` | `#D4A853` | プレミアムの唯一の上質アクセント |
+| `--t1` | `#3A2830` | 文字（ピンク寄り濃茶、純黒不使用） |
+| `--t2` | `rgba(58,40,48,0.72)` | 文字 secondary |
+| `--t3` | `rgba(58,40,48,0.56)` | 文字 tertiary |
+| `--card` | `rgba(255,255,255,0.92)` | カード背景（半透明 + blur） |
+| `--card-solid` | `#FFFFFF` | 不透明カード・ボタン地 |
+| `--border` | `rgba(58,40,48,0.08)` | ボーダー |
+| `--card-highlight-shadow` | `0 4px 20px rgba(232,98,124,0.12)` | 主役カードの淡いピンクグロー（ブランドの立体表現） |
 
-### Dark Theme (`[data-theme="dark"]`) / Night Modes
+### Dark Theme（`[data-theme="dark"]`、夜 22:00-05:00 自動）
 | Token | Value | Usage |
 |---|---|---|
-| `--bg1` | `#1C1620` | Background primary (ワインに寄せた黒。インクブルー廃止) |
-| `--rose` | `#EC8C9E` | CTA and active states only (暗背景で映える明度上げ) |
-| `--rose-deep` | `#D97088` | Rose hover (dark) |
-| `--card` | `var(--card-secondary)` | Card background (migration alias for card-secondary) |
-| `--card-primary` | `rgba(40,28,34,0.92)` | Primary card background |
-| `--card-secondary` | `rgba(28,20,24,0.60)` | Secondary card background |
-| `--border-primary` | `rgba(246,236,238,0.12)` | Primary card border |
-| `--border-secondary` | `rgba(246,236,238,0.06)` | Secondary card border |
-| `--card-solid` | `#281C22` | Card background solid |
-| `--t1` | `#F6ECEE` | Text primary (白に微ピンク) |
-| `--t2` | `rgba(246,236,238,0.68)` | Text secondary |
-| `--t3` | `rgba(246,236,238,0.46)` | Text tertiary |
-| `--shadow` | `var(--shadow-card-secondary)` | Default shadow (migration alias) |
-| `--shadow-card-primary` | `inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 28px rgba(0,0,0,0.40)` | Primary card shadow |
-| `--shadow-card-secondary` | `inset 0 1px 0 rgba(255,255,255,0.04), 0 2px 10px rgba(0,0,0,0.28)` | Secondary card shadow |
+| `--bg1` | `#0D0B0E` | 背景（ワイン寄り深黒） |
+| `--rose` | `#F0809A` | 暗背景で映える明度上げローズ |
+| `--card` | `rgba(28,22,30,0.85)` | カード背景 |
+| `--card-solid` | `#1C161E` | 不透明カード地 |
+| `--t1` | `#F0E8EC` | 文字（白に微ピンク） |
+| `--t2` | `rgba(240,232,236,0.72)` | 文字 secondary |
+| `--t3` | `rgba(240,232,236,0.56)` | 文字 tertiary |
+| `--border` | `rgba(240,232,236,0.10)` | ボーダー |
 
-### Time of Day Background Colors (PR5 確定値: 青を完全排除、ピンク/ワイン軸で統一)
-| Mode | Hours | `--bg1` | Character |
-|---|---|---|---|
-| `night-deep` | 02:00-05:00 | `#150E14` | 最暗。ワイン寄り深黒 |
-| `dawn` | 05:00-11:00 | `#2A1E28` | 夜明け前のワイン色 |
-| `day` | 11:00-17:00 | `#FBF4F2` | ピンク温白。昼の光 |
-| `dusk` | 17:00-22:00 | `#241823` | 宵闇。深まる夜 |
-| `night` | 22:00-02:00 | `#1C1620` | 夜の帷 |
+ダーク適用は `frontend/src/lib/theme.ts`。`auto`（既定）は 22:00-05:00 をダーク判定、`on`/`off` で手動上書き可（localStorage `ynk_night_mode`）。5 段階の時間帯モードは現状未実装で、light/dark の二値。
 
 ### Semantic
-| Color | Usage |
+| Token | Usage |
 |---|---|
-| `--accent` / `--gold` | 唯一の上質アクセント。金 1 点のみ |
-| `--accent-rose` / `--rose` | CTA とアクティブ状態のみ。全面使用禁止 |
-| `--lavender` | パーティクルカラー（PR4-6 で用途整理） |
-| `--blush` | 補助アクセント（PR4-6 で用途整理） |
+| `--rose` | ブランドピンク。CTA・アクティブ・リンク・主役のアクセント |
+| `--gold` | プレミアム専用の上質アクセント。1 画面 1 点に絞る |
+| `--lavender` / `--blush` | 補助アクセント・パーティクル・装飾ニュアンス |
 
 ## Typography
 
 ### Font Stack
 ```css
-/* Heading / Body */
-font-family: 'Zen Maru Gothic', sans-serif;
+/* Heading / Body : 丸ゴシックで警戒心を解く、あたたかい印象 */
+font-family: var(--font-heading);
+/* = 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans-serif */
 /* Weight: 400 (body), 500 (emphasis), 700 (heading) */
 
-/* Accent / Decorative */
-font-family: 'Cormorant', serif;
-/* Weight: 300, 400, 500. Used for quotes, decorative text */
-/* Italic available for emphasis */
-```
-
-### Japanese Font Stack (fallback)
-```css
-font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic Pro', 'BIZ UDGothic', sans-serif;
+/* Accent : 装飾用に予約（--font-accent: 'Cormorant', serif）。現状は最小限の使用 */
 ```
 
 ### Scale
 | Element | Size | Weight | Line Height |
 |---|---|---|---|
-| H1 (page title) | 22px | 700 | 1.3 |
-| H2 (section title) | 18px | 700 | 1.4 |
-| H3 (card title) | 16px | 700 | 1.4 |
-| Body | 15px | 400 | 1.7 |
-| Small / Caption | 13px | 400 | 1.5 |
-| Minimum | 11px | 400 | 1.4 |
-| **Hero JP (Zen Maru, 主役)** | 24px | 700 | 1.4 |
-| Hero EN (Cormorant italic, 装飾降格) | 24px | 300 | 1.3 |
+| H1（ページタイトル） | 22px | 700 | 1.3 |
+| H2（セクション） | 16-18px | 700 | 1.4 |
+| H3（カード見出し） | 14-16px | 700 | 1.4 |
+| Body | 15px | 400 | 1.7-1.9 |
+| Small / Caption | 12-13px | 400 | 1.5-1.7 |
+| Minimum | 10-11px | 400-700 | 1.4 |
 
 ## Spacing
 
-### Base Unit
-4px
+ベース 4px。トークン `--sp-1`〜`--sp-8` = 4, 8, 12, 16, 20, 24, 32, 48。
 
-### Scale
-4, 8, 12, 16, 20, 24, 32, 48
-
-### Common Patterns
 | Element | Padding | Margin |
 |---|---|---|
-| Card | 20px | 12px bottom |
-| Section | 0 16px | 24px bottom |
+| Card | 20px（`--sp-5`） | 12px-16px bottom |
+| Section | 0 16px | 16-24px bottom |
 | Button | 14px 28px | -- |
 | Input | 14px 16px | 12px bottom |
-| Tab bar | 8px 0 | -- |
 
 ## Border Radius
 
-| Element | Radius |
-|---|---|
-| Card | 18px |
-| Button | 14px |
-| Input | 12px |
-| Tag / Badge | 20px (pill) |
-| Avatar | 50% (circle) |
-| Modal / Sheet | 24px (top corners) |
+トークン: `--r-card: 18px` / `--r-button: 14px` / `--r-input: 12px` / `--r-tag: 20px` / `--r-modal: 24px`。アバターは `50%`（円）。最小 8px（角を鋭くしない）。
 
-## ダークファースト・ライティング
+## 影・グロー方針（ピンクポップ）
 
-よるのことばは time-of-day モードの大半が夜色背景で表示される。暗背景では黒い drop-shadow が不可視になり立体感が失われるため、立体表現の主役は「上端の inset ハイライト線」とする。光源は常に画面上方に固定し、カード上辺へ内側から 1px の明るい線（dark: rgba(255,255,255,0.07)、light: rgba(255,255,255,0.6)）を入れる。外側影は輪郭づけ程度に弱く保ち、主役カードのみ rose 系のごく淡いグローで浮きを補強する。影の良し悪しは「重さ」ではなく「光源との整合」で判断する。--shadow-card-primary / --shadow-card-secondary を必ず使い、コンポーネントで影値を直書きしない。
+立体表現の主役は「淡いピンク/ゴールドのグロー」。これがブランドの手触りで、冷たい黒影一辺倒にはしない。
 
-## 装飾とアイコン方針
+- 主役カード・CTA: 淡いピンクグロー（例 `--card-highlight-shadow` = `0 4px 20px rgba(232,98,124,0.12)`、Button primary = `0 4px 20px rgba(232,98,124,0.28)`）。有彩色グローは alpha 0.3 以下に抑える。
+- サブカード・一覧: ごく弱い影で輪郭づけ程度（過剰な発光はしない）。
+- 上端 inset ハイライト線（`rgba(255,255,255,...)`）でガラス質の立体感を足してよい。
+- 規約（`design/contracts/rules.json`）: 有彩色グローは alpha 0.3 以下を許可、0.4 以上の garish な強発光のみ error。
 
-装飾は「深夜ラジオ × 姉貴分 × 占い師」のトーンに従い、足し算ではなく引き算で設計する。Cormorant はヒーロー英字（--fs-hero-en）と占い結果中の引用句のみに限定し、見出し・本文・caption には使わない。アイコンは線幅 1.5px 前後の細線スタイルで統一し、塗りつぶしアイコンは active 状態のタブのみに許容する。絵文字を UI 部品として常用しない。装飾要素（パーティクル・グロー・グラデーション）は主役カードと CTA に集約し、サブカードや一覧には載せない。1画面の装飾の主役は1つに絞り、視線が占い結果へ向かう導線を最優先する。
+## 装飾・絵文字方針（ピンクポップ）
+
+絵文字はブランドのコア要素。見出し・CTA・占い結果メッセージに積極的に使い、ターゲットが読んでテンションが上がる温度を作る（🌙 夢占い / ✨ ホロスコープ / 💞 相性 / 💫💕🌟⚡ セクション見出し等）。ただし無秩序に散らさず、各ブロックの意味づけ・リズム作りに使う。グラデーションと淡いグローもブランド要素として CTA・主役カード・バッジに使ってよい。1 画面の装飾の主役は絞り、視線が占い結果・CTA へ向かう導線を最優先する。パーティクル（rose/lavender/gold）は控えめなアンビエントとして背景に流す。
 
 ## Components
 
-### Button
-- Primary: `background: var(--grad)`, white text, `border-radius: 14px`, `padding: 14px 28px`
-- Secondary: `background: transparent`, `border: 1.5px solid var(--rose)`, rose text
-- Disabled: `opacity: 0.5`, `pointer-events: none`
-- Hover: `transform: translateY(-1px)`, shadow increase
-- Active: `transform: translateY(0)`
-- Transition: `all 0.2s ease`
+### Button（`frontend/src/components/ui/Button.tsx`）
+- Primary: `background: linear-gradient(135deg, var(--rose), var(--pink))`, 白文字, `boxShadow: 0 4px 20px rgba(232,98,124,0.28)`（ピンクグロー）
+- Secondary: `background: var(--card-solid)`, `color: var(--t1)`, `border: 1px solid var(--border)`
+- Ghost: `background: transparent`, `color: var(--rose)`, border なし
+- 共通: `border-radius: var(--r-button)`（14px）, `padding: 14px 28px`, `font-size: 15`, `font-weight: 700`, `min-height/min-width: 44`
+- Transition: `transform var(--anim-hover), box-shadow var(--anim-hover)`
 
-### Card
-- Background: `var(--card)`, `backdrop-filter: blur(20px)`
-- Border: `1px solid var(--border)`
-- Border radius: 18px
-- Shadow: `var(--shadow)`
-- Padding: 20px
+### Card（`frontend/src/components/ui/Card.tsx`）
+- Background: `var(--card)` + `backdrop-filter: blur()`
+- Border: `1px solid var(--border)`, radius `var(--r-card)`（18px）, padding 20px
+- 主役カードは淡いピンクグロー、グラデ背景も可
 
 ### Input / Textarea
-- Background: `rgba(255,255,255,0.5)` (light) / `rgba(255,255,255,0.05)` (dark)
-- Border: `1.5px solid var(--border)`
-- Border radius: 12px
-- Focus: `outline: 2px solid var(--rose)`, `outline-offset: 2px`
+- Border: `1.5px solid var(--border)`, radius 12px, focus は rose の outline
 - Padding: 14px 16px
 
 ### Bottom Tab Bar
-- Height: 56px + safe area
-- Background: `var(--card)`, `backdrop-filter: blur(20px)`
-- Active icon: `var(--rose)`
-- Inactive icon: `var(--t3)`
-- Max 5 items
+- Background: `var(--card)` + blur, アクティブは `var(--rose)`, 非アクティブ `var(--t3)`
 
 ## Animation
 
-### Timing
 | Animation | Duration | Easing |
 |---|---|---|
 | Fade in | 500ms | ease |
-| Slide up | 450ms | ease |
-| Stagger delay | 50ms per item | -- |
+| Slide up | 450ms（`slide-up-1`〜`-5` は 50ms stagger） | ease |
 | Hover transform | 200ms | ease |
 | Theme toggle | 300ms | ease |
-| **Ritual sequence** | 3000ms | cubic-bezier(0.4, 0, 0.2, 1) |
+| Character float | 3.6s ループ | ease-in-out |
 
-### Particles
-- Canvas overlay, pointer-events: none
-- Rose/Lavender/Gold colored circles
-- Slow upward drift with fade
-
-## Time of Day Mode
-
-`document.documentElement.dataset.timeOfDay` 属性で切り替わる5段階の時間帯モード。
-`TimeOfDayProvider` が1分ごとに自動判定し、CSS変数を上書きする。
-
-| Mode | 時間帯 | `--bg1` | Particle Color | Count | Speed |
-|---|---|---|---|---|---|
-| `night-deep` | 02:00-05:00 | `#150E14` | `var(--gold)` | 8 | 0.6 |
-| `dawn` | 05:00-11:00 | `#2A1E28` | `var(--accent)` | 5 | 0.8 |
-| `day` | 11:00-17:00 | `#FBF4F2` | `var(--accent-rose)` | 6 | 1.0 |
-| `dusk` | 17:00-22:00 | `#241823` | `var(--lavender)` | 7 | 0.9 |
-| `night` | 22:00-02:00 | `#1C1620` | `var(--accent-rose)` | 6 | 1.0 |
-
-### 設計原則
-- ライト/ダークテーマ(`data-theme`)とは独立して動作する
-- `day` モードのみ明るい背景（ライトテーマと同値）
-- `day` 以外は夜系の深い背景色を使用
-- パーティクル色・数・速度は各モードの雰囲気に合わせて調整
-
-## Do
-
-- Use CSS custom properties for all colors (never hardcode hex in components)
-- Support both light and dark themes via `[data-theme]` attribute
-- Use `backdrop-filter: blur()` for glass morphism cards
-- Use Zen Maru Gothic for all text (warm, rounded feel)
-- Use Cormorant for decorative elements only
-- Keep animations subtle (translateY: hover max 2px, chara float max 6px, opacity transitions)
-- Use gradients for primary CTAs only
-- PWA: full-screen capable, standalone display mode
-
-## Don't
-
-- Don't use sharp corners (minimum radius: 8px)
-- Don't use pure black (#000) or pure white (#fff) as text color
-- Don't use more than 2 fonts
-- Don't animate layout properties (width, height, top, left). Use transform and opacity only
-- Don't use colored glow (box-shadow with non-black rgba above alpha 0.15). Use black shadow rgba(0,0,0,...) for depth; black shadow up to alpha 0.5 is acceptable
-- Don't place text directly on gradients without sufficient contrast
-- Don't use system fonts. Always load Zen Maru Gothic
-- Don't use em dash or en dash in English output
+- キャラの浮遊（`.chara-float`）は `translateY` 最大 14px。ブランドコアの心地よい動きなので `prefers-reduced-motion` でも維持する（その他のアニメは reduce 時に停止）。
+- SSR キャラは `.chara-sparkle` で✨をきらめかせる。
+- レイアウトプロパティ（width/height/top/left）はアニメーションしない。transform / opacity のみ。
 
 ## Responsive
 
-### Breakpoints
 | Name | Width | Layout |
 |---|---|---|
-| Mobile (default) | 0 - 600px | Single column, full width cards |
-| Tablet | 601 - 900px | Wider cards, optional 2-column |
-| Desktop | 901px+ | Max width 480px centered (app-like) |
+| Mobile（既定） | 0-600px | 単一カラム・全幅カード |
+| Desktop | 601px+ | `max-width: 480px`（`--app-max-width`）で中央寄せ、アプリ風 |
 
-### Mobile First
-- All styles default to mobile
-- Desktop adds `max-width: 480px` and centers content
-- Tab bar always visible on mobile
-- Touch targets: minimum 44px
+タッチターゲット最小 44px。モバイルファースト。
 
 ## PWA
 
-- Display: standalone
-- Theme color: `#FBF4F2` (light) / `#1C1620` (dark)
-- Background color: `#FBF4F2`
+- Display: standalone, Orientation: portrait
+- `manifest.json`: `theme_color` / `background_color` = `#FFF5F0`
+- `index.html` meta `theme-color` = `#E8627C`（ブラウザ chrome をブランドピンクに）
 - Icons: 192x192, 512x512
-- Orientation: portrait
+
+## Do
+
+- 色はトークン（CSS custom properties）を使う。ブランドのピンクグロー `rgba(232,98,124,...)` はトークン未定義箇所でインライン可
+- 絵文字を見出し・CTA・結果メッセージに積極活用し、ターゲットのテンションを上げる
+- グラデーション・淡いグローをブランド要素として CTA・主役カード・バッジに使う
+- light/dark 両対応（`[data-theme]`）。夜は自動でダーク
+- ガラス質カードに `backdrop-filter: blur()`
+- すべてのテキストに Zen Maru Gothic（あたたかい丸ゴシック）
+- アニメは控えめに（hover の translateY 最大 2px、キャラ float 最大 14px、opacity 中心）
+
+## Don't
+
+- 角を鋭くしない（最小 radius 8px）
+- 純黒（#000）・純白（#fff）を文字色にしない
+- フォントを 2 種類超にしない
+- レイアウトプロパティ（width/height/top/left）をアニメーションしない
+- garish な強い有彩色グロー（alpha 0.4 以上）を使わない。淡いピンク/ゴールドグロー（alpha 0.3 以下）はブランドシグネチャとして可
+- グラデーション上にコントラスト不足の文字を直置きしない
+- システムフォントに頼らない。Zen Maru Gothic を必ず読み込む
+- 英語出力で em dash / en dash（長いダッシュ記号）を使わない。コロン（:）・ハイフン（-）・カンマ（,）で代替

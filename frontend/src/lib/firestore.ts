@@ -51,6 +51,14 @@ export function saveLocalProfile(profile: UserProfile): void {
   }
 }
 
+export function clearLocalProfile(): void {
+  try {
+    localStorage.removeItem(PROFILE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 export async function saveUserProfile(
   userId: string,
   profile: UserProfile,

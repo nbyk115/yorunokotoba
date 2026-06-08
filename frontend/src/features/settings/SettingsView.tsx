@@ -1,275 +1,150 @@
-/**
- * SettingsView: マイページ（Premium 状態 / 解約 / 法務リンク / サインアウト）.
- *
- * 特商法第15条の3 準拠の解約導線をここに集約する.
- * 法務文書 3 本は同一画面内で切替表示（別タブやモーダルではなく fullscreen 遷移）.
- */
-
-import { useState } from 'react';
-import { Sparkles, FileText, UserRound } from 'lucide-react';
-import { Icon } from '@/components/ui/Icon';
-import { useSubscription } from '@/lib/subscription';
-import { signOut, useCurrentUser } from '@/lib/auth';
-import { CancelConfirmModal } from './CancelConfirmModal';
-import { LegalDocument, type LegalCategory } from './LegalDocument';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { ProfileSetup } from '@/features/profile/ProfileSetup';
+import { clearLocalProfile } from '@/lib/firestore';
+import { signOut } from '@/lib/auth';
+import type { UserProfile } from '@/lib/firestore';
+import { pushAppState } from '@/App';
 
 interface SettingsViewProps {
-  onBack: () => void;
+  profile: UserProfile;
+  onProfileUpdate: (profile: UserProfile) => void;
+  onLogout: () => void;
+  /** edit ステージへの戻りコールバックを App に登録する（null = 解除） */
+  onRegisterHistoryBack?: (cb: (() => void) | null) => void;
 }
 
-export function SettingsView({ onBack }: SettingsViewProps) {
-  const { user, userId } = useCurrentUser();
-  const { subscription, isPremium, loading } = useSubscription(userId);
-  const [showCancelModal, setShowCancelModal] = useState(false);
-  const [legalCategory, setLegalCategory] = useState<LegalCategory | null>(null);
-  const [signOutPending, setSignOutPending] = useState(false);
+export function SettingsView({ profile, onProfileUpdate, onLogout, onRegisterHistoryBack }: SettingsViewProps) {
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
 
-  // T-H2: legal 遷移時は解約モーダルを必ず閉じる（戻った時の意図せぬ復帰防止）
-  function openLegal(c: LegalCategory) {
-    setShowCancelModal(false);
-    setLegalCategory(c);
+  // editingProfile に入ったら pushState + 戻りコールバックを登録
+  useEffect(() => {
+    if (editingProfile) {
+      pushAppState('settings', 'edit');
+      onRegisterHistoryBack?.(() => setEditingProfile(false));
+    } else {
+      onRegisterHistoryBack?.(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingProfile]);
+
+  function handleProfileComplete(p: UserProfile) {
+    onProfileUpdate(p);
+    setEditingProfile(false);
   }
 
-  if (legalCategory) {
-    return <LegalDocument category={legalCategory} onBack={() => setLegalCategory(null)} />;
-  }
-
-  async function handleSignOut() {
-    setSignOutPending(true);
+  async function handleLogout() {
+    clearLocalProfile();
     try {
       await signOut();
-    } catch (err) {
-      console.error('[SettingsView] signOut failed', err);
-    } finally {
-      setSignOutPending(false);
+    } catch {
+      /* Firebase サインアウト失敗はローカルクリアで十分 */
     }
+    onLogout();
+  }
+
+  if (editingProfile) {
+    return (
+      <div style={{ padding: 'var(--sp-5)' }}>
+        <button
+          onClick={() => setEditingProfile(false)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--t2)',
+            fontSize: 14,
+            cursor: 'pointer',
+            padding: '0 0 var(--sp-4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+          }}
+        >
+          ← もどる
+        </button>
+        <ProfileSetup initial={profile} onComplete={handleProfileComplete} />
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: 'var(--sp-5)', paddingBottom: 88 }}>
-      <button
-        type="button"
-        onClick={onBack}
-        aria-label="戻る"
-        style={{
-          background: 'transparent',
-          border: 'none',
-          color: 'var(--rose)',
-          fontSize: 'var(--fs-body)',
-          padding: '10px 4px',
-          minHeight: 44,
-          cursor: 'pointer',
-          marginBottom: 8,
-        }}
-      >
-        ← 戻る
-      </button>
+    <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+      <Card>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
+          プロフィール
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 'var(--sp-4)', lineHeight: 1.7 }}>
+          {profile.name} / {profile.sign}
+        </p>
+        <Button variant="secondary" fullWidth onClick={() => setEditingProfile(true)}>
+          プロフィールを編集
+        </Button>
+      </Card>
 
-      <h2 style={{ fontSize: 'var(--fs-h1)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 20px' }}>
-        設定
-      </h2>
+      <Card>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
+          アカウント
+        </h2>
+        <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 'var(--sp-4)', lineHeight: 1.7 }}>
+          ログアウトすると、プロフィール情報がリセットされます。夢のきろくは消えません。
+        </p>
 
-      <Card variant="secondary" style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--gold)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Icon icon={Sparkles} size={16} color="var(--gold)" />
-          Premium ステータス
-        </h3>
-        {loading ? (
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)' }}>読み込み中…</p>
+        {confirmingLogout ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
+            <p style={{ fontSize: 14, color: 'var(--t1)', fontWeight: 700, textAlign: 'center' }}>
+              ログアウトしますか？
+            </p>
+            <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={() => setConfirmingLogout(false)}
+              >
+                キャンセル
+              </Button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  flex: 1,
+                  borderRadius: 'var(--r-button)',
+                  padding: '14px 28px',
+                  fontSize: 15,
+                  fontWeight: 700,
+                  fontFamily: 'var(--font-heading)',
+                  cursor: 'pointer',
+                  minHeight: 44,
+                  background: 'rgba(232, 98, 124, 0.12)',
+                  color: 'var(--rose)',
+                  border: '1px solid var(--rose)',
+                }}
+              >
+                ログアウト
+              </button>
+            </div>
+          </div>
         ) : (
-          <SubscriptionStatusBlock
-            isPremium={isPremium}
-            status={subscription.status}
-            currentPeriodEnd={subscription.currentPeriodEnd?.toDate()?.toISOString() ?? null}
-            onCancel={() => setShowCancelModal(true)}
-          />
-        )}
-      </Card>
-
-      <Card variant="secondary" style={{ marginBottom: 16 }}>
-        <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Icon icon={FileText} size={16} />
-          規約・ポリシー
-        </h3>
-        <LegalLinkRow onClick={() => openLegal('tokushoho')} label="特定商取引法に基づく表記" />
-        <LegalLinkRow onClick={() => openLegal('terms')} label="利用規約" />
-        <LegalLinkRow onClick={() => openLegal('privacy')} label="プライバシーポリシー" />
-      </Card>
-
-      {user && (
-        <Card variant="secondary">
-          <h3 style={{ fontSize: 'var(--fs-body)', fontWeight: 700, color: 'var(--t1)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Icon icon={UserRound} size={16} />
-            アカウント
-          </h3>
-          <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', margin: '0 0 12px' }}>
-            ログイン中: {user.email ?? user.uid}
-          </p>
           <button
-            type="button"
-            onClick={handleSignOut}
-            disabled={signOutPending}
+            onClick={() => setConfirmingLogout(true)}
             style={{
-              minHeight: 44,
-              padding: '10px 16px',
-              borderRadius: 'var(--r-input)',
-              border: '1px solid var(--border)',
-              background: 'transparent',
-              color: 'var(--t1)',
-              fontSize: 'var(--fs-caption)',
+              width: '100%',
+              borderRadius: 'var(--r-button)',
+              padding: '14px 28px',
+              fontSize: 15,
               fontWeight: 700,
-              cursor: signOutPending ? 'wait' : 'pointer',
-              opacity: signOutPending ? 0.6 : 1,
+              fontFamily: 'var(--font-heading)',
+              cursor: 'pointer',
+              minHeight: 44,
+              background: 'rgba(232, 98, 124, 0.08)',
+              color: 'var(--rose)',
+              border: '1px solid rgba(232, 98, 124, 0.3)',
             }}
           >
-            {signOutPending ? '処理中…' : 'サインアウト'}
+            ログアウト
           </button>
-        </Card>
-      )}
-
-      {showCancelModal && (
-        <CancelConfirmModal
-          currentPeriodEndIso={subscription.currentPeriodEnd?.toDate()?.toISOString() ?? null}
-          onClose={() => setShowCancelModal(false)}
-          onCanceled={() => setShowCancelModal(false)}
-        />
-      )}
+        )}
+      </Card>
     </div>
   );
-}
-
-interface SubscriptionStatusBlockProps {
-  isPremium: boolean;
-  status: 'none' | 'active' | 'past_due' | 'canceled';
-  currentPeriodEnd: string | null;
-  onCancel: () => void;
-}
-
-function SubscriptionStatusBlock({
-  isPremium,
-  status,
-  currentPeriodEnd,
-  onCancel,
-}: SubscriptionStatusBlockProps) {
-  if (status === 'active' && isPremium) {
-    return (
-      <div>
-        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
-          🌙 Premium 利用中
-        </p>
-        {currentPeriodEnd && (
-          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', margin: '0 0 14px' }}>
-            次回更新日: {formatDate(currentPeriodEnd)}
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={onCancel}
-          style={{
-            minHeight: 44,
-            padding: '10px 16px',
-            borderRadius: 'var(--r-input)',
-            border: '1px solid var(--border)',
-            background: 'transparent',
-            color: 'var(--t2)',
-            fontSize: 'var(--fs-caption)',
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          Premium を解約する
-        </button>
-      </div>
-    );
-  }
-
-  if (status === 'canceled') {
-    return (
-      <div>
-        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t1)', lineHeight: 1.8, margin: '0 0 4px' }}>
-          解約済み
-        </p>
-        {currentPeriodEnd && (
-          <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t3)', margin: 0 }}>
-            {formatDate(currentPeriodEnd)} までは引き続き使えるよ
-          </p>
-        )}
-      </div>
-    );
-  }
-
-  if (status === 'past_due') {
-    return (
-      <div>
-        <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--rose)', lineHeight: 1.8, margin: '0 0 10px' }}>
-          ひといき お支払いに問題が発生したみたい
-        </p>
-        <p style={{ fontSize: 'var(--fs-micro)', color: 'var(--t2)', lineHeight: 1.7, margin: '0 0 12px' }}>
-          カードの有効期限切れや残高不足が原因かも。<br />
-          次回更新日までに解決できない場合は自動で解約になるよ。
-        </p>
-        <button
-          type="button"
-          onClick={onCancel}
-          style={{
-            minHeight: 44,
-            padding: '10px 16px',
-            borderRadius: 'var(--r-input)',
-            border: '1px solid var(--border)',
-            background: 'transparent',
-            color: 'var(--t2)',
-            fontSize: 'var(--fs-caption)',
-            fontWeight: 700,
-            cursor: 'pointer',
-          }}
-        >
-          このまま解約する
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <p style={{ fontSize: 'var(--fs-caption)', color: 'var(--t2)', lineHeight: 1.8, margin: 0 }}>
-      Premium は未契約だよ。占いタブの末尾から始められるよ。
-    </p>
-  );
-}
-
-function LegalLinkRow({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        width: '100%',
-        minHeight: 44,
-        padding: '10px 4px',
-        background: 'transparent',
-        border: 'none',
-        borderTop: '1px solid var(--border)',
-        color: 'var(--t1)',
-        fontSize: 'var(--fs-caption)',
-        textAlign: 'left',
-        cursor: 'pointer',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <span>{label}</span>
-      <span aria-hidden="true" style={{ color: 'var(--t3)' }}>›</span>
-    </button>
-  );
-}
-
-function formatDate(iso: string): string {
-  try {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return iso;
-    return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
-  } catch {
-    return iso;
-  }
 }
