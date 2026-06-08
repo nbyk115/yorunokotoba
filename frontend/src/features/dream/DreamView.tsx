@@ -159,8 +159,9 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
           夢占い
         </h2>
         {!result && (
-          <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
-            見た夢をそのまま書いてみて。その夢が伝えているメッセージを読み解くよ。
+          <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <span>見た夢をそのまま書いてみて。</span>
+            <span>その夢が伝えているメッセージを読み解くよ。</span>
           </p>
         )}
       </header>
