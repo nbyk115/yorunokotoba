@@ -256,7 +256,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
       </Button>
 
       {/* ホロスコープの深い分析を主訴求(1枚目)、月ごとの夢の傾向分析を補助(2枚目) */}
-      <PremiumCard onNavigate={onNavigate} features={['fortune', 'dream']} />
+      <PremiumCard onNavigate={onNavigate} features={['fortune']} />
     </div>
   );
 }

@@ -194,7 +194,7 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
               </Button>
             </div>
           </Card>
-          <PremiumCard onNavigate={onNavigate} features={['dream', 'fortune']} />
+          <PremiumCard onNavigate={onNavigate} features={['dream']} />
         </>
       )}
 
@@ -259,7 +259,7 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
             </Button>
           </Card>
 
-          <PremiumCard onNavigate={onNavigate} features={['dream', 'fortune']} />
+          <PremiumCard onNavigate={onNavigate} features={['dream']} />
 
           <Button variant="secondary" onClick={handleReset} fullWidth>
             もう一度占う
