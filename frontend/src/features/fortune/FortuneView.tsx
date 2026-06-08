@@ -279,7 +279,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           }}
         >
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 12 }}>
-            強み・成長・関係性・人生テーマの4つを<br />プレミアムで全部読めるよ。
+            答えは自分でわかってる、って夜もあるよね。<br />そんな夜、4つの深掘りが背中を押してくれる。
           </p>
           <Button
             variant="primary"
