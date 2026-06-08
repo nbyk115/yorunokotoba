@@ -3,7 +3,6 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
-import { PremiumCard } from '@/components/PremiumCard';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
@@ -186,36 +185,8 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.essence}</p>
       </Card>
 
+      {/* 相性診断導線 (無料) */}
       <Card className="slide-up-3">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
-          ⭐ 生まれ持った強み
-        </h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
-      </Card>
-
-      <Card className="slide-up-4">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10 }}>
-          🌱 伸びしろと成長のヒント
-        </h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
-      </Card>
-
-      <Card className="slide-up-5">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10 }}>
-          💕 人との関わり方
-        </h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.relationship}</p>
-      </Card>
-
-      <Card className="slide-up-5">
-        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10 }}>
-          🧭 あなたの人生のテーマ
-        </h4>
-        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
-      </Card>
-
-      {/* Compatibility entry: same pattern as HomeView compatibility section */}
-      <Card className="slide-up-5">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
           💞 あの人との相性診断
         </h4>
@@ -225,6 +196,103 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         <Button variant="secondary" fullWidth onClick={() => onNavigate('compatibility')}>
           相性を診断する
         </Button>
+      </Card>
+
+      {/* プレミアム深掘り cap カード: 4 セクションを blur preview で表示 */}
+      <Card
+        className="slide-up-4"
+        style={{
+          background: 'linear-gradient(135deg, rgba(212,168,83,0.06), rgba(176,138,207,0.08))',
+          border: '1px solid rgba(212,168,83,0.40)',
+          boxShadow: 'inset 0 1px 0 rgba(212,168,83,0.25), 0 2px 16px rgba(0,0,0,0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* カードヘッダー */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+          <span style={{ fontSize: 18 }}>✨</span>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>
+            4つの深掘り分析
+          </h3>
+          <span
+            style={{
+              marginLeft: 'auto',
+              fontSize: 10,
+              fontWeight: 700,
+              color: 'var(--gold)',
+              background: 'rgba(212,168,83,0.12)',
+              border: '1px solid rgba(212,168,83,0.30)',
+              borderRadius: 'var(--r-tag)',
+              padding: '2px 8px',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            プレミアム
+          </span>
+        </div>
+
+        {/* blur preview: 4 セクション */}
+        <div
+          style={{
+            filter: 'blur(4px)',
+            opacity: 0.5,
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+          aria-hidden="true"
+        >
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 8 }}>
+              ⭐ 生まれ持った強み
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 8 }}>
+              🌱 伸びしろと成長のヒント
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 8 }}>
+              💕 人との関わり方
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.relationship}</p>
+          </div>
+
+          <div style={{ marginBottom: 8 }}>
+            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 8 }}>
+              🧭 あなたの人生のテーマ
+            </h4>
+            <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
+          </div>
+        </div>
+
+        {/* CTA オーバーレイ */}
+        <div
+          style={{
+            marginTop: 16,
+            textAlign: 'center',
+          }}
+        >
+          <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 12 }}>
+            強み・成長・関係性・人生テーマの4つを<br />プレミアムで全部読めるよ。
+          </p>
+          <Button
+            variant="primary"
+            fullWidth
+            onClick={() => onNavigate('settings')}
+            style={{
+              background: 'linear-gradient(135deg, var(--gold), #b8892e)',
+              boxShadow: '0 4px 20px rgba(212,168,83,0.35)',
+            }}
+          >
+            ✨ 4つの深掘りを読む → プレミアム
+          </Button>
+        </div>
       </Card>
 
       <Card className="slide-up-5">
@@ -255,8 +323,6 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         シェア
       </Button>
 
-      {/* ホロスコープの深い分析を主訴求(1枚目)、月ごとの夢の傾向分析を補助(2枚目) */}
-      <PremiumCard onNavigate={onNavigate} features={['fortune']} />
     </div>
   );
 }
