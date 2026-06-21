@@ -72,7 +72,7 @@ export function SettingsView({ profile, onProfileUpdate, onLogout, onRegisterHis
   return (
     <div style={{ padding: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
       <Card>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4, textAlign: 'center' }}>
           プロフィール
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 'var(--sp-4)', lineHeight: 1.7 }}>
@@ -84,7 +84,7 @@ export function SettingsView({ profile, onProfileUpdate, onLogout, onRegisterHis
       </Card>
 
       <Card>
-        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--t1)', marginBottom: 4, textAlign: 'center' }}>
           アカウント
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', marginBottom: 'var(--sp-4)', lineHeight: 1.7 }}>

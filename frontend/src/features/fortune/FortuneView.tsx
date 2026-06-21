@@ -142,6 +142,9 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
               color: 'var(--rose)',
               marginTop: 4,
               textAlign: 'center',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {character.name}
@@ -212,7 +215,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         {/* カードヘッダー */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
           <span style={{ fontSize: 18 }}>✨</span>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)' }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--t1)', textAlign: 'center' }}>
             4つの深掘り分析
           </h3>
           <span

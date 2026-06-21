@@ -53,7 +53,7 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
       {/* ヘッダー */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
         <span style={{ fontSize: 18 }}>✨</span>
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)' }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           今夜の自分を、星に聞く
         </h2>
       </div>

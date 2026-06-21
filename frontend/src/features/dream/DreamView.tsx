@@ -271,7 +271,7 @@ export function DreamView({ profile, onNavigate, onRegisterHistoryBack }: DreamV
       {/* 夢診断カレンダー（入力/結果の下に常時表示） */}
       <section aria-label="夢診断カレンダー">
         <header style={{ textAlign: 'center', margin: 'var(--sp-3) 0' }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--rose)' }}>📅 夢診断カレンダー</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--rose)', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📅 夢診断カレンダー</h3>
           <p style={{ fontSize: 12, color: 'var(--t2)', marginTop: 4 }}>
             夢を記録した日をふり返れるよ（{entries.length}件）
           </p>

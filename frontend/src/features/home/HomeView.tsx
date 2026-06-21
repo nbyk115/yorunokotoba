@@ -39,7 +39,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
       </header>
 
       <Card className="slide-up-1">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           🌙 今夜の夢を読み解く
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
@@ -51,7 +51,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
       </Card>
 
       <Card className="slide-up-2">
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', marginBottom: 8, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           ✨ ホロスコープで自分を知る
         </h2>
         <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
@@ -69,7 +69,7 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
             borderTop: '1px solid var(--border)',
           }}
         >
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4, textAlign: 'center' }}>
             あなたはどのタイプ？
           </h3>
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
