@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
+import { getSignaturePhrase } from '@/data/signaturePhrases';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
@@ -38,6 +39,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
     () => getProfileCharacter(profile),
     [profile.birthYear, profile.birthMonth, profile.birthDay, profile.gender, profile.prefecture],
   );
+  const signaturePhrase = useMemo(() => getSignaturePhrase(character.id), [character.id]);
   const signIcon = getSignIcon(profile.sign);
   const fortuneCount = useMemo(() => getDailyFortuneCount(), []);
 
@@ -168,6 +170,24 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           >
             {RARITY_NOTE[character.rarity]}・このタイプは全体の{character.pct}
           </p>
+          {signaturePhrase && (
+            <p
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                color: 'var(--lavender)',
+                lineHeight: 1.7,
+                marginTop: 10,
+                textAlign: 'center',
+                padding: '10px 14px',
+                background: 'linear-gradient(135deg, rgba(176,138,207,0.08), rgba(245,160,176,0.06))',
+                borderRadius: 'var(--r-tag)',
+                borderLeft: '3px solid var(--lavender)',
+              }}
+            >
+              「{signaturePhrase}」
+            </p>
+          )}
           <p
             style={{
               fontSize: 13,
