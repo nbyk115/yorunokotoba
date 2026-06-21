@@ -287,13 +287,15 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           <Button
             variant="primary"
             fullWidth
-            onClick={() => onNavigate('settings')}
+            disabled
             style={{
               background: 'linear-gradient(135deg, var(--gold), #b8892e)',
               boxShadow: '0 4px 20px rgba(212,168,83,0.35)',
+              opacity: 0.55,
+              cursor: 'default',
             }}
           >
-            ✨ 4つの深掘りを読む → プレミアム
+            ✨ もうすぐ読めるようになるよ
           </Button>
         </div>
       </Card>
