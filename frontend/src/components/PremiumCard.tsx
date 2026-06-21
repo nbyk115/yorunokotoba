@@ -13,7 +13,7 @@ interface PremiumCardProps {
 /**
  * 2 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
  * 月ごと/日替わりの cadence を明示し、散在していた機能の文脈をまとめる。
- * HomeView / DreamView / FortuneView の結果末尾で共用する。
+ * DreamView / FortuneView の結果末尾で共用する。
  */
 
 const PREMIUM_FEATURES = [

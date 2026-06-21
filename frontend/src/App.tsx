@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, Component, type ReactNode } from 'react';
 import { loadLocalProfile, type UserProfile } from '@/lib/firestore';
 import { ProfileSetup } from '@/features/profile/ProfileSetup';
-import { HomeView } from '@/features/home/HomeView';
 import { DreamView } from '@/features/dream/DreamView';
 import { FortuneView } from '@/features/fortune/FortuneView';
 import { CompatibilityView } from '@/features/compatibility/CompatibilityView';
@@ -13,7 +12,7 @@ import { FtueOverlay, shouldShowFtue } from '@/components/onboarding/FtueOverlay
 import { Particles } from '@/components/fx/Particles';
 import { trackException } from '@/lib/analytics';
 
-export type ViewKey = 'home' | 'dream' | 'fortune' | 'compatibility' | 'settings';
+export type ViewKey = 'dream' | 'fortune' | 'compatibility' | 'settings';
 
 /**
  * History state の型。
@@ -55,7 +54,7 @@ function readCompatLink(): string | null {
 
 export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(() => loadLocalProfile());
-  const [view, setView] = useState<ViewKey>('home');
+  const [view, setView] = useState<ViewKey>('dream');
   const [showFtue, setShowFtue] = useState<boolean>(() => shouldShowFtue());
   // 相性診断の共有リンクから開かれたか（送信者キャラID）
   const [compatLink, setCompatLink] = useState<string | null>(() => readCompatLink());
@@ -93,7 +92,7 @@ export default function App() {
     try {
       const currentState = window.history.state as AppHistoryState | null;
       if (!currentState || !currentState._ynk) {
-        window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '');
+        window.history.replaceState({ _ynk: true, view: 'dream' } satisfies AppHistoryState, '');
       }
     } catch {
       /* history API 非対応環境 */
@@ -102,17 +101,17 @@ export default function App() {
 
   /**
    * タブ切り替え: setView + pushState。
-   * ホームへの遷移はスタックを積まない（ホームが常にベース）。
+   * dream へはスタックを積まない（dream が常にベース）。
    */
   function navigateTo(nextView: ViewKey) {
     // サブステージ戻りコールバックをリセット（タブ切り替えでサブステージは破棄）
     subStageBackRef.current = null;
     setView(nextView);
-    if (nextView !== 'home') {
+    if (nextView !== 'dream') {
       pushAppState(nextView);
     } else {
       try {
-        window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '');
+        window.history.replaceState({ _ynk: true, view: 'dream' } satisfies AppHistoryState, '');
       } catch {
         /* history API 非対応環境 */
       }
@@ -125,10 +124,10 @@ export default function App() {
 
   function exitCompatLink() {
     setCompatLink(null);
-    setView('home');
+    setView('dream');
     try {
       // URL から ?compat= を取り除き、通常画面に戻す
-      window.history.replaceState({ _ynk: true, view: 'home' } satisfies AppHistoryState, '', window.location.pathname);
+      window.history.replaceState({ _ynk: true, view: 'dream' } satisfies AppHistoryState, '', window.location.pathname);
     } catch {
       /* history API 非対応環境 */
     }
@@ -165,7 +164,6 @@ export default function App() {
       <div style={{ position: 'relative', zIndex: 1 }}>
         <AppHeader onSettingsClick={() => navigateTo('settings')} />
         <ErrorBoundary>
-          {view === 'home' && <HomeView profile={profile} onNavigate={navigateTo} />}
           {view === 'dream' && (
             <DreamView
               profile={profile}
@@ -184,8 +182,8 @@ export default function App() {
           {view === 'settings' && (
             <SettingsView
               profile={profile}
-              onProfileUpdate={(p) => { setProfile(p); navigateTo('home'); }}
-              onLogout={() => { setProfile(null); navigateTo('home'); }}
+              onProfileUpdate={(p) => { setProfile(p); navigateTo('dream'); }}
+              onLogout={() => { setProfile(null); navigateTo('dream'); }}
               onRegisterHistoryBack={(cb) => { subStageBackRef.current = cb ?? null; }}
             />
           )}
