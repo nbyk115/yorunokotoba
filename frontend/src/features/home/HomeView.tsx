@@ -73,7 +73,8 @@ export function HomeView({ profile, onNavigate }: HomeViewProps) {
             あなたはどのタイプ？
           </h3>
           <p style={{ fontSize: 12, color: 'var(--t2)', lineHeight: 1.7, marginBottom: 12 }}>
-            ぜんぶで24タイプ。あなたがどのキャラか、診断してみてね。
+            <span style={{ display: 'block' }}>ぜんぶで24タイプ。</span>
+            <span style={{ display: 'block' }}>あなたがどのキャラか、診断してみてね。</span>
           </p>
           <div
             className="no-scrollbar"
