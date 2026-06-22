@@ -241,11 +241,6 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
           ⚠️ 気をつけるべきこと
         </h4>
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
-        {character.weak && (
-          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.9, marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
-            {character.weak}
-          </p>
-        )}
       </Card>
 
       {/* 今日の運勢カード (新規) */}
@@ -273,15 +268,15 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8 }}>
+            💼 仕事: {todayFortune.dailyWork}
+          </p>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8 }}>
             💖 恋愛: {todayFortune.dailyLove}
           </p>
           <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8 }}>
-            💼 仕事: {todayFortune.dailyWork}
+            🌿 健康: {todayFortune.dailyHealth}
           </p>
         </div>
-        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 10, lineHeight: 1.7 }}>
-          ラッキーカラー: {todayFortune.lucky.color.v} / ラッキーアイテム: {todayFortune.lucky.item.e} {todayFortune.lucky.item.v}
-        </p>
       </Card>
 
       {/* 相性診断導線 (無料) */}
