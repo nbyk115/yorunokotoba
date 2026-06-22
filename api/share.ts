@@ -126,7 +126,7 @@ export default function handler(req: VercelRequest, res: VercelResponse): void {
       color:rgba(255,255,255,0.88);
       background:rgba(255,255,255,0.06);
       border-left:3px solid;
-      border-radius:6px;
+      border-radius:8px;
       padding:14px 16px;
       margin-bottom:28px;
       text-align:left;
