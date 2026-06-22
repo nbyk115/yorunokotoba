@@ -11,95 +11,84 @@ interface PremiumCardProps {
 }
 
 /**
- * 2 機能を「今夜の自分を、星に聞く」として 1 つの価値に束ねるプレミアム訴求カード。
- * 月ごと/日替わりの cadence を明示し、散在していた機能の文脈をまとめる。
- * DreamView / FortuneView の結果末尾で共用する。
+ * プレミアム機能訴求カード。
+ * 視覚要素を 3 つ (アイコン + 見出し + CTA) に絞り、改行を block 分割で完全制御。
+ * DreamView / FortuneView の入力前・結果後で共用する。
+ *
+ * 設計指針 (佐藤裕介流の情報設計):
+ * - 1 カード = 1 メッセージ
+ * - 視覚要素 3 つまで (icon / title / CTA)
+ * - 色味は gold ボーダーのみで「プレミアム感」を担保、内部は通常トークン
+ * - 説明文は 2 文 block 分割で center 配置 (Hard Rule 16 ② 改行制御)
  */
 
-const PREMIUM_FEATURES = [
+interface PremiumFeature {
+  readonly icon: string;
+  readonly title: string;
+  /** 2 文に分けて block 配置。一文中の改行を防ぐ (HR16 ②)。 */
+  readonly descLines: readonly [string, string];
+  readonly view: ViewKey;
+}
+
+const PREMIUM_FEATURES: readonly PremiumFeature[] = [
   {
     icon: '📈',
     title: '月ごとの夢の傾向分析',
-    cadence: '月ごと',
-    category: '夢占い',
-    desc: '夢の記録が積み重なると、今月の心のテーマとくり返しが見えてくる。',
-    view: 'dream' as ViewKey,
+    descLines: [
+      '夢の記録を重ねると、',
+      '今月の心のテーマが見えてくる。',
+    ],
+    view: 'dream',
   },
   {
     icon: '🔭',
     title: 'ホロスコープの深い分析',
-    cadence: '日替わり',
-    category: 'ホロスコープ',
-    desc: '太陽星座の深い4層(裏の本音 / 恋愛深層 / 才能活用 / 転機ヒント)を、毎日違う角度から読み解くよ。',
-    view: 'fortune' as ViewKey,
+    descLines: [
+      '太陽星座の 4 層を、',
+      '毎日違う角度から読み解くよ。',
+    ],
+    view: 'fortune',
   },
 ] as const;
 
 export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
   const displayFeatures = features
-    ? (features.map((v) => PREMIUM_FEATURES.find((f) => f.view === v)).filter(
-        (f): f is (typeof PREMIUM_FEATURES)[number] => f !== undefined
-      ))
+    ? features
+        .map((v) => PREMIUM_FEATURES.find((f) => f.view === v))
+        .filter((f): f is PremiumFeature => f !== undefined)
     : PREMIUM_FEATURES;
+
   return (
     <Card
       style={{
-        background: 'linear-gradient(135deg, rgba(212, 168, 83, 0.06), rgba(176, 138, 207, 0.08))',
-        border: '1px solid rgba(212, 168, 83, 0.40)',
-        boxShadow:
-          'inset 0 1px 0 rgba(212, 168, 83, 0.25), 0 2px 16px rgba(0,0,0,0.08)',
+        border: '1px solid rgba(212, 168, 83, 0.45)',
+        background: 'var(--card)',
       }}
     >
-      {/* ヘッダー */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-        <span style={{ fontSize: 18 }}>✨</span>
-        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--t1)', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          今夜の自分を、星に聞く
-        </h2>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '6px 16px',
-            borderRadius: 20,
-            background: 'linear-gradient(135deg, rgba(212, 168, 83, 0.18), rgba(212, 168, 83, 0.08))',
-            border: '1px solid rgba(212, 168, 83, 0.55)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20)',
-          }}
-        >
-          <span style={{ fontSize: 13, color: 'var(--gold)' }}>★</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--gold)', letterSpacing: 0.5 }}>プレミアム機能</span>
-        </span>
-      </div>
-      <div
+      {/* セクションラベル: 控えめに */}
+      <p
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          fontSize: 13,
-          color: 'var(--t2)',
-          lineHeight: 1.8,
-          marginBottom: 'var(--sp-4)',
+          fontSize: 11,
+          fontWeight: 700,
+          color: 'var(--gold)',
+          letterSpacing: 2,
           textAlign: 'center',
+          marginBottom: 'var(--sp-4)',
         }}
       >
-        <span>夜ごと・月ごと・日替わりに、</span>
-        <span>あなただけの星の言葉が届くよ。</span>
-      </div>
+        ✦ PREMIUM ✦
+      </p>
 
-      {/* 3 機能: 夜ごと/月ごと/日替わりの cadence を明示 */}
+      {/* 機能カード一覧 */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 8,
+          gap: 'var(--sp-3)',
           marginBottom: 'var(--sp-4)',
         }}
       >
-        {displayFeatures.map((f, i) => (
+        {displayFeatures.map((f) => (
           <div
             key={f.title}
             role="button"
@@ -112,63 +101,61 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
               }
             }}
             style={{
-              padding: '10px 12px',
-              borderRadius: 'var(--r-button)',
-              background: 'var(--card)',
+              padding: 'var(--sp-4)',
+              borderRadius: 'var(--r-input)',
+              background: 'var(--bg1)',
               border: '1px solid var(--border)',
-              boxShadow: i === 0 ? 'var(--card-highlight-shadow)' : 'none',
               cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <span style={{ fontSize: 16, flexShrink: 0, lineHeight: 1 }}>{f.icon}</span>
-                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--t1)', margin: 0 }}>
-                  {f.title}
-                </p>
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: 'var(--gold)',
-                      background: 'rgba(212, 168, 83, 0.12)',
-                      border: '1px solid rgba(212, 168, 83, 0.30)',
-                      borderRadius: 'var(--r-tag)',
-                      padding: '1px 6px',
-                      whiteSpace: 'nowrap',
-                      display: 'inline-block',
-                    }}
-                  >
-                    {f.cadence}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: 'var(--lavender)',
-                      background: 'rgba(176, 138, 207, 0.12)',
-                      border: '1px solid rgba(176, 138, 207, 0.30)',
-                      borderRadius: 'var(--r-tag)',
-                      padding: '1px 6px',
-                      whiteSpace: 'nowrap',
-                      display: 'inline-block',
-                    }}
-                  >
-                    {f.category}
-                  </span>
-              </div>
-              <p style={{ fontSize: 11, color: 'var(--t2)', lineHeight: 1.7 }}>
-                {f.desc}
+            {/* アイコン + 見出し: 1 行 nowrap で改行禁止 */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <span style={{ fontSize: 18, lineHeight: 1 }}>{f.icon}</span>
+              <p
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: 'var(--t1)',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {f.title}
               </p>
+            </div>
+            {/* 説明: 2 文 block 分割で center 配置 (HR16 ② 完全準拠) */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2,
+                fontSize: 12,
+                color: 'var(--t2)',
+                lineHeight: 1.7,
+                textAlign: 'center',
+              }}
+            >
+              {f.descLines.map((line, i) => (
+                <span key={i}>{line}</span>
+              ))}
             </div>
           </div>
         ))}
       </div>
 
-      <Button variant="primary" onClick={() => onNavigate('dream')} fullWidth>
-        ✨ プレミアムをのぞいてみる
+      <Button variant="primary" onClick={() => onNavigate(displayFeatures[0]?.view ?? 'dream')} fullWidth>
+        プレミアムをのぞく
       </Button>
     </Card>
   );

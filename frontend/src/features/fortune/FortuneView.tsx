@@ -5,6 +5,7 @@ import { CharaAvatar } from '@/components/ui/CharaAvatar';
 import { RarityBadge } from '@/components/ui/RarityBadge';
 import { getSignaturePhrase } from '@/data/signaturePhrases';
 import { getHoroscopeReading, getSignIcon, getProfileCharacter } from '@/logic/horoscope';
+import { generateFortune } from '@/logic/fortune';
 import { getDailySeed, makeSeededRandom } from '@/logic/hash';
 import { track } from '@/lib/analytics';
 import type { UserProfile } from '@/lib/firestore';
@@ -42,6 +43,16 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
   const signaturePhrase = useMemo(() => getSignaturePhrase(character.id), [character.id]);
   const signIcon = getSignIcon(profile.sign);
   const fortuneCount = useMemo(() => getDailyFortuneCount(), []);
+  const todayFortune = useMemo(
+    () => generateFortune(
+      profile.name,
+      profile.sign,
+      (profile.gender === 'male' || profile.gender === 'female') ? profile.gender : 'female',
+      Number(profile.birthDay),
+      Number(profile.birthMonth),
+    ),
+    [profile.name, profile.sign, profile.gender, profile.birthDay, profile.birthMonth],
+  );
 
   useEffect(() => {
     track('fortune_start', { sign: profile.sign });
@@ -208,8 +219,73 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.essence}</p>
       </Card>
 
-      {/* 相性診断導線 (無料) */}
+      {/* 宿命カード (新規) */}
       <Card className="slide-up-3">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', marginBottom: 10, whiteSpace: 'nowrap' }}>
+          🌟 あなたの宿命
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.lifeTheme}</p>
+      </Card>
+
+      {/* 強みカード (新規) */}
+      <Card className="slide-up-4">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--gold)', marginBottom: 10, whiteSpace: 'nowrap' }}>
+          🌱 あなたの強み
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.strengths}</p>
+      </Card>
+
+      {/* 気をつけることカード (新規) */}
+      <Card className="slide-up-5">
+        <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 10, whiteSpace: 'nowrap' }}>
+          ⚠️ 気をつけるべきこと
+        </h4>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9 }}>{reading.growth}</p>
+        {character.weak && (
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.9, marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
+            {character.weak}
+          </p>
+        )}
+      </Card>
+
+      {/* 今日の運勢カード (新規) */}
+      <Card className="slide-up-6">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--rose)', whiteSpace: 'nowrap' }}>
+            🔮 今日の運勢
+          </h4>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: todayFortune.rank === '大吉' ? 'var(--gold)' : todayFortune.rank === '中吉' ? 'var(--rose)' : 'var(--lavender)',
+              background: todayFortune.rank === '大吉' ? 'rgba(212,168,83,0.12)' : 'rgba(232,98,124,0.10)',
+              border: `1px solid ${todayFortune.rank === '大吉' ? 'rgba(212,168,83,0.35)' : 'rgba(232,98,124,0.25)'}`,
+              borderRadius: 'var(--r-tag)',
+              padding: '2px 10px',
+            }}
+          >
+            {todayFortune.rank}
+          </span>
+        </div>
+        <p style={{ fontSize: 13, color: 'var(--t1)', lineHeight: 1.9, marginBottom: 10 }}>
+          {todayFortune.summary}
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8 }}>
+            💖 恋愛: {todayFortune.dailyLove}
+          </p>
+          <p style={{ fontSize: 13, color: 'var(--t2)', lineHeight: 1.8 }}>
+            💼 仕事: {todayFortune.dailyWork}
+          </p>
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--t3)', marginTop: 10, lineHeight: 1.7 }}>
+          ラッキーカラー: {todayFortune.lucky.color.v} / ラッキーアイテム: {todayFortune.lucky.item.e} {todayFortune.lucky.item.v}
+        </p>
+      </Card>
+
+      {/* 相性診断導線 (無料) */}
+      <Card className="slide-up-7">
         <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--lavender)', marginBottom: 4 }}>
           💞 あの人との相性診断
         </h4>
@@ -223,7 +299,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
 
       {/* プレミアム深掘り cap カード: 4 セクションを blur preview で表示 */}
       <Card
-        className="slide-up-4"
+        className="slide-up-8"
         style={{
           background: 'linear-gradient(135deg, rgba(212,168,83,0.06), rgba(176,138,207,0.08))',
           border: '1px solid rgba(212,168,83,0.40)',
@@ -320,7 +396,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
         </div>
       </Card>
 
-      <Card className="slide-up-5">
+      <Card className="slide-up-9">
         <p style={{ fontSize: 11, color: 'var(--t3)', lineHeight: 1.8, marginBottom: 'var(--sp-4)' }}>
           この占いは生年月日から導いた太陽星座をもとにしています。出生時刻や出生地は使っていないため、ホロスコープ全体ではなく、太陽星座から見たあなたの基本的な性質をお伝えするものです。
         </p>
