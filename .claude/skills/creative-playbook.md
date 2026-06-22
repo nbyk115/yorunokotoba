@@ -117,6 +117,8 @@ Creative部門の全エージェントが参照するデザインプロセス・
 - **ワークフロー**: アセットフォルダ → Claude Code「動画編集して」 → 完成mp4
 - **TTS機能**: ElevenLabs APIキーが必要（有料）。TTS不要の編集は無料
 
+> **写真的・生成画像が必要な案件（サムネイル / OGP / バナー / ヘッダー）**: クリエイティブ部門は都度「画像生成プロンプト + 生成後指示 + ステップシーケンス」の3点セットをサジェストする。詳細 protocol: `.claude/skills/claude-design-handoff/SKILL.md`「外部画像生成オーケストレーション protocol」
+
 ---
 
 ## 2. デザインプロセス
@@ -454,8 +456,6 @@ Layer 3: 検証（破っても通さない）
 2. tokens.jsonの値を使っていないコードを自動検知
 3. rules.jsonで禁止パターンをsevertyレベルで定義
 4. Playwright + axe-coreでアクセシビリティを自動テスト
-
-### DESIGN.mdとは
 
 ### DESIGN.mdとは
 プロジェクトルートに配置するデザインシステム定義ファイル。Claude Codeが自動で読み込み、ブランド準拠のコードを生成する。

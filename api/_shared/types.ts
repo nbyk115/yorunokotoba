@@ -4,8 +4,8 @@
 
 export type SubscriptionPlan = 'premium_monthly';
 
-/** Premium 月額（円）— SSOT: docs/strategy/pricing-decision.md, 2026-05-14 確定 */
-export const PREMIUM_PRICE_JPY = 980 as const;
+/** Premium 月額（円）— SSOT: docs/strategy/pricing-decision.md, 2026-05-22 改定（¥980→¥480） */
+export const PREMIUM_PRICE_JPY = 480 as const;
 
 export interface CheckoutRequest {
   userId: string;

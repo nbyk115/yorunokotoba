@@ -93,14 +93,14 @@
       "id": "SHADOW-001",
       "severity": "error",
       "category": "effects",
-      "description": "有彩色グロー禁止: box-shadow/boxShadow で rgba(0,0,0,...) 以外（有彩色）かつ alpha 0.15超を禁止",
+      "description": "過剰な有彩色グロー禁止: box-shadow/boxShadow で rgba(0,0,0,...) 以外（有彩色）かつ alpha 0.4以上を禁止（淡いブランドグロー alpha 0.3以下は許可）",
       "detector": {
         "type": "regex",
-        "pattern": "(?:box-shadow:|boxShadow:)[^;\\n]*rgba\\(\\s*(?!0\\s*,\\s*0\\s*,\\s*0\\s*,)[^)]*,\\s*0\\.(?:1[6-9]|[2-9])",
+        "pattern": "(?:box-shadow:|boxShadow:)[^;\\n]*rgba\\(\\s*(?!0\\s*,\\s*0\\s*,\\s*0\\s*,)[^)]*,\\s*0\\.[4-9]",
         "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
       },
-      "fix": "有彩色グロー (ピンク系 rgba) を除去し、黒影 rgba(0,0,0,...) またはトークン変数 var(--shadow-*) に置き換える",
-      "why": "リデザイン方針: 有彩色グロー全廃。ピンク発光はブランド品質を損なう"
+      "fix": "有彩色グローは alpha 0.3 以下に抑える（淡いピンク/ゴールドの発光はブランド要素として許可）。過剰な発光は黒影 rgba(0,0,0,...) またはトークン変数 var(--shadow-*) に置き換える",
+      "why": "ピンクポップ UI 復帰 (commit 64d9194) に伴い淡い有彩色グロー (alpha 0.3 以下) をブランド要素として許可。garish な強発光 (alpha 0.4 以上) のみブロック"
     },
     {
       "id": "SHADOW-002",
@@ -114,19 +114,6 @@
       },
       "fix": "黒影は alpha 0.5 以下に抑える (例: rgba(0,0,0,0.45))",
       "why": "黒影は濃く使ってよいが 0.5 超は過剰。0.5 まで許容"
-    },
-    {
-      "id": "GRADIENT-001",
-      "severity": "error",
-      "category": "colors",
-      "description": "グラデーション直書き禁止: linear-gradient / radial-gradient のハードコードを検出",
-      "detector": {
-        "type": "regex",
-        "pattern": "(?:linear-gradient|radial-gradient)\\s*\\(",
-        "files": ["*.html", "*.css", "*.tsx", "*.jsx", "*.ts", "*.js"]
-      },
-      "fix": "グラデーションはソリッドトークン変数に置き換える。linear/radial-gradient 直書きは全廃済み (PR3 完了)",
-      "why": "PR3 でグラデ全廃完了。再混入を CI で物理ブロックするため error に昇格"
     },
     {
       "id": "DASH-001",

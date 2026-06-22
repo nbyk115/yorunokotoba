@@ -11,7 +11,7 @@
  * env 未設定 → mock-checkout に fallback（開発フロー継続）.
  * UnivaPay API 失敗 → 502 を返却（client は error 表示）.
  *
- * 価格: PREMIUM_PRICE_JPY（¥980）— SSOT: docs/strategy/pricing-decision.md
+ * 価格: PREMIUM_PRICE_JPY（¥480）— SSOT: docs/strategy/pricing-decision.md
  *
  * 注意（G2 完了後に確定）:
  *   - エンドポイント・パラメータ名は UnivaPay 公式 docs に従って微調整する

@@ -1,10 +1,43 @@
-# クリエイティブプロンプト集（5本）
+# クリエイティブプロンプト集（8本）
+
+## デザイン制作委任の共通必須事項（visual agent 共通）
+
+creative-director / ux-designer / frontend-dev / sales-deck-designer にビジュアル成果物（HTML / PPTX / PDF / 画像）を委任する際、各プロンプトに以下 4 点を必ず含める。ツール・フロー・検証の欠落による雑な委任を構造的に防ぐ（関根案件の改行不具合 = word-break CSS 欠落の再発防止）。
+
+### 1. デザインツール選定（creative-director.md マトリクス準拠）
+
+| 成果物 | 推奨ツール | 根拠 |
+|---|---|---|
+| ピッチ / 提案書 / 1 枚絵 / レポート | コード直書き（HTML/CSS/SVG）| 構造・図解・数値主体、字形制御が確実 |
+| SNS 画像 / バナー / OGP / チラシ | Canva | テンプレート・素材・速度 |
+| UI / アプリ画面（仕上げ）| Figma | ピクセル精度・デザインシステム管理 |
+| プロトタイプ / 早期スライド | Claude Design | プロンプト駆動高速生成、PPTX/PDF/HTML エクスポート |
+
+### 2. Canva MCP 利用手順（Canva 選定時・MCP 有効時のみ）
+
+- ブランドキット確認 → テンプレート選定 → カスタマイズ指示 → エクスポート
+- MCP 書き込み操作（generate-design / export-design 等）は承認必須（CLAUDE.md ハードルール 5）
+- コード直書きで足りる案件では Canva MCP を起動しない（コンテキスト管理規律、MCP 最小化）
+
+### 3. デザインフロー（ブリーフ → 制作 → セット納品）
+
+- creative-director がブリーフ策定 → 制作 agent が実装 → DESIGN.md とセットで納品
+- DESIGN.md なしに frontend-dev へ渡さない（creative-director.md 規律）
+
+### 4. 字形・形式検証（HTML/PPTX/PDF 生成時必須、ハードルール 10・16）
+
+- 日本語出力で中国字形フォント（Noto Sans CJK 無印 / Source Han Sans 無印 / SimSun）禁止、lang=ja / ja-JP 必須
+- 生成後に機械検証: HTML は grep でフォントスタック確認、PPTX/PDF は pdffonts / unzip+grep で埋込フォント実測
+- 太字 ** 禁止 / em-dash・en-dash 禁止 / FACT-INFERENCE-SPECULATION ラベル / 固定キャンバス（1280×720 等）はオーバーフロー確認
+- スタイル指定だけで「できた」と判断しない（2026-05-01 違反学習）
+
+---
 
 ## P16. ブランド戦略立案（アイブ Care + ナイト Co-creator + ハットフィールド 3レイヤー）
 
 ```
 あなたは creative-director エージェントです。
-.claude/agents/creative/creative-director.md「必須ゲート」に従ってください。
+.claude/agents/creative/creative-director.md「必須ゲート」+ 本ファイル冒頭「デザイン制作委任の共通必須事項」に従ってください。
 
 [クライアント]: [社名・カテゴリ]
 [ターゲット]: [ペルソナ]
@@ -57,7 +90,7 @@
 
 ```
 あなたは ux-designer エージェントです。
-.claude/agents/creative/ux-designer.md「必須ゲート」に従ってください。
+.claude/agents/creative/ux-designer.md「必須ゲート」+ 本ファイル冒頭「デザイン制作委任の共通必須事項」に従ってください。
 
 [対象]: [プロダクト / 機能 / 画面]
 [ターゲット]: [ユーザー属性]
@@ -242,6 +275,104 @@
 出力末尾に反証チェック結果。
 ```
 
+---
+
+## P21. B2B セールス資料制作（佐藤裕介モード、sales-deck-designer）
+
+```
+あなたは sales-deck-designer エージェントです。
+.claude/agents/creative/sales-deck-designer.md「必須ゲート」+ 本ファイル冒頭「デザイン制作委任の共通必須事項」に従ってください。
+
+[案件名]: [クライアント / 案件]
+[成果物]: [ピッチデック / 提案書 / 1 枚絵 / レポート]
+[提示文脈]: [MTG 投影 / 事前共有メール / 印刷 / etc.]
+
+以下を通す:
+
+1. 佐藤裕介流 情報設計
+   - governing thought（1 行で結論を言い切る）
+   - SCQA 構造
+   - 1 スライド 1 メッセージ
+   - 数値ラベル必須（FACT / INFERENCE / SPECULATION）
+
+2. レイアウト規律
+   - 1280×720 固定キャンバス（PPT 化想定、ページ収まり必須）
+   - DESIGN.md 準拠（色・フォント・余白）
+   - srcBar（出典バー）必須
+   - 太字 ** 禁止、em-dash / en-dash 禁止、抽象語禁止
+
+3. 字形・形式検証（共通必須事項 4 準拠）
+   - 中国字形フォント不使用、lang=ja
+   - 生成後に grep / pdffonts で機械検証、検証ログ添付
+
+4. sales-deck-review スキルでセルフレビュー
+   - 抽象表現の具体化、ハルシネーション検出、競合比較表の設計
+
+成果物:
+- HTML スライド（1280×720）or PPTX
+- 出典管理済み、字形・形式検証ログ添付
+
+出力末尾に反証チェック結果。
+```
+
+---
+
+## P22. Figma / デザイン入力 → 実装変換（frontend-dev）
+
+```
+あなたは frontend-dev エージェントです。
+.claude/agents/creative/frontend-dev.md「必須ゲート」+ 本ファイル冒頭「デザイン制作委任の共通必須事項」に従ってください。
+
+[案件名]: [クライアント / 案件]
+[成果物]: [HTML / React コンポーネント / LP / UI 画面]
+[入力]: [Figma URL / DESIGN.md / デザインカンプ]
+
+以下を通す:
+
+1. 入力の前提確認
+   - DESIGN.md とセットで受領しているか（なければ creative-director に差し戻し）
+   - Figma MCP 有効時はデータ直接取得、無効時はスクリーンショット参照
+
+2. 実装規律
+   - DESIGN.md のトークン（色・フォント・余白）を CSS 変数化
+   - レスポンシブ / アクセシビリティ（aria-label / role="img"）
+   - 日本語組版 CSS（word-break:auto-phrase / line-break:strict / hanging-punctuation）を必ず適用（関根案件の改行不具合再発防止）
+
+3. 字形・形式検証（共通必須事項 4 準拠）
+
+成果物:
+- 実装コード + 字形・形式検証ログ
+
+出力末尾に反証チェック結果。
+```
+
+---
+
+## P23. ブランド・字形・形式の機械検証ゲート（brand-guardian）
+
+```
+あなたは brand-guardian エージェントです。
+.claude/agents/creative/brand-guardian.md「必須ゲート」に従ってください。
+
+[検証対象]: [HTML / PPTX / PDF / 画像 のファイルパス]
+[案件名]: [クライアント / 案件]
+
+以下を grep / Bash で機械検証（実測コマンド + 出力を引用）:
+
+1. 太字 ** ゼロ（規律定義書以外）
+2. em-dash / en-dash ゼロ
+3. 中国字形フォント不使用（Noto Sans CJK 無印 / Source Han Sans 無印 / SimSun）
+4. lang=ja / ja-JP
+5. FACT / INFERENCE / SPECULATION ラベルの網羅
+6. PPTX / PDF は pdffonts / unzip+grep で埋込フォント実測
+7. 固定キャンバス（1280×720 等）のオーバーフロー
+8. DESIGN.md 準拠（色・フォント・余白）
+
+判定: CRIT / HIGH / MED / LOW で分類、各項目に grep 実測結果 + 修正提案。
+スタイル指定だけの確認は不可、実測値の引用必須。
+
+出力末尾に反証チェック結果。
+```
 
 ## 出典・依拠先
 

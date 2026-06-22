@@ -7,9 +7,12 @@
   "functions": {
     "api/webhooks/univapay.ts": { "maxDuration": 30 },
     "api/subscription/checkout.ts": { "maxDuration": 15 },
-    "api/subscription/cancel.ts": { "maxDuration": 15 }
+    "api/subscription/cancel.ts": { "maxDuration": 15 },
+    "api/share.ts": { "maxDuration": 10 },
+    "api/og.ts": { "maxDuration": 10 }
   },
   "rewrites": [
+    { "source": "/share/:type", "destination": "/api/share?type=:type" },
     { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
   ],
   "headers": [
@@ -33,6 +36,12 @@
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/api/og",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
       ]
     },
     {

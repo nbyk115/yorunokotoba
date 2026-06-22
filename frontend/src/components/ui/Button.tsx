@@ -10,10 +10,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<Variant, React.CSSProperties> = {
   primary: {
-    background: 'var(--accent-rose)',
+    background: 'linear-gradient(135deg, var(--rose), var(--pink))',
     color: '#fff',
     border: 'none',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+    boxShadow: '0 4px 20px rgba(232, 98, 124, 0.28)',
   },
   secondary: {
     background: 'var(--card-solid)',
@@ -40,7 +40,7 @@ export function Button({
       style={{
         borderRadius: 'var(--r-button)',
         padding: '14px 28px',
-        fontSize: 'var(--fs-body)',
+        fontSize: 15,
         fontWeight: 700,
         fontFamily: 'var(--font-heading)',
         cursor: 'pointer',

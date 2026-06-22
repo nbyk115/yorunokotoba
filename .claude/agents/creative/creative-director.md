@@ -37,22 +37,24 @@ HTML 出力時は DESIGN.md §12.5.1 の 4 項目（lang / charset / font / em-d
 デザインインフラ 4 層不全（2026-05-14 ユーザー指摘）の構造修正:
 1. visual / deck / LP 制作 **着手前** に DESIGN.md §12「ビジュアル参照ライブラリ」を必ず読む
 2. 制作対象カテゴリ（IR デッキ / セールスデッキ / 1 枚絵 / LP / ダッシュボード）で関連参照を最低 3-5 件確認
-3. Lazyweb MCP で `/lazyweb:lazyweb-quick-references` 実行（token 取得済の場合）。token 未取得時は手順 4 にフォールバック。詳細: DESIGN.md §12.3
+3. WebSearch で参照 URL を取得 + Lazyweb For Humans / refero.design を人間がブラウザ閲覧（詳細: DESIGN.md §12.3。MCP 経由の画像取り込みは本環境で不可のため、URL とレイアウト構造を言語化して参照根拠とする）
 4. `refero.design` で類似プロダクト参照
 5. 「なぜこのレイアウト / トーン / 配色か」を制作開始時に 1-2 行で言語化（判断根拠の明示）
 
 参照ゼロでブリーフ出すと visual v9 = 30+ ラウンドループの再発確定。
 
-## visual 生成フロー（2026-05-14 改訂、Claude Design 単一依存撤廃）
+## visual 生成フロー（2026-05-18 改訂、Canva MCP 取り込み不可の実測反映）
 
-YOU MUST: 画像 / visual 生成は以下優先順位で能動的選択:
+実測 FACT（2026-05-18）: Canva MCP generate-design は呼べるが、生成画像 URL（design.canva.ai）が本実行環境のネットワーク許可リストで HTTP 403 ブロックされ、ConsultingOS の実行コンテナに取り込めない。よって Canva MCP は ConsultingOS が合成・レンダリング・納品する成果物の生成手段としては使えない（PR #235 の「Canva MCP 第一選択・必須」は本環境で不成立、撤回）。
 
-1. **HTML + Playwright スクリーンショット**（推奨デフォルト）: 固定サイズ / CSS 完全制御 / API 障害ゼロ
-2. **Figma MCP**: 既存デザインシステム流用時
-3. **html2pdf.js**: PDF 出力
-4. **Claude Design API**: 利用継続だが代替経路を常に確保（400 エラー時の即時切替）
+YOU MUST: 画像 / visual 生成は案件タイプで分岐:
 
-「Claude Design 失敗 → セッション停止」は禁止。
+1. HTML/CSS/コードで描けるビジュアル（提案書 / ピッチデック / バナー / OGP / SNS 画像 / 図表 / レイアウト / ダッシュボード）: ConsultingOS が直接制作（HTML + CSS + Chromium レンダリングで固定サイズ画像も出力可）。これが標準経路、frontend-dev / sales-deck-designer が実装
+2. 写真的・生成的画像（人物 / 動物 / 風景 / 質感のある主役絵）: ConsultingOS はネイティブ画像生成不可。`claude-design-handoff` SKILL.md の「外部画像生成オーケストレーション protocol」に従い、creative 部門が 3 点セット（画像生成プロンプト + 生成後指示 + ステップ順序）を都度サジェスト。ユーザーが外部モデル（OpenAI 画像 / Midjourney 等）で生成 → git commit/push → ConsultingOS が git pull で取得 → text/layout を合成
+3. Figma MCP: 既存デザインシステムの参照のみ（get_design_context）。編集は有料 Editor seat 必須
+4. Canva: ユーザーが Canva 上で完結利用する成果物に限り Canva MCP 可。ただし成果物はユーザーの Canva アカウント内にあり、ConsultingOS の実行コンテナには取り込めない（403）
+
+詳細: DESIGN.md §12.3 + `claude-design-handoff` SKILL.md「外部画像生成オーケストレーション protocol」
 
 ## creative 部門 5 名 orchestration（2026-05-14 追加、主語詐称防止）
 
@@ -65,24 +67,25 @@ YOU MUST: 画像 / visual 生成は以下優先順位で能動的選択:
 
 「creative-director 起動した」と主語詐称せず、上記 4 agent の起動有無を明示（ハードルール 17 主語詐称禁止）。
 
+YOU MUST: 上記 agent への委任は `docs/creative-delegation-prompts.md` の完成形テンプレートをコピーして使う（2026-05-15 PR #236）。テンプレートには skill 明示 / ツール選定 / §5 デザイン作業フロー / 2 段階検証が組込済。skill・ツール未明示の雑な委任が「クリエイティブチームがツールを使わない」根本原因のため、テンプレート委任を必須化。
+
 ## デザインツール選定（最重要の追加責務）
 
 > **デザインタスクを受けたら、まず最適ツールを選定してからブリーフを出す。**
 
-### 選定基準
+### 選定基準（2026-05-18 改訂: Canva MCP は本環境で成果物を取り込めないため第一選択から除外）
+
+YOU MUST: ConsultingOS が納品する成果物の生成は HTML + CSS 直接制作を標準とする。Canva MCP generate-design は生成画像が 403 で取り込めないため、ConsultingOS 納品物の生成には使わない（visual 生成フロー § 参照）。
+
 | 作るもの | 選ぶツール | 理由 |
 |---|---|---|
-| UI/アプリ画面（新規・ラフ） | **Google Stitch** | AI自動生成・最速の0→1・コードエクスポート |
-| UI/アプリ画面（仕上げ・精緻化） | **Figma** | 手動編集の精度・デザインシステム管理 |
-| 提案書・ピッチデック・社内資料 | **Claude Design** or **Google Slides** | Claude Design: プロンプト駆動・PPTX/PDFエクスポート / Google Slides: 共同編集・テキスト主体 |
-| SNS画像・バナー・チラシ・OGP | **Canva** | テンプレート・素材・高速制作 |
-| LP（高速プロトタイプ） | **Google Stitch** → frontend-dev | AI生成→コード即実装 |
-| LP（テンプレベース・ノンコード） | **Canva** | 速度優先・素材豊富 |
-| LP（カスタム・仕上げ重視） | **Figma** → frontend-dev | インタラクション・開発連携 |
-| デザインシステム構築 | **Google Stitch** → **Figma** | Stitch生成→Figma管理 |
-| プレゼン（ビジュアル重視） | **Canva** | デザインテンプレート豊富 |
-| プレゼン（データ・テキスト主体） | **Google Slides** | 構造化・共有しやすい |
-| ロゴ案・ブランド素材（ラフ） | **Canva** | 素材ライブラリ・即試作 |
+| 提案書・ピッチデック・プレゼン | HTML + CSS（sales-deck-designer / frontend-dev）or Google Slides | 直接制作・git 管理可。テキスト主体は Google Slides 可 |
+| SNS画像・バナー・チラシ・OGP | HTML + CSS 固定サイズ + Chromium レンダリング | サイズ固定・DESIGN.md トークン準拠・量産可・git 管理可 |
+| 写真的・生成的画像（人物 / 動物 / 風景等の主役絵） | 外部画像モデル（`claude-design-handoff` の 3 点セット protocol） | ConsultingOS はネイティブ画像生成不可、外部生成 + git 受け渡し |
+| ロゴ案・ブランド素材 | HTML + CSS（ラフ）or 外部画像モデル（写真的素材） | 取り込み可能な経路で制作 |
+| LP（カスタム・仕上げ重視） | frontend-dev の HTML 実装 | インタラクション・開発連携 |
+| UI/アプリ画面（新規・ラフ） | Google Stitch | AI自動生成・コードエクスポート |
+| UI/アプリ画面（精緻化・既存デザインシステム参照） | Figma MCP get_design_context (参照のみ) | 編集は有料 Editor seat 必須、無料は閲覧のみ |
 
 ### 出力にツール指定を含める
 ブリーフ作成時に「使用ツール」を必ず明記する。
