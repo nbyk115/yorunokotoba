@@ -154,8 +154,8 @@ export function PremiumCard({ onNavigate, features }: PremiumCardProps) {
         ))}
       </div>
 
-      <Button variant="primary" onClick={() => onNavigate(displayFeatures[0]?.view ?? 'dream')} fullWidth>
-        プレミアムをのぞく
+      <Button variant="primary" disabled fullWidth style={{ opacity: 0.7, cursor: 'default' }}>
+        まもなくリリース予定
       </Button>
     </Card>
   );
