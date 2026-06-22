@@ -138,7 +138,7 @@ export function FortuneView({ profile, onNavigate }: FortuneViewProps) {
             flexDirection: 'column',
             alignItems: 'center',
             gap: 8,
-            marginTop: 12,
+            marginTop: 'var(--sp-6)',
           }}
         >
           <CharaAvatar
